@@ -54,6 +54,5 @@ jobs:
 
       - name: Smoke test packed CLI
         run: |
-          FILE=$(ls artifact/*.tgz)
-          npm install -g "$FILE"
+          npm install -g ./artifact/*.tgz
           bais --help
