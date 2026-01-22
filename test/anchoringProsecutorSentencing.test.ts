@@ -9,18 +9,19 @@ describe('anchoringProsecutorSentencingExperiment', () => {
     expect(anchoringProsecutorSentencingExperiment.steps[1]?.id).toBe('estimate');
   });
 
-  it('defines low and high anchor conditions (12 and 60 months)', () => {
-    const anchors = anchoringProsecutorSentencingExperiment.conditions.map(
-      (condition) => condition.params.prosecutorRecommendationMonths,
-    );
-    expect(anchors).toContain(12);
-    expect(anchors).toContain(60);
+  it('defines a single die-roll anchor condition', () => {
+    expect(anchoringProsecutorSentencingExperiment.conditions).toHaveLength(1);
+    expect(anchoringProsecutorSentencingExperiment.conditions[0]?.id).toBe('dice');
   });
 
-  it('uses an anchor prompt with a variable placeholder', () => {
+  it('uses an anchor prompt that instructs a die roll', () => {
     const anchorStep = anchoringProsecutorSentencingExperiment.steps.find((s) => s.id === 'anchor');
     expect(anchorStep).toBeDefined();
-    expect(anchorStep?.prompts[0]?.template).toContain('{{prosecutorRecommendationMonths}}');
+    const template = anchorStep?.prompts[0]?.template ?? '';
+    expect(template.toLowerCase()).toContain('roll');
+    expect(template).toContain('six-sided');
+    expect(template).toContain('diceRoll');
+    expect(template).toContain('prosecutorRecommendationMonths');
   });
 
   it('expects numeric month responses in [0, 600]', () => {

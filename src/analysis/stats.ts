@@ -56,6 +56,12 @@ export type BootstrapCI = Readonly<{
   seed: number;
 }>;
 
+export type OlsRegression = Readonly<{
+  slope: number;
+  intercept: number;
+  r: number;
+}>;
+
 function mulberry32(seed: number): () => number {
   let state = seed >>> 0;
   return () => {
@@ -168,6 +174,76 @@ export function bootstrapMeanDifferenceCI(args: {
     iterations,
     seed,
   };
+}
+
+export function pearsonCorrelation(x: readonly number[], y: readonly number[]): number {
+  if (x.length !== y.length) {
+    throw new Error('pearsonCorrelation: x and y must have same length');
+  }
+  if (x.length < 2) {
+    throw new Error('pearsonCorrelation: need at least 2 paired samples');
+  }
+
+  const meanX = simpleStatistics.mean(x as number[]);
+  const meanY = simpleStatistics.mean(y as number[]);
+
+  let sxx = 0;
+  let syy = 0;
+  let sxy = 0;
+
+  for (let i = 0; i < x.length; i += 1) {
+    const xi = x[i];
+    const yi = y[i];
+    if (xi === undefined || yi === undefined) {
+      throw new Error('pearsonCorrelation: internal index error');
+    }
+    const dx = xi - meanX;
+    const dy = yi - meanY;
+    sxx += dx * dx;
+    syy += dy * dy;
+    sxy += dx * dy;
+  }
+
+  if (sxx === 0 || syy === 0) {
+    throw new Error('pearsonCorrelation: zero variance');
+  }
+
+  return sxy / Math.sqrt(sxx * syy);
+}
+
+export function olsRegression(x: readonly number[], y: readonly number[]): OlsRegression {
+  if (x.length !== y.length) {
+    throw new Error('olsRegression: x and y must have same length');
+  }
+  if (x.length < 2) {
+    throw new Error('olsRegression: need at least 2 paired samples');
+  }
+
+  const meanX = simpleStatistics.mean(x as number[]);
+  const meanY = simpleStatistics.mean(y as number[]);
+
+  let sxx = 0;
+  let sxy = 0;
+  for (let i = 0; i < x.length; i += 1) {
+    const xi = x[i];
+    const yi = y[i];
+    if (xi === undefined || yi === undefined) {
+      throw new Error('olsRegression: internal index error');
+    }
+    const dx = xi - meanX;
+    sxx += dx * dx;
+    sxy += dx * (yi - meanY);
+  }
+
+  if (sxx === 0) {
+    throw new Error('olsRegression: zero variance in x');
+  }
+
+  const slope = sxy / sxx;
+  const intercept = meanY - slope * meanX;
+  const r = pearsonCorrelation(x, y);
+
+  return { slope, intercept, r };
 }
 
 export function computeDescriptiveStats(values: readonly number[]): DescriptiveStats {
