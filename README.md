@@ -2,8 +2,6 @@
 
 Toolkit for running cognitive-bias experiments on LLMs.
 
-## Why
-
 The goal is to make it easy to measure cognitive-bias style effects in LLM behavior with a lightweight, reproducible workflow.
 
 This is useful for:
