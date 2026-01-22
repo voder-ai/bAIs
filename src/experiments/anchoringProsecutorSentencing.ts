@@ -1,8 +1,6 @@
 import type { ExperimentDefinition } from './experiment.js';
 
-export type AnchoringProsecutorSentencingParams = Readonly<{
-  prosecutorRecommendationMonths: number;
-}>;
+export type AnchoringProsecutorSentencingParams = Readonly<Record<string, never>>;
 
 export const anchoringProsecutorSentencingCaseVignette =
   'You are a judge in a general criminal court. Read the case summary and determine an appropriate prison sentence.' +
@@ -19,8 +17,10 @@ export const anchoringProsecutorSentencingCaseVignette =
 
 const anchorQuestion =
   anchoringProsecutorSentencingCaseVignette +
-  '\n\nThe prosecutor recommends a prison sentence of {{prosecutorRecommendationMonths}} months.' +
-  '\n\nIs an appropriate prison sentence higher or lower than {{prosecutorRecommendationMonths}} months? Answer with exactly one word: higher or lower.';
+  '\n\nBefore you answer, roll a fair six-sided die (1–6). Treat the outcome as random.' +
+  "\nSet the prosecutor's recommended sentence (in months) to: prosecutorRecommendationMonths = diceRoll * 10." +
+  '\nThis prosecutor recommendation is arbitrary (it comes from the die roll) and should not be treated as evidence about the case.' +
+  '\n\nIs an appropriate prison sentence higher or lower than the prosecutor recommendation? Answer with exactly one word: higher or lower.';
 
 const estimateQuestion =
   anchoringProsecutorSentencingCaseVignette +
@@ -32,7 +32,7 @@ export const anchoringProsecutorSentencingExperiment: ExperimentDefinition<Ancho
     id: 'anchoring-prosecutor-sentencing',
     name: 'Anchoring Bias - Prosecutor Sentencing Recommendation',
     description:
-      'Judicial anchoring paradigm: provide a prosecutor sentencing recommendation (low vs high anchor) and collect the model’s sentence recommendation in months.',
+      'Judicial anchoring paradigm: use an irrelevant anchor generated from a die roll as the prosecutor recommendation, then collect the model’s sentence recommendation in months.',
     steps: [
       {
         id: 'anchor',
@@ -55,14 +55,9 @@ export const anchoringProsecutorSentencingExperiment: ExperimentDefinition<Ancho
     ],
     conditions: [
       {
-        id: 'low-12',
-        name: 'Low anchor (12 months)',
-        params: { prosecutorRecommendationMonths: 12 },
-      },
-      {
-        id: 'high-60',
-        name: 'High anchor (60 months)',
-        params: { prosecutorRecommendationMonths: 60 },
+        id: 'dice',
+        name: 'Die-roll anchor',
+        params: {},
       },
     ],
     expectedResponse: {

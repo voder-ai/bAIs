@@ -4,6 +4,8 @@ import {
   computeDescriptiveStats,
   computeFiveNumberSummary,
   bootstrapMeanDifferenceCI,
+  pearsonCorrelation,
+  olsRegression,
   effectSizeTwoSample,
   welchTTestTwoSided,
 } from '../../src/analysis/stats.js';
@@ -57,5 +59,21 @@ describe('stats', () => {
     expect(a).toEqual(b);
     expect(a.lower).toBeLessThanOrEqual(a.upper);
     expect(a.method).toBe('bootstrap-percentile');
+  });
+
+  test('pearsonCorrelation returns expected sign and bounds', () => {
+    const x = [1, 2, 3, 4, 5];
+    const y = [2, 4, 6, 8, 10];
+    const r = pearsonCorrelation(x, y);
+    expect(r).toBeGreaterThan(0.99);
+    expect(r).toBeLessThanOrEqual(1);
+  });
+
+  test('olsRegression returns positive slope and high r for linear data', () => {
+    const x = [1, 2, 3, 4, 5];
+    const y = [3, 5, 7, 9, 11];
+    const res = olsRegression(x, y);
+    expect(res.slope).toBeGreaterThan(0);
+    expect(res.r).toBeGreaterThan(0.99);
   });
 });
