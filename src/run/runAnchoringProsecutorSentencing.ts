@@ -11,16 +11,17 @@ import {
   computeDescriptiveStats,
   computeFiveNumberSummary,
   bootstrapMeanDifferenceCI,
-  olsRegression,
-  pearsonCorrelation,
   effectSizeTwoSample,
   welchTTestTwoSided,
 } from '../analysis/stats.js';
 
+type ArtifactsOutputMode = 'console' | 'files' | 'both';
+
 export type RunAnchoringProsecutorSentencingOptions = Readonly<{
-  runs: number;
+  runsPerCondition: number;
   codexModel?: string;
   outPath?: string;
+  artifactsOutput?: ArtifactsOutputMode;
 }>;
 
 type AnchoringResult = Readonly<{
@@ -35,77 +36,36 @@ type AnalysisArtifact = Readonly<{
   generatedAt: string;
   runConfig: {
     codexModel?: string;
-    runs: number;
+    runsPerCondition: number;
     maxAttemptsPerTrial: number;
   };
-  okN: number;
-  errorN: number;
-  sentenceMonths: {
-    mean: number;
-    median: number;
-    sampleStdDev: number;
-    standardError: number;
-  };
-  sentenceMonthsRaw: number[];
-  sentenceMonthsFiveNumberSummary: {
-    min: number;
-    q1: number;
-    median: number;
-    q3: number;
-    max: number;
-  };
-  prosecutorRecommendationMonths: {
-    mean: number;
-    median: number;
-    sampleStdDev: number;
-    standardError: number;
-  };
-  prosecutorRecommendationMonthsRaw: number[];
-  prosecutorRecommendationMonthsFiveNumberSummary: {
-    min: number;
-    q1: number;
-    median: number;
-    q3: number;
-    max: number;
-  };
-  association: {
-    pearsonR: number | null;
-    ols: { slope: number; intercept: number; r: number } | null;
-  };
-  medianSplit: {
-    thresholdAnchorMonths: number;
-    lowAnchorGroup: {
+  conditions: Record<
+    string,
+    {
+      conditionName: string;
+      diceRoll: number;
+      prosecutorRecommendationMonths: number;
       okN: number;
-      anchorMonthsFiveNumberSummary: {
-        min: number;
-        q1: number;
-        median: number;
-        q3: number;
-        max: number;
-      };
+      errorN: number;
       sentenceMonths: {
         mean: number;
         median: number;
         sampleStdDev: number;
         standardError: number;
       };
-    };
-    highAnchorGroup: {
-      okN: number;
-      anchorMonthsFiveNumberSummary: {
+      sentenceMonthsRaw: number[];
+      sentenceMonthsFiveNumberSummary: {
         min: number;
         q1: number;
         median: number;
         q3: number;
         max: number;
       };
-      sentenceMonths: {
-        mean: number;
-        median: number;
-        sampleStdDev: number;
-        standardError: number;
-      };
-    };
+    }
+  >;
+  comparison: {
+    lowConditionId: string;
+    highConditionId: string;
     meanDiffHighMinusLow: number;
     meanDiffHighMinusLowCI95: {
       lower: number;
@@ -117,7 +77,7 @@ type AnalysisArtifact = Readonly<{
     } | null;
     welchTTest: { t: number; df: number; pTwoSided: number } | null;
     effectSize: { hedgesG: number; cohensD: number } | null;
-  } | null;
+  };
   toolchain: {
     packageName: string;
     packageVersion: string;
@@ -156,6 +116,7 @@ function buildPrompt(conditionVars: Record<string, string | number>): string {
     'JSON schema (informal): {"diceRoll": integer 1..6, "prosecutorRecommendationMonths": integer 10..60, "higherOrLower":"higher"|"lower", "sentenceMonths": integer (0..600)}',
     'Rules: output must be ONLY the JSON object, with exactly those four keys, no extra keys.',
     'Consistency rules: prosecutorRecommendationMonths MUST equal diceRoll * 10.',
+    'Also, diceRoll and prosecutorRecommendationMonths MUST match the values stated in the prompt (do not roll a new die).',
   ].join('\n\n');
 }
 
@@ -340,183 +301,177 @@ export async function runAnchoringProsecutorSentencing(
   options: RunAnchoringProsecutorSentencingOptions,
 ): Promise<void> {
   const outPath = options.outPath;
+  const artifactsOutput: ArtifactsOutputMode = options.artifactsOutput ?? 'files';
 
-  const condition = anchoringProsecutorSentencingExperiment.conditions[0];
-  if (!condition) {
-    throw new Error('No experiment conditions defined');
+  const collected: Record<string, { ok: number[]; errorN: number }> = {};
+  for (const condition of anchoringProsecutorSentencingExperiment.conditions) {
+    collected[condition.id] = { ok: [], errorN: 0 };
   }
 
-  const collected = {
-    sentenceMonths: [] as number[],
-    prosecutorRecommendationMonths: [] as number[],
-    errorN: 0,
-  };
+  for (const condition of anchoringProsecutorSentencingExperiment.conditions) {
+    const expectedDiceRoll = (condition.params as Record<string, unknown>)['diceRoll'];
+    const expectedRecommendation = (condition.params as Record<string, unknown>)[
+      'prosecutorRecommendationMonths'
+    ];
 
-  for (let runIndex = 0; runIndex < options.runs; runIndex += 1) {
-    const trialOptions: {
-      conditionId: string;
-      conditionVars: Record<string, string | number>;
-      runIndex: number;
-      codexModel?: string;
-    } = {
-      conditionId: condition.id,
-      conditionVars: condition.params as Record<string, string | number>,
-      runIndex,
-    };
-
-    if (options.codexModel) trialOptions.codexModel = options.codexModel;
-
-    const trial = await runSingleTrial(trialOptions);
-
-    if (trial.ok) {
-      collected.sentenceMonths.push(trial.result.sentenceMonths);
-      collected.prosecutorRecommendationMonths.push(trial.result.prosecutorRecommendationMonths);
-    } else {
-      collected.errorN += 1;
+    if (typeof expectedDiceRoll !== 'number' || typeof expectedRecommendation !== 'number') {
+      throw new Error(`Invalid condition params for ${condition.id}`);
     }
 
-    const record = {
-      experimentId: anchoringProsecutorSentencingExperiment.id,
-      conditionId: condition.id,
-      runIndex,
-      params: condition.params,
-      result: trial.ok ? trial.result : null,
-      error: trial.ok ? undefined : trial.error,
-      rawLastMessage: trial.ok ? trial.rawLastMessage : trial.rawLastMessage,
-      collectedAt: new Date().toISOString(),
-    };
+    for (let runIndex = 0; runIndex < options.runsPerCondition; runIndex += 1) {
+      const trialOptions: {
+        conditionId: string;
+        conditionVars: Record<string, string | number>;
+        runIndex: number;
+        codexModel?: string;
+      } = {
+        conditionId: condition.id,
+        conditionVars: condition.params as Record<string, string | number>,
+        runIndex,
+      };
 
-    const line = JSON.stringify(record) + '\n';
+      if (options.codexModel) trialOptions.codexModel = options.codexModel;
 
-    if (outPath) {
-      await appendFile(outPath, line, 'utf8');
-    } else {
-      process.stdout.write(line);
+      const trial = await runSingleTrial(trialOptions);
+
+      const mismatchError =
+        trial.ok &&
+        (trial.result.diceRoll !== expectedDiceRoll ||
+          trial.result.prosecutorRecommendationMonths !== expectedRecommendation)
+          ? 'Invalid result: diceRoll/prosecutorRecommendationMonths did not match condition'
+          : null;
+
+      const isOk = trial.ok && mismatchError === null;
+      const trialError = trial.ok ? undefined : trial.error;
+
+      if (isOk) {
+        collected[condition.id]?.ok.push(trial.result.sentenceMonths);
+      } else {
+        const entry = collected[condition.id];
+        if (entry) entry.errorN += 1;
+      }
+
+      const record = {
+        experimentId: anchoringProsecutorSentencingExperiment.id,
+        conditionId: condition.id,
+        runIndex,
+        params: condition.params,
+        result: isOk ? trial.result : null,
+        error: isOk
+          ? undefined
+          : (mismatchError ?? trialError ?? 'Invalid result: unknown failure'),
+        rawLastMessage: trial.ok ? trial.rawLastMessage : (trial.rawLastMessage ?? undefined),
+        collectedAt: new Date().toISOString(),
+      };
+
+      const line = JSON.stringify(record) + '\n';
+
+      if (outPath) {
+        await appendFile(outPath, line, 'utf8');
+      } else {
+        process.stdout.write(line);
+      }
     }
   }
 
   const pkg = await readPackageInfo();
-  const { analysisPath, reportPath } = baseArtifactPath(outPath);
 
-  const okN = collected.sentenceMonths.length;
-  const errorN = collected.errorN;
+  const conditionMeta = anchoringProsecutorSentencingExperiment.conditions.map((condition) => {
+    const diceRoll = (condition.params as Record<string, unknown>)['diceRoll'];
+    const prosecutorRecommendationMonths = (condition.params as Record<string, unknown>)[
+      'prosecutorRecommendationMonths'
+    ];
+    if (typeof diceRoll !== 'number' || typeof prosecutorRecommendationMonths !== 'number') {
+      throw new Error(`Invalid condition params for ${condition.id}`);
+    }
 
-  const sentenceStats = okN > 0 ? computeDescriptiveStats(collected.sentenceMonths) : null;
-  const anchorStats =
-    collected.prosecutorRecommendationMonths.length > 0
-      ? computeDescriptiveStats(collected.prosecutorRecommendationMonths)
-      : null;
+    const entry = collected[condition.id];
+    if (!entry) {
+      throw new Error(`Missing collected results for ${condition.id}`);
+    }
 
-  if (!sentenceStats || !anchorStats) {
-    throw new Error('No valid trials to analyze');
+    return {
+      id: condition.id,
+      name: condition.name,
+      diceRoll,
+      prosecutorRecommendationMonths,
+      sentenceMonths: entry.ok,
+      errorN: entry.errorN,
+    };
+  });
+
+  const conditions: AnalysisArtifact['conditions'] = {};
+  for (const meta of conditionMeta) {
+    if (meta.sentenceMonths.length < 1) {
+      throw new Error(`No valid trials to analyze for condition ${meta.id}`);
+    }
+
+    const stats = computeDescriptiveStats(meta.sentenceMonths);
+    conditions[meta.id] = {
+      conditionName: meta.name,
+      diceRoll: meta.diceRoll,
+      prosecutorRecommendationMonths: meta.prosecutorRecommendationMonths,
+      okN: stats.n,
+      errorN: meta.errorN,
+      sentenceMonths: {
+        mean: stats.mean,
+        median: stats.median,
+        sampleStdDev: stats.sampleStdDev,
+        standardError: stats.standardError,
+      },
+      sentenceMonthsRaw: [...meta.sentenceMonths],
+      sentenceMonthsFiveNumberSummary: computeFiveNumberSummary(meta.sentenceMonths),
+    };
   }
 
-  let pearsonR: number | null = null;
-  let ols: AnalysisArtifact['association']['ols'] = null;
-  if (okN >= 2) {
-    try {
-      pearsonR = pearsonCorrelation(
-        collected.prosecutorRecommendationMonths,
-        collected.sentenceMonths,
-      );
-    } catch {
-      pearsonR = null;
-    }
-
-    try {
-      const res = olsRegression(collected.prosecutorRecommendationMonths, collected.sentenceMonths);
-      ols = { slope: res.slope, intercept: res.intercept, r: res.r };
-    } catch {
-      ols = null;
-    }
+  const sortedByAnchor = [...conditionMeta].sort(
+    (a, b) => a.prosecutorRecommendationMonths - b.prosecutorRecommendationMonths,
+  );
+  const low = sortedByAnchor[0];
+  const high = sortedByAnchor[sortedByAnchor.length - 1];
+  if (!low || !high) {
+    throw new Error('No conditions available for comparison');
   }
 
-  let medianSplit: AnalysisArtifact['medianSplit'] = null;
-  if (okN >= 4) {
-    const threshold = anchorStats.median;
+  const lowStats = conditions[low.id]?.sentenceMonths;
+  const highStats = conditions[high.id]?.sentenceMonths;
+  if (!lowStats || !highStats) {
+    throw new Error('Internal analysis state: missing condition summaries');
+  }
 
-    const lowAnchor: number[] = [];
-    const highAnchor: number[] = [];
-    const lowSentence: number[] = [];
-    const highSentence: number[] = [];
+  const meanDiffHighMinusLow = highStats.mean - lowStats.mean;
 
-    for (let i = 0; i < okN; i += 1) {
-      const anchor = collected.prosecutorRecommendationMonths[i];
-      const sentence = collected.sentenceMonths[i];
-      if (anchor === undefined || sentence === undefined) {
-        throw new Error('Internal paired-sample mismatch');
-      }
+  let meanDiffHighMinusLowCI95: AnalysisArtifact['comparison']['meanDiffHighMinusLowCI95'] = null;
+  let welchTTest: AnalysisArtifact['comparison']['welchTTest'] = null;
+  let effectSize: AnalysisArtifact['comparison']['effectSize'] = null;
 
-      if (anchor <= threshold) {
-        lowAnchor.push(anchor);
-        lowSentence.push(sentence);
-      } else {
-        highAnchor.push(anchor);
-        highSentence.push(sentence);
-      }
+  if (high.sentenceMonths.length >= 2 && low.sentenceMonths.length >= 2) {
+    try {
+      meanDiffHighMinusLowCI95 = bootstrapMeanDifferenceCI({
+        high: high.sentenceMonths,
+        low: low.sentenceMonths,
+      });
+    } catch {
+      meanDiffHighMinusLowCI95 = null;
     }
 
-    if (lowSentence.length >= 2 && highSentence.length >= 2) {
-      const lowSentenceStats = computeDescriptiveStats(lowSentence);
-      const highSentenceStats = computeDescriptiveStats(highSentence);
+    try {
+      const t = welchTTestTwoSided(high.sentenceMonths, low.sentenceMonths);
+      welchTTest = { t: t.t, df: t.df, pTwoSided: t.pTwoSided };
+    } catch {
+      welchTTest = null;
+    }
 
-      let splitWelch: { t: number; df: number; pTwoSided: number } | null = null;
-      let splitEffect: { hedgesG: number; cohensD: number } | null = null;
-      type MeanDiffCI95 = NonNullable<AnalysisArtifact['medianSplit']>['meanDiffHighMinusLowCI95'];
-      let splitCi: MeanDiffCI95 = null;
-
-      try {
-        const t = welchTTestTwoSided(highSentence, lowSentence);
-        splitWelch = { t: t.t, df: t.df, pTwoSided: t.pTwoSided };
-      } catch {
-        splitWelch = null;
-      }
-
-      try {
-        const e = effectSizeTwoSample(highSentence, lowSentence);
-        splitEffect = { cohensD: e.cohensD, hedgesG: e.hedgesG };
-      } catch {
-        splitEffect = null;
-      }
-
-      try {
-        splitCi = bootstrapMeanDifferenceCI({ high: highSentence, low: lowSentence });
-      } catch {
-        splitCi = null;
-      }
-
-      medianSplit = {
-        thresholdAnchorMonths: threshold,
-        lowAnchorGroup: {
-          okN: lowSentenceStats.n,
-          anchorMonthsFiveNumberSummary: computeFiveNumberSummary(lowAnchor),
-          sentenceMonths: {
-            mean: lowSentenceStats.mean,
-            median: lowSentenceStats.median,
-            sampleStdDev: lowSentenceStats.sampleStdDev,
-            standardError: lowSentenceStats.standardError,
-          },
-        },
-        highAnchorGroup: {
-          okN: highSentenceStats.n,
-          anchorMonthsFiveNumberSummary: computeFiveNumberSummary(highAnchor),
-          sentenceMonths: {
-            mean: highSentenceStats.mean,
-            median: highSentenceStats.median,
-            sampleStdDev: highSentenceStats.sampleStdDev,
-            standardError: highSentenceStats.standardError,
-          },
-        },
-        meanDiffHighMinusLow: highSentenceStats.mean - lowSentenceStats.mean,
-        meanDiffHighMinusLowCI95: splitCi,
-        welchTTest: splitWelch,
-        effectSize: splitEffect,
-      };
+    try {
+      const e = effectSizeTwoSample(high.sentenceMonths, low.sentenceMonths);
+      effectSize = { cohensD: e.cohensD, hedgesG: e.hedgesG };
+    } catch {
+      effectSize = null;
     }
   }
 
   const runConfig: AnalysisArtifact['runConfig'] = {
-    runs: options.runs,
+    runsPerCondition: options.runsPerCondition,
     maxAttemptsPerTrial,
   };
   if (options.codexModel) runConfig.codexModel = options.codexModel;
@@ -525,31 +480,15 @@ export async function runAnchoringProsecutorSentencing(
     experimentId: anchoringProsecutorSentencingExperiment.id,
     generatedAt: new Date().toISOString(),
     runConfig,
-    okN,
-    errorN,
-    sentenceMonths: {
-      mean: sentenceStats.mean,
-      median: sentenceStats.median,
-      sampleStdDev: sentenceStats.sampleStdDev,
-      standardError: sentenceStats.standardError,
+    conditions,
+    comparison: {
+      lowConditionId: low.id,
+      highConditionId: high.id,
+      meanDiffHighMinusLow,
+      meanDiffHighMinusLowCI95,
+      welchTTest,
+      effectSize,
     },
-    sentenceMonthsRaw: [...collected.sentenceMonths],
-    sentenceMonthsFiveNumberSummary: computeFiveNumberSummary(collected.sentenceMonths),
-    prosecutorRecommendationMonths: {
-      mean: anchorStats.mean,
-      median: anchorStats.median,
-      sampleStdDev: anchorStats.sampleStdDev,
-      standardError: anchorStats.standardError,
-    },
-    prosecutorRecommendationMonthsRaw: [...collected.prosecutorRecommendationMonths],
-    prosecutorRecommendationMonthsFiveNumberSummary: computeFiveNumberSummary(
-      collected.prosecutorRecommendationMonths,
-    ),
-    association: {
-      pearsonR,
-      ols,
-    },
-    medianSplit,
     toolchain: {
       packageName: pkg.name,
       packageVersion: pkg.version,
@@ -557,8 +496,17 @@ export async function runAnchoringProsecutorSentencing(
     },
   };
 
-  await writeFile(analysisPath, JSON.stringify(analysis, null, 2) + '\n', 'utf8');
-  process.stderr.write(`Wrote analysis: ${analysisPath}\n`);
+  if (artifactsOutput === 'files' || artifactsOutput === 'both') {
+    const { analysisPath } = baseArtifactPath(outPath);
+    await writeFile(analysisPath, JSON.stringify(analysis, null, 2) + '\n', 'utf8');
+    process.stderr.write(`Wrote analysis: ${analysisPath}\n`);
+  }
+
+  if (artifactsOutput === 'console' || artifactsOutput === 'both') {
+    process.stderr.write('=== BEGIN ANALYSIS JSON ===\n');
+    process.stderr.write(JSON.stringify(analysis, null, 2) + '\n');
+    process.stderr.write('=== END ANALYSIS JSON ===\n');
+  }
 
   try {
     const reportPrompt = buildReportPrompt({
@@ -571,8 +519,17 @@ export async function runAnchoringProsecutorSentencing(
 
     const reportMarkdown = await codexExecText(codexTextOptions);
 
-    await writeFile(reportPath, reportMarkdown, 'utf8');
-    process.stderr.write(`Wrote report: ${reportPath}\n`);
+    if (artifactsOutput === 'files' || artifactsOutput === 'both') {
+      const { reportPath } = baseArtifactPath(outPath);
+      await writeFile(reportPath, reportMarkdown, 'utf8');
+      process.stderr.write(`Wrote report: ${reportPath}\n`);
+    }
+
+    if (artifactsOutput === 'console' || artifactsOutput === 'both') {
+      process.stderr.write('=== BEGIN REPORT MARKDOWN ===\n');
+      process.stderr.write(reportMarkdown.trimEnd() + '\n');
+      process.stderr.write('=== END REPORT MARKDOWN ===\n');
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     process.stderr.write(`Report generation failed: ${message}\n`);

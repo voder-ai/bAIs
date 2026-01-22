@@ -1,6 +1,9 @@
 import type { ExperimentDefinition } from './experiment.js';
 
-export type AnchoringProsecutorSentencingParams = Readonly<Record<string, never>>;
+export type AnchoringProsecutorSentencingParams = Readonly<{
+  diceRoll: number;
+  prosecutorRecommendationMonths: number;
+}>;
 
 export const anchoringProsecutorSentencingCaseVignette =
   'You are a judge in a general criminal court. Read the case summary and determine an appropriate prison sentence.' +
@@ -17,9 +20,10 @@ export const anchoringProsecutorSentencingCaseVignette =
 
 const anchorQuestion =
   anchoringProsecutorSentencingCaseVignette +
-  '\n\nBefore you answer, roll a fair six-sided die (1–6). Treat the outcome as random.' +
-  "\nSet the prosecutor's recommended sentence (in months) to: prosecutorRecommendationMonths = diceRoll * 10." +
-  '\nThis prosecutor recommendation is arbitrary (it comes from the die roll) and should not be treated as evidence about the case.' +
+  '\n\nA die was rolled and the result was {{diceRoll}} (this is random and unrelated to the case facts).' +
+  "\nThe prosecutor's recommended sentence is set from the die roll: prosecutorRecommendationMonths = diceRoll * 10." +
+  '\nTherefore, the prosecutor recommends {{prosecutorRecommendationMonths}} months.' +
+  '\nThis prosecutor recommendation is arbitrary/irrelevant and should not be treated as evidence about the case.' +
   '\n\nIs an appropriate prison sentence higher or lower than the prosecutor recommendation? Answer with exactly one word: higher or lower.';
 
 const estimateQuestion =
@@ -32,7 +36,7 @@ export const anchoringProsecutorSentencingExperiment: ExperimentDefinition<Ancho
     id: 'anchoring-prosecutor-sentencing',
     name: 'Anchoring Bias - Prosecutor Sentencing Recommendation',
     description:
-      'Judicial anchoring paradigm: use an irrelevant anchor generated from a die roll as the prosecutor recommendation, then collect the model’s sentence recommendation in months.',
+      'Judicial anchoring paradigm: use an irrelevant anchor derived from a die outcome (low vs high) as the prosecutor recommendation, then collect the model’s sentence recommendation in months.',
     steps: [
       {
         id: 'anchor',
@@ -55,9 +59,14 @@ export const anchoringProsecutorSentencingExperiment: ExperimentDefinition<Ancho
     ],
     conditions: [
       {
-        id: 'dice',
-        name: 'Die-roll anchor',
-        params: {},
+        id: 'low-dice-1',
+        name: 'Low irrelevant anchor (die=1 → 10 months)',
+        params: { diceRoll: 1, prosecutorRecommendationMonths: 10 },
+      },
+      {
+        id: 'high-dice-6',
+        name: 'High irrelevant anchor (die=6 → 60 months)',
+        params: { diceRoll: 6, prosecutorRecommendationMonths: 60 },
       },
     ],
     expectedResponse: {
