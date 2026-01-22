@@ -13,6 +13,7 @@ informed: []
 The bAIs toolkit requires chart and visualization generation for publication-quality reports that researchers can include in academic papers and presentations.
 
 Key visualization requirements from story map:
+
 - Story 025.0-RES-REPORT-CHARTS: Generate publication-quality charts (bar, box plots, distributions)
 - Story 025.3-RES-REPORT-PUBLICATION: Generate complete publication-ready report
 - Story 039.0-STU-REPORT-NARRATIVES: Generate narrative explanations with visualizations

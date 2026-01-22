@@ -13,6 +13,7 @@ informed: []
 The bAIs toolkit needs a CLI framework to provide a command-line interface for researchers to design experiments, configure parameters, execute tests, and generate reports. The CLI must support subcommands (e.g., `bais run`, `bais report`, `bais config`), flags, options, and potentially interactive prompts.
 
 Key CLI requirements from story map:
+
 - Story 020.0-RES-DESIGN-UI: Visual experiment designer interface
 - Story 021.0-RES-CONFIG-PRESETS: Save and load parameter presets
 - Story 019.0-CON-ITERATE-EXP-SELECT: Select which experiments to run from library
@@ -105,6 +106,6 @@ Chosen option: "Commander.js" because it provides a clean, intuitive API for bui
   - 020.0-RES-DESIGN-UI (visual experiment designer)
   - 019.0-CON-ITERATE-EXP-SELECT (experiment selection)
   - 021.0-RES-CONFIG-PRESETS (configuration management)
-- Related decisions: 
+- Related decisions:
   - [001-use-typescript-with-esm.proposed.md](001-use-typescript-with-esm.proposed.md)
 - Note: Can add Inquirer.js later for interactive prompts if needed (story 020.0)

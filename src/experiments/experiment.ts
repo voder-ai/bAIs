@@ -1,0 +1,37 @@
+export type ExperimentId = string;
+export type ConditionId = string;
+
+export type NumericRange = Readonly<{ min: number; max: number }>;
+
+export type PromptRole = 'system' | 'user';
+
+export type PromptTemplate = Readonly<{
+  role: PromptRole;
+  template: string;
+}>;
+
+export type PromptStep = Readonly<{
+  id: 'anchor' | 'estimate';
+  prompts: ReadonlyArray<PromptTemplate>;
+}>;
+
+export type ExperimentCondition<TParams extends Record<string, unknown>> = Readonly<{
+  id: ConditionId;
+  name: string;
+  params: TParams;
+}>;
+
+export type ExpectedResponse = Readonly<{
+  kind: 'numeric';
+  unit: 'percentage' | 'months';
+  range: NumericRange;
+}>;
+
+export type ExperimentDefinition<TParams extends Record<string, unknown>> = Readonly<{
+  id: ExperimentId;
+  name: string;
+  description: string;
+  steps: ReadonlyArray<PromptStep>;
+  conditions: ReadonlyArray<ExperimentCondition<TParams>>;
+  expectedResponse: ExpectedResponse;
+}>;

@@ -2,10 +2,10 @@
 
 ## Journey Steps (Columns)
 
-| **Design Experiment**           | **Select Models**              | **Configure Parameters**        | **Run Experiment**             | **Parse Responses**            | **Analyze Results**            | **Report Findings**            | **Iterate**                    |
-| ------------------------------- | ------------------------------ | ------------------------------- | ------------------------------ | ------------------------------ | ------------------------------ | ------------------------------ | ------------------------------ |
-| _Define hypothesis and conditions_ | _Choose LLM models to test_ | _Set up experiment parameters_ | _Execute prompts automatically_ | _Extract data from LLM outputs_ | _Run statistical tests_ | _Generate analysis reports_ | _Refine and re-run experiments_ |
-| **Experiment Design**           | **Model Selection**            | **Parameter Configuration**     | **Execution Management**       | **Data Extraction**            | **Statistical Analysis**       | **Reporting & Visualization**  | **Workflow Management**        |
+| **Design Experiment**              | **Select Models**           | **Configure Parameters**       | **Run Experiment**              | **Parse Responses**             | **Analyze Results**      | **Report Findings**           | **Iterate**                     |
+| ---------------------------------- | --------------------------- | ------------------------------ | ------------------------------- | ------------------------------- | ------------------------ | ----------------------------- | ------------------------------- |
+| _Define hypothesis and conditions_ | _Choose LLM models to test_ | _Set up experiment parameters_ | _Execute prompts automatically_ | _Extract data from LLM outputs_ | _Run statistical tests_  | _Generate analysis reports_   | _Refine and re-run experiments_ |
+| **Experiment Design**              | **Model Selection**         | **Parameter Configuration**    | **Execution Management**        | **Data Extraction**             | **Statistical Analysis** | **Reporting & Visualization** | **Workflow Management**         |
 
 ## Personas
 
@@ -21,51 +21,51 @@
 
 ## Theme: Core Validation
 
-| **Core Validation** | **Design Experiment** | **Select Models** | **Configure Parameters** | **Run Experiment** | **Parse Responses** | **Analyze Results** | **Report Findings** | **Iterate** |
-| ------------------- | --------------------- | ----------------- | ------------------------ | ------------------ | ------------------- | ------------------- | ------------------- | ----------- |
-| **Essential MVP**   | 001.0-RES-ANCHORING-EXP | 002.0-RES-MODEL-OPENAI | 003.0-RES-CONFIG-CONDITIONS | 004.0-RES-EXEC-ENGINE | 005.0-RES-PARSE-NUMERIC | 006.0-RES-STATS-TTEST | 007.0-RES-REPORT-BASIC | - |
-|                     | - | - | 003.1-RES-CONFIG-SAMPLE-SIZE | 004.1-RES-EXEC-RETRIES | 005.1-RES-PARSE-ERRORS | 006.1-RES-STATS-EFFECT-SIZE | - | - |
-|                     | - | - | 003.2-RES-CONFIG-TEMPERATURE | - | - | - | - | - |
+| **Core Validation** | **Design Experiment**   | **Select Models**      | **Configure Parameters**     | **Run Experiment**     | **Parse Responses**     | **Analyze Results**         | **Report Findings**    | **Iterate** |
+| ------------------- | ----------------------- | ---------------------- | ---------------------------- | ---------------------- | ----------------------- | --------------------------- | ---------------------- | ----------- |
+| **Essential MVP**   | 001.0-RES-ANCHORING-EXP | 002.0-RES-MODEL-OPENAI | 003.0-RES-CONFIG-CONDITIONS  | 004.0-RES-EXEC-ENGINE  | 005.0-RES-PARSE-NUMERIC | 006.0-RES-STATS-TTEST       | 007.0-RES-REPORT-BASIC | -           |
+|                     | -                       | -                      | 003.1-RES-CONFIG-SAMPLE-SIZE | 004.1-RES-EXEC-RETRIES | 005.1-RES-PARSE-ERRORS  | 006.1-RES-STATS-EFFECT-SIZE | -                      | -           |
+|                     | -                       | -                      | 003.2-RES-CONFIG-TEMPERATURE | -                      | -                       | -                           | -                      | -           |
 
 ## Theme: Multi-Model Comparison
 
-| **Multi-Model Comparison** | **Design Experiment** | **Select Models** | **Configure Parameters** | **Run Experiment** | **Parse Responses** | **Analyze Results** | **Report Findings** | **Iterate** |
-| -------------------------- | --------------------- | ----------------- | ------------------------ | ------------------ | ------------------- | ------------------- | ------------------- | ----------- |
-| **Model Flexibility**      | - | 008.0-DEV-MODEL-ANTHROPIC | - | 009.0-DEV-EXEC-PARALLEL | - | 010.0-DEV-STATS-COMPARE | 011.0-DEV-REPORT-COMPARISON | 012.0-DEV-ITERATE-PARAMS |
-|                            | - | 008.1-DEV-MODEL-OLLAMA | - | 009.1-DEV-EXEC-RATE-LIMITS | - | - | - | - |
-|                            | - | 008.2-DEV-MODEL-REGISTRY | - | - | - | - | - | - |
+| **Multi-Model Comparison** | **Design Experiment** | **Select Models**         | **Configure Parameters** | **Run Experiment**         | **Parse Responses** | **Analyze Results**     | **Report Findings**         | **Iterate**              |
+| -------------------------- | --------------------- | ------------------------- | ------------------------ | -------------------------- | ------------------- | ----------------------- | --------------------------- | ------------------------ |
+| **Model Flexibility**      | -                     | 008.0-DEV-MODEL-ANTHROPIC | -                        | 009.0-DEV-EXEC-PARALLEL    | -                   | 010.0-DEV-STATS-COMPARE | 011.0-DEV-REPORT-COMPARISON | 012.0-DEV-ITERATE-PARAMS |
+|                            | -                     | 008.1-DEV-MODEL-OLLAMA    | -                        | 009.1-DEV-EXEC-RATE-LIMITS | -                   | -                       | -                           | -                        |
+|                            | -                     | 008.2-DEV-MODEL-REGISTRY  | -                        | -                          | -                   | -                       | -                           | -                        |
 
 ## Theme: Experiment Library
 
-| **Experiment Library** | **Design Experiment** | **Select Models** | **Configure Parameters** | **Run Experiment** | **Parse Responses** | **Analyze Results** | **Report Findings** | **Iterate** |
-| ---------------------- | --------------------- | ----------------- | ------------------------ | ------------------ | ------------------- | ------------------- | ------------------- | ----------- |
-| **Classic Biases**     | 013.0-CON-FRAMING-EXP | - | 014.0-CON-CONFIG-TEMPLATES | 015.0-CON-EXEC-MULTI-EXP | 016.0-CON-PARSE-CATEGORICAL | 017.0-CON-STATS-CHI-SQUARE | 018.0-CON-REPORT-MULTI-EXP | 019.0-CON-ITERATE-EXP-SELECT |
-|                        | 013.1-CON-AVAILABILITY-EXP | - | - | - | 016.1-CON-PARSE-TEXT-EXTRACT | 017.1-CON-STATS-ANOVA | - | - |
-|                        | 013.2-CON-CONFIRMATION-EXP | - | - | - | - | - | - | - |
+| **Experiment Library** | **Design Experiment**      | **Select Models** | **Configure Parameters**   | **Run Experiment**       | **Parse Responses**          | **Analyze Results**        | **Report Findings**        | **Iterate**                  |
+| ---------------------- | -------------------------- | ----------------- | -------------------------- | ------------------------ | ---------------------------- | -------------------------- | -------------------------- | ---------------------------- |
+| **Classic Biases**     | 013.0-CON-FRAMING-EXP      | -                 | 014.0-CON-CONFIG-TEMPLATES | 015.0-CON-EXEC-MULTI-EXP | 016.0-CON-PARSE-CATEGORICAL  | 017.0-CON-STATS-CHI-SQUARE | 018.0-CON-REPORT-MULTI-EXP | 019.0-CON-ITERATE-EXP-SELECT |
+|                        | 013.1-CON-AVAILABILITY-EXP | -                 | -                          | -                        | 016.1-CON-PARSE-TEXT-EXTRACT | 017.1-CON-STATS-ANOVA      | -                          | -                            |
+|                        | 013.2-CON-CONFIRMATION-EXP | -                 | -                          | -                        | -                            | -                          | -                          | -                            |
 
 ## Theme: Enhanced Research Experience
 
-| **Enhanced Research Experience** | **Design Experiment** | **Select Models** | **Configure Parameters** | **Run Experiment** | **Parse Responses** | **Analyze Results** | **Report Findings** | **Iterate** |
-| -------------------------------- | --------------------- | ----------------- | ------------------------ | ------------------ | ------------------- | ------------------- | ------------------- | ----------- |
-| **Publication Quality**          | 020.0-RES-DESIGN-UI | - | 021.0-RES-CONFIG-PRESETS | 022.0-AST-EXEC-MONITOR | 023.0-RES-PARSE-VALIDATION | 024.0-RES-STATS-POWER-ANALYSIS | 025.0-RES-REPORT-CHARTS | 026.0-RES-ITERATE-HISTORY |
-|                                  | - | - | - | 022.1-AST-EXEC-PROGRESS | - | 024.1-RES-STATS-CONFIDENCE-INT | 025.1-RES-REPORT-EXPORT-CSV | 026.1-RES-ITERATE-COMPARE |
-|                                  | - | - | - | - | - | - | 025.2-RES-REPORT-EXPORT-JSON | - |
-|                                  | - | - | - | - | - | - | 025.3-RES-REPORT-PUBLICATION | - |
+| **Enhanced Research Experience** | **Design Experiment** | **Select Models** | **Configure Parameters** | **Run Experiment**      | **Parse Responses**        | **Analyze Results**            | **Report Findings**          | **Iterate**               |
+| -------------------------------- | --------------------- | ----------------- | ------------------------ | ----------------------- | -------------------------- | ------------------------------ | ---------------------------- | ------------------------- |
+| **Publication Quality**          | 020.0-RES-DESIGN-UI   | -                 | 021.0-RES-CONFIG-PRESETS | 022.0-AST-EXEC-MONITOR  | 023.0-RES-PARSE-VALIDATION | 024.0-RES-STATS-POWER-ANALYSIS | 025.0-RES-REPORT-CHARTS      | 026.0-RES-ITERATE-HISTORY |
+|                                  | -                     | -                 | -                        | 022.1-AST-EXEC-PROGRESS | -                          | 024.1-RES-STATS-CONFIDENCE-INT | 025.1-RES-REPORT-EXPORT-CSV  | 026.1-RES-ITERATE-COMPARE |
+|                                  | -                     | -                 | -                        | -                       | -                          | -                              | 025.2-RES-REPORT-EXPORT-JSON | -                         |
+|                                  | -                     | -                 | -                        | -                       | -                          | -                              | 025.3-RES-REPORT-PUBLICATION | -                         |
 
 ## Theme: Extensibility Framework
 
-| **Extensibility Framework** | **Design Experiment** | **Select Models** | **Configure Parameters** | **Run Experiment** | **Parse Responses** | **Analyze Results** | **Report Findings** | **Iterate** |
-| --------------------------- | --------------------- | ----------------- | ------------------------ | ------------------ | ------------------- | ------------------- | ------------------- | ----------- |
-| **Community Growth**        | 027.0-CON-DESIGN-TEMPLATE-API | 028.0-CON-MODEL-PLUGIN-API | 029.0-CON-CONFIG-SCHEMA | 030.0-CON-EXEC-HOOKS | 031.0-CON-PARSE-PLUGIN-API | 032.0-CON-STATS-CUSTOM | 033.0-CON-REPORT-TEMPLATES | 034.0-CON-ITERATE-WORKFLOW-SAVE |
-|                             | 027.1-CON-DESIGN-VALIDATION | - | - | - | - | - | - | 034.1-CON-ITERATE-WORKFLOW-LOAD |
+| **Extensibility Framework** | **Design Experiment**         | **Select Models**          | **Configure Parameters** | **Run Experiment**   | **Parse Responses**        | **Analyze Results**    | **Report Findings**        | **Iterate**                     |
+| --------------------------- | ----------------------------- | -------------------------- | ------------------------ | -------------------- | -------------------------- | ---------------------- | -------------------------- | ------------------------------- |
+| **Community Growth**        | 027.0-CON-DESIGN-TEMPLATE-API | 028.0-CON-MODEL-PLUGIN-API | 029.0-CON-CONFIG-SCHEMA  | 030.0-CON-EXEC-HOOKS | 031.0-CON-PARSE-PLUGIN-API | 032.0-CON-STATS-CUSTOM | 033.0-CON-REPORT-TEMPLATES | 034.0-CON-ITERATE-WORKFLOW-SAVE |
+|                             | 027.1-CON-DESIGN-VALIDATION   | -                          | -                        | -                    | -                          | -                      | -                          | 034.1-CON-ITERATE-WORKFLOW-LOAD |
 
 ## Theme: Educational Resources
 
-| **Educational Resources** | **Design Experiment** | **Select Models** | **Configure Parameters** | **Run Experiment** | **Parse Responses** | **Analyze Results** | **Report Findings** | **Iterate** |
-| ------------------------- | --------------------- | ----------------- | ------------------------ | ------------------ | ------------------- | ------------------- | ------------------- | ----------- |
-| **Learning Support**      | 035.0-STU-DESIGN-GUIDED | - | 036.0-STU-CONFIG-DEFAULTS | 037.0-STU-EXEC-EXPLANATIONS | - | 038.0-STU-STATS-INTERPRET | 039.0-STU-REPORT-NARRATIVES | 040.0-STU-ITERATE-TUTORIALS |
-|                           | 035.1-STU-DESIGN-EXAMPLES | - | - | - | - | - | 039.1-STU-REPORT-LESSONS | - |
-|                           | - | - | - | - | - | - | 039.2-STU-REPORT-REFERENCES | - |
+| **Educational Resources** | **Design Experiment**     | **Select Models** | **Configure Parameters**  | **Run Experiment**          | **Parse Responses** | **Analyze Results**       | **Report Findings**         | **Iterate**                 |
+| ------------------------- | ------------------------- | ----------------- | ------------------------- | --------------------------- | ------------------- | ------------------------- | --------------------------- | --------------------------- |
+| **Learning Support**      | 035.0-STU-DESIGN-GUIDED   | -                 | 036.0-STU-CONFIG-DEFAULTS | 037.0-STU-EXEC-EXPLANATIONS | -                   | 038.0-STU-STATS-INTERPRET | 039.0-STU-REPORT-NARRATIVES | 040.0-STU-ITERATE-TUTORIALS |
+|                           | 035.1-STU-DESIGN-EXAMPLES | -                 | -                         | -                           | -                   | -                         | 039.1-STU-REPORT-LESSONS    | -                           |
+|                           | -                         | -                 | -                         | -                           | -                   | -                         | 039.2-STU-REPORT-REFERENCES | -                           |
 
 ---
 
@@ -73,14 +73,14 @@
 
 ### Theme: Core Validation
 
-**Goal**: Enable researchers to validate the anchoring bias (African countries experiment) exists in one LLM model with basic statistical output
+**Goal**: Enable researchers to validate anchoring bias exists in one LLM model with basic statistical output (prosecutor sentencing recommendation paradigm)
 **Success Metric**: Researcher can run the anchoring experiment on OpenAI GPT model and receive statistically significant t-test results showing bias effect within 15 minutes of first use
 **Scope**: Complete MVP covering experiment design through basic reporting for single classic experiment on single model
 
 **Stories by Category:**
 
 - **Experiment Design** (1 story, 7 points):
-  - 001.0-RES-ANCHORING-EXP (M): Implement Tversky/Kahneman anchoring bias experiment (African countries in UN)
+  - 001.0-RES-ANCHORING-EXP (M): Implement prosecutor sentencing recommendation anchoring experiment (low vs high prosecutor recommendation)
     - Complexity: M | Cost of Delay: XL | Dependencies: none | WSJF: 2.67
 
 - **Model Selection** (1 story, 3 points):
@@ -88,7 +88,7 @@
     - Complexity: M | Cost of Delay: XL | Dependencies: none | WSJF: 2.67
 
 - **Parameter Configuration** (3 stories, 7 points):
-  - 003.0-RES-CONFIG-CONDITIONS (S): Configure high/low anchor conditions (10% vs 65%)
+  - 003.0-RES-CONFIG-CONDITIONS (S): Configure high/low anchor conditions (low vs high prosecutor recommendation in months)
     - Complexity: S | Cost of Delay: XL | Dependencies: 001.0 | WSJF: 4.00
   - 003.1-RES-CONFIG-SAMPLE-SIZE (S): Set number of runs per condition
     - Complexity: S | Cost of Delay: L | Dependencies: 003.0 | WSJF: 2.50
@@ -120,12 +120,14 @@
 **Total**: 12 stories (39 points) covering complete single-experiment, single-model validation workflow
 
 **Prioritization Summary**:
+
 1. **Critical Path (WSJF ≥ 4.0)**: 003.0-RES-CONFIG-CONDITIONS must be implemented first
 2. **High Priority (WSJF 2.5-2.67)**: All core infrastructure stories (001.0, 002.0, 004.0, 005.0, 006.0, 007.0) form the backbone
 3. **Enhancement (WSJF 1.5-2.5)**: Error handling and additional metrics (004.1, 005.1, 006.1, 003.1)
 4. **Quick Wins**: 003.2-RES-CONFIG-TEMPERATURE (XS complexity, M value)
 
 **Dependency Chain**:
+
 ```
 001.0 (Anchoring Exp) ──→ 003.0 (Conditions) ──→ 003.1 (Sample Size)
 002.0 (OpenAI) ──→ 003.2 (Temperature)
@@ -172,11 +174,13 @@
 **Total**: 8 stories (24 points) enabling multi-model comparison and iteration
 
 **Prioritization Summary**:
+
 1. **High Priority (WSJF 2.5)**: 008.2-DEV-MODEL-REGISTRY provides foundation for multi-model support
 2. **Medium Priority (WSJF 1.5-1.67)**: Model integrations and comparative features
 3. **Enhancement (WSJF 0.6-1.0)**: Parallel execution and local model support can be added later
 
 **Dependency Chain**:
+
 ```
 002.0 (OpenAI) ──→ 008.0 (Anthropic) ──┐
                 ──→ 008.1 (Ollama) ────┼──→ 008.2 (Registry) ──→ 009.0 (Parallel) ──→ 009.1 (Rate Limits)
@@ -232,11 +236,13 @@
 **Total**: 11 stories (30 points) building experiment library with diverse analysis capabilities
 
 **Prioritization Summary**:
+
 1. **High Priority (WSJF 2.5)**: 014.0-CON-CONFIG-TEMPLATES enables reusable experiment patterns
 2. **Medium Priority (WSJF 1.5-1.67)**: Parsing and statistical analysis for new experiment types
 3. **Enhancement (WSJF 0.6-1.0)**: Additional experiments and multi-experiment execution
 
 **Dependency Chain**:
+
 ```
 001.0 (Anchoring) ──→ 013.0 (Framing) ───┬──→ 014.0 (Templates) ──→ 015.0 (Multi-Exp) ──→ 019.0 (Exp Select)
                    ──→ 013.1 (Availability)┤                                           ──→ 016.0 (Parse Cat) ──→ 016.1 (Parse Text)
@@ -295,17 +301,19 @@
 **Total**: 13 stories (32 points) delivering professional research experience
 
 **Prioritization Summary**:
+
 1. **High Priority (WSJF 1.5)**: Data export, validation, and configuration management
 2. **Medium Priority (WSJF 1.0)**: Visualization and experiment tracking
 3. **Enhancement (WSJF 0.4-0.67)**: Advanced UI and publication automation
 
 **Dependency Chain**:
+
 ```
 014.0 (Templates) ──→ 020.0 (Design UI)
 003.0 (Conditions) ──→ 021.0 (Config Presets)
 004.0 (Exec Engine) ──→ 022.0 (Exec Monitor) ──→ 022.1 (Progress)
                      ──→ 026.0 (History) ──→ 026.1 (Compare)
-005.0 (Parse Numeric) ──┬──→ 023.0 (Parse Validation) 
+005.0 (Parse Numeric) ──┬──→ 023.0 (Parse Validation)
 016.0 (Parse Cat) ──────┘                            ──→ 025.1 (Export CSV)
 006.0 (T-Test) ──→ 024.0 (Power Analysis) ──→ 024.1 (Confidence Int)
 007.0 (Report Basic) ──→ 025.0 (Report Charts) ──┬──→ 025.3 (Publication)
@@ -360,11 +368,13 @@
 **Total**: 10 stories (31 points) enabling community extensibility
 
 **Prioritization Summary**:
+
 1. **High Priority (WSJF 1.5)**: Validation and configuration schema provide guardrails
 2. **Medium Priority (WSJF 1.0)**: Template APIs enable custom experiments
 3. **Enhancement (WSJF 0.4-0.67)**: Plugin infrastructure for advanced extensibility
 
 **Dependency Chain**:
+
 ```
 014.0 (Config Templates) ──→ 027.0 (Template API) ──┬──→ 027.1 (Validation)
                                                       ├──→ 029.0 (Config Schema)
@@ -417,11 +427,13 @@
 **Total**: 9 stories (24 points) supporting educational use cases
 
 **Prioritization Summary**:
+
 1. **High Priority (WSJF 1.5)**: Examples and defaults get students started quickly
 2. **Medium Priority (WSJF 1.0)**: Interpretations and tutorials support learning
 3. **Enhancement (WSJF 0.67)**: References and guided workflows add depth
 
 **Dependency Chain**:
+
 ```
 020.0 (Design UI) ──→ 035.0 (Guided) ──┬──→ 035.1 (Examples)
                                         └──→ 040.0 (Tutorials)
@@ -439,21 +451,25 @@
 ### **Core Validation Questions:**
 
 **Experiment Design:**
+
 - Does the anchoring experiment prompt accurately replicate the Tversky/Kahneman methodology?
 - Are the prompts clear enough that LLMs understand what's being asked?
 - Should we randomize the order of the two questions (anchor comparison vs. estimation)?
 
 **Model Selection:**
+
 - Which OpenAI model should be the default (GPT-4, GPT-3.5-turbo)?
 - Do we need to support legacy models or focus on current offerings?
 - What authentication method should we prioritize (API keys, OAuth)?
 
 **Execution Management:**
+
 - How many runs per condition constitute adequate statistical power?
 - What timeout values are appropriate for API calls?
 - Should failed runs be excluded or retried automatically?
 
 **Statistical Analysis:**
+
 - What p-value threshold should indicate significance (0.05, 0.01)?
 - Are one-tailed or two-tailed tests more appropriate for anchoring?
 - What effect size constitutes a "meaningful" bias (Cohen's d > 0.5)?
@@ -461,11 +477,13 @@
 ### **Multi-Model Comparison Questions:**
 
 **Model Selection:**
+
 - Which Anthropic model should we support (Claude 3.5 Sonnet, Claude 3 Opus)?
 - For Ollama, which local models are most relevant (Llama 2, Mistral)?
 - Should we support custom/fine-tuned models?
 
 **Statistical Analysis:**
+
 - How should we handle models with different response characteristics (length, style)?
 - What statistical test is most appropriate for comparing multiple models (ANOVA, Kruskal-Wallis)?
 - Should we adjust for multiple comparisons (Bonferroni correction)?
@@ -473,11 +491,13 @@
 ### **Experiment Library Questions:**
 
 **Experiment Design:**
+
 - Which cognitive biases are highest priority after anchoring?
 - Do we need to support within-subjects designs or only between-subjects?
 - How should we handle experiments requiring multiple rounds of interaction?
 
 **Data Extraction:**
+
 - What parsing strategies work best for categorical responses (keywords, sentiment)?
 - How should we handle ambiguous or unexpected LLM responses?
 - Should we validate responses for coherence before including in analysis?
@@ -485,11 +505,13 @@
 ### **Enhanced Research Experience Questions:**
 
 **Reporting & Visualization:**
+
 - What chart types are most useful for bias research (violin plots, forest plots)?
 - What export formats are most compatible with research workflows (CSV, SPSS, R)?
 - Should reports follow a specific publication style guide (APA, IEEE)?
 
 **Workflow Management:**
+
 - What metadata should be captured for experiment reproducibility?
 - How long should experiment history be retained?
 - Should we support experiment versioning?
@@ -497,11 +519,13 @@
 ### **Extensibility Framework Questions:**
 
 **Experiment Design:**
+
 - What should the minimal experiment template interface include?
 - How should we validate that custom experiments follow sound methodology?
 - Should we support experiment composition (combining multiple biases)?
 
 **Model Selection:**
+
 - What capabilities must model plugins provide (streaming, embeddings)?
 - How should we handle provider-specific features (temperature, top-p)?
 - Should we support local-only models for sensitive research?
@@ -509,11 +533,13 @@
 ### **Educational Resources Questions:**
 
 **Experiment Design:**
+
 - What level of cognitive science background should we assume?
 - Should tutorials cover experimental design methodology or just tool usage?
 - How should we explain the ethical differences between LLM and human experiments?
 
 **Reporting & Visualization:**
+
 - How much statistical background should explanations assume?
 - Should we provide templates for student lab reports?
 - What level of detail in references is appropriate (citations, summaries, full papers)?
@@ -523,6 +549,7 @@
 ## Story Estimation Summary
 
 ### Complexity Distribution:
+
 - **XS (1 point)**: 1 story - Quick configuration changes
 - **S (2 points)**: 19 stories - Simple features, straightforward implementation
 - **M (3 points)**: 39 stories - Moderate complexity, core functionality
@@ -530,6 +557,7 @@
 - **XL (8 points)**: 0 stories - No critically complex stories identified
 
 ### Cost of Delay Distribution:
+
 - **XS (1 point)**: 0 stories - Nothing can wait indefinitely
 - **S (2 points)**: 15 stories - Low urgency enhancements
 - **M (3 points)**: 28 stories - Moderate value features
@@ -537,18 +565,21 @@
 - **XL (8 points)**: 6 stories - Critical path items (MVP core)
 
 ### WSJF Priority Tiers:
+
 - **Critical (≥4.0)**: 1 story - Must implement immediately
 - **High (2.5-2.99)**: 10 stories - Core infrastructure and critical features
 - **Medium (1.0-2.49)**: 37 stories - Important enhancements and capabilities
 - **Low (0.40-0.99)**: 16 stories - Nice-to-have features and polish
 
 ### Total Scope:
+
 - **64 total stories**
 - **188 total points** (assuming M=3, L=5, XL=8 conversion)
 - **6 themes** organized by value delivery
 - **8 journey steps** covering complete research workflow
 
 ### Implementation Recommendation:
+
 1. **Week 1-2**: Core Validation theme (12 stories, 39 points) - Get to working MVP
 2. **Week 3-4**: Multi-Model Comparison theme (8 stories, 24 points) - Enable comparative research
 3. **Week 5-6**: Experiment Library theme (11 stories, 30 points) - Add variety and flexibility
