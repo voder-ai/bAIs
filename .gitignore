@@ -103,6 +103,7 @@ Desktop.ini
 .cursor/
 .github/instructions
 .github/prompts
+!.github/workflows/
 !.github/prompts/templates/adr-template.md
 
 # Temporary folders
