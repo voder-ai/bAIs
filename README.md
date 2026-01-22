@@ -1,6 +1,18 @@
-# bAIs
+# bAIs (bias AI studies)
 
 Toolkit for running cognitive-bias experiments on LLMs.
+
+## Why
+
+The goal is to make it easy to measure cognitive-bias style effects in LLM behavior with a lightweight, reproducible workflow.
+
+This is useful for:
+
+- **Bias researchers**: validate whether a bias shows up in an LLM before running costly human experiments, and explore experiments that are impractical or unethical to run on humans.
+- **AI developers**: test behavioral differences across models to identify bias risks in production systems.
+- **Students and research assistants**: run canonical experiments end-to-end and learn/execute workflows consistently.
+
+The initial “Core Validation” milestone is: run a single classic experiment end-to-end (design → execute → parse → analyze → report) and get a clear statistical summary quickly.
 
 Right now the repo includes one end-to-end experiment (anchoring in judicial sentencing) that:
 
