@@ -13,6 +13,7 @@ informed: []
 The bAIs toolkit needs a programming language and module system for implementing LLM cognitive bias experiments. The toolkit must support API integrations with multiple LLM providers (OpenAI, Anthropic, Ollama), statistical analysis, data parsing, CLI interactions, and report generation.
 
 Key requirements from the story map:
+
 - API client implementations for multiple LLM providers
 - Statistical computing (t-tests, chi-square, ANOVA, effect sizes)
 - CLI interface for researcher interactions

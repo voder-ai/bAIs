@@ -13,6 +13,7 @@ informed: []
 The bAIs toolkit requires a testing framework to ensure correctness of statistical computations, experiment execution, data parsing, and LLM API integrations. Given the critical nature of research tools, comprehensive testing is essential for validating that bias detection works correctly.
 
 Testing requirements from story map:
+
 - Unit tests for statistical functions (t-test, chi-square, effect sizes, etc.)
 - Integration tests for LLM API clients
 - Tests for experiment execution engine

@@ -13,6 +13,7 @@ informed: []
 The bAIs toolkit needs a method for interacting with LLMs to execute cognitive bias experiments. Story 001.0-RES-ANCHORING-EXP requires sending experiment prompts to LLMs and receiving structured responses (numerical estimates) that can be parsed and analyzed statistically.
 
 Key requirements:
+
 - Send two-question anchoring experiment prompts to LLMs
 - Receive structured numeric responses (percentage estimates)
 - Handle multiple runs per condition for statistical power
@@ -42,7 +43,9 @@ The choice of LLM interaction method affects cost, development complexity, relia
 
 ## Decision Outcome
 
-Chosen option: "Codex CLI with output schema" because it provides the lowest cost for LLM access while offering built-in JSON schema support for structured outputs, which is critical for reliable numeric response parsing. The CLI interface simplifies integration via subprocess calls, and the `--output-schema` flag ensures consistent response format for statistical analysis.
+Chosen option: "Codex CLI with output schema" because it provides the lowest cost for LLM access while offering built-in JSON schema support for structured outputs, which is critical for reliable numeric response parsing. The CLI interface simplifies integration via subprocess calls, and the `--output-schema` flag allows the tool to request a specific final response shape.
+
+Note: This repo now uses a current `codex-cli` version that supports `codex exec --output-schema`. The implementation passes a JSON Schema file to Codex and also validates the parsed JSON locally as a defensive check.
 
 ### Consequences
 
@@ -184,12 +187,13 @@ This decision should be reassessed when:
   - [009: TypeScript Strict Mode](009-use-typescript-strict-mode.proposed.md) - Type safety for responses
 
 **Implementation Approach**:
+
 ```typescript
 // Example: Execute experiment with Codex CLI
 import { spawn } from 'child_process';
 
 interface ExperimentResponse {
-  estimate: number;  // Percentage estimate (0-100)
+  estimate: number; // Percentage estimate (0-100)
   confidence?: string;
 }
 
@@ -197,9 +201,9 @@ const schema = {
   type: 'object',
   properties: {
     estimate: { type: 'number', minimum: 0, maximum: 100 },
-    confidence: { type: 'string' }
+    confidence: { type: 'string' },
   },
-  required: ['estimate']
+  required: ['estimate'],
 };
 
 // Write schema to temp file
@@ -209,16 +213,19 @@ fs.writeFileSync(schemaPath, JSON.stringify(schema));
 // Execute experiment prompt
 const codex = spawn('codex', [
   'exec',
-  '--output-schema', schemaPath,
+  '--output-schema',
+  schemaPath,
   '--json',
-  '--output-last-message', '/tmp/response.txt',
-  experimentPrompt
+  '--output-last-message',
+  '/tmp/response.txt',
+  experimentPrompt,
 ]);
 
 // Parse JSONL output for structured response
 ```
 
 **Cost Comparison** (estimated):
+
 - Codex CLI: $20/month flat rate (ChatGPT Plus)
 - OpenAI API: ~$0.01-0.03 per experiment run (100+ runs = $1-3 per experiment)
 - OpenRouter: Similar to OpenAI API pricing
