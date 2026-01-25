@@ -18,7 +18,8 @@ Right now the repo includes one end-to-end experiment (anchoring in judicial sen
 - Streams per-trial results as JSONL
 - Strictly validates model output against a JSON schema (JSON-only, no extra keys)
 - Computes basic statistics and a 95% bootstrap CI
-- Uses a second LLM call to generate a Markdown report grounded in the analysis JSON
+- Compares LLM results to the human baseline from Study 2 (Englich et al., 2006) and determines if LLM bias is less, similar, or greater than human bias
+- Uses a second LLM call to generate a Markdown report grounded in the analysis JSON, including the human baseline comparison
 
 ## Requirements
 
@@ -41,6 +42,8 @@ The experiment replicates Study 2 from Englich et al. (2006): a shoplifting case
 - High anchor: prosecutor demands 9 months on probation
 
 The case vignette and defense attorney demand (1 month) are held constant across conditions.
+
+After running trials, the analysis compares LLM results to the human baseline from the original study (low: 4.00 months, high: 6.05 months, difference: 2.05 months) to determine if the LLM exhibits less, similar, or greater anchoring bias than human legal professionals.
 
 ### Basic run
 
