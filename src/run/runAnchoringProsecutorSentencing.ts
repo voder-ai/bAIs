@@ -25,9 +25,9 @@ export type RunAnchoringProsecutorSentencingOptions = Readonly<{
 }>;
 
 type AnchoringResult = Readonly<{
-  diceRoll: number;
   prosecutorRecommendationMonths: number;
-  higherOrLower: 'higher' | 'lower';
+  prosecutorEvaluation: 'too low' | 'too high' | 'just right';
+  defenseAttorneyEvaluation: 'too low' | 'too high' | 'just right';
   sentenceMonths: number;
 }>;
 
@@ -43,7 +43,6 @@ type AnalysisArtifact = Readonly<{
     string,
     {
       conditionName: string;
-      diceRoll: number;
       prosecutorRecommendationMonths: number;
       okN: number;
       errorN: number;
@@ -91,12 +90,17 @@ const resultSchema = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    diceRoll: { type: 'integer', minimum: 1, maximum: 6 },
-    prosecutorRecommendationMonths: { type: 'integer', minimum: 10, maximum: 60 },
-    higherOrLower: { type: 'string', enum: ['higher', 'lower'] },
-    sentenceMonths: { type: 'integer', minimum: 0, maximum: 600 },
+    prosecutorRecommendationMonths: { type: 'integer', minimum: 1, maximum: 12 },
+    prosecutorEvaluation: { type: 'string', enum: ['too low', 'too high', 'just right'] },
+    defenseAttorneyEvaluation: { type: 'string', enum: ['too low', 'too high', 'just right'] },
+    sentenceMonths: { type: 'integer', minimum: 0, maximum: 12 },
   },
-  required: ['diceRoll', 'prosecutorRecommendationMonths', 'higherOrLower', 'sentenceMonths'],
+  required: [
+    'prosecutorRecommendationMonths',
+    'prosecutorEvaluation',
+    'defenseAttorneyEvaluation',
+    'sentenceMonths',
+  ],
 } as const;
 
 function buildPrompt(conditionVars: Record<string, string | number>): string {
@@ -113,10 +117,9 @@ function buildPrompt(conditionVars: Record<string, string | number>): string {
     ...parts,
     '',
     'Return JSON only (no markdown).',
-    'JSON schema (informal): {"diceRoll": integer 1..6, "prosecutorRecommendationMonths": integer 10..60, "higherOrLower":"higher"|"lower", "sentenceMonths": integer (0..600)}',
+    'JSON schema (informal): {"prosecutorRecommendationMonths": integer 1..12, "prosecutorEvaluation": "too low"|"too high"|"just right", "defenseAttorneyEvaluation": "too low"|"too high"|"just right", "sentenceMonths": integer (0..12)}',
     'Rules: output must be ONLY the JSON object, with exactly those four keys, no extra keys.',
-    'Consistency rules: prosecutorRecommendationMonths MUST equal diceRoll * 10.',
-    'Also, diceRoll and prosecutorRecommendationMonths MUST match the values stated in the prompt (do not roll a new die).',
+    'Consistency rule: prosecutorRecommendationMonths MUST match the value stated in the prompt.',
   ].join('\n\n');
 }
 
@@ -128,53 +131,47 @@ function assertValidResult(value: unknown): asserts value is AnchoringResult {
   const record = value as Record<string, unknown>;
   const keys = Object.keys(record);
   if (
-    keys.length !== 4 ||
-    !keys.includes('diceRoll') ||
+    keys.length !== 3 ||
     !keys.includes('prosecutorRecommendationMonths') ||
-    !keys.includes('higherOrLower') ||
+    !keys.includes('anchorEvaluation') ||
     !keys.includes('sentenceMonths')
   ) {
     throw new Error(
-      'Invalid result: must contain exactly diceRoll, prosecutorRecommendationMonths, higherOrLower, and sentenceMonths',
+      'Invalid result: must contain exactly prosecutorRecommendationMonths, anchorEvaluation, and sentenceMonths',
     );
   }
 
-  const diceRoll = record['diceRoll'];
   const prosecutorRecommendationMonths = record['prosecutorRecommendationMonths'];
-  const higherOrLower = record['higherOrLower'];
+  const anchorEvaluation = record['anchorEvaluation'];
   const sentenceMonths = record['sentenceMonths'];
-
-  if (typeof diceRoll !== 'number' || !Number.isInteger(diceRoll) || diceRoll < 1 || diceRoll > 6) {
-    throw new Error('Invalid result: diceRoll must be an integer between 1 and 6');
-  }
 
   if (
     typeof prosecutorRecommendationMonths !== 'number' ||
     !Number.isInteger(prosecutorRecommendationMonths) ||
-    prosecutorRecommendationMonths < 10 ||
-    prosecutorRecommendationMonths > 60
+    prosecutorRecommendationMonths < 1 ||
+    prosecutorRecommendationMonths > 12
   ) {
     throw new Error(
-      'Invalid result: prosecutorRecommendationMonths must be an integer between 10 and 60',
+      'Invalid result: prosecutorRecommendationMonths must be an integer between 1 and 12',
     );
   }
 
-  if (prosecutorRecommendationMonths !== diceRoll * 10) {
+  if (
+    anchorEvaluation !== 'too low' &&
+    anchorEvaluation !== 'too high' &&
+    anchorEvaluation !== 'just right'
+  ) {
     throw new Error(
-      'Invalid result: prosecutorRecommendationMonths must equal diceRoll * 10 for consistency',
+      'Invalid result: anchorEvaluation must be "too low", "too high", or "just right"',
     );
-  }
-
-  if (higherOrLower !== 'higher' && higherOrLower !== 'lower') {
-    throw new Error('Invalid result: higherOrLower must be "higher" or "lower"');
   }
 
   if (typeof sentenceMonths !== 'number' || !Number.isInteger(sentenceMonths)) {
     throw new Error('Invalid result: sentenceMonths must be an integer');
   }
 
-  if (sentenceMonths < 0 || sentenceMonths > 600) {
-    throw new Error('Invalid result: sentenceMonths must be between 0 and 600');
+  if (sentenceMonths < 0 || sentenceMonths > 12) {
+    throw new Error('Invalid result: sentenceMonths must be between 0 and 12');
   }
 }
 
@@ -309,12 +306,11 @@ export async function runAnchoringProsecutorSentencing(
   }
 
   for (const condition of anchoringProsecutorSentencingExperiment.conditions) {
-    const expectedDiceRoll = (condition.params as Record<string, unknown>)['diceRoll'];
     const expectedRecommendation = (condition.params as Record<string, unknown>)[
       'prosecutorRecommendationMonths'
     ];
 
-    if (typeof expectedDiceRoll !== 'number' || typeof expectedRecommendation !== 'number') {
+    if (typeof expectedRecommendation !== 'number') {
       throw new Error(`Invalid condition params for ${condition.id}`);
     }
 
@@ -335,10 +331,8 @@ export async function runAnchoringProsecutorSentencing(
       const trial = await runSingleTrial(trialOptions);
 
       const mismatchError =
-        trial.ok &&
-        (trial.result.diceRoll !== expectedDiceRoll ||
-          trial.result.prosecutorRecommendationMonths !== expectedRecommendation)
-          ? 'Invalid result: diceRoll/prosecutorRecommendationMonths did not match condition'
+        trial.ok && trial.result.prosecutorRecommendationMonths !== expectedRecommendation
+          ? 'Invalid result: prosecutorRecommendationMonths did not match condition'
           : null;
 
       const isOk = trial.ok && mismatchError === null;
@@ -377,11 +371,10 @@ export async function runAnchoringProsecutorSentencing(
   const pkg = await readPackageInfo();
 
   const conditionMeta = anchoringProsecutorSentencingExperiment.conditions.map((condition) => {
-    const diceRoll = (condition.params as Record<string, unknown>)['diceRoll'];
     const prosecutorRecommendationMonths = (condition.params as Record<string, unknown>)[
       'prosecutorRecommendationMonths'
     ];
-    if (typeof diceRoll !== 'number' || typeof prosecutorRecommendationMonths !== 'number') {
+    if (typeof prosecutorRecommendationMonths !== 'number') {
       throw new Error(`Invalid condition params for ${condition.id}`);
     }
 
@@ -393,7 +386,6 @@ export async function runAnchoringProsecutorSentencing(
     return {
       id: condition.id,
       name: condition.name,
-      diceRoll,
       prosecutorRecommendationMonths,
       sentenceMonths: entry.ok,
       errorN: entry.errorN,
@@ -409,7 +401,6 @@ export async function runAnchoringProsecutorSentencing(
     const stats = computeDescriptiveStats(meta.sentenceMonths);
     conditions[meta.id] = {
       conditionName: meta.name,
-      diceRoll: meta.diceRoll,
       prosecutorRecommendationMonths: meta.prosecutorRecommendationMonths,
       okN: stats.n,
       errorN: meta.errorN,
