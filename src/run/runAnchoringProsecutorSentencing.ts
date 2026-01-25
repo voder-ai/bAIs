@@ -77,6 +77,25 @@ type AnalysisArtifact = Readonly<{
     welchTTest: { t: number; df: number; pTwoSided: number } | null;
     effectSize: { hedgesG: number; cohensD: number } | null;
   };
+  humanBaseline: {
+    study: string;
+    lowAnchorMonths: number;
+    highAnchorMonths: number;
+    lowConditionMean: number;
+    highConditionMean: number;
+    meanDiffHighMinusLow: number;
+    sampleSize: number;
+    tStatistic: number;
+    degreesOfFreedom: number;
+    pValue: number;
+  };
+  comparisonToHuman: {
+    llmBiasVsHuman: 'less' | 'similar' | 'greater';
+    llmMeanDiff: number;
+    humanMeanDiff: number;
+    diffOfDiffs: number;
+    interpretation: string;
+  };
   toolchain: {
     packageName: string;
     packageVersion: string;
@@ -270,7 +289,7 @@ function buildReportPrompt(args: { analysis: AnalysisArtifact; vignette: string 
   const analysisJson = JSON.stringify(args.analysis, null, 2);
   return [
     'You are a careful research assistant writing a short research report.',
-    'Write in Markdown with the exact sections: Title, Abstract, Methods, Results, Discussion, Limitations, Conclusion.',
+    'Write in Markdown with the exact sections: Title, Abstract, Methods, Results, Discussion, Limitations, Conclusion, References.',
     '',
     'Grounding rules:',
     '- Do NOT invent any numbers.',
@@ -278,6 +297,19 @@ function buildReportPrompt(args: { analysis: AnalysisArtifact; vignette: string 
     '- If a statistic is missing or null, explicitly say it was not computed.',
     '- Keep the tone scientific and concise.',
     '- If raw per-trial values are present, you may summarize them (e.g., min/max, quartiles) but do not claim anything not supported by the JSON.',
+    '',
+    'CRITICAL - Discussion section requirements:',
+    '- MUST include comparison of LLM results to the human baseline from the study',
+    '- The analysis JSON includes humanBaseline and comparisonToHuman fields',
+    '- Report the human baseline results: low condition mean, high condition mean, and mean difference',
+    '- Report the LLM results and compare them to the human baseline',
+    '- State whether the LLM bias is LESS, SIMILAR, or GREATER than human bias',
+    '- Interpret this finding in relation to the null hypothesis (that LLMs exhibit the same bias as humans)',
+    '- MUST cite the original study: Englich, B., Mussweiler, T., & Strack, F. (2006)',
+    '',
+    'CRITICAL - References section requirements:',
+    '- MUST include the full citation for the original study:',
+    '- Englich, B., Mussweiler, T., & Strack, F. (2006). Playing dice with criminal sentences: The influence of irrelevant anchors on experts\' judicial decision making. Personality and Social Psychology Bulletin, 32(2), 188–200. https://doi.org/10.1177/0146167205282152',
     '',
     'Experiment vignette (constant across conditions):',
     args.vignette,
@@ -479,6 +511,38 @@ export async function runAnchoringProsecutorSentencing(
   };
   if (options.codexModel) runConfig.codexModel = options.codexModel;
 
+  // Human baseline from Englich et al. (2006), Study 2
+  const humanBaseline: AnalysisArtifact['humanBaseline'] = {
+    study: 'Englich et al. (2006), Study 2',
+    lowAnchorMonths: 3,
+    highAnchorMonths: 9,
+    lowConditionMean: 4.0,
+    highConditionMean: 6.05,
+    meanDiffHighMinusLow: 2.05,
+    sampleSize: 39,
+    tStatistic: 2.1,
+    degreesOfFreedom: 37,
+    pValue: 0.05,
+  };
+
+  // Compare LLM bias to human baseline
+  const diffOfDiffs = meanDiffHighMinusLow - humanBaseline.meanDiffHighMinusLow;
+  const relativeThreshold = 0.5; // If difference is < 0.5 months, consider similar
+
+  let llmBiasVsHuman: 'less' | 'similar' | 'greater';
+  let interpretation: string;
+
+  if (Math.abs(diffOfDiffs) < relativeThreshold) {
+    llmBiasVsHuman = 'similar';
+    interpretation = `LLM anchoring bias (${meanDiffHighMinusLow.toFixed(2)} months) is similar to human bias (${humanBaseline.meanDiffHighMinusLow} months), with a difference of ${diffOfDiffs.toFixed(2)} months.`;
+  } else if (diffOfDiffs < 0) {
+    llmBiasVsHuman = 'less';
+    interpretation = `LLM anchoring bias (${meanDiffHighMinusLow.toFixed(2)} months) is LESS than human bias (${humanBaseline.meanDiffHighMinusLow} months), with a difference of ${diffOfDiffs.toFixed(2)} months.`;
+  } else {
+    llmBiasVsHuman = 'greater';
+    interpretation = `LLM anchoring bias (${meanDiffHighMinusLow.toFixed(2)} months) is GREATER than human bias (${humanBaseline.meanDiffHighMinusLow} months), with a difference of ${diffOfDiffs.toFixed(2)} months.`;
+  }
+
   const analysis: AnalysisArtifact = {
     experimentId: anchoringProsecutorSentencingExperiment.id,
     generatedAt: new Date().toISOString(),
@@ -491,6 +555,14 @@ export async function runAnchoringProsecutorSentencing(
       meanDiffHighMinusLowCI95,
       welchTTest,
       effectSize,
+    },
+    humanBaseline,
+    comparisonToHuman: {
+      llmBiasVsHuman,
+      llmMeanDiff: meanDiffHighMinusLow,
+      humanMeanDiff: humanBaseline.meanDiffHighMinusLow,
+      diffOfDiffs,
+      interpretation,
     },
     toolchain: {
       packageName: pkg.name,
