@@ -131,18 +131,20 @@ function assertValidResult(value: unknown): asserts value is AnchoringResult {
   const record = value as Record<string, unknown>;
   const keys = Object.keys(record);
   if (
-    keys.length !== 3 ||
+    keys.length !== 4 ||
     !keys.includes('prosecutorRecommendationMonths') ||
-    !keys.includes('anchorEvaluation') ||
+    !keys.includes('prosecutorEvaluation') ||
+    !keys.includes('defenseAttorneyEvaluation') ||
     !keys.includes('sentenceMonths')
   ) {
     throw new Error(
-      'Invalid result: must contain exactly prosecutorRecommendationMonths, anchorEvaluation, and sentenceMonths',
+      'Invalid result: must contain exactly prosecutorRecommendationMonths, prosecutorEvaluation, defenseAttorneyEvaluation, and sentenceMonths',
     );
   }
 
   const prosecutorRecommendationMonths = record['prosecutorRecommendationMonths'];
-  const anchorEvaluation = record['anchorEvaluation'];
+  const prosecutorEvaluation = record['prosecutorEvaluation'];
+  const defenseAttorneyEvaluation = record['defenseAttorneyEvaluation'];
   const sentenceMonths = record['sentenceMonths'];
 
   if (
@@ -157,12 +159,22 @@ function assertValidResult(value: unknown): asserts value is AnchoringResult {
   }
 
   if (
-    anchorEvaluation !== 'too low' &&
-    anchorEvaluation !== 'too high' &&
-    anchorEvaluation !== 'just right'
+    prosecutorEvaluation !== 'too low' &&
+    prosecutorEvaluation !== 'too high' &&
+    prosecutorEvaluation !== 'just right'
   ) {
     throw new Error(
-      'Invalid result: anchorEvaluation must be "too low", "too high", or "just right"',
+      'Invalid result: prosecutorEvaluation must be "too low", "too high", or "just right"',
+    );
+  }
+
+  if (
+    defenseAttorneyEvaluation !== 'too low' &&
+    defenseAttorneyEvaluation !== 'too high' &&
+    defenseAttorneyEvaluation !== 'just right'
+  ) {
+    throw new Error(
+      'Invalid result: defenseAttorneyEvaluation must be "too low", "too high", or "just right"',
     );
   }
 
