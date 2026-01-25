@@ -11,7 +11,7 @@ export type PromptTemplate = Readonly<{
 }>;
 
 export type PromptStep = Readonly<{
-  id: 'anchor' | 'estimate';
+  id: 'anchor' | 'estimate' | 'prosecutor-evaluation' | 'defense-evaluation' | 'final-sentence';
   prompts: ReadonlyArray<PromptTemplate>;
 }>;
 

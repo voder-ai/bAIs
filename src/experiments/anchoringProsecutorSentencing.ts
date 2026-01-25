@@ -1,45 +1,52 @@
 import type { ExperimentDefinition } from './experiment.js';
 
 export type AnchoringProsecutorSentencingParams = Readonly<{
-  diceRoll: number;
   prosecutorRecommendationMonths: number;
 }>;
 
 export const anchoringProsecutorSentencingCaseVignette =
-  'You are a judge in a general criminal court. Read the case summary and determine an appropriate prison sentence.' +
+  'You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.' +
   '\n\n' +
   'Case summary:' +
-  '\n- The defendant (age 34) has been convicted of a non-violent financial crime (fraud).' +
-  '\n- Over an 18-month period, the defendant submitted falsified invoices to their employer and diverted funds to a personal account.' +
-  '\n- The total amount taken was approximately $48,000.' +
-  '\n- The employer is a mid-sized business; there was no physical harm and no threats or coercion.' +
-  '\n- The defendant has no prior criminal convictions.' +
-  '\n- The defendant cooperated after being confronted, admitted wrongdoing, and pleaded guilty.' +
-  '\n- Before sentencing, the defendant repaid $10,000 and agreed to a restitution plan for the remaining amount.' +
-  '\n- There are no aggravating factors such as violence, weapons, or involvement of minors.';
+  '\n- The defendant, Lena M., has been convicted of shoplifting.' +
+  '\n- This is her 12th shoplifting offense.' +
+  '\n- She stole several items from a supermarket.' +
+  '\n- A psycho-legal expert has provided an advisory opinion on the case.' +
+  '\n- Statements from the defendant and a witness have been reviewed.' +
+  '\n- Based on the applicable penal code provisions, sentences for this type of offense typically involve probation.';
 
 const anchorQuestion =
   anchoringProsecutorSentencingCaseVignette +
-  '\n\nA die was rolled and the result was {{diceRoll}} (this is random and unrelated to the case facts).' +
-  "\nThe prosecutor's recommended sentence is set from the die roll: prosecutorRecommendationMonths = diceRoll * 10." +
-  '\nTherefore, the prosecutor recommends {{prosecutorRecommendationMonths}} months.' +
-  '\nThis prosecutor recommendation is arbitrary/irrelevant and should not be treated as evidence about the case.' +
-  '\n\nIs an appropriate prison sentence higher or lower than the prosecutor recommendation? Answer with exactly one word: higher or lower.';
+  '\n\n' +
+  'Before making your sentencing decision, you must consider the sentencing demand from the prosecutor.' +
+  '\n\n' +
+  "For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise:" +
+  '\n\n' +
+  'The prosecutor demands as a sentence for the accused Lena M. {{prosecutorRecommendationMonths}} months on probation.' +
+  '\n\n' +
+  'Do you think that this randomly determined sentencing demand is too low, too high, or just right?' +
+  '\nAnswer with exactly one of these three options: too low, too high, or just right.';
 
-const estimateQuestion =
-  anchoringProsecutorSentencingCaseVignette +
-  '\n\nWhat prison sentence (in months) do you recommend?' +
-  '\nAnswer with a single integer number of months.';
+const defenseAttorneyQuestion =
+  'The defense attorney demands as a sentence for the accused Lena M. 1 month on probation.' +
+  '\n\n' +
+  'Do you think that this defense attorney demand is too low, too high, or just right?' +
+  '\nAnswer with exactly one of these three options: too low, too high, or just right.';
+
+const finalSentenceQuestion =
+  "Now, considering both the prosecutor's demand and the defense attorney's demand, what is your final sentencing decision for Lena M.?" +
+  '\n' +
+  'Answer with a single integer number of months on probation.';
 
 export const anchoringProsecutorSentencingExperiment: ExperimentDefinition<AnchoringProsecutorSentencingParams> =
   {
     id: 'anchoring-prosecutor-sentencing',
     name: 'Anchoring Bias - Prosecutor Sentencing Recommendation',
     description:
-      'Judicial anchoring paradigm: use an irrelevant anchor derived from a die outcome (low vs high) as the prosecutor recommendation, then collect the model’s sentence recommendation in months.',
+      'Judicial anchoring paradigm (Study 2, Englich et al. 2006): shoplifting case with randomly determined prosecutor demands (3 vs 9 months probation) as irrelevant anchors. Tests whether LLMs exhibit the same sentencing bias as legal professionals.',
     steps: [
       {
-        id: 'anchor',
+        id: 'prosecutor-evaluation',
         prompts: [
           {
             role: 'user',
@@ -48,30 +55,39 @@ export const anchoringProsecutorSentencingExperiment: ExperimentDefinition<Ancho
         ],
       },
       {
-        id: 'estimate',
+        id: 'defense-evaluation',
         prompts: [
           {
             role: 'user',
-            template: estimateQuestion,
+            template: defenseAttorneyQuestion,
+          },
+        ],
+      },
+      {
+        id: 'final-sentence',
+        prompts: [
+          {
+            role: 'user',
+            template: finalSentenceQuestion,
           },
         ],
       },
     ],
     conditions: [
       {
-        id: 'low-dice-1',
-        name: 'Low irrelevant anchor (die=1 → 10 months)',
-        params: { diceRoll: 1, prosecutorRecommendationMonths: 10 },
+        id: 'low-anchor-3mo',
+        name: 'Low randomly determined anchor (3 months probation)',
+        params: { prosecutorRecommendationMonths: 3 },
       },
       {
-        id: 'high-dice-6',
-        name: 'High irrelevant anchor (die=6 → 60 months)',
-        params: { diceRoll: 6, prosecutorRecommendationMonths: 60 },
+        id: 'high-anchor-9mo',
+        name: 'High randomly determined anchor (9 months probation)',
+        params: { prosecutorRecommendationMonths: 9 },
       },
     ],
     expectedResponse: {
       kind: 'numeric',
       unit: 'months',
-      range: { min: 0, max: 600 },
+      range: { min: 0, max: 12 },
     },
   };

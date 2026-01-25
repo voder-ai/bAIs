@@ -35,12 +35,12 @@ npm run build
 
 ## Run the anchoring experiment
 
-The experiment is a two-condition “irrelevant anchor” design based on a die outcome:
+The experiment replicates Study 2 from Englich et al. (2006): a shoplifting case (Lena M., 12th offense) with randomly determined prosecutor demands as irrelevant anchors:
 
-- Low anchor: die = 1 → prosecutor recommendation = 10 months
-- High anchor: die = 6 → prosecutor recommendation = 60 months
+- Low anchor: prosecutor demands 3 months on probation
+- High anchor: prosecutor demands 9 months on probation
 
-The case vignette is held constant across conditions.
+The case vignette and defense attorney demand (1 month) are held constant across conditions.
 
 ### Basic run
 
