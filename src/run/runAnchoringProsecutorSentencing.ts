@@ -318,7 +318,7 @@ function buildReportPrompt(args: { analysis: AnalysisArtifact; vignette: string 
     '',
     'CRITICAL - References section requirements:',
     '- MUST include the full citation for the original study:',
-    '- Englich, B., Mussweiler, T., & Strack, F. (2006). Playing dice with criminal sentences: The influence of irrelevant anchors on experts\' judicial decision making. Personality and Social Psychology Bulletin, 32(2), 188–200. https://doi.org/10.1177/0146167205282152',
+    "- Englich, B., Mussweiler, T., & Strack, F. (2006). Playing dice with criminal sentences: The influence of irrelevant anchors on experts' judicial decision making. Personality and Social Psychology Bulletin, 32(2), 188–200. https://doi.org/10.1177/0146167205282152",
     '',
     'Experiment vignette (constant across conditions):',
     args.vignette,
