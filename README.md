@@ -9,8 +9,8 @@ We ran 4 classic experiments (30 trials per condition) and found LLMs have a **d
 | Experiment                                        | Human Pattern                                   | LLM Result                     | Category              |
 | ------------------------------------------------- | ----------------------------------------------- | ------------------------------ | --------------------- |
 | **Anchoring** (Englich et al. 2006)               | Diff: 2.05 months                               | Diff: 3.67 months (1.8× human) | **MORE susceptible**  |
-| **Conjunction Fallacy** (Tversky & Kahneman 1983) | 85% wrong                                       | 3% wrong (29/30 correct)       | **LESS susceptible**  |
-| **Sunk Cost** (Arkes & Blumer 1985)               | 85% continue investing                          | 0% continue (30/30 rational)   | **LESS susceptible**  |
+| **Conjunction Fallacy** (Tversky & Kahneman 1983) | 85% wrong                                       | 0% wrong (60/60 correct)       | **LESS susceptible**  |
+| **Sunk Cost** (Arkes & Blumer 1985)               | 85% continue investing                          | 0% continue (60/60 rational)   | **LESS susceptible**  |
 | **Framing Effect** (Tversky & Kahneman 1981)      | Preference reversal (gain→certain, loss→gamble) | 97% certain in both frames     | **DIFFERENT pattern** |
 
 ### Emerging Taxonomy

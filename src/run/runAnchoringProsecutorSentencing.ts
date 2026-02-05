@@ -22,6 +22,7 @@ export type RunAnchoringProsecutorSentencingOptions = Readonly<{
   llmProvider: LlmProvider;
   outPath?: string;
   artifactsOutput?: ArtifactsOutputMode;
+  experimentOverride?: typeof anchoringProsecutorSentencingExperiment;
 }>;
 
 type AnchoringResult = Readonly<{
@@ -122,14 +123,20 @@ const resultSchema = {
   ],
 } as const;
 
-function buildPrompt(conditionVars: Record<string, string | number>): string {
-  const parts = anchoringProsecutorSentencingExperiment.steps.map((step) => {
-    const template = step.prompts[0]?.template;
-    if (!template) {
-      throw new Error(`Missing prompt template for step ${step.id}`);
-    }
-
-    return renderPrompt(template, conditionVars);
+function buildPrompt(
+  conditionVars: Record<string, string | number>,
+  experimentDef: typeof anchoringProsecutorSentencingExperiment = anchoringProsecutorSentencingExperiment,
+): string {
+  const parts = experimentDef.steps.map((step) => {
+    // Concatenate all prompts in the step (supports system + user prompts)
+    return step.prompts
+      .map((p) => {
+        const rendered = renderPrompt(p.template, conditionVars);
+        return p.role === 'system'
+          ? `[System instruction]\n${rendered}\n[End system instruction]`
+          : rendered;
+      })
+      .join('\n\n');
   });
 
   return [
@@ -213,12 +220,13 @@ async function runSingleTrial(options: {
   conditionVars: Record<string, string | number>;
   runIndex: number;
   llmProvider: LlmProvider;
+  experimentDef?: typeof anchoringProsecutorSentencingExperiment;
 }): Promise<
   | { ok: true; result: AnchoringResult; rawLastMessage: string }
   | { ok: false; error: string; rawLastMessage?: string }
 > {
   let lastRaw: string | undefined;
-  let prompt = buildPrompt(options.conditionVars);
+  let prompt = buildPrompt(options.conditionVars, options.experimentDef);
 
   for (let attempt = 1; attempt <= maxAttemptsPerTrial; attempt += 1) {
     try {
@@ -238,7 +246,7 @@ async function runSingleTrial(options: {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       prompt = [
-        buildPrompt(options.conditionVars),
+        buildPrompt(options.conditionVars, options.experimentDef),
         '',
         `Your previous output was invalid (attempt ${attempt}/${maxAttemptsPerTrial}).`,
         `Error: ${message}`,
@@ -344,13 +352,14 @@ export async function runAnchoringProsecutorSentencing(
 ): Promise<void> {
   const outPath = options.outPath;
   const artifactsOutput: ArtifactsOutputMode = options.artifactsOutput ?? 'files';
+  const experiment = options.experimentOverride ?? anchoringProsecutorSentencingExperiment;
 
   const collected: Record<string, { ok: number[]; errorN: number }> = {};
-  for (const condition of anchoringProsecutorSentencingExperiment.conditions) {
+  for (const condition of experiment.conditions) {
     collected[condition.id] = { ok: [], errorN: 0 };
   }
 
-  for (const condition of anchoringProsecutorSentencingExperiment.conditions) {
+  for (const condition of experiment.conditions) {
     const expectedRecommendation = (condition.params as Record<string, unknown>)[
       'prosecutorRecommendationMonths'
     ];
@@ -365,11 +374,13 @@ export async function runAnchoringProsecutorSentencing(
         conditionVars: Record<string, string | number>;
         runIndex: number;
         llmProvider: LlmProvider;
+        experimentDef?: typeof anchoringProsecutorSentencingExperiment;
       } = {
         conditionId: condition.id,
         conditionVars: condition.params as Record<string, string | number>,
         runIndex,
         llmProvider: options.llmProvider,
+        experimentDef: experiment,
       };
 
       const trial = await runSingleTrial(trialOptions);
@@ -390,7 +401,7 @@ export async function runAnchoringProsecutorSentencing(
       }
 
       const record = {
-        experimentId: anchoringProsecutorSentencingExperiment.id,
+        experimentId: experiment.id,
         model: options.llmProvider.name,
         conditionId: condition.id,
         runIndex,
@@ -415,7 +426,7 @@ export async function runAnchoringProsecutorSentencing(
 
   const pkg = await readPackageInfo();
 
-  const conditionMeta = anchoringProsecutorSentencingExperiment.conditions.map((condition) => {
+  const conditionMeta = experiment.conditions.map((condition) => {
     const prosecutorRecommendationMonths = (condition.params as Record<string, unknown>)[
       'prosecutorRecommendationMonths'
     ];
@@ -545,7 +556,7 @@ export async function runAnchoringProsecutorSentencing(
   }
 
   const analysis: AnalysisArtifact = {
-    experimentId: anchoringProsecutorSentencingExperiment.id,
+    experimentId: experiment.id,
     generatedAt: new Date().toISOString(),
     runConfig,
     conditions,

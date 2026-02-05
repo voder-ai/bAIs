@@ -23,6 +23,8 @@ import {
   getSunkCostPrompt,
   type SunkCostParams,
 } from './experiments/sunkCostFallacy.js';
+import { anchoringContextHygieneExperiment } from './experiments/anchoringContextHygiene.js';
+import { anchoringPremortemExperiment } from './experiments/anchoringPremortem.js';
 
 const program = new Command();
 
@@ -89,6 +91,84 @@ run
       runsPerCondition: runs,
       llmProvider,
       artifactsOutput,
+    };
+
+    if (options.out) {
+      runOptions.outPath = options.out;
+    }
+
+    await runAnchoringProsecutorSentencing(runOptions);
+  });
+
+run
+  .command('anchoring-context-hygiene')
+  .description("Run anchoring + Sibony's context hygiene debiasing experiment")
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '30')
+  .option(
+    '--model <provider/model>',
+    'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
+  )
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .option(
+    '--artifacts <mode>',
+    'Where to output analysis/report: console | files | both',
+    'console',
+  )
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const artifactsOutput = parseArtifacts(options.artifacts);
+    const llmProvider = await createLlmProvider(options.model);
+
+    const runOptions: {
+      runsPerCondition: number;
+      llmProvider: LlmProvider;
+      outPath?: string;
+      artifactsOutput: ArtifactsMode;
+      experimentOverride: typeof anchoringContextHygieneExperiment;
+    } = {
+      runsPerCondition: runs,
+      llmProvider,
+      artifactsOutput,
+      experimentOverride: anchoringContextHygieneExperiment,
+    };
+
+    if (options.out) {
+      runOptions.outPath = options.out;
+    }
+
+    await runAnchoringProsecutorSentencing(runOptions);
+  });
+
+run
+  .command('anchoring-premortem')
+  .description("Run anchoring + Sibony's premortem debiasing experiment")
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '30')
+  .option(
+    '--model <provider/model>',
+    'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
+  )
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .option(
+    '--artifacts <mode>',
+    'Where to output analysis/report: console | files | both',
+    'console',
+  )
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const artifactsOutput = parseArtifacts(options.artifacts);
+    const llmProvider = await createLlmProvider(options.model);
+
+    const runOptions: {
+      runsPerCondition: number;
+      llmProvider: LlmProvider;
+      outPath?: string;
+      artifactsOutput: ArtifactsMode;
+      experimentOverride: typeof anchoringPremortemExperiment;
+    } = {
+      runsPerCondition: runs,
+      llmProvider,
+      artifactsOutput,
+      experimentOverride: anchoringPremortemExperiment,
     };
 
     if (options.out) {
