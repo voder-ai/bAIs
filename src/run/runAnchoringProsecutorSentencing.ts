@@ -6,7 +6,7 @@ import {
   anchoringProsecutorSentencingExperiment,
 } from '../experiments/anchoringProsecutorSentencing.js';
 import { renderPrompt } from '../experiments/renderPrompt.js';
-import { codexExecJson, codexExecText } from '../llm/codexExec.js';
+import type { LlmProvider } from '../llm/provider.js';
 import {
   computeDescriptiveStats,
   computeFiveNumberSummary,
@@ -19,7 +19,7 @@ type ArtifactsOutputMode = 'console' | 'files' | 'both';
 
 export type RunAnchoringProsecutorSentencingOptions = Readonly<{
   runsPerCondition: number;
-  codexModel?: string;
+  llmProvider: LlmProvider;
   outPath?: string;
   artifactsOutput?: ArtifactsOutputMode;
 }>;
@@ -35,7 +35,7 @@ type AnalysisArtifact = Readonly<{
   experimentId: string;
   generatedAt: string;
   runConfig: {
-    codexModel?: string;
+    model: string;
     runsPerCondition: number;
     maxAttemptsPerTrial: number;
   };
@@ -212,7 +212,7 @@ async function runSingleTrial(options: {
   conditionId: string;
   conditionVars: Record<string, string | number>;
   runIndex: number;
-  codexModel?: string;
+  llmProvider: LlmProvider;
 }): Promise<
   | { ok: true; result: AnchoringResult; rawLastMessage: string }
   | { ok: false; error: string; rawLastMessage?: string }
@@ -221,28 +221,20 @@ async function runSingleTrial(options: {
   let prompt = buildPrompt(options.conditionVars);
 
   for (let attempt = 1; attempt <= maxAttemptsPerTrial; attempt += 1) {
-    const codexOptions: {
-      prompt: string;
-      schema: unknown;
-      model?: string;
-    } = {
-      prompt,
-      schema: resultSchema,
-    };
-
-    if (options.codexModel) codexOptions.model = options.codexModel;
-
     try {
-      const { parsed, rawLastMessage, isPureJson } =
-        await codexExecJson<AnchoringResult>(codexOptions);
-      lastRaw = rawLastMessage;
+      const { parsed, rawResponse, isPureJson } =
+        await options.llmProvider.sendJson<AnchoringResult>({
+          prompt,
+          schema: resultSchema,
+        });
+      lastRaw = rawResponse;
 
       if (!isPureJson) {
         throw new Error('Output contained non-JSON text; must be JSON only');
       }
 
       assertValidResult(parsed);
-      return { ok: true, result: parsed, rawLastMessage };
+      return { ok: true, result: parsed, rawLastMessage: rawResponse };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       prompt = [
@@ -372,14 +364,13 @@ export async function runAnchoringProsecutorSentencing(
         conditionId: string;
         conditionVars: Record<string, string | number>;
         runIndex: number;
-        codexModel?: string;
+        llmProvider: LlmProvider;
       } = {
         conditionId: condition.id,
         conditionVars: condition.params as Record<string, string | number>,
         runIndex,
+        llmProvider: options.llmProvider,
       };
-
-      if (options.codexModel) trialOptions.codexModel = options.codexModel;
 
       const trial = await runSingleTrial(trialOptions);
 
@@ -400,6 +391,7 @@ export async function runAnchoringProsecutorSentencing(
 
       const record = {
         experimentId: anchoringProsecutorSentencingExperiment.id,
+        model: options.llmProvider.name,
         conditionId: condition.id,
         runIndex,
         params: condition.params,
@@ -515,10 +507,10 @@ export async function runAnchoringProsecutorSentencing(
   }
 
   const runConfig: AnalysisArtifact['runConfig'] = {
+    model: options.llmProvider.name,
     runsPerCondition: options.runsPerCondition,
     maxAttemptsPerTrial,
   };
-  if (options.codexModel) runConfig.codexModel = options.codexModel;
 
   // Human baseline from Englich et al. (2006), Study 2
   const humanBaseline: AnalysisArtifact['humanBaseline'] = {
@@ -598,10 +590,7 @@ export async function runAnchoringProsecutorSentencing(
       vignette: anchoringProsecutorSentencingCaseVignette,
     });
 
-    const codexTextOptions: { prompt: string; model?: string } = { prompt: reportPrompt };
-    if (options.codexModel) codexTextOptions.model = options.codexModel;
-
-    const reportMarkdown = await codexExecText(codexTextOptions);
+    const reportMarkdown = await options.llmProvider.sendText({ prompt: reportPrompt });
 
     if (artifactsOutput === 'files' || artifactsOutput === 'both') {
       const { reportPath } = baseArtifactPath(outPath);
