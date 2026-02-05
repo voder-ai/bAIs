@@ -83,10 +83,10 @@ export function parseChoice(
 ): { choice: string } | { error: string } {
   const cleaned = rawResponse.trim().toLowerCase();
 
-  // Direct match (case-insensitive)
+  // Direct match (case-insensitive, preserve original case from validChoices)
   for (const valid of validChoices) {
     if (cleaned === valid.toLowerCase()) {
-      return { choice: valid.toUpperCase() };
+      return { choice: valid };
     }
   }
 
@@ -95,7 +95,7 @@ export function parseChoice(
   for (const valid of validChoices) {
     const pattern = new RegExp(`\\b${valid.toLowerCase()}\\b`, 'i');
     if (pattern.test(cleaned)) {
-      mentions.add(valid.toUpperCase());
+      mentions.add(valid);
     }
   }
 
@@ -124,7 +124,7 @@ export function parseChoice(
 
     for (const pattern of patterns) {
       if (pattern.test(cleaned)) {
-        return { choice: valid.toUpperCase() };
+        return { choice: valid };
       }
     }
   }
