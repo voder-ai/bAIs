@@ -20,21 +20,23 @@ Two debiasing techniques from Olivier Sibony's "You're About to Make a Terrible 
 
 ## Results
 
-| Condition | Low Anchor Mean | High Anchor Mean | Diff (months) | vs Baseline | vs Human |
-|-----------|----------------|-----------------|---------------|-------------|----------|
-| **Baseline** (no debiasing) | 5.33 | 9.00 | **3.67** | — | +1.62 (1.79x) |
-| **Context Hygiene** | 5.67 | 8.33 | **2.67** | **-27.2%** | +0.62 (1.30x) |
-| **Premortem** | 5.30 | 8.10 | **2.80** | **-23.7%** | +0.75 (1.37x) |
-| **Human** (Englich 2006) | 4.00 | 6.05 | **2.05** | — | — |
+| Condition                   | Low Anchor Mean | High Anchor Mean | Diff (months) | vs Baseline | vs Human      |
+| --------------------------- | --------------- | ---------------- | ------------- | ----------- | ------------- |
+| **Baseline** (no debiasing) | 5.33            | 9.00             | **3.67**      | —           | +1.62 (1.79x) |
+| **Context Hygiene**         | 5.67            | 8.33             | **2.67**      | **-27.2%**  | +0.62 (1.30x) |
+| **Premortem**               | 5.30            | 8.10             | **2.80**      | **-23.7%**  | +0.75 (1.37x) |
+| **Human** (Englich 2006)    | 4.00            | 6.05             | **2.05**      | —           | —             |
 
 ### Statistical Details
 
 **Context Hygiene:**
+
 - Welch's t: t=8.42, df=42.0, p=1.49e-10
 - Effect size: Cohen's d=2.17, Hedges' g=2.14
 - 95% Bootstrap CI for diff: [2.07, 3.27]
 
 **Premortem:**
+
 - Welch's t: t=8.75, df=49.7, p=1.22e-11
 - Effect size: Cohen's d=2.26, Hedges' g=2.23
 - 95% Bootstrap CI for diff: [2.17, 3.43]

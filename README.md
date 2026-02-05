@@ -23,6 +23,19 @@ Three categories of AI-human bias divergence:
 
 This means "debiasing AI" isn't a single problem. Some biases need reducing, some are already handled, and some are AI-specific — they don't map to the human literature at all.
 
+### Debiasing Results (Phase 4 — Sibony Decision Architecture)
+
+We tested whether Sibony's organizational decision architecture techniques, designed for humans, can reduce LLM biases:
+
+| Technique                     | Anchoring Diff | vs Baseline | vs Human   |
+| ----------------------------- | -------------- | ----------- | ---------- |
+| **No debiasing** (baseline)   | 3.67 months    | —           | 1.8× human |
+| **Context hygiene**           | 2.67 months    | **−27%**    | 1.3× human |
+| **Premortem**                 | 2.80 months    | **−24%**    | 1.4× human |
+| Human baseline (Englich 2006) | 2.05 months    | —           | —          |
+
+**Key finding:** Decision architecture techniques partially transfer from humans to LLMs. Context hygiene (stripping irrelevant context) slightly outperforms premortem ("imagine this failed, why?"). Neither eliminates the bias entirely, but 24-27% reduction through prompt design alone is practically significant.
+
 ## Features
 
 - **Multi-model support**: Run experiments against OpenAI, Anthropic, Google, or Codex providers via `--model provider/model`
