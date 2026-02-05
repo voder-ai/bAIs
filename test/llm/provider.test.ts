@@ -57,18 +57,19 @@ describe('parseModelSpec', () => {
 });
 
 describe('createProvider', () => {
-  it('creates CodexProvider for codex provider', async () => {
-    const provider = await createProvider({ provider: 'codex', model: 'gpt-4' });
-    expect(provider.name).toBe('codex/gpt-4');
+  it('creates PiAiProvider for codex provider (normalized to openai-codex)', async () => {
+    // With pi-ai, 'codex' is normalized to 'openai-codex'
+    const provider = await createProvider({ provider: 'codex', model: 'gpt-5.1' });
+    expect(provider.name).toBe('openai-codex/gpt-5.1');
   });
 
-  it('throws error for unsupported provider', async () => {
+  it('throws error when no API key found for provider', async () => {
     await expect(createProvider({ provider: 'unsupported', model: 'model' })).rejects.toThrow(
-      'Unsupported provider: "unsupported". Supported providers: openai, anthropic, google, codex',
+      'No API key found for provider: unsupported',
     );
   });
 
-  // Note: We don't test the actual creation of OpenAI/Anthropic/Google providers here
-  // because they require API keys and would make real API calls.
-  // Those would be tested in integration tests or with mocked API keys.
+  // Note: Provider creation now uses pi-ai which loads API keys from
+  // OpenClaw's auth store (~/.openclaw/agents/main/agent/auth-profiles.json).
+  // Tests that require API calls should be integration tests.
 });
