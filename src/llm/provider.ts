@@ -34,6 +34,16 @@ export function parseModelSpec(spec: string): ModelSpec {
 }
 
 export async function createProvider(spec: ModelSpec): Promise<LlmProvider> {
+  // Use pi-ai for all providers (unified API with OAuth support)
+  const { PiAiProvider } = await import('./providers/pi-ai.js');
+  return new PiAiProvider(spec.provider, spec.model);
+}
+
+/**
+ * Legacy provider factory - use createProvider instead
+ * @deprecated
+ */
+export async function createLegacyProvider(spec: ModelSpec): Promise<LlmProvider> {
   switch (spec.provider.toLowerCase()) {
     case 'openai': {
       const { OpenAIProvider } = await import('./providers/openai.js');

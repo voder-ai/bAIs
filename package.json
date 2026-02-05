@@ -20,6 +20,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.72.1",
     "@google/generative-ai": "^0.24.1",
+    "@mariozechner/pi-ai": "^0.52.6",
     "commander": "^14.0.2",
     "jstat": "^1.9.6",
     "openai": "^6.17.0",
