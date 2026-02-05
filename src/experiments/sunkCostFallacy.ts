@@ -87,9 +87,8 @@ export const sunkCostFallacyExperiment: ExperimentDefinition<SunkCostParams> = {
     },
   ],
   expectedResponse: {
-    kind: 'numeric',
-    unit: 'percentage',
-    range: { min: 0, max: 100 },
+    kind: 'categorical',
+    options: ['yes', 'no'] as const,
   },
 };
 

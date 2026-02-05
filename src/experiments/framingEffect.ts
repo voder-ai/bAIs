@@ -74,9 +74,8 @@ export const framingEffectExperiment: ExperimentDefinition<FramingEffectParams> 
     },
   ],
   expectedResponse: {
-    kind: 'numeric',
-    unit: 'percentage',
-    range: { min: 0, max: 100 },
+    kind: 'categorical',
+    options: ['A', 'B', 'C', 'D'] as const,
   },
 };
 

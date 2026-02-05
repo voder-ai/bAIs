@@ -98,9 +98,8 @@ export const conjunctionFallacyExperiment: ExperimentDefinition<ConjunctionFalla
     },
   ],
   expectedResponse: {
-    kind: 'numeric',
-    unit: 'percentage',
-    range: { min: 0, max: 100 },
+    kind: 'categorical',
+    options: ['a', 'b'] as const,
   },
 };
 

@@ -21,11 +21,17 @@ export type ExperimentCondition<TParams extends Record<string, unknown>> = Reado
   params: TParams;
 }>;
 
-export type ExpectedResponse = Readonly<{
-  kind: 'numeric';
-  unit: 'percentage' | 'months';
-  range: NumericRange;
-}>;
+export type ExpectedResponse = Readonly<
+  | {
+      kind: 'numeric';
+      unit: 'percentage' | 'months';
+      range: NumericRange;
+    }
+  | {
+      kind: 'categorical';
+      options: ReadonlyArray<string>;
+    }
+>;
 
 export type ExperimentDefinition<TParams extends Record<string, unknown>> = Readonly<{
   id: ExperimentId;

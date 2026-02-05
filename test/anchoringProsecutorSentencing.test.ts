@@ -39,9 +39,15 @@ describe('anchoringProsecutorSentencingExperiment', () => {
   });
 
   it('expects numeric month responses in [0, 12]', () => {
-    expect(anchoringProsecutorSentencingExperiment.expectedResponse.kind).toBe('numeric');
-    expect(anchoringProsecutorSentencingExperiment.expectedResponse.unit).toBe('months');
-    expect(anchoringProsecutorSentencingExperiment.expectedResponse.range.min).toBe(0);
-    expect(anchoringProsecutorSentencingExperiment.expectedResponse.range.max).toBe(12);
+    const expected = anchoringProsecutorSentencingExperiment.expectedResponse;
+    expect(expected.kind).toBe('numeric');
+
+    if (expected.kind !== 'numeric') {
+      throw new Error('expectedResponse.kind must be numeric');
+    }
+
+    expect(expected.unit).toBe('months');
+    expect(expected.range.min).toBe(0);
+    expect(expected.range.max).toBe(12);
   });
 });
