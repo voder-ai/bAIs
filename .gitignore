@@ -192,4 +192,4 @@ coverage-tmp/
 # ESLint complexity JSON reports
 eslint-complexity-report.json
 eslint-complexity-report-detailed.json
-jscpd-output/
+jscpd-output/results/
