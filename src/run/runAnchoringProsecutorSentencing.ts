@@ -230,17 +230,14 @@ async function runSingleTrial(options: {
 
   for (let attempt = 1; attempt <= maxAttemptsPerTrial; attempt += 1) {
     try {
-      const { parsed, rawResponse, isPureJson } =
-        await options.llmProvider.sendJson<AnchoringResult>({
-          prompt,
-          schema: resultSchema,
-        });
+      const { parsed, rawResponse } = await options.llmProvider.sendJson<AnchoringResult>({
+        prompt,
+        schema: resultSchema,
+      });
       lastRaw = rawResponse;
 
-      if (!isPureJson) {
-        throw new Error('Output contained non-JSON text; must be JSON only');
-      }
-
+      // Note: We no longer require isPureJson. If JSON was successfully extracted
+      // and parsed (e.g., from markdown code fences), the data is valid.
       assertValidResult(parsed);
       return { ok: true, result: parsed, rawLastMessage: rawResponse };
     } catch (error) {
