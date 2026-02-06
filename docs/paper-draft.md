@@ -163,8 +163,23 @@ However, **not all biases follow this pattern**. The framing effect persists eve
 This suggests a taxonomy of LLM biases:
 
 1. **Training-eliminable biases** (anchoring, sunk cost) — diminish with model capability and training improvements
-2. **Structurally persistent biases** (framing) — may require explicit debiasing interventions regardless of model size
+2. **Structurally persistent biases** (framing) — require explicit debiasing interventions regardless of model size
 3. **Contamination-dependent biases** (conjunction) — performance varies based on training data exposure to specific scenarios
+
+### 5.4 DeFrame Eliminates Framing Effect
+
+While framing effect persists in Sonnet 4, we tested whether the DeFrame technique (arXiv:2602.04306) could eliminate it. DeFrame exposes the alternative framing before the decision, forcing the model to recognize the logical equivalence.
+
+| Scenario | Frame | Baseline | DeFrame |
+|----------|-------|----------|---------|
+| Layoffs | Gain | 100% certain | 100% certain |
+| Layoffs | Loss | 90% gamble | **100% certain** |
+| Pollution | Gain | 100% certain | 100% certain |
+| Pollution | Loss | 50% gamble | **100% certain** |
+
+**DeFrame achieves 100% bias reduction** — the preference reversal is completely eliminated. The model now consistently chooses the certain option in both frames, demonstrating that framing effect is debiasable even when model capability alone doesn't eliminate it.
+
+This confirms our taxonomy: some biases require explicit intervention (framing), while others self-correct with capability improvements (anchoring).
 
 ### 5.4 Limitations
 
