@@ -66,7 +66,7 @@ const scenarios = {
 function buildPrompt(
   scenario: keyof typeof scenarios,
   frame: 'gain' | 'loss',
-  debiasing: 'none' | 'deframe'
+  debiasing: 'none' | 'deframe',
 ): string {
   const s = scenarios[scenario];
 
@@ -112,15 +112,47 @@ export const deframeExperiment: ExperimentDefinition<DeFrameParams> = {
   ],
   conditions: [
     // Baseline (no debiasing)
-    { id: 'layoffs-gain-none', name: 'Layoffs gain (baseline)', params: { scenario: 'layoffs', frame: 'gain', debiasing: 'none' } },
-    { id: 'layoffs-loss-none', name: 'Layoffs loss (baseline)', params: { scenario: 'layoffs', frame: 'loss', debiasing: 'none' } },
-    { id: 'pollution-gain-none', name: 'Pollution gain (baseline)', params: { scenario: 'pollution', frame: 'gain', debiasing: 'none' } },
-    { id: 'pollution-loss-none', name: 'Pollution loss (baseline)', params: { scenario: 'pollution', frame: 'loss', debiasing: 'none' } },
+    {
+      id: 'layoffs-gain-none',
+      name: 'Layoffs gain (baseline)',
+      params: { scenario: 'layoffs', frame: 'gain', debiasing: 'none' },
+    },
+    {
+      id: 'layoffs-loss-none',
+      name: 'Layoffs loss (baseline)',
+      params: { scenario: 'layoffs', frame: 'loss', debiasing: 'none' },
+    },
+    {
+      id: 'pollution-gain-none',
+      name: 'Pollution gain (baseline)',
+      params: { scenario: 'pollution', frame: 'gain', debiasing: 'none' },
+    },
+    {
+      id: 'pollution-loss-none',
+      name: 'Pollution loss (baseline)',
+      params: { scenario: 'pollution', frame: 'loss', debiasing: 'none' },
+    },
     // DeFrame debiasing
-    { id: 'layoffs-gain-deframe', name: 'Layoffs gain (DeFrame)', params: { scenario: 'layoffs', frame: 'gain', debiasing: 'deframe' } },
-    { id: 'layoffs-loss-deframe', name: 'Layoffs loss (DeFrame)', params: { scenario: 'layoffs', frame: 'loss', debiasing: 'deframe' } },
-    { id: 'pollution-gain-deframe', name: 'Pollution gain (DeFrame)', params: { scenario: 'pollution', frame: 'gain', debiasing: 'deframe' } },
-    { id: 'pollution-loss-deframe', name: 'Pollution loss (DeFrame)', params: { scenario: 'pollution', frame: 'loss', debiasing: 'deframe' } },
+    {
+      id: 'layoffs-gain-deframe',
+      name: 'Layoffs gain (DeFrame)',
+      params: { scenario: 'layoffs', frame: 'gain', debiasing: 'deframe' },
+    },
+    {
+      id: 'layoffs-loss-deframe',
+      name: 'Layoffs loss (DeFrame)',
+      params: { scenario: 'layoffs', frame: 'loss', debiasing: 'deframe' },
+    },
+    {
+      id: 'pollution-gain-deframe',
+      name: 'Pollution gain (DeFrame)',
+      params: { scenario: 'pollution', frame: 'gain', debiasing: 'deframe' },
+    },
+    {
+      id: 'pollution-loss-deframe',
+      name: 'Pollution loss (DeFrame)',
+      params: { scenario: 'pollution', frame: 'loss', debiasing: 'deframe' },
+    },
   ],
   expectedResponse: {
     kind: 'categorical',
@@ -131,7 +163,7 @@ export const deframeExperiment: ExperimentDefinition<DeFrameParams> = {
 export function getDeFramePrompt(
   scenario: keyof typeof scenarios,
   frame: 'gain' | 'loss',
-  debiasing: 'none' | 'deframe'
+  debiasing: 'none' | 'deframe',
 ): string {
   return buildPrompt(scenario, frame, debiasing);
 }
