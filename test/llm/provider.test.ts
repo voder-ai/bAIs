@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { parseModelSpec, createProvider } from '../../src/llm/provider.js';
 
+// Check if we're running in CI (no API keys available)
+const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+
 describe('parseModelSpec', () => {
   it('parses valid provider/model format', () => {
     expect(parseModelSpec('openai/gpt-4o')).toEqual({
@@ -57,11 +60,15 @@ describe('parseModelSpec', () => {
 });
 
 describe('createProvider', () => {
-  it('creates PiAiProvider for codex provider (normalized to openai-codex)', async () => {
-    // With pi-ai, 'codex' is normalized to 'openai-codex'
-    const provider = await createProvider({ provider: 'codex', model: 'gpt-5.1' });
-    expect(provider.name).toBe('openai-codex/gpt-5.1');
-  });
+  // Skip API-dependent tests in CI where auth-profiles.json doesn't exist
+  it.skipIf(isCI)(
+    'creates PiAiProvider for codex provider (normalized to openai-codex)',
+    async () => {
+      // With pi-ai, 'codex' is normalized to 'openai-codex'
+      const provider = await createProvider({ provider: 'codex', model: 'gpt-5.1' });
+      expect(provider.name).toBe('openai-codex/gpt-5.1');
+    },
+  );
 
   it('throws error when no API key found for provider', async () => {
     await expect(createProvider({ provider: 'unsupported', model: 'model' })).rejects.toThrow(
