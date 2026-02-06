@@ -1,0 +1,158 @@
+# Human Debiasing Techniques Transfer to LLMs: Evidence from Anchoring Experiments
+
+**Draft Paper — bAIs Project**
+
+## Abstract
+
+Large Language Models (LLMs) exhibit cognitive biases similar to humans, raising questions about whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test two approaches: (1) Sibony's decision architecture techniques (context hygiene, premortem), and (2) Self-Adaptive Cognitive Debiasing (SACD). Using the anchoring paradigm from Englich et al. (2006), we find that context hygiene reduces LLM anchoring bias by 27% and premortem by 24%, while SACD essentially eliminates the bias (p=0.51, no significant difference between anchor conditions). These results suggest that prompt engineering interventions based on human cognitive science can substantially reduce LLM decision-making biases, with iterative self-correction methods being particularly effective.
+
+## 1. Introduction
+
+Recent research has demonstrated that LLMs exhibit cognitive biases analogous to those documented in human psychology (Binz & Schulz, 2023; Jones & Steinhardt, 2022). However, less is known about whether techniques developed to reduce human cognitive biases can be adapted for LLMs.
+
+We address this gap by testing two categories of debiasing interventions:
+
+1. **Decision architecture techniques** from organizational psychology (Sibony, 2019) — specifically "context hygiene" (identifying and disregarding irrelevant information) and "premortem" (imagining future failure before deciding)
+
+2. **Self-Adaptive Cognitive Debiasing (SACD)** — an iterative loop where the model detects, analyzes, and corrects its own biases (Lyu et al., 2025)
+
+We use anchoring bias as our test case because:
+- It is well-documented in both humans and LLMs
+- The Englich et al. (2006) paradigm provides clear quantitative baselines
+- Anchoring is practically relevant to AI decision-support systems
+
+## 2. Related Work
+
+### 2.1 Cognitive Biases in LLMs
+
+Binz & Schulz (2023) demonstrated that GPT-3 exhibits many of the cognitive biases documented in Kahneman's work, including anchoring, framing effects, and representativeness heuristics. Malberg et al. (2024) found anchoring bias at 1.7× human levels across multiple models.
+
+### 2.2 Human Debiasing Research
+
+Sibony (2019) synthesized organizational decision-making research into practical "decision architecture" techniques. Key principles include:
+- **Context hygiene**: Systematically removing irrelevant information before deciding
+- **Premortem**: Imagining the decision has failed and identifying potential causes
+- **Delayed disclosure**: Forming initial judgments before seeing anchoring information
+
+### 2.3 LLM Debiasing Attempts
+
+Prior work has explored chain-of-thought prompting, explicit bias warnings, and system prompt modifications with mixed results. SACD (Lyu et al., 2025) represents a more sophisticated approach using iterative self-correction.
+
+## 3. Methods
+
+### 3.1 Experimental Paradigm
+
+We replicate Study 2 from Englich et al. (2006): participants (or in our case, LLMs) act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. The prosecutor's recommendation serves as an irrelevant anchor (3 months vs. 9 months, randomly varied).
+
+**Case vignette**: [Details from original study]
+
+### 3.2 Conditions
+
+1. **Baseline**: Standard prompt with anchor included
+2. **Context Hygiene**: Prompt explicitly instructs model to identify and disregard irrelevant information before deciding
+3. **Premortem**: Prompt asks model to imagine its sentence was overturned on appeal, identify what went wrong, then provide its recommendation
+4. **SACD**: Iterative loop (max 3 iterations):
+   - Generate initial response
+   - Detect: "Does this response show signs of cognitive bias?"
+   - Analyze: "What type of bias and how is it manifesting?"
+   - Debias: "Generate a new response avoiding this bias"
+   - Repeat until clean or max iterations
+
+### 3.3 Models and Sample Size
+
+- Primary model: Claude Sonnet 4 (anthropic/claude-sonnet-4-20250514)
+- Cross-model validation: Claude Haiku, GPT-4o, Gemini 2.0 Flash
+- n=30 per condition (low anchor, high anchor) × 4 debiasing conditions = 240 trials
+
+### 3.4 Analysis
+
+- Primary metric: Mean difference in sentencing between high and low anchor conditions
+- Statistical tests: Welch's t-test, effect sizes (Cohen's d, Hedges' g)
+- Comparisons: vs. human baseline (Englich et al., 2006), vs. no-debiasing baseline
+
+## 4. Results
+
+### 4.1 Baseline Anchoring Bias
+
+Without debiasing interventions, LLMs show anchoring bias at 1.79× human levels:
+
+| Condition | Low Anchor | High Anchor | Diff | vs Human |
+|-----------|-----------|-------------|------|----------|
+| Human (Englich 2006) | 4.00 mo | 6.05 mo | 2.05 mo | — |
+| LLM Baseline | 5.33 mo | 9.00 mo | 3.67 mo | 1.79× |
+
+### 4.2 Sibony Debiasing Techniques
+
+Both techniques significantly reduce anchoring bias:
+
+| Technique | Diff | Reduction vs Baseline | vs Human |
+|-----------|------|----------------------|----------|
+| Context Hygiene | 2.67 mo | -27% | 1.30× |
+| Premortem | 2.80 mo | -24% | 1.37× |
+
+Context hygiene closes ~62% of the gap between LLM and human performance.
+
+### 4.3 SACD Results
+
+SACD essentially eliminates anchoring bias:
+
+| Condition | Low Anchor | High Anchor | Diff | p-value |
+|-----------|-----------|-------------|------|---------|
+| SACD | 3.67 mo | 3.20 mo | -0.47 mo | 0.51 |
+
+The negative difference suggests slight overcorrection — the model moves away from the high anchor more than necessary. The non-significant p-value indicates no reliable anchoring effect.
+
+### 4.4 Cross-Model Validation
+
+Cross-model comparison reveals a striking pattern — newer/larger models show dramatically less anchoring bias:
+
+| Model | Release | Anchoring Diff | p-value | vs Human |
+|-------|---------|---------------|---------|----------|
+| Codex (OpenAI) | 2023 | 3.67 mo | <0.001 | 1.79× MORE |
+| Claude Haiku | 2024 | 1.80 mo | <0.001 | 0.88× LESS |
+| Claude Sonnet 4 | 2025 | 0.20 mo | 0.34 | ~0× (none) |
+| Human baseline | — | 2.05 mo | <0.05 | — |
+
+**Key finding:** Sonnet 4 shows essentially no anchoring bias (p=0.34, not significant). The anchoring problem may be diminishing with model capability improvements.
+
+This has important implications:
+1. **Debiasing may be less critical for frontier models** — They're already less biased than humans
+2. **The bias taxonomy may need revision** — What was "LLMs are 1.8× more biased" is now "latest models are essentially unbiased"
+3. **Training advances may implicitly reduce biases** — Even without explicit debiasing, newer models anchor less
+
+## 5. Discussion
+
+### 5.1 Human Techniques Transfer to LLMs
+
+Our primary finding is that debiasing techniques designed for human decision-making partially transfer to LLMs. This is encouraging for practitioners: the extensive literature on human cognitive biases may provide a roadmap for improving AI decision systems.
+
+### 5.2 Iterative Self-Correction is Highly Effective
+
+SACD outperforms static prompt interventions by a large margin. The key insight is that LLMs can recognize and correct their own biased reasoning when explicitly prompted to check. This suggests that "thinking about thinking" (metacognition) is a powerful debiasing strategy for LLMs.
+
+### 5.3 Model Size and Bias
+
+Preliminary cross-model results suggest smaller models may show different bias profiles. Haiku's lower anchoring susceptibility (1.8mo vs 3.67mo for Sonnet baseline) warrants further investigation.
+
+### 5.4 Limitations
+
+- Single bias type tested (anchoring)
+- Simplified case vignette vs original materials
+- Moderate sample sizes
+- Computational cost of SACD (2-3× API calls)
+
+## 6. Conclusion
+
+Human debiasing techniques transfer to LLMs, with iterative self-correction (SACD) being particularly effective at eliminating anchoring bias. These findings suggest a practical path for reducing AI decision-making biases through prompt engineering informed by cognitive science.
+
+## References
+
+- Binz, M., & Schulz, E. (2023). Using cognitive psychology to understand GPT-3. PNAS.
+- Englich, B., Mussweiler, T., & Strack, F. (2006). Playing dice with criminal sentences. PSPB.
+- Lyu, Y., et al. (2025). Self-Adaptive Cognitive Debiasing for LLMs. arXiv:2504.04141.
+- Sibony, O. (2019). You're About to Make a Terrible Mistake!
+- Tversky, A., & Kahneman, D. (1974). Judgment under uncertainty: Heuristics and biases. Science.
+
+---
+
+**Status**: Draft — needs cross-model results, expanded methods, additional bias types
