@@ -1,9 +1,6 @@
 import { appendFile, writeFile } from 'node:fs/promises';
-import * as path from 'node:path';
 
 import { anchoringSACDExperiment, sacdTemplates } from '../experiments/anchoringSACD.js';
-import { anchoringProsecutorSentencingCaseVignette } from '../experiments/anchoringProsecutorSentencing.js';
-import { renderPrompt } from '../experiments/renderPrompt.js';
 import type { LlmProvider } from '../llm/provider.js';
 import {
   computeDescriptiveStats,
