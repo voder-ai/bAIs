@@ -24,6 +24,16 @@ import {
   type NovelConjunctionParams,
 } from './experiments/conjunctionFallacyNovel.js';
 import {
+  novelSunkCostExperiment,
+  getNovelSunkCostPrompt,
+  type NovelSunkCostParams,
+} from './experiments/sunkCostFallacyNovel.js';
+import {
+  novelFramingExperiment,
+  getNovelFramingPrompt,
+  type NovelFramingParams,
+} from './experiments/framingEffectNovel.js';
+import {
   sunkCostFallacyExperiment,
   getSunkCostPrompt,
   type SunkCostParams,
@@ -310,6 +320,78 @@ run
     const baseOptions = {
       experiment: sunkCostFallacyExperiment,
       getPrompt: (params: SunkCostParams) => getSunkCostPrompt(params.sunkCostPresent),
+      validChoices: ['yes', 'no'] as const,
+      runsPerCondition: runs,
+      llmProvider,
+      artifactsOutput,
+    } as const;
+
+    if (options.out) {
+      await runChoiceExperiment({ ...baseOptions, outPath: options.out });
+    } else {
+      await runChoiceExperiment(baseOptions);
+    }
+  });
+
+run
+  .command('framing-effect-novel')
+  .description('Run framing effect with novel scenarios (contamination test)')
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '10')
+  .option(
+    '--model <provider/model>',
+    'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
+  )
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .option(
+    '--artifacts <mode>',
+    'Where to output analysis/report: console | files | both',
+    'console',
+  )
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const artifactsOutput = parseArtifacts(options.artifacts);
+    const llmProvider = await createLlmProvider(options.model);
+
+    const baseOptions = {
+      experiment: novelFramingExperiment,
+      getPrompt: (params: NovelFramingParams) =>
+        getNovelFramingPrompt(params.scenario, params.frame),
+      validChoices: ['A', 'B', 'C', 'D'] as const,
+      runsPerCondition: runs,
+      llmProvider,
+      artifactsOutput,
+    } as const;
+
+    if (options.out) {
+      await runChoiceExperiment({ ...baseOptions, outPath: options.out });
+    } else {
+      await runChoiceExperiment(baseOptions);
+    }
+  });
+
+run
+  .command('sunk-cost-novel')
+  .description('Run sunk cost fallacy with novel scenarios (contamination test)')
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '10')
+  .option(
+    '--model <provider/model>',
+    'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
+  )
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .option(
+    '--artifacts <mode>',
+    'Where to output analysis/report: console | files | both',
+    'console',
+  )
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const artifactsOutput = parseArtifacts(options.artifacts);
+    const llmProvider = await createLlmProvider(options.model);
+
+    const baseOptions = {
+      experiment: novelSunkCostExperiment,
+      getPrompt: (params: NovelSunkCostParams) =>
+        getNovelSunkCostPrompt(params.scenario, params.sunkCostPresent),
       validChoices: ['yes', 'no'] as const,
       runsPerCondition: runs,
       llmProvider,
