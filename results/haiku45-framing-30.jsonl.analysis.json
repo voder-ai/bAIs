@@ -1,0 +1,126 @@
+{
+  "experimentId": "framing-effect",
+  "generatedAt": "2026-02-06T00:44:37.119Z",
+  "runConfig": {
+    "model": "anthropic/claude-haiku-4-5",
+    "runsPerCondition": 30,
+    "maxAttemptsPerTrial": 3,
+    "validChoices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ]
+  },
+  "conditions": {
+    "gain-frame": {
+      "conditionName": "Gain frame (lives saved)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "A": 30,
+        "B": 0,
+        "C": 0,
+        "D": 0
+      },
+      "choiceProportions": {
+        "A": 1,
+        "B": 0,
+        "C": 0,
+        "D": 0
+      },
+      "choiceCI": {
+        "A": {
+          "lower": 0.8864866066637764,
+          "upper": 0.9999999999999998,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "B": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "C": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "D": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    },
+    "loss-frame": {
+      "conditionName": "Loss frame (lives lost)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "A": 0,
+        "B": 0,
+        "C": 25,
+        "D": 5
+      },
+      "choiceProportions": {
+        "A": 0,
+        "B": 0,
+        "C": 0.8333333333333334,
+        "D": 0.16666666666666666
+      },
+      "choiceCI": {
+        "A": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "B": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "C": {
+          "lower": 0.664356494780228,
+          "upper": 0.9266345763289565,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "D": {
+          "lower": 0.07336542367104351,
+          "upper": 0.3356435052197721,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    }
+  },
+  "comparison": {
+    "chiSquareTest": null,
+    "pairwiseTests": {
+      "gain-frame-vs-loss-frame-A": {
+        "z": 7.745966692414835,
+        "pTwoSided": 9.547918011776346e-15
+      },
+      "gain-frame-vs-loss-frame-B": null,
+      "gain-frame-vs-loss-frame-C": {
+        "z": -6.546536707079771,
+        "pTwoSided": 5.918487921974247e-11
+      },
+      "gain-frame-vs-loss-frame-D": {
+        "z": -2.335496832484569,
+        "pTwoSided": 0.019517439352991328
+      }
+    }
+  },
+  "toolchain": {
+    "packageName": "bais",
+    "packageVersion": "0.0.0",
+    "nodeVersion": "v25.5.0"
+  }
+}

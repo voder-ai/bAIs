@@ -1,0 +1,91 @@
+{
+  "experimentId": "conjunction-fallacy",
+  "generatedAt": "2026-02-06T00:43:24.369Z",
+  "runConfig": {
+    "model": "anthropic/claude-haiku-4-5",
+    "runsPerCondition": 30,
+    "maxAttemptsPerTrial": 3,
+    "validChoices": [
+      "a",
+      "b"
+    ]
+  },
+  "conditions": {
+    "linda": {
+      "conditionName": "Linda scenario (bank teller / feminist)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "a": 25,
+        "b": 5
+      },
+      "choiceProportions": {
+        "a": 0.8333333333333334,
+        "b": 0.16666666666666666
+      },
+      "choiceCI": {
+        "a": {
+          "lower": 0.664356494780228,
+          "upper": 0.9266345763289565,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "b": {
+          "lower": 0.07336542367104351,
+          "upper": 0.3356435052197721,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    },
+    "bill": {
+      "conditionName": "Bill scenario (accountant / jazz player)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "a": 30,
+        "b": 0
+      },
+      "choiceProportions": {
+        "a": 1,
+        "b": 0
+      },
+      "choiceCI": {
+        "a": {
+          "lower": 0.8864866066637764,
+          "upper": 0.9999999999999998,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "b": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    }
+  },
+  "comparison": {
+    "chiSquareTest": {
+      "chiSquare": 5.454545454545454,
+      "df": 1,
+      "pValue": 0.019517439352991328
+    },
+    "pairwiseTests": {
+      "linda-vs-bill-a": {
+        "z": -2.335496832484568,
+        "pTwoSided": 0.019517439352991328
+      },
+      "linda-vs-bill-b": {
+        "z": 2.335496832484569,
+        "pTwoSided": 0.019517439352991328
+      }
+    }
+  },
+  "toolchain": {
+    "packageName": "bais",
+    "packageVersion": "0.0.0",
+    "nodeVersion": "v25.5.0"
+  }
+}
