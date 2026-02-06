@@ -4,7 +4,11 @@
 
 ## Abstract
 
-Large Language Models (LLMs) exhibit cognitive biases similar to humans, raising questions about whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test two approaches: (1) Sibony's decision architecture techniques (context hygiene, premortem), and (2) Self-Adaptive Cognitive Debiasing (SACD). Using the anchoring paradigm from Englich et al. (2006), we find that context hygiene reduces LLM anchoring bias by 27% and premortem by 24%, while SACD essentially eliminates the bias (p=0.51, no significant difference between anchor conditions). These results suggest that prompt engineering interventions based on human cognitive science can substantially reduce LLM decision-making biases, with iterative self-correction methods being particularly effective.
+Large Language Models (LLMs) exhibit cognitive biases similar to humans, but it remains unclear whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test multiple debiasing approaches across four cognitive biases (anchoring, sunk cost, conjunction fallacy, framing effect) and multiple models (Codex, Claude Haiku, Claude Sonnet 4).
+
+**Key findings:** (1) Model capability reduces some biases — Sonnet 4 shows near-zero anchoring bias (0.2mo diff, p=0.34) while older models show 1.8× human levels. (2) Other biases persist regardless of capability — Sonnet 4 still exhibits classic framing effect (90%→80% preference reversal). (3) Both bias types are addressable: SACD eliminates anchoring (p=0.51), while DeFrame eliminates framing (100% bias reduction).
+
+We propose a taxonomy: **training-eliminable biases** (anchoring, sunk cost) self-correct with model improvements, while **structurally persistent biases** (framing) require explicit debiasing interventions. Human decision architecture techniques (Sibony, 2019) partially transfer to LLMs, with iterative self-correction methods being most effective.
 
 ## 1. Introduction
 
@@ -181,12 +185,12 @@ While framing effect persists in Sonnet 4, we tested whether the DeFrame techniq
 
 This confirms our taxonomy: some biases require explicit intervention (framing), while others self-correct with capability improvements (anchoring).
 
-### 5.4 Limitations
+### 5.5 Limitations
 
-- Single bias type tested (anchoring)
-- Simplified case vignette vs original materials
-- Moderate sample sizes
-- Computational cost of SACD (2-3× API calls)
+- Moderate sample sizes (n=10-30 per condition)
+- Simplified case vignettes vs original study materials
+- Computational cost of SACD/DeFrame (2-3× API calls)
+- Cross-model comparison limited to Anthropic + Codex models
 
 ## 6. Conclusion
 
@@ -202,4 +206,9 @@ Human debiasing techniques transfer to LLMs, with iterative self-correction (SAC
 
 ---
 
-**Status**: Draft — needs cross-model results, expanded methods, additional bias types
+**Status**: Draft v2 — Cross-model results complete, DeFrame results complete. Ready for n=30 confirmation runs and author outreach.
+
+**Next steps:**
+1. Confirm DeFrame results at n=30 (Green running)
+2. Contact Sibony, Strack, Lyu et al. with findings
+3. Prepare for arXiv submission
