@@ -75,7 +75,7 @@ const maxAttemptsPerTrial = 3;
 
 /**
  * Parse a choice response flexibly.
- * Handles: "A", "a", "Program A", "I choose A", etc.
+ * Handles: "A", "a", "Program A", "I choose A", "CHOICE: A", etc.
  */
 export function parseChoice(
   rawResponse: string,
@@ -86,6 +86,23 @@ export function parseChoice(
   // Direct match (case-insensitive, preserve original case from validChoices)
   for (const valid of validChoices) {
     if (cleaned === valid.toLowerCase()) {
+      return { choice: valid };
+    }
+  }
+
+  // Priority pattern: "CHOICE: X" format (typically at end of analytical responses)
+  for (const valid of validChoices) {
+    const choicePattern = new RegExp(`choice:\\s*${valid.toLowerCase()}\\b`, 'i');
+    if (choicePattern.test(rawResponse)) {
+      return { choice: valid };
+    }
+  }
+
+  // Priority pattern: Final standalone choice (single letter/word at end of response)
+  const lines = rawResponse.trim().split('\n');
+  const lastLine = lines[lines.length - 1]?.trim().toLowerCase() ?? '';
+  for (const valid of validChoices) {
+    if (lastLine === valid.toLowerCase()) {
       return { choice: valid };
     }
   }

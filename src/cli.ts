@@ -14,6 +14,11 @@ import {
   type FramingEffectParams,
 } from './experiments/framingEffect.js';
 import {
+  framingExpectedValueExperiment,
+  getFramingExpectedValuePrompt,
+  type FramingExpectedValueParams,
+} from './experiments/framingExpectedValue.js';
+import {
   conjunctionFallacyExperiment,
   getConjunctionPrompt,
   type ConjunctionFallacyParams,
@@ -220,6 +225,42 @@ run
     const baseOptions = {
       experiment: framingEffectExperiment,
       getPrompt: (params: FramingEffectParams) => getFramingPrompt(params.frame),
+      validChoices: ['A', 'B', 'C', 'D'] as const,
+      runsPerCondition: runs,
+      llmProvider,
+      artifactsOutput,
+    } as const;
+
+    if (options.out) {
+      await runChoiceExperiment({ ...baseOptions, outPath: options.out });
+    } else {
+      await runChoiceExperiment(baseOptions);
+    }
+  });
+
+run
+  .command('framing-expected-value')
+  .description("Run framing effect + Sibony's expected value debiasing experiment")
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '30')
+  .option(
+    '--model <provider/model>',
+    'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
+  )
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .option(
+    '--artifacts <mode>',
+    'Where to output analysis/report: console | files | both',
+    'console',
+  )
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const artifactsOutput = parseArtifacts(options.artifacts);
+    const llmProvider = await createLlmProvider(options.model);
+
+    const baseOptions = {
+      experiment: framingExpectedValueExperiment,
+      getPrompt: (params: FramingExpectedValueParams) =>
+        getFramingExpectedValuePrompt(params.frame),
       validChoices: ['A', 'B', 'C', 'D'] as const,
       runsPerCondition: runs,
       llmProvider,
