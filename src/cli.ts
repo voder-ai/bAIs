@@ -19,6 +19,11 @@ import {
   type ConjunctionFallacyParams,
 } from './experiments/conjunctionFallacy.js';
 import {
+  novelConjunctionExperiment,
+  getNovelConjunctionPrompt,
+  type NovelConjunctionParams,
+} from './experiments/conjunctionFallacyNovel.js';
+import {
   sunkCostFallacyExperiment,
   getSunkCostPrompt,
   type SunkCostParams,
@@ -235,6 +240,41 @@ run
     const baseOptions = {
       experiment: conjunctionFallacyExperiment,
       getPrompt: (params: ConjunctionFallacyParams) => getConjunctionPrompt(params.scenario),
+      validChoices: ['a', 'b'] as const,
+      runsPerCondition: runs,
+      llmProvider,
+      artifactsOutput,
+    } as const;
+
+    if (options.out) {
+      await runChoiceExperiment({ ...baseOptions, outPath: options.out });
+    } else {
+      await runChoiceExperiment(baseOptions);
+    }
+  });
+
+run
+  .command('conjunction-fallacy-novel')
+  .description('Run conjunction fallacy with novel scenarios (contamination test)')
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '10')
+  .option(
+    '--model <provider/model>',
+    'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
+  )
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .option(
+    '--artifacts <mode>',
+    'Where to output analysis/report: console | files | both',
+    'console',
+  )
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const artifactsOutput = parseArtifacts(options.artifacts);
+    const llmProvider = await createLlmProvider(options.model);
+
+    const baseOptions = {
+      experiment: novelConjunctionExperiment,
+      getPrompt: (params: NovelConjunctionParams) => getNovelConjunctionPrompt(params.scenario),
       validChoices: ['a', 'b'] as const,
       runsPerCondition: runs,
       llmProvider,
