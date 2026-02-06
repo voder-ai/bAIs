@@ -11,7 +11,13 @@ export type PromptTemplate = Readonly<{
 }>;
 
 export type PromptStep = Readonly<{
-  id: 'anchor' | 'estimate' | 'prosecutor-evaluation' | 'defense-evaluation' | 'final-sentence';
+  id:
+    | 'anchor'
+    | 'estimate'
+    | 'prosecutor-evaluation'
+    | 'defense-evaluation'
+    | 'final-sentence'
+    | 'sacd-orchestration';
   prompts: ReadonlyArray<PromptTemplate>;
 }>;
 
@@ -40,4 +46,5 @@ export type ExperimentDefinition<TParams extends Record<string, unknown>> = Read
   steps: ReadonlyArray<PromptStep>;
   conditions: ReadonlyArray<ExperimentCondition<TParams>>;
   expectedResponse: ExpectedResponse;
+  metadata?: Readonly<Record<string, unknown>>;
 }>;
