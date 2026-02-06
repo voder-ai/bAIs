@@ -127,12 +127,12 @@ This has important implications:
 
 Running all four experiments on Claude Sonnet 4 reveals a nuanced pattern:
 
-| Bias Type | Human Pattern | Sonnet 4 Result | Category |
-|-----------|---------------|-----------------|----------|
-| Anchoring | 2.05mo diff | 0.2mo diff (p=0.34) | ✅ IMMUNE |
-| Sunk Cost | 85% continue | 0% continue | ✅ IMMUNE |
-| Conjunction | 85% wrong | 0% Linda, 30% Bill | ⚠️ PARTIAL |
-| Framing | Preference reversal | 90%→80% reversal | ❌ BIASED |
+| Bias Type   | Human Pattern       | Sonnet 4 Result     | Category   |
+| ----------- | ------------------- | ------------------- | ---------- |
+| Anchoring   | 2.05mo diff         | 0.2mo diff (p=0.34) | ✅ IMMUNE  |
+| Sunk Cost   | 85% continue        | 0% continue         | ✅ IMMUNE  |
+| Conjunction | 85% wrong           | 0% Linda, 30% Bill  | ⚠️ PARTIAL |
+| Framing     | Preference reversal | 90%→80% reversal    | ❌ BIASED  |
 
 **Key finding:** Sonnet 4 is essentially immune to anchoring and sunk cost biases, but still shows the classic framing effect preference reversal.
 
@@ -152,15 +152,16 @@ SACD outperforms static prompt interventions by a large margin. The key insight 
 
 Cross-model comparison reveals that anchoring bias decreases with model capability:
 
-| Model | Release Era | Anchoring Diff | vs Human |
-|-------|-------------|---------------|----------|
-| Codex (OpenAI) | 2023 | 3.67mo | 1.79× MORE |
-| Claude Haiku | 2024 | 1.80mo | 0.88× LESS |
-| Claude Sonnet 4 | 2025 | 0.20mo | ~0× (none) |
+| Model           | Release Era | Anchoring Diff | vs Human   |
+| --------------- | ----------- | -------------- | ---------- |
+| Codex (OpenAI)  | 2023        | 3.67mo         | 1.79× MORE |
+| Claude Haiku    | 2024        | 1.80mo         | 0.88× LESS |
+| Claude Sonnet 4 | 2025        | 0.20mo         | ~0× (none) |
 
 However, **not all biases follow this pattern**. The framing effect persists even in the most capable models (Sonnet 4 shows 90%→80% preference reversal, similar to humans).
 
 This suggests a taxonomy of LLM biases:
+
 1. **Training-eliminable biases** (anchoring, sunk cost) — diminish with model capability and training improvements
 2. **Structurally persistent biases** (framing) — may require explicit debiasing interventions regardless of model size
 3. **Contamination-dependent biases** (conjunction) — performance varies based on training data exposure to specific scenarios

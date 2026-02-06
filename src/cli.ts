@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 
 import { runAnchoringProsecutorSentencing } from './run/runAnchoringProsecutorSentencing.js';
+import { runAnchoringSACD } from './run/runAnchoringSACD.js';
 import { runChoiceExperiment } from './run/runChoiceExperiment.js';
 
 import { createProvider, parseModelSpec, type LlmProvider } from './llm/provider.js';
@@ -201,6 +202,35 @@ run
     }
 
     await runAnchoringProsecutorSentencing(runOptions);
+  });
+
+run
+  .command('anchoring-sacd')
+  .description('Run anchoring + SACD (Self-Adaptive Cognitive Debiasing) experiment')
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '30')
+  .option(
+    '--model <provider/model>',
+    'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
+  )
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const llmProvider = await createLlmProvider(options.model);
+
+    const runOptions: {
+      runsPerCondition: number;
+      llmProvider: LlmProvider;
+      outPath?: string;
+    } = {
+      runsPerCondition: runs,
+      llmProvider,
+    };
+
+    if (options.out) {
+      runOptions.outPath = options.out;
+    }
+
+    await runAnchoringSACD(runOptions);
   });
 
 run
