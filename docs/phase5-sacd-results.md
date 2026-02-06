@@ -8,13 +8,13 @@ Based on Lyu et al.'s SACD framework (arXiv:2504.04141), we implemented an itera
 
 ## Key Finding
 
-| Condition | Low Anchor Mean | High Anchor Mean | Diff (months) | vs Baseline | p-value |
-|-----------|-----------------|------------------|---------------|-------------|---------|
-| **SACD** | 3.67 | 3.20 | **-0.47** | **-113%** | 0.51 |
-| Baseline (no debiasing) | 5.33 | 9.00 | 3.67 | — | <0.001 |
-| Context Hygiene | 5.67 | 8.33 | 2.67 | -27% | <0.001 |
-| Premortem | 5.30 | 8.10 | 2.80 | -24% | <0.001 |
-| Human (Englich 2006) | 4.00 | 6.05 | 2.05 | — | <0.001 |
+| Condition               | Low Anchor Mean | High Anchor Mean | Diff (months) | vs Baseline | p-value |
+| ----------------------- | --------------- | ---------------- | ------------- | ----------- | ------- |
+| **SACD**                | 3.67            | 3.20             | **-0.47**     | **-113%**   | 0.51    |
+| Baseline (no debiasing) | 5.33            | 9.00             | 3.67          | —           | <0.001  |
+| Context Hygiene         | 5.67            | 8.33             | 2.67          | -27%        | <0.001  |
+| Premortem               | 5.30            | 8.10             | 2.80          | -24%        | <0.001  |
+| Human (Englich 2006)    | 4.00            | 6.05             | 2.05          | —           | <0.001  |
 
 **SACD produces a NEGATIVE anchoring effect** — the LLM actually sentences LOWER when given the high anchor. This is consistent with overcorrection (the model detects the anchor and deliberately moves away from it).
 
@@ -64,6 +64,7 @@ The confidence interval spans zero, confirming no reliable anchoring effect.
 This is the **first demonstration of SACD-style iterative debiasing on the anchoring effect**. Lyu et al. tested SACD on framing and sunk cost biases; we extend to anchoring and confirm the approach generalizes.
 
 Combined with Phase 4 results, we now have a spectrum of debiasing options:
+
 - **Lightweight** (single prompt): Context hygiene or premortem, 24-27% reduction
 - **Heavyweight** (iterative): SACD, ~100% reduction
 

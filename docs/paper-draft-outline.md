@@ -27,17 +27,20 @@ We replicate four classic cognitive bias experiments on large language models an
 ## 2. Related Work
 
 ### 2.1 Cognitive Biases in Humans
+
 - Anchoring (Tversky & Kahneman, Englich et al.)
 - Conjunction fallacy (Linda problem)
 - Sunk cost fallacy
 - Framing effects
 
 ### 2.2 Cognitive Biases in LLMs
+
 - bAIs (Anthropic 2026) - first systematic replication
 - Binz & Schulz (2023) - GPT-3 cognitive evaluation
 - Hagendorff et al. - machine psychology
 
 ### 2.3 Debiasing Approaches
+
 - Sibony (2020) - Decision architecture for humans
 - SACD (Lyu et al. 2025) - Self-adaptive cognitive debiasing for LLMs
 - DeFrame (arXiv:2602.04306) - Framing-specific debiasing
@@ -47,19 +50,21 @@ We replicate four classic cognitive bias experiments on large language models an
 ## 3. Phase 1-3: Bias Taxonomy
 
 ### 3.1 Experimental Replication
+
 - Four classic experiments, 30 runs per condition
 - Models: Claude Sonnet 4, GPT-4o, Gemini 2.0 Flash (cross-model validation)
 
 ### 3.2 Results
 
-| Bias Type | Human Error Rate | LLM Error Rate | Ratio |
-|-----------|-----------------|----------------|-------|
-| Anchoring | 2.05mo diff | 3.67mo diff | 1.79x worse |
-| Conjunction Fallacy | 85% | 0% | Immune |
-| Sunk Cost Fallacy | 85% | 0% | Immune |
-| Framing Effect | Reversal | No reversal | Different pattern |
+| Bias Type           | Human Error Rate | LLM Error Rate | Ratio             |
+| ------------------- | ---------------- | -------------- | ----------------- |
+| Anchoring           | 2.05mo diff      | 3.67mo diff    | 1.79x worse       |
+| Conjunction Fallacy | 85%              | 0%             | Immune            |
+| Sunk Cost Fallacy   | 85%              | 0%             | Immune            |
+| Framing Effect      | Reversal         | No reversal    | Different pattern |
 
 ### 3.3 Taxonomy
+
 - **MORE susceptible:** Numeric estimation biases (anchoring)
 - **LESS susceptible:** Logical fallacies (conjunction, sunk cost)
 - **DIFFERENT:** Emotional/value biases (framing shows certainty bias, not loss aversion)
@@ -69,19 +74,21 @@ We replicate four classic cognitive bias experiments on large language models an
 ## 4. Phase 4: Sibony Debiasing
 
 ### 4.1 Techniques Tested
+
 - Context Hygiene: "Identify and disregard irrelevant information"
 - Premortem: "Imagine this failed. What went wrong?"
 
 ### 4.2 Results
 
-| Technique | Anchoring Diff | Reduction vs Baseline |
-|-----------|----------------|----------------------|
-| Baseline | 3.67 months | — |
-| Context Hygiene | 2.67 months | -27% |
-| Premortem | 2.80 months | -24% |
-| Human | 2.05 months | (target) |
+| Technique       | Anchoring Diff | Reduction vs Baseline |
+| --------------- | -------------- | --------------------- |
+| Baseline        | 3.67 months    | —                     |
+| Context Hygiene | 2.67 months    | -27%                  |
+| Premortem       | 2.80 months    | -24%                  |
+| Human           | 2.05 months    | (target)              |
 
 ### 4.3 Interpretation
+
 - Human decision architecture partially transfers to LLMs
 - Closes ~62% of excess bias gap
 - But doesn't eliminate the bias
@@ -91,7 +98,9 @@ We replicate four classic cognitive bias experiments on large language models an
 ## 5. Phase 5: SACD Debiasing
 
 ### 5.1 Method
+
 Three-step iterative debiasing (Lyu et al.):
+
 1. Bias Determination — identify biased sentences
 2. Bias Analysis — classify bias types
 3. Cognitive Debiasing — rewrite biased sentences
@@ -99,15 +108,16 @@ Three-step iterative debiasing (Lyu et al.):
 
 ### 5.2 Results
 
-| Technique | Anchoring Diff | vs Baseline |
-|-----------|----------------|-------------|
-| Baseline | 3.67 months | — |
-| Context Hygiene | 2.67 months | -27% |
-| Premortem | 2.80 months | -24% |
-| **SACD** | **-0.47 months** | **-113%** |
-| Human | 2.05 months | — |
+| Technique       | Anchoring Diff   | vs Baseline |
+| --------------- | ---------------- | ----------- |
+| Baseline        | 3.67 months      | —           |
+| Context Hygiene | 2.67 months      | -27%        |
+| Premortem       | 2.80 months      | -24%        |
+| **SACD**        | **-0.47 months** | **-113%**   |
+| Human           | 2.05 months      | —           |
 
 ### 5.3 Key Finding
+
 - SACD eliminates anchoring bias entirely
 - Slight overcorrection (high anchor → lower sentences)
 - Not statistically significant difference (p=0.51) — which is the goal
@@ -117,16 +127,19 @@ Three-step iterative debiasing (Lyu et al.):
 ## 6. Discussion
 
 ### 6.1 Why SACD Outperforms Sibony
+
 - Sibony: implicit instruction to ignore bias
 - SACD: explicit identification and removal of biased content
 - LLMs may benefit from explicit debiasing more than implicit prompting
 
 ### 6.2 Bimodal Response Pattern
+
 - Raw values cluster at 1 month and 6 months
 - May indicate formulaic response rather than nuanced judgment
 - But comparative finding (SACD vs others) remains valid
 
 ### 6.3 Implications
+
 - AI safety: debiasing is possible and effective
 - Decision support: LLMs can be made more reliable than baseline
 - Hybrid approaches: SACD structure + validated techniques

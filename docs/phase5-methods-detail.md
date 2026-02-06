@@ -1,6 +1,6 @@
 # Phase 5: SACD Methods Detail
 
-*For incorporation into the bAIs paper methods section*
+_For incorporation into the bAIs paper methods section_
 
 ## 5.1 SACD Protocol
 
@@ -9,11 +9,13 @@ We implemented the Self-Adaptive Cognitive Debiasing (SACD) protocol from Lyu et
 ### Step 1: Bias Determination
 
 The model receives the anchoring vignette and is instructed to:
+
 1. Break the prompt into individual sentences
 2. Label each sentence as BIASED or NOT_BIASED
 3. Focus on identifying specific numerical anchors and leading framing
 
 **Example output:**
+
 ```
 SENTENCE 11: "The prosecutor demands 9 months on probation."
 BIASED: YES
@@ -22,6 +24,7 @@ BIASED: YES
 ### Step 2: Bias Analysis
 
 For each biased sentence, the model classifies the bias type:
+
 - **Anchoring bias**: Specific numerical values that could influence judgment
 - **Framing bias**: Leading language or emotional framing
 - **Constraint bias**: Artificial limitations on response range
@@ -29,11 +32,13 @@ For each biased sentence, the model classifies the bias type:
 ### Step 3: Cognitive Debiasing
 
 The model rewrites the prompt, modifying only biased sentences while preserving:
+
 - Case facts (offense type, defendant details)
 - Entity names
 - Task structure (request for sentencing decision)
 
 **Removed:**
+
 - Specific numerical anchors (prosecutor's demand, defense's request)
 - References to prosecution/defense positions
 - Any suggested ranges
@@ -41,6 +46,7 @@ The model rewrites the prompt, modifying only biased sentences while preserving:
 ### Iteration
 
 After each debiasing pass, the model indicates:
+
 - `DEBIASING_COMPLETE`: No remaining biases detected
 - `REQUIRES_ITERATION`: Additional biases found in rewritten prompt
 
@@ -67,10 +73,12 @@ Response parsing extracts integers in range 0-12 via regex.
 **Runs per condition:** 30  
 **Maximum SACD iterations:** 3  
 **Conditions:**
+
 - Low anchor: Prosecutor demands 3 months
 - High anchor: Prosecutor demands 9 months
 
 **Baseline comparisons:**
+
 - No debiasing (raw vignette)
 - Context Hygiene (Sibony): "Identify and disregard irrelevant information"
 - Premortem (Sibony): "Imagine this sentence was overturned on appeal. What went wrong?"
@@ -82,6 +90,7 @@ Response parsing extracts integers in range 0-12 via regex.
 **Expected under no bias:** Difference ≈ 0 (anchor should not influence independent judgment)
 
 **Analysis:**
+
 - Welch's t-test for condition comparison
 - 95% CI via bootstrap (2000 iterations, percentile method)
 - Cohen's d for effect size
@@ -107,15 +116,15 @@ Note: All numerical anchors removed. No mention of prosecutor or defense positio
 
 ## 5.6 Cost/Latency Tradeoff
 
-| Technique | API Calls per Trial | Debiasing Effect |
-|-----------|---------------------|------------------|
-| Baseline | 1 | None |
-| Sibony (Context Hygiene) | 1 | -27% |
-| Sibony (Premortem) | 1 | -24% |
-| SACD | 2-4 | -113% (eliminated) |
+| Technique                | API Calls per Trial | Debiasing Effect   |
+| ------------------------ | ------------------- | ------------------ |
+| Baseline                 | 1                   | None               |
+| Sibony (Context Hygiene) | 1                   | -27%               |
+| Sibony (Premortem)       | 1                   | -24%               |
+| SACD                     | 2-4                 | -113% (eliminated) |
 
 SACD requires 2-4× the API calls but achieves complete bias elimination. For high-stakes decisions, the additional cost may be justified.
 
 ---
 
-*End of methods detail section*
+_End of methods detail section_

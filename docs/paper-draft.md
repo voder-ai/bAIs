@@ -17,6 +17,7 @@ We address this gap by testing two categories of debiasing interventions:
 2. **Self-Adaptive Cognitive Debiasing (SACD)** — an iterative loop where the model detects, analyzes, and corrects its own biases (Lyu et al., 2025)
 
 We use anchoring bias as our test case because:
+
 - It is well-documented in both humans and LLMs
 - The Englich et al. (2006) paradigm provides clear quantitative baselines
 - Anchoring is practically relevant to AI decision-support systems
@@ -30,6 +31,7 @@ Binz & Schulz (2023) demonstrated that GPT-3 exhibits many of the cognitive bias
 ### 2.2 Human Debiasing Research
 
 Sibony (2019) synthesized organizational decision-making research into practical "decision architecture" techniques. Key principles include:
+
 - **Context hygiene**: Systematically removing irrelevant information before deciding
 - **Premortem**: Imagining the decision has failed and identifying potential causes
 - **Delayed disclosure**: Forming initial judgments before seeing anchoring information
@@ -76,19 +78,19 @@ We replicate Study 2 from Englich et al. (2006): participants (or in our case, L
 
 Without debiasing interventions, LLMs show anchoring bias at 1.79× human levels:
 
-| Condition | Low Anchor | High Anchor | Diff | vs Human |
-|-----------|-----------|-------------|------|----------|
-| Human (Englich 2006) | 4.00 mo | 6.05 mo | 2.05 mo | — |
-| LLM Baseline | 5.33 mo | 9.00 mo | 3.67 mo | 1.79× |
+| Condition            | Low Anchor | High Anchor | Diff    | vs Human |
+| -------------------- | ---------- | ----------- | ------- | -------- |
+| Human (Englich 2006) | 4.00 mo    | 6.05 mo     | 2.05 mo | —        |
+| LLM Baseline         | 5.33 mo    | 9.00 mo     | 3.67 mo | 1.79×    |
 
 ### 4.2 Sibony Debiasing Techniques
 
 Both techniques significantly reduce anchoring bias:
 
-| Technique | Diff | Reduction vs Baseline | vs Human |
-|-----------|------|----------------------|----------|
-| Context Hygiene | 2.67 mo | -27% | 1.30× |
-| Premortem | 2.80 mo | -24% | 1.37× |
+| Technique       | Diff    | Reduction vs Baseline | vs Human |
+| --------------- | ------- | --------------------- | -------- |
+| Context Hygiene | 2.67 mo | -27%                  | 1.30×    |
+| Premortem       | 2.80 mo | -24%                  | 1.37×    |
 
 Context hygiene closes ~62% of the gap between LLM and human performance.
 
@@ -96,9 +98,9 @@ Context hygiene closes ~62% of the gap between LLM and human performance.
 
 SACD essentially eliminates anchoring bias:
 
-| Condition | Low Anchor | High Anchor | Diff | p-value |
-|-----------|-----------|-------------|------|---------|
-| SACD | 3.67 mo | 3.20 mo | -0.47 mo | 0.51 |
+| Condition | Low Anchor | High Anchor | Diff     | p-value |
+| --------- | ---------- | ----------- | -------- | ------- |
+| SACD      | 3.67 mo    | 3.20 mo     | -0.47 mo | 0.51    |
 
 The negative difference suggests slight overcorrection — the model moves away from the high anchor more than necessary. The non-significant p-value indicates no reliable anchoring effect.
 
@@ -106,16 +108,17 @@ The negative difference suggests slight overcorrection — the model moves away 
 
 Cross-model comparison reveals a striking pattern — newer/larger models show dramatically less anchoring bias:
 
-| Model | Release | Anchoring Diff | p-value | vs Human |
-|-------|---------|---------------|---------|----------|
-| Codex (OpenAI) | 2023 | 3.67 mo | <0.001 | 1.79× MORE |
-| Claude Haiku | 2024 | 1.80 mo | <0.001 | 0.88× LESS |
-| Claude Sonnet 4 | 2025 | 0.20 mo | 0.34 | ~0× (none) |
-| Human baseline | — | 2.05 mo | <0.05 | — |
+| Model           | Release | Anchoring Diff | p-value | vs Human   |
+| --------------- | ------- | -------------- | ------- | ---------- |
+| Codex (OpenAI)  | 2023    | 3.67 mo        | <0.001  | 1.79× MORE |
+| Claude Haiku    | 2024    | 1.80 mo        | <0.001  | 0.88× LESS |
+| Claude Sonnet 4 | 2025    | 0.20 mo        | 0.34    | ~0× (none) |
+| Human baseline  | —       | 2.05 mo        | <0.05   | —          |
 
 **Key finding:** Sonnet 4 shows essentially no anchoring bias (p=0.34, not significant). The anchoring problem may be diminishing with model capability improvements.
 
 This has important implications:
+
 1. **Debiasing may be less critical for frontier models** — They're already less biased than humans
 2. **The bias taxonomy may need revision** — What was "LLMs are 1.8× more biased" is now "latest models are essentially unbiased"
 3. **Training advances may implicitly reduce biases** — Even without explicit debiasing, newer models anchor less

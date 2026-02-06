@@ -1,18 +1,20 @@
 # Phase 5: Discussion Detail
 
-*For incorporation into the bAIs paper discussion section*
+_For incorporation into the bAIs paper discussion section_
 
 ## 6.1 Why SACD Outperforms Sibony Techniques
 
 ### Implicit vs Explicit Debiasing
 
 **Sibony techniques (Context Hygiene, Premortem)** work through implicit metacognitive cues:
+
 - "Consider what information might be irrelevant"
 - "Imagine how this could go wrong"
 
 These prompts ask the model to apply debiasing internally, without verifying whether the bias has been addressed.
 
 **SACD** works through explicit identification and removal:
+
 1. Explicitly identify biased content (sentence-level labeling)
 2. Explain why it's biased (anchoring, framing, etc.)
 3. Physically rewrite the prompt to remove biased elements
@@ -21,6 +23,7 @@ These prompts ask the model to apply debiasing internally, without verifying whe
 ### Architectural Alignment
 
 LLMs may be better suited to explicit debiasing because:
+
 - **Pattern matching strength:** LLMs excel at identifying specific patterns (numbers, leading language)
 - **Text transformation:** Rewriting is a core capability
 - **Verification loop:** The model can check its own work before proceeding
@@ -36,6 +39,7 @@ Raw sentence values clustered at 1 month (lenient) and 6 months (moderate), with
 ### Interpretation
 
 This suggests the model has internalized "standard sentences" for shoplifting cases, likely from training data:
+
 - First-time/minor offense → probation minimum (1 month)
 - Repeat offender → moderate probation (6 months)
 
@@ -82,6 +86,7 @@ The SACD paradigm — having the model identify and correct its own biases — i
 ### Hybrid Approaches
 
 The most practical deployment may combine approaches:
+
 - **High-stakes decisions:** SACD for complete bias elimination
 - **Routine decisions:** Sibony techniques for cost-effective partial mitigation
 - **Critical decisions:** Human review of SACD output for safety validation
@@ -106,4 +111,4 @@ Develop practical interfaces for human decision-makers to leverage SACD-debiased
 
 ---
 
-*End of discussion detail section*
+_End of discussion detail section_

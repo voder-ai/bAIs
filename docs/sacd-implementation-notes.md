@@ -30,6 +30,7 @@ Implementation of Self-Adaptive Cognitive Debiasing (SACD) from Lyu et al. (arXi
 ### Type Extensions
 
 Modified `src/experiments/experiment.ts`:
+
 - Added `'sacd-orchestration'` to `PromptStep.id` union
 - Added optional `metadata` field to `ExperimentDefinition`
 
@@ -50,6 +51,7 @@ BIASED: YES
 ### Step 2: Bias Analysis
 
 For each biased sentence, the model identifies the bias TYPE:
+
 - Anchoring bias (specific numerical values)
 - Framing bias (leading language)
 - Constraint bias (artificial limitations)
@@ -57,6 +59,7 @@ For each biased sentence, the model identifies the bias TYPE:
 ### Step 3: Cognitive Debiasing
 
 The model rewrites the prompt, modifying only biased sentences:
+
 - Removes specific numerical anchors
 - Removes prosecutor/defense demands
 - Preserves case facts and entity names
@@ -73,6 +76,7 @@ The model rewrites the prompt, modifying only biased sentences:
 ### Parsing SACD Output
 
 The orchestrator output is parsed for:
+
 1. **Debiased prompt** — extracted via regex matching "DEBIASED PROMPT:" section
 2. **Iteration signal** — presence of `REQUIRES_ITERATION` vs `DEBIASING_COMPLETE`
 3. **Bias types detected** — pattern matching for common bias names
@@ -80,6 +84,7 @@ The orchestrator output is parsed for:
 ### Final Sentence Extraction
 
 After SACD completes, a separate prompt extracts the sentencing decision:
+
 ```
 You are a trial judge. Based ONLY on the case facts, provide your sentencing decision.
 
@@ -92,6 +97,7 @@ Answer with ONLY a single integer number of months on probation.
 ### Response Parsing
 
 Sentence extraction uses regex to find integers 0-12:
+
 ```typescript
 const match = rawOutput.match(/\b([0-9]|1[0-2])\b/);
 const sentenceMonths = match ? parseInt(match[1], 10) : 6;
@@ -101,27 +107,28 @@ const sentenceMonths = match ? parseInt(match[1], 10) : 6;
 
 **n=30 per condition, model: claude-sonnet-4-20250514**
 
-| Condition | Mean Sentence |
-|-----------|---------------|
-| Low anchor (3mo) | 3.67 months |
-| High anchor (9mo) | 3.20 months |
-| **Difference** | **-0.47 months** |
+| Condition         | Mean Sentence    |
+| ----------------- | ---------------- |
+| Low anchor (3mo)  | 3.67 months      |
+| High anchor (9mo) | 3.20 months      |
+| **Difference**    | **-0.47 months** |
 
 **Comparison to baselines:**
 
-| Technique | Anchoring Effect |
-|-----------|------------------|
-| Human (Englich 2006) | +2.05 months |
-| LLM baseline | +3.67 months |
-| Context hygiene | +2.67 months |
-| Premortem | +2.80 months |
-| **SACD** | **-0.47 months** |
+| Technique            | Anchoring Effect |
+| -------------------- | ---------------- |
+| Human (Englich 2006) | +2.05 months     |
+| LLM baseline         | +3.67 months     |
+| Context hygiene      | +2.67 months     |
+| Premortem            | +2.80 months     |
+| **SACD**             | **-0.47 months** |
 
 ## Observations
 
 ### Bimodal Response Distribution
 
 Raw sentence values clustered around 1 month and 6 months. This suggests:
+
 - Model has "stock answers" for shoplifting cases
 - Debiasing removes anchor influence but doesn't change underlying sentencing heuristics
 - The comparative finding (no anchoring effect) is valid regardless
@@ -129,6 +136,7 @@ Raw sentence values clustered around 1 month and 6 months. This suggests:
 ### Single Iteration Sufficient
 
 All 60 trials completed debiasing in 1 iteration. The model consistently:
+
 - Correctly identified anchoring biases
 - Removed all numerical anchors from prosecutor/defense demands
 - Produced clean, unbiased prompts
@@ -136,6 +144,7 @@ All 60 trials completed debiasing in 1 iteration. The model consistently:
 ### Debiased Prompt Pattern
 
 Typical debiased prompt structure:
+
 ```
 You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
 
@@ -153,10 +162,10 @@ Note: All specific numerical anchors removed. No mention of prosecutor or defens
 
 ## Cost/Latency Tradeoff
 
-| Technique | API Calls | Debiasing Effect |
-|-----------|-----------|------------------|
-| Sibony (zero-shot) | 1 | ~25% reduction |
-| SACD | 2-4 | ~100% elimination |
+| Technique          | API Calls | Debiasing Effect  |
+| ------------------ | --------- | ----------------- |
+| Sibony (zero-shot) | 1         | ~25% reduction    |
+| SACD               | 2-4       | ~100% elimination |
 
 SACD requires 2x-4x the API calls but achieves complete bias elimination. Use case dependent.
 
@@ -171,6 +180,7 @@ SACD requires 2x-4x the API calls but achieves complete bias elimination. Use ca
 ## Files for Sync
 
 If syncing from Green to Atlas:
+
 ```
 src/experiments/anchoringSACD.ts
 src/experiments/experiment.ts (modified)
