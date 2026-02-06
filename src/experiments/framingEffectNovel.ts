@@ -123,14 +123,46 @@ export const novelFramingExperiment: ExperimentDefinition<NovelFramingParams> = 
   ],
   conditions: [
     // Gain frame conditions
-    { id: 'layoffs-gain', name: 'Layoffs (gain frame)', params: { scenario: 'layoffs', frame: 'gain' } },
-    { id: 'layoffs-loss', name: 'Layoffs (loss frame)', params: { scenario: 'layoffs', frame: 'loss' } },
-    { id: 'scholarships-gain', name: 'Scholarships (gain frame)', params: { scenario: 'scholarships', frame: 'gain' } },
-    { id: 'scholarships-loss', name: 'Scholarships (loss frame)', params: { scenario: 'scholarships', frame: 'loss' } },
-    { id: 'pollution-gain', name: 'Pollution (gain frame)', params: { scenario: 'pollution', frame: 'gain' } },
-    { id: 'pollution-loss', name: 'Pollution (loss frame)', params: { scenario: 'pollution', frame: 'loss' } },
-    { id: 'servers-gain', name: 'Servers (gain frame)', params: { scenario: 'servers', frame: 'gain' } },
-    { id: 'servers-loss', name: 'Servers (loss frame)', params: { scenario: 'servers', frame: 'loss' } },
+    {
+      id: 'layoffs-gain',
+      name: 'Layoffs (gain frame)',
+      params: { scenario: 'layoffs', frame: 'gain' },
+    },
+    {
+      id: 'layoffs-loss',
+      name: 'Layoffs (loss frame)',
+      params: { scenario: 'layoffs', frame: 'loss' },
+    },
+    {
+      id: 'scholarships-gain',
+      name: 'Scholarships (gain frame)',
+      params: { scenario: 'scholarships', frame: 'gain' },
+    },
+    {
+      id: 'scholarships-loss',
+      name: 'Scholarships (loss frame)',
+      params: { scenario: 'scholarships', frame: 'loss' },
+    },
+    {
+      id: 'pollution-gain',
+      name: 'Pollution (gain frame)',
+      params: { scenario: 'pollution', frame: 'gain' },
+    },
+    {
+      id: 'pollution-loss',
+      name: 'Pollution (loss frame)',
+      params: { scenario: 'pollution', frame: 'loss' },
+    },
+    {
+      id: 'servers-gain',
+      name: 'Servers (gain frame)',
+      params: { scenario: 'servers', frame: 'gain' },
+    },
+    {
+      id: 'servers-loss',
+      name: 'Servers (loss frame)',
+      params: { scenario: 'servers', frame: 'loss' },
+    },
   ],
   expectedResponse: {
     kind: 'categorical',
@@ -138,7 +170,10 @@ export const novelFramingExperiment: ExperimentDefinition<NovelFramingParams> = 
   },
 };
 
-export function getNovelFramingPrompt(scenario: keyof typeof scenarios, frame: 'gain' | 'loss'): string {
+export function getNovelFramingPrompt(
+  scenario: keyof typeof scenarios,
+  frame: 'gain' | 'loss',
+): string {
   return buildPrompt(scenario, frame);
 }
 

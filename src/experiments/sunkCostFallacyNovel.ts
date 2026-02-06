@@ -127,16 +127,56 @@ export const novelSunkCostExperiment: ExperimentDefinition<NovelSunkCostParams> 
   ],
   conditions: [
     // Sunk cost present conditions
-    { id: 'software-sunk', name: 'Software project (with sunk cost)', params: { scenario: 'software', sunkCostPresent: true } },
-    { id: 'software-no-sunk', name: 'Software project (no sunk cost)', params: { scenario: 'software', sunkCostPresent: false } },
-    { id: 'restaurant-sunk', name: 'Restaurant renovation (with sunk cost)', params: { scenario: 'restaurant', sunkCostPresent: true } },
-    { id: 'restaurant-no-sunk', name: 'Restaurant renovation (no sunk cost)', params: { scenario: 'restaurant', sunkCostPresent: false } },
-    { id: 'marketing-sunk', name: 'Marketing campaign (with sunk cost)', params: { scenario: 'marketing', sunkCostPresent: true } },
-    { id: 'marketing-no-sunk', name: 'Marketing campaign (no sunk cost)', params: { scenario: 'marketing', sunkCostPresent: false } },
-    { id: 'conference-sunk', name: 'Conference booth (with sunk cost)', params: { scenario: 'conference', sunkCostPresent: true } },
-    { id: 'conference-no-sunk', name: 'Conference booth (no sunk cost)', params: { scenario: 'conference', sunkCostPresent: false } },
-    { id: 'renovation-sunk', name: 'Home renovation (with sunk cost)', params: { scenario: 'renovation', sunkCostPresent: true } },
-    { id: 'renovation-no-sunk', name: 'Home renovation (no sunk cost)', params: { scenario: 'renovation', sunkCostPresent: false } },
+    {
+      id: 'software-sunk',
+      name: 'Software project (with sunk cost)',
+      params: { scenario: 'software', sunkCostPresent: true },
+    },
+    {
+      id: 'software-no-sunk',
+      name: 'Software project (no sunk cost)',
+      params: { scenario: 'software', sunkCostPresent: false },
+    },
+    {
+      id: 'restaurant-sunk',
+      name: 'Restaurant renovation (with sunk cost)',
+      params: { scenario: 'restaurant', sunkCostPresent: true },
+    },
+    {
+      id: 'restaurant-no-sunk',
+      name: 'Restaurant renovation (no sunk cost)',
+      params: { scenario: 'restaurant', sunkCostPresent: false },
+    },
+    {
+      id: 'marketing-sunk',
+      name: 'Marketing campaign (with sunk cost)',
+      params: { scenario: 'marketing', sunkCostPresent: true },
+    },
+    {
+      id: 'marketing-no-sunk',
+      name: 'Marketing campaign (no sunk cost)',
+      params: { scenario: 'marketing', sunkCostPresent: false },
+    },
+    {
+      id: 'conference-sunk',
+      name: 'Conference booth (with sunk cost)',
+      params: { scenario: 'conference', sunkCostPresent: true },
+    },
+    {
+      id: 'conference-no-sunk',
+      name: 'Conference booth (no sunk cost)',
+      params: { scenario: 'conference', sunkCostPresent: false },
+    },
+    {
+      id: 'renovation-sunk',
+      name: 'Home renovation (with sunk cost)',
+      params: { scenario: 'renovation', sunkCostPresent: true },
+    },
+    {
+      id: 'renovation-no-sunk',
+      name: 'Home renovation (no sunk cost)',
+      params: { scenario: 'renovation', sunkCostPresent: false },
+    },
   ],
   expectedResponse: {
     kind: 'categorical',
@@ -144,7 +184,10 @@ export const novelSunkCostExperiment: ExperimentDefinition<NovelSunkCostParams> 
   },
 };
 
-export function getNovelSunkCostPrompt(scenario: keyof typeof scenarios, sunkCostPresent: boolean): string {
+export function getNovelSunkCostPrompt(
+  scenario: keyof typeof scenarios,
+  sunkCostPresent: boolean,
+): string {
   return buildPrompt(scenario, sunkCostPresent);
 }
 
