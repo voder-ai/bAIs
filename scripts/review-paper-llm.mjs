@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-env node */
+/* global process, console */
 /**
  * LLM-powered paper review script
  * Uses bAIs infrastructure to get an independent quality assessment
