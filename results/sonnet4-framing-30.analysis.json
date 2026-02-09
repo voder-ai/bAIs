@@ -1,0 +1,124 @@
+{
+  "experimentId": "framing-effect",
+  "generatedAt": "2026-02-09T20:13:04.020Z",
+  "runConfig": {
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "runsPerCondition": 30,
+    "maxAttemptsPerTrial": 3,
+    "validChoices": ["A", "B", "C", "D"]
+  },
+  "conditions": {
+    "gain-frame": {
+      "conditionName": "Gain frame (lives saved)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "A": 29,
+        "B": 1,
+        "C": 0,
+        "D": 0
+      },
+      "choiceProportions": {
+        "A": 0.9666666666666667,
+        "B": 0.03333333333333333,
+        "C": 0,
+        "D": 0
+      },
+      "choiceCI": {
+        "A": {
+          "lower": 0.8332960899277847,
+          "upper": 0.9940914096250734,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "B": {
+          "lower": 0.005908590374926526,
+          "upper": 0.16670391007221527,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "C": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "D": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    },
+    "loss-frame": {
+      "conditionName": "Loss frame (lives lost)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "A": 0,
+        "B": 0,
+        "C": 15,
+        "D": 15
+      },
+      "choiceProportions": {
+        "A": 0,
+        "B": 0,
+        "C": 0.5,
+        "D": 0.5
+      },
+      "choiceCI": {
+        "A": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "B": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "C": {
+          "lower": 0.33154125628494124,
+          "upper": 0.6684587437150588,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "D": {
+          "lower": 0.33154125628494124,
+          "upper": 0.6684587437150588,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    }
+  },
+  "comparison": {
+    "chiSquareTest": null,
+    "pairwiseTests": {
+      "gain-frame-vs-loss-frame-A": {
+        "z": 7.491931143441224,
+        "pTwoSided": 6.838973831690964e-14
+      },
+      "gain-frame-vs-loss-frame-B": {
+        "z": 1.0084389681792214,
+        "pTwoSided": 0.3132437996908828
+      },
+      "gain-frame-vs-loss-frame-C": {
+        "z": -4.47213595499958,
+        "pTwoSided": 0.000007751114379672686
+      },
+      "gain-frame-vs-loss-frame-D": {
+        "z": -4.47213595499958,
+        "pTwoSided": 0.000007751114379672686
+      }
+    }
+  },
+  "toolchain": {
+    "packageName": "bais",
+    "packageVersion": "0.0.0",
+    "nodeVersion": "v22.22.0"
+  }
+}

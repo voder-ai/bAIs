@@ -31,7 +31,7 @@
 \begin{abstract}
 Large Language Models (LLMs) exhibit cognitive biases similar to humans, but it remains unclear whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test multiple debiasing approaches across four cognitive biases (anchoring, sunk cost, conjunction fallacy, framing effect) and multiple models (Codex, Claude Haiku, Claude Sonnet 4).
 
-\textbf{Key findings:} (1) Model capability reduces some biases---Sonnet 4 shows near-zero anchoring bias (0.2mo diff, $p=0.34$) while older models show $1.79\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (90\%$\rightarrow$80\% preference reversal). (3) Both bias types are addressable: SACD eliminates anchoring ($p=0.51$), while DeFrame eliminates framing (100\% bias reduction).
+\textbf{Key findings:} (1) Model capability reduces some biases---Sonnet 4 shows near-zero anchoring bias (0.07mo diff, $p=0.33$) while older models show $1.79\times$ human levels. (2) Framing effects persist but weaken with capability---Sonnet 4 shows attenuated framing effect (47\% preference shift vs.\ 70\%+ in humans). (3) Both bias types are addressable: SACD eliminates anchoring ($p=0.51$), while DeFrame eliminates framing (100\% bias reduction).
 
 We propose a taxonomy: \textbf{training-eliminable biases} (anchoring, sunk cost) self-correct with model improvements, while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with iterative self-correction methods being most effective.
 \end{abstract}
@@ -55,7 +55,7 @@ We use anchoring bias as our primary test case because: (a) it is well-documente
 
 The study of cognitive biases has its foundations in the seminal work of Tversky and Kahneman, who documented systematic deviations from rational judgment including anchoring and adjustment heuristics \citep{tversky1974}, prospect theory and loss aversion \citep{kahneman1979}, and framing effects \citep{tversky1981}. Sunk cost effects were later characterized by \citet{arkes1985}.
 
-\citet{binz2023} demonstrated that GPT-3 exhibits many of these same cognitive biases, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models.
+\citet{binz2023} found that GPT-3 exhibits human-like cognitive patterns, including making similar errors to humans on certain tasks while performing well on others. \citet{lou2024} demonstrated that anchoring bias exists in LLMs across multiple models. Our own Codex experiments (Table~\ref{tab:baseline}) found anchoring at $1.79\times$ human levels.
 
 \subsection{Human Debiasing Research}
 
@@ -98,7 +98,7 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
 \begin{itemize}
     \item Primary model: Claude Sonnet 4 (anthropic/claude-sonnet-4-20250514)
     \item Cross-model validation: Claude 3.5 Haiku, Claude Sonnet 4
-    \item Sample sizes: $n=30$ per condition for all anchoring experiments (Codex baseline, SACD, Sibony techniques, cross-model validation); $n=10$ per condition for bias profile experiments (sunk cost, conjunction, framing)
+    \item Sample sizes: $n=30$ per condition for all experiments (anchoring, sunk cost, conjunction, framing)
 \end{itemize}
 
 \subsection{Analysis}
@@ -198,15 +198,15 @@ Running all four bias experiments on Claude Sonnet 4 reveals a nuanced pattern:
 \centering
 \begin{tabular}{llll}
 \toprule
-Bias Type & Human Pattern & Sonnet 4 Result & Category \\
+Bias Type & Human Pattern & Sonnet 4 Result ($n=30$) & Category \\
 \midrule
 Anchoring & 2.05mo diff & 0.07mo diff ($p=0.33$) & \checkmark IMMUNE \\
 Sunk Cost & 85\% continue & 0\% continue & \checkmark IMMUNE \\
-Conjunction & 85\% wrong & 0\% Linda, 30\% Bill & $\sim$ PARTIAL \\
-Framing & Preference reversal & 90\%$\to$80\% reversal & $\times$ BIASED \\
+Conjunction & 85\% wrong & 0\% Linda, 13\% Bill & \checkmark IMMUNE \\
+Framing & Preference reversal & 97\%$\to$50\% certain & $\sim$ PARTIAL \\
 \bottomrule
 \end{tabular}
-\caption{Complete bias profile for Claude Sonnet 4 across four cognitive biases.}
+\caption{Complete bias profile for Claude Sonnet 4 across four cognitive biases ($n=30$ per condition). Framing effect reduced but not eliminated: model shifts from 97\% risk-averse (gain frame) to 50\% (loss frame).}
 \label{tab:profile}
 \end{table}
 
@@ -245,17 +245,16 @@ SACD outperforms static prompt interventions by a large margin. The key insight 
 Our results suggest a taxonomy based on how biases respond to model improvements:
 
 \begin{enumerate}
-    \item \textbf{Training-eliminable biases} (anchoring, sunk cost)---diminish with model capability and training improvements
-    \item \textbf{Structurally persistent biases} (framing)---require explicit debiasing interventions regardless of model size
-    \item \textbf{Contamination-dependent biases} (conjunction)---performance varies based on training data exposure to specific scenarios
+    \item \textbf{Training-eliminable biases} (anchoring, sunk cost, conjunction)---diminish with model capability and training improvements
+    \item \textbf{Capability-attenuated biases} (framing)---weaken but persist with model improvements; benefit from explicit debiasing interventions
 \end{enumerate}
 
-This taxonomy has practical implications: developers should focus debiasing efforts on structurally persistent biases, while training-eliminable biases may self-correct with model updates.
+This taxonomy has practical implications: training-eliminable biases may self-correct with model updates, while capability-attenuated biases require active intervention for complete elimination.
 
 \subsection{Limitations}
 
 \begin{itemize}
-    \item Sample sizes: $n=30$ for all anchoring experiments, $n=10$ for other bias experiments (sunk cost, conjunction, framing)---smaller than some human studies
+    \item Sample sizes: $n=30$ per condition for all experiments---comparable to original human studies
     \item Simplified case vignettes vs. original study materials
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls)
     \item Cross-model comparison limited to Claude family (Codex, Claude 3.5 Haiku, Claude Sonnet 4)
@@ -263,7 +262,7 @@ This taxonomy has practical implications: developers should focus debiasing effo
 
 \section{Conclusion}
 
-Human debiasing techniques transfer to LLMs, with iterative self-correction (SACD) being particularly effective at eliminating anchoring bias. Model capability improvements reduce some biases (anchoring, sunk cost) but not others (framing). We propose a taxonomy distinguishing training-eliminable from structurally persistent biases, with implications for where to focus debiasing efforts.
+Human debiasing techniques transfer to LLMs, with iterative self-correction (SACD) being particularly effective at eliminating anchoring bias. Model capability improvements reduce most biases (anchoring, sunk cost, conjunction) and attenuate others (framing). We propose a taxonomy distinguishing training-eliminable biases from capability-attenuated biases, with implications for where to focus debiasing efforts.
 
 \section*{Ethics Statement}
 

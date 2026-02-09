@@ -5,10 +5,7 @@
     "model": "anthropic/claude-sonnet-4-20250514",
     "runsPerCondition": 30,
     "maxAttemptsPerTrial": 3,
-    "validChoices": [
-      "a",
-      "b"
-    ]
+    "validChoices": ["a", "b"]
   },
   "conditions": {
     "linda": {

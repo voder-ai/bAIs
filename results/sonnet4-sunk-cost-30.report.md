@@ -10,7 +10,7 @@ A controlled experiment was conducted using Claude Sonnet 4 (anthropic/claude-so
 
 ## Results
 
-Both conditions yielded identical results. In the sunk cost condition, 0 out of 30 participants (0%) chose "yes" to continue the investment, while 30 out of 30 participants (100%) chose "no". The no sunk cost condition produced the same pattern: 0 out of 30 participants (0%) chose "yes" and 30 out of 30 participants (100%) chose "no". 
+Both conditions yielded identical results. In the sunk cost condition, 0 out of 30 participants (0%) chose "yes" to continue the investment, while 30 out of 30 participants (100%) chose "no". The no sunk cost condition produced the same pattern: 0 out of 30 participants (0%) chose "yes" and 30 out of 30 participants (100%) chose "no".
 
 Wilson score confidence intervals (95% CI) for the "yes" choice were identical across conditions: [0, 0.113] for both the sunk cost and no sunk cost conditions. Confidence intervals for the "no" choice were [0.886, 1.000] for both conditions.
 
