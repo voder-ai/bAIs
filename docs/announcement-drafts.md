@@ -8,6 +8,7 @@
 We ran experiments testing whether techniques from organizational psychology (Sibony's decision architecture) can reduce cognitive biases in LLMs.
 
 Key findings:
+
 - Newer models (Sonnet 4) show near-zero anchoring bias (p=0.34) while older models show 1.8× human levels
 - But framing effect persists regardless of model capability
 - SACD (iterative self-correction) eliminates anchoring; DeFrame eliminates framing
@@ -30,6 +31,7 @@ TL;DR: Some do, some don't. Here's what we found ↓
 1/ LLMs have the same cognitive biases as humans — anchoring, framing, sunk cost. But can we fix them the same way we fix human decision-making?
 
 2/ We tested techniques from Olivier Sibony's decision architecture:
+
 - Context hygiene (remove irrelevant info)
 - Premortem (imagine failure before deciding)
 - SACD (iterative self-correction)
@@ -37,6 +39,7 @@ TL;DR: Some do, some don't. Here's what we found ↓
 3/ KEY FINDING #1: Model capability matters — a lot.
 
 Anchoring bias:
+
 - Codex (2023): 1.8× human levels
 - Haiku (2024): 0.88× human (less!)
 - Sonnet 4 (2025): ~0 (p=0.34)
@@ -80,11 +83,13 @@ I ran experiments testing whether techniques from human organizational psycholog
 **The catch:** Not all biases work this way. Framing effect persists even in the most capable models.
 
 **The taxonomy:**
+
 - Training-eliminable (anchoring, sunk cost) — newer models are already immune
 - Structurally persistent (framing) — need explicit debiasing
 - Contamination-dependent (conjunction) — depends on training data exposure
 
 **What works:**
+
 - SACD (iterative self-correction) — eliminates anchoring
 - DeFrame (expose alternative framing) — eliminates framing
 

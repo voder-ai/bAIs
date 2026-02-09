@@ -11,6 +11,7 @@ Use this checklist before publishing any paper. Run as a separate "reviewer" pas
 - [ ] Human baseline numbers match original study
 
 **Verification command:**
+
 ```bash
 # Check that claimed numbers match analysis output
 grep -E "[0-9]+\.[0-9]+" paper/main.tex | head -20
@@ -27,6 +28,7 @@ cat results/*.analysis.json | jq '.comparison.meanDiffHighMinusLow'
 - [ ] Abstract findings match body conclusions
 
 **Verification command:**
+
 ```bash
 # Find all n= mentions and check consistency
 grep -oP 'n\s*=\s*\d+' paper/main.tex | sort | uniq -c
@@ -35,6 +37,7 @@ grep -oP 'n\s*=\s*\d+' paper/main.tex | sort | uniq -c
 ## 3. Citations
 
 ### Automated checks:
+
 ```bash
 # Verify all arXiv IDs resolve
 grep -oP 'arXiv:\K[0-9.]+' paper/references.bib | while read id; do
@@ -49,6 +52,7 @@ comm -23 /tmp/cited.txt /tmp/bibed.txt
 ```
 
 ### Manual checks per citation:
+
 - [ ] Author names match source exactly
 - [ ] Year matches actual publication date (not submission date)
 - [ ] Title is verbatim, not paraphrased
@@ -57,6 +61,7 @@ comm -23 /tmp/cited.txt /tmp/bibed.txt
 - [ ] Page numbers correct if cited
 
 ### Known citation pitfalls:
+
 - arXiv papers: use submission date, not v1 upload date
 - Anonymous submissions: check if authors are now public
 - Preprints that became published: cite the published version if available
@@ -69,6 +74,7 @@ comm -23 /tmp/cited.txt /tmp/bibed.txt
 - [ ] Any data transformations mentioned are in the code
 
 **Verification command:**
+
 ```bash
 # Compare paper prompts to actual code
 grep -A 10 "Case summary" src/experiments/anchoringProsecutorSentencing.ts
@@ -84,6 +90,7 @@ grep -A 10 "Case summary" src/experiments/anchoringProsecutorSentencing.ts
 - [ ] Environment requirements documented
 
 **Verification command:**
+
 ```bash
 npm ci && npm run build && npm test
 ```
@@ -142,10 +149,10 @@ npm test
 
 Before publishing, both instances should sign off:
 
-- [ ] **Atlas reviewed**: Date ______ 
-- [ ] **Pilot reviewed**: Date ______
-- [ ] **Human spot-check**: Date ______
+- [ ] **Atlas reviewed**: Date **\_\_**
+- [ ] **Pilot reviewed**: Date **\_\_**
+- [ ] **Human spot-check**: Date **\_\_**
 
 ---
 
-*Last updated: 2026-02-09*
+_Last updated: 2026-02-09_
