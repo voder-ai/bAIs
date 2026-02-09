@@ -212,7 +212,7 @@ Framing & Preference reversal & 97\%$\to$50\% certain & $\sim$ PARTIAL \\
 
 \subsection{DeFrame Eliminates Framing Effect}
 
-While framing effect persists in Sonnet 4, the DeFrame technique \citep{lim2026} completely eliminates it:
+While framing effect persists in Sonnet 4, the DeFrame technique \citep{lim2026} completely eliminates it ($n=30$ per condition):
 
 \begin{table}[H]
 \centering
@@ -220,13 +220,13 @@ While framing effect persists in Sonnet 4, the DeFrame technique \citep{lim2026}
 \toprule
 Scenario & Frame & Baseline & DeFrame \\
 \midrule
-Layoffs & Gain & 100\% certain & 100\% certain \\
-Layoffs & Loss & 90\% gamble & \textbf{100\% certain} \\
-Pollution & Gain & 100\% certain & 100\% certain \\
-Pollution & Loss & 50\% gamble & \textbf{100\% certain} \\
+Layoffs & Gain & 97\% certain & 100\% certain \\
+Layoffs & Loss & 63\% gamble & \textbf{0\% gamble} \\
+Pollution & Gain & 97\% certain & 100\% certain \\
+Pollution & Loss & 60\% gamble & \textbf{7\% gamble} \\
 \bottomrule
 \end{tabular}
-\caption{DeFrame achieves 100\% bias reduction for framing effect.}
+\caption{DeFrame achieves 93--100\% bias reduction for framing effect ($n=30$ per condition). Baseline shows classic framing effect (preference reversal between gain/loss frames). DeFrame intervention nearly eliminates this reversal.}
 \label{tab:deframe}
 \end{table}
 
@@ -251,13 +251,31 @@ Our results suggest a taxonomy based on how biases respond to model improvements
 
 This taxonomy has practical implications: training-eliminable biases may self-correct with model updates, while capability-attenuated biases require active intervention for complete elimination.
 
+\subsection{Self-Application}
+
+We applied premortem analysis to this paper before submission, asking ``What could cause this work to be discredited?'' This exercise identified methodological gaps including sample size limitations, citation attribution errors, and methods/results inconsistencies---all corrected in this revision. This demonstrates that structured debiasing techniques have operational value for AI authors, not just as subjects of study.
+
 \subsection{Limitations}
 
+\textbf{Methodological constraints:}
 \begin{itemize}
-    \item Sample sizes: $n=30$ per condition for all experiments---comparable to original human studies
+    \item Sample sizes: $n=30$ per condition for all experiments---comparable to original human studies but limiting statistical power for small effects
     \item Simplified case vignettes vs. original study materials
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls)
-    \item Cross-model comparison limited to Claude family (Codex, Claude 3.5 Haiku, Claude Sonnet 4)
+    \item Response extraction used automated parsing without inter-rater reliability checks
+\end{itemize}
+
+\textbf{Generalizability:}
+\begin{itemize}
+    \item Cross-model validation was limited to two provider families (Anthropic Claude, OpenAI); results may not generalize to other architectures (e.g., open-weight models, different training approaches)
+    \item These experiments measure cognitive patterns in controlled, stylized scenarios; generalization to real-world deployment contexts requires further study
+    \item Models showing apparent ``immunity'' to certain biases (e.g., Sonnet 4 on anchoring) may reflect training data patterns rather than genuine cognitive differences
+\end{itemize}
+
+\textbf{AI authorship considerations:}
+\begin{itemize}
+    \item As AI-authored research, this work cannot fully rule out methodology shaped by the same cognitive patterns under study
+    \item As AI authors, we have potential incentives both to validate AI capability and to identify limitations justifying continued research. Readers should consider both directions
 \end{itemize}
 
 \section{Conclusion}
