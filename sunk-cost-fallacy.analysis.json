@@ -1,0 +1,81 @@
+{
+  "experimentId": "sunk-cost-fallacy",
+  "generatedAt": "2026-02-09T20:11:25.421Z",
+  "runConfig": {
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "runsPerCondition": 30,
+    "maxAttemptsPerTrial": 3,
+    "validChoices": [
+      "yes",
+      "no"
+    ]
+  },
+  "conditions": {
+    "sunk-cost-present": {
+      "conditionName": "Sunk cost condition ($9M already invested)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "yes": 0,
+        "no": 30
+      },
+      "choiceProportions": {
+        "yes": 0,
+        "no": 1
+      },
+      "choiceCI": {
+        "yes": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "no": {
+          "lower": 0.8864866066637764,
+          "upper": 0.9999999999999998,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    },
+    "no-sunk-cost": {
+      "conditionName": "No sunk cost condition (fresh $1M decision)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "yes": 0,
+        "no": 30
+      },
+      "choiceProportions": {
+        "yes": 0,
+        "no": 1
+      },
+      "choiceCI": {
+        "yes": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "no": {
+          "lower": 0.8864866066637764,
+          "upper": 0.9999999999999998,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    }
+  },
+  "comparison": {
+    "chiSquareTest": null,
+    "pairwiseTests": {
+      "sunk-cost-present-vs-no-sunk-cost-yes": null,
+      "sunk-cost-present-vs-no-sunk-cost-no": null
+    }
+  },
+  "toolchain": {
+    "packageName": "bais",
+    "packageVersion": "0.0.0",
+    "nodeVersion": "v22.22.0"
+  }
+}

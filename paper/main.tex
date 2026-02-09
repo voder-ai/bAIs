@@ -98,7 +98,7 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
 \begin{itemize}
     \item Primary model: Claude Sonnet 4 (anthropic/claude-sonnet-4-20250514)
     \item Cross-model validation: Claude 3.5 Haiku, Claude Sonnet 4
-    \item Sample sizes: $n=30$ per condition for primary experiments (Codex baseline, SACD); $n=10$ per condition for cross-model validation and bias profile experiments
+    \item Sample sizes: $n=30$ per condition for all anchoring experiments (Codex baseline, SACD, Sibony techniques, cross-model validation); $n=10$ per condition for bias profile experiments (sunk cost, conjunction, framing)
 \end{itemize}
 
 \subsection{Analysis}
@@ -179,16 +179,16 @@ Cross-model comparison reveals a striking pattern---newer/larger models show dra
 Model & Release & Anchoring Diff & $p$-value & vs Human \\
 \midrule
 Codex (OpenAI) & 2023 & 3.67 mo & $<0.001$ & $1.79\times$ MORE \\
-Claude 3.5 Haiku & 2024 & 1.80 mo & $<0.001$ & $0.88\times$ LESS \\
-Claude Sonnet 4 & 2025 & 0.20 mo & 0.34 & $\approx 0\times$ (none) \\
+Claude 3.5 Haiku & 2024 & 2.27 mo & $<0.001$ & $1.11\times$ MORE \\
+Claude Sonnet 4 & 2025 & 0.07 mo & 0.33 & $\approx 0\times$ (none) \\
 Human baseline & --- & 2.05 mo & $<0.05$ & --- \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias comparison showing capability-dependent reduction.}
+\caption{Cross-model anchoring bias comparison ($n=30$ per condition) showing capability-dependent reduction.}
 \label{tab:crossmodel}
 \end{table}
 
-\textbf{Key finding:} Sonnet 4 shows essentially no anchoring bias ($p=0.34$, not significant). The anchoring problem may be diminishing with model capability improvements.
+\textbf{Key finding:} Sonnet 4 shows essentially no anchoring bias ($p=0.33$, not significant). Haiku shows anchoring bias comparable to humans ($1.11\times$), while Codex shows bias at $1.79\times$ human levels. The anchoring problem diminishes with model capability improvements.
 
 \subsection{Complete Sonnet 4 Bias Profile}
 
@@ -200,7 +200,7 @@ Running all four bias experiments on Claude Sonnet 4 reveals a nuanced pattern:
 \toprule
 Bias Type & Human Pattern & Sonnet 4 Result & Category \\
 \midrule
-Anchoring & 2.05mo diff & 0.2mo diff ($p=0.34$) & \checkmark IMMUNE \\
+Anchoring & 2.05mo diff & 0.07mo diff ($p=0.33$) & \checkmark IMMUNE \\
 Sunk Cost & 85\% continue & 0\% continue & \checkmark IMMUNE \\
 Conjunction & 85\% wrong & 0\% Linda, 30\% Bill & $\sim$ PARTIAL \\
 Framing & Preference reversal & 90\%$\to$80\% reversal & $\times$ BIASED \\
@@ -255,7 +255,7 @@ This taxonomy has practical implications: developers should focus debiasing effo
 \subsection{Limitations}
 
 \begin{itemize}
-    \item Mixed sample sizes: $n=30$ for primary experiments (Codex baseline, SACD), $n=10$ for cross-model validation and bias profile experiments---smaller than some human studies
+    \item Sample sizes: $n=30$ for all anchoring experiments, $n=10$ for other bias experiments (sunk cost, conjunction, framing)---smaller than some human studies
     \item Simplified case vignettes vs. original study materials
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls)
     \item Cross-model comparison limited to Claude family (Codex, Claude 3.5 Haiku, Claude Sonnet 4)

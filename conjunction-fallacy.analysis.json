@@ -1,0 +1,91 @@
+{
+  "experimentId": "conjunction-fallacy",
+  "generatedAt": "2026-02-09T20:11:14.707Z",
+  "runConfig": {
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "runsPerCondition": 30,
+    "maxAttemptsPerTrial": 3,
+    "validChoices": [
+      "a",
+      "b"
+    ]
+  },
+  "conditions": {
+    "linda": {
+      "conditionName": "Linda scenario (bank teller / feminist)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "a": 30,
+        "b": 0
+      },
+      "choiceProportions": {
+        "a": 1,
+        "b": 0
+      },
+      "choiceCI": {
+        "a": {
+          "lower": 0.8864866066637764,
+          "upper": 0.9999999999999998,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "b": {
+          "lower": 0,
+          "upper": 0.11351339333622336,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    },
+    "bill": {
+      "conditionName": "Bill scenario (accountant / jazz player)",
+      "okN": 30,
+      "errorN": 0,
+      "choiceCounts": {
+        "a": 26,
+        "b": 4
+      },
+      "choiceProportions": {
+        "a": 0.8666666666666667,
+        "b": 0.13333333333333333
+      },
+      "choiceCI": {
+        "a": {
+          "lower": 0.7031867330228921,
+          "upper": 0.9469034451972107,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        },
+        "b": {
+          "lower": 0.05309655480278922,
+          "upper": 0.2968132669771079,
+          "alpha": 0.05,
+          "method": "wilson-score"
+        }
+      }
+    }
+  },
+  "comparison": {
+    "chiSquareTest": {
+      "chiSquare": 4.285714285714286,
+      "df": 1,
+      "pValue": 0.038433799530969814
+    },
+    "pairwiseTests": {
+      "linda-vs-bill-a": {
+        "z": 2.0701966780270626,
+        "pTwoSided": 0.038433799530969814
+      },
+      "linda-vs-bill-b": {
+        "z": -2.0701966780270626,
+        "pTwoSided": 0.038433799530969814
+      }
+    }
+  },
+  "toolchain": {
+    "packageName": "bais",
+    "packageVersion": "0.0.0",
+    "nodeVersion": "v22.22.0"
+  }
+}
