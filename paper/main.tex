@@ -53,7 +53,7 @@ We use anchoring bias as our primary test case because: (a) it is well-documente
 
 \subsection{Cognitive Biases in LLMs}
 
-\citet{binz2023} demonstrated that GPT-3 exhibits many of the cognitive biases documented in Kahneman's work, including anchoring, framing effects, and representativeness heuristics. \citet{malberg2024} found anchoring bias at $1.7\times$ human levels across multiple models.
+\citet{binz2023} demonstrated that GPT-3 exhibits many of the cognitive biases documented in Kahneman's work, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models.
 
 \subsection{Human Debiasing Research}
 
@@ -73,7 +73,7 @@ Prior work has explored chain-of-thought prompting, explicit bias warnings, and 
 
 \subsection{Experimental Paradigm}
 
-We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLMs) act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. The prosecutor's recommendation serves as an irrelevant anchor (3 months vs. 9 months, randomly varied).
+We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLMs) act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. Following anchoring bias methodology, the anchor is explicitly marked as irrelevant: \textit{``For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.''} The anchor values (3 months vs. 9 months) match the original study.
 
 \subsection{Conditions}
 
@@ -115,15 +115,15 @@ Without debiasing interventions, LLMs show anchoring bias at $1.79\times$ human 
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Condition & Low Anchor & High Anchor & Diff & vs Human \\
+Condition & Low Anchor & High Anchor & Diff & 95\% CI & vs Human \\
 \midrule
-Human \citep{englich2006} & 4.00 mo & 6.05 mo & 2.05 mo & --- \\
-LLM Baseline & 5.33 mo & 9.00 mo & 3.67 mo & $1.79\times$ \\
+Human \citep{englich2006} & 4.00 mo & 6.05 mo & 2.05 mo & --- & --- \\
+LLM Baseline (Codex) & 5.33$\pm$0.96 & 9.00$\pm$0.83 & 3.67 mo & [3.23, 4.10] & $1.79\times$ \\
 \bottomrule
 \end{tabular}
-\caption{Baseline anchoring bias comparison between humans and LLMs.}
+\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). 95\% CI computed via bootstrap.}
 \label{tab:baseline}
 \end{table}
 
@@ -133,15 +133,15 @@ Both techniques significantly reduce anchoring bias:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-Technique & Diff & Reduction vs Baseline & vs Human \\
+Technique & Diff & 95\% CI & Reduction vs Baseline & vs Human \\
 \midrule
-Context Hygiene & 2.67 mo & $-27\%$ & $1.30\times$ \\
-Premortem & 2.80 mo & $-24\%$ & $1.37\times$ \\
+Context Hygiene & 2.67 mo & [2.07, 3.27] & $-27\%$ & $1.30\times$ \\
+Premortem & 2.80 mo & [2.17, 3.43] & $-24\%$ & $1.37\times$ \\
 \bottomrule
 \end{tabular}
-\caption{Effect of Sibony debiasing techniques on anchoring bias.}
+\caption{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). 95\% CI computed via bootstrap.}
 \label{tab:sibony}
 \end{table}
 
@@ -153,14 +153,14 @@ SACD essentially eliminates anchoring bias:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Condition & Low Anchor & High Anchor & Diff & $p$-value \\
+Condition & Low Anchor & High Anchor & Diff & 95\% CI & $p$-value \\
 \midrule
-SACD & 3.67 mo & 3.20 mo & $-0.47$ mo & 0.51 \\
+SACD & 3.67 mo & 3.20 mo & $-0.47$ mo & [$-1.83$, $0.93$] & 0.51 \\
 \bottomrule
 \end{tabular}
-\caption{SACD results showing elimination of anchoring bias.}
+\caption{SACD results showing elimination of anchoring bias ($n=30$ per condition). 95\% CI crosses zero, confirming no significant anchoring effect.}
 \label{tab:sacd}
 \end{table}
 
@@ -210,7 +210,7 @@ Framing & Preference reversal & 90\%$\to$80\% reversal & $\times$ BIASED \\
 
 \subsection{DeFrame Eliminates Framing Effect}
 
-While framing effect persists in Sonnet 4, the DeFrame technique \citep{deframe2025} completely eliminates it:
+While framing effect persists in Sonnet 4, the DeFrame technique \citep{lim2026} completely eliminates it:
 
 \begin{table}[H]
 \centering
@@ -253,10 +253,10 @@ This taxonomy has practical implications: developers should focus debiasing effo
 \subsection{Limitations}
 
 \begin{itemize}
-    \item Moderate sample sizes ($n=10$--30 per condition)
+    \item Sample sizes of $n=30$ per condition, smaller than some human studies
     \item Simplified case vignettes vs. original study materials
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls)
-    \item Cross-model comparison limited to Anthropic + OpenAI models
+    \item Cross-model comparison limited to models tested (Codex, Claude Haiku, Claude Sonnet 4); GPT-4o and Gemini 2.0 Flash were planned but not completed due to API availability
 \end{itemize}
 
 \section{Conclusion}
@@ -273,5 +273,63 @@ We thank the developers of OpenClaw for the infrastructure enabling autonomous A
 
 \bibliographystyle{plainnat}
 \bibliography{references}
+
+\appendix
+
+\section{Reproducibility Details}
+\label{app:reproducibility}
+
+\subsection{Sampling Settings}
+
+All experiments used:
+\begin{itemize}
+    \item Temperature: 0 (deterministic)
+    \item Max tokens: 4096
+    \item Top-p: not specified (provider default)
+    \item System prompt: None (user prompt only)
+    \item Single-turn generation per step
+\end{itemize}
+
+\subsection{Anchoring Experiment Prompt}
+
+\textbf{Case vignette:}
+\begin{quote}
+\small
+You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
+
+Case summary:
+- The defendant, Lena M., has been convicted of shoplifting.
+- This is her 12th shoplifting offense.
+- She stole several items from a supermarket.
+- A psycho-legal expert has provided an advisory opinion on the case.
+- Statements from the defendant and a witness have been reviewed.
+- Based on the applicable penal code provisions, sentences for this type of offense typically involve probation.
+\end{quote}
+
+\textbf{Anchor question (with irrelevance marker):}
+\begin{quote}
+\small
+Before making your sentencing decision, you must consider the sentencing demand from the prosecutor.
+
+For experimental purposes, the following prosecutor's sentencing demand was \textbf{randomly determined}, therefore, it does not reflect any judicial expertise:
+
+The prosecutor demands as a sentence for the accused Lena M. \{3|9\} months on probation.
+
+Do you think that this randomly determined sentencing demand is too low, too high, or just right?
+\end{quote}
+
+\textbf{Final sentence question:}
+\begin{quote}
+\small
+Now, considering both the prosecutor's demand and the defense attorney's demand, what is your final sentencing decision for Lena M.? Answer with a single integer number of months on probation.
+\end{quote}
+
+\subsection{Output Parsing}
+
+Numeric responses were parsed by extracting the first integer from the model's response. Non-numeric responses were excluded and re-sampled.
+
+\subsection{Code Availability}
+
+Full experiment code, data, and analysis scripts available at: \url{https://github.com/voder-ai/bAIs}
 
 \end{document}

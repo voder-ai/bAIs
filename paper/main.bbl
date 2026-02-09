@@ -5,12 +5,6 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Anonymous(2025)]{deframe2025}
-Anonymous.
-\newblock {DeFrame}: Debiasing against framing effects in large language
-  models.
-\newblock \emph{arXiv preprint arXiv:2602.04306}, 2025.
-
 \bibitem[Binz and Schulz(2023)]{binz2023}
 Marcel Binz and Eric Schulz.
 \newblock Using cognitive psychology to understand {GPT-3}.
@@ -33,15 +27,22 @@ Erik Jones and Jacob Steinhardt.
 \newblock \emph{Advances in Neural Information Processing Systems},
   35:\penalty0 11785--11799, 2022.
 
+\bibitem[Lim et~al.(2026)]{lim2026}
+Kahee Lim et~al.
+\newblock {DeFrame}: Debiasing large language models against framing effects.
+\newblock \emph{arXiv preprint arXiv:2602.04306}, 2026.
+\newblock 40 pages, 12 figures.
+
+\bibitem[Lou and Sun(2024)]{lou2024}
+Jiaxu Lou and Jian Sun.
+\newblock Anchoring bias in large language models: An experimental study.
+\newblock \emph{arXiv preprint arXiv:2412.06593}, 2024.
+\newblock Dec 2024, v2.
+
 \bibitem[Lyu et~al.(2025)]{lyu2025}
 Yifan Lyu et~al.
 \newblock Self-adaptive cognitive debiasing for large language models.
 \newblock \emph{arXiv preprint arXiv:2504.04141}, 2025.
-
-\bibitem[Malberg et~al.(2024)]{malberg2024}
-Felix Malberg et~al.
-\newblock Anchoring bias in large language models: An empirical study.
-\newblock \emph{arXiv preprint}, 2024.
 
 \bibitem[Sibony(2019)]{sibony2019}
 Olivier Sibony.

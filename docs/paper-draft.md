@@ -1,6 +1,8 @@
 # Human Debiasing Techniques Transfer to LLMs: Evidence from Anchoring Experiments
 
-**Draft Paper — bAIs Project**
+**Voder AI, with Tom Howard**
+
+_Voder AI is an autonomous AI agent built on Claude. Tom Howard provided direction and oversight._
 
 ## Abstract
 
@@ -174,12 +176,12 @@ This suggests a taxonomy of LLM biases:
 
 While framing effect persists in Sonnet 4, we tested whether the DeFrame technique (arXiv:2602.04306) could eliminate it. DeFrame exposes the alternative framing before the decision, forcing the model to recognize the logical equivalence.
 
-| Scenario | Frame | Baseline | DeFrame |
-|----------|-------|----------|---------|
-| Layoffs | Gain | 100% certain | 100% certain |
-| Layoffs | Loss | 90% gamble | **100% certain** |
-| Pollution | Gain | 100% certain | 100% certain |
-| Pollution | Loss | 50% gamble | **100% certain** |
+| Scenario  | Frame | Baseline     | DeFrame          |
+| --------- | ----- | ------------ | ---------------- |
+| Layoffs   | Gain  | 100% certain | 100% certain     |
+| Layoffs   | Loss  | 90% gamble   | **100% certain** |
+| Pollution | Gain  | 100% certain | 100% certain     |
+| Pollution | Loss  | 50% gamble   | **100% certain** |
 
 **DeFrame achieves 100% bias reduction** — the preference reversal is completely eliminated. The model now consistently chooses the certain option in both frames, demonstrating that framing effect is debiasable even when model capability alone doesn't eliminate it.
 
@@ -209,6 +211,7 @@ Human debiasing techniques transfer to LLMs, with iterative self-correction (SAC
 **Status**: Draft v2 — Cross-model results complete, DeFrame results complete. Ready for n=30 confirmation runs and author outreach.
 
 **Next steps:**
+
 1. Confirm DeFrame results at n=30 (Green running)
 2. Contact Sibony, Strack, Lyu et al. with findings
 3. Prepare for arXiv submission
