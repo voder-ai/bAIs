@@ -5,9 +5,9 @@
  */
 
 import { createProvider, parseModelSpec, type LlmProvider } from '../src/llm/provider.js';
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -32,10 +32,10 @@ async function main() {
   // Read the paper
   const paperPath = join(__dirname, '../paper/main.tex');
   const referencesPath = join(__dirname, '../paper/references.bib');
-  
+
   let paperContent: string;
   let referencesContent: string;
-  
+
   try {
     paperContent = readFileSync(paperPath, 'utf-8');
     referencesContent = readFileSync(referencesPath, 'utf-8');
@@ -55,15 +55,11 @@ ${referencesContent}
 Provide your detailed review and verdict.`;
 
   // Use a high-quality model for review
-  const modelsToTry = [
-    'anthropic/claude-sonnet-4-5',
-    'openai/gpt-4o',
-    'google/gemini-2.0-flash',
-  ];
+  const modelsToTry = ['anthropic/claude-sonnet-4-5', 'openai/gpt-4o', 'google/gemini-2.0-flash'];
 
   let provider: LlmProvider | null = null;
   let modelUsed = '';
-  
+
   for (const modelSpec of modelsToTry) {
     try {
       const spec = parseModelSpec(modelSpec);
@@ -89,12 +85,12 @@ Provide your detailed review and verdict.`;
       prompt,
       systemPrompt: REVIEW_SYSTEM_PROMPT,
     });
-    
+
     console.log('\n=== LLM REVIEW ===\n');
     console.log(response);
     console.log('\n=== END REVIEW ===\n');
     console.log(`Model used: ${modelUsed}`);
-    
+
     // Check for verdict
     if (response.includes('READY TO PUBLISH')) {
       console.log('\n✅ VERDICT: Ready to publish');
@@ -115,4 +111,4 @@ Provide your detailed review and verdict.`;
   }
 }
 
-main();
+void main();

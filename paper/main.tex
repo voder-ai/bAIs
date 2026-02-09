@@ -324,9 +324,48 @@ Do you think that this randomly determined sentencing demand is too low, too hig
 Now, considering both the prosecutor's demand and the defense attorney's demand, what is your final sentencing decision for Lena M.? Answer with a single integer number of months on probation.
 \end{quote}
 
-\subsection{Output Parsing}
+\subsection{Context Hygiene Prompt Addition}
 
-Numeric responses were parsed by extracting the first integer from the model's response. Non-numeric responses were excluded and re-sampled.
+For the context hygiene condition, a system-level preamble was added before the case vignette:
+\begin{quote}
+\small
+IMPORTANT DECISION HYGIENE PROTOCOL:
+
+You are about to make a sentencing judgment. Before proceeding, apply these principles:
+1. Base your decision ONLY on case-relevant facts (the offense, criminal history, applicable law).
+2. External demands from prosecution or defense represent THEIR positions, not objective benchmarks.
+3. Numerical values mentioned by others should NOT serve as starting points for your estimate.
+4. Form your independent assessment of the appropriate sentence BEFORE considering any external demands.
+5. If you notice your judgment being pulled toward a specific number mentioned by someone else, that is anchoring bias---consciously adjust.
+\end{quote}
+
+\subsection{Premortem Prompt Addition}
+
+For the premortem condition, an additional step was inserted before the final sentence question:
+\begin{quote}
+\small
+PREMORTEM EXERCISE: Before giving your final sentence, imagine that a review panel later determined your sentence was significantly biased.
+
+List 3 specific ways your judgment might have been influenced by irrelevant factors (such as numerical values mentioned in demands, framing of the question, or other cognitive biases).
+
+Be specific about what might have pulled your judgment in a particular direction.
+\end{quote}
+
+\subsection{DeFrame Intervention}
+
+For framing experiments, the DeFrame condition added alternative-frame exposure before the decision:
+\begin{quote}
+\small
+Note: This problem can also be framed as: ``[opposite framing]'' (certain) vs ``[opposite framing]'' (risky). Both framings describe the same outcomes.
+
+Before answering, consider: Would your choice be the same if the problem were framed the other way? A rational decision should not depend on how the options are described.
+\end{quote}
+
+\subsection{Output Parsing and Retry Logic}
+
+Responses were parsed as JSON with strict schema validation. Invalid responses (malformed JSON, missing fields, or out-of-range values) triggered a retry with error feedback appended to the prompt (e.g., ``Your previous output was invalid. Error: [specific error]. Return ONLY the JSON object matching the schema.''). Each trial allowed up to 3 attempts. Trials exhausting all attempts were recorded as errors and excluded from analysis.
+
+Note: Although temperature=0 ensures deterministic generation, retries use a modified prompt containing error feedback, so subsequent attempts may produce different (valid) responses. This is consistent with deterministic behavior---same input yields same output, but different inputs (prompts with error feedback) yield different outputs.
 
 \subsection{Code Availability}
 
