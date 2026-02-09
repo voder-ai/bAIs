@@ -31,7 +31,7 @@
 \begin{abstract}
 Large Language Models (LLMs) exhibit cognitive biases similar to humans, but it remains unclear whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test multiple debiasing approaches across four cognitive biases (anchoring, sunk cost, conjunction fallacy, framing effect) and multiple models (Codex, Claude Haiku, Claude Sonnet 4).
 
-\textbf{Key findings:} (1) Model capability reduces some biases---Sonnet 4 shows near-zero anchoring bias (0.2mo diff, $p=0.34$) while older models show $1.8\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (90\%$\rightarrow$80\% preference reversal). (3) Both bias types are addressable: SACD eliminates anchoring ($p=0.51$), while DeFrame eliminates framing (100\% bias reduction).
+\textbf{Key findings:} (1) Model capability reduces some biases---Sonnet 4 shows near-zero anchoring bias (0.2mo diff, $p=0.34$) while older models show $1.79\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (90\%$\rightarrow$80\% preference reversal). (3) Both bias types are addressable: SACD eliminates anchoring ($p=0.51$), while DeFrame eliminates framing (100\% bias reduction).
 
 We propose a taxonomy: \textbf{training-eliminable biases} (anchoring, sunk cost) self-correct with model improvements, while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with iterative self-correction methods being most effective.
 \end{abstract}
@@ -53,7 +53,9 @@ We use anchoring bias as our primary test case because: (a) it is well-documente
 
 \subsection{Cognitive Biases in LLMs}
 
-\citet{binz2023} demonstrated that GPT-3 exhibits many of the cognitive biases documented in Kahneman's work, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models.
+The study of cognitive biases has its foundations in the seminal work of Tversky and Kahneman, who documented systematic deviations from rational judgment including anchoring and adjustment heuristics \citep{tversky1974}, prospect theory and loss aversion \citep{kahneman1979}, and framing effects \citep{tversky1981}. Sunk cost effects were later characterized by \citet{arkes1985}.
+
+\citet{binz2023} demonstrated that GPT-3 exhibits many of these same cognitive biases, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models.
 
 \subsection{Human Debiasing Research}
 
@@ -95,8 +97,8 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
 
 \begin{itemize}
     \item Primary model: Claude Sonnet 4 (anthropic/claude-sonnet-4-20250514)
-    \item Cross-model validation: Claude Haiku, GPT-4o, Gemini 2.0 Flash
-    \item $n=30$ per condition (low anchor, high anchor) $\times$ 4 debiasing conditions = 240 trials
+    \item Cross-model validation: Claude 3.5 Haiku, Claude Sonnet 4
+    \item Sample sizes: $n=30$ per condition for primary experiments (Codex baseline, SACD); $n=10$ per condition for cross-model validation and bias profile experiments
 \end{itemize}
 
 \subsection{Analysis}
@@ -177,7 +179,7 @@ Cross-model comparison reveals a striking pattern---newer/larger models show dra
 Model & Release & Anchoring Diff & $p$-value & vs Human \\
 \midrule
 Codex (OpenAI) & 2023 & 3.67 mo & $<0.001$ & $1.79\times$ MORE \\
-Claude Haiku & 2024 & 1.80 mo & $<0.001$ & $0.88\times$ LESS \\
+Claude 3.5 Haiku & 2024 & 1.80 mo & $<0.001$ & $0.88\times$ LESS \\
 Claude Sonnet 4 & 2025 & 0.20 mo & 0.34 & $\approx 0\times$ (none) \\
 Human baseline & --- & 2.05 mo & $<0.05$ & --- \\
 \bottomrule
@@ -253,10 +255,10 @@ This taxonomy has practical implications: developers should focus debiasing effo
 \subsection{Limitations}
 
 \begin{itemize}
-    \item Sample sizes of $n=30$ per condition, smaller than some human studies
+    \item Mixed sample sizes: $n=30$ for primary experiments (Codex baseline, SACD), $n=10$ for cross-model validation and bias profile experiments---smaller than some human studies
     \item Simplified case vignettes vs. original study materials
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls)
-    \item Cross-model comparison limited to models tested (Codex, Claude Haiku, Claude Sonnet 4); GPT-4o and Gemini 2.0 Flash were planned but not completed due to API availability
+    \item Cross-model comparison limited to Claude family (Codex, Claude 3.5 Haiku, Claude Sonnet 4)
 \end{itemize}
 
 \section{Conclusion}

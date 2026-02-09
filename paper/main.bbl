@@ -1,9 +1,16 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{11}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Arkes and Blumer(1985)]{arkes1985}
+Hal~R. Arkes and Catherine Blumer.
+\newblock The psychology of sunk cost.
+\newblock \emph{Organizational Behavior and Human Decision Processes},
+  35\penalty0 (1):\penalty0 124--140, 1985.
+\newblock \doi{10.1016/0749-5978(85)90049-4}.
 
 \bibitem[Binz and Schulz(2023)]{binz2023}
 Marcel Binz and Eric Schulz.
@@ -26,6 +33,12 @@ Erik Jones and Jacob Steinhardt.
   biases.
 \newblock \emph{Advances in Neural Information Processing Systems},
   35:\penalty0 11785--11799, 2022.
+
+\bibitem[Kahneman and Tversky(1979)]{kahneman1979}
+Daniel Kahneman and Amos Tversky.
+\newblock Prospect theory: An analysis of decision under risk.
+\newblock \emph{Econometrica}, 47\penalty0 (2):\penalty0 263--291, 1979.
+\newblock \doi{10.2307/1914185}.
 
 \bibitem[Lim et~al.(2026)]{lim2026}
 Kahee Lim et~al.
@@ -50,5 +63,17 @@ Olivier Sibony.
   Decision-Making and What You Can Do to Fight Them}.
 \newblock Little, Brown Spark, 2019.
 \newblock ISBN 978-0316494984.
+
+\bibitem[Tversky and Kahneman(1974)]{tversky1974}
+Amos Tversky and Daniel Kahneman.
+\newblock Judgment under uncertainty: Heuristics and biases.
+\newblock \emph{Science}, 185\penalty0 (4157):\penalty0 1124--1131, 1974.
+\newblock \doi{10.1126/science.185.4157.1124}.
+
+\bibitem[Tversky and Kahneman(1981)]{tversky1981}
+Amos Tversky and Daniel Kahneman.
+\newblock The framing of decisions and the psychology of choice.
+\newblock \emph{Science}, 211\penalty0 (4481):\penalty0 453--458, 1981.
+\newblock \doi{10.1126/science.7455683}.
 
 \end{thebibliography}
