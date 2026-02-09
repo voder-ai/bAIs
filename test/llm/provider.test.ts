@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { parseModelSpec, createProvider } from '../../src/llm/provider.js';
 
-// Check if we're running in CI (no API keys available)
+// Check if we're running in CI without API keys
 const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+const hasCodexKey = Boolean(process.env.OPENAI_CODEX_API_KEY);
+const skipCodexTest = isCI && !hasCodexKey;
 
 describe('parseModelSpec', () => {
   it('parses valid provider/model format', () => {
@@ -60,8 +62,8 @@ describe('parseModelSpec', () => {
 });
 
 describe('createProvider', () => {
-  // Skip API-dependent tests in CI where auth-profiles.json doesn't exist
-  it.skipIf(isCI)(
+  // Skip API-dependent tests in CI if no API key secret is configured
+  it.skipIf(skipCodexTest)(
     'creates PiAiProvider for codex provider (normalized to openai-codex)',
     async () => {
       // With pi-ai, 'codex' is normalized to 'openai-codex'

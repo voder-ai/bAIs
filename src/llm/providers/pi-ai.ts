@@ -24,9 +24,23 @@ interface AuthStore {
 }
 
 /**
- * Load API key/token from OpenClaw's auth store
+ * Load API key/token from environment or OpenClaw's auth store
  */
 function loadApiKey(providerName: string): string | undefined {
+  // First check environment variables (for CI)
+  const envKeyMap: Record<string, string> = {
+    'openai-codex': 'OPENAI_CODEX_API_KEY',
+    openai: 'OPENAI_API_KEY',
+    anthropic: 'ANTHROPIC_API_KEY',
+    google: 'GOOGLE_API_KEY',
+  };
+
+  const envVar = envKeyMap[providerName];
+  if (envVar && process.env[envVar]) {
+    return process.env[envVar];
+  }
+
+  // Fall back to OpenClaw auth store
   const authPath = join(homedir(), '.openclaw/agents/main/agent/auth-profiles.json');
 
   try {
