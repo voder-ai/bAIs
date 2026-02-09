@@ -1,10 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { parseModelSpec, createProvider } from '../../src/llm/provider.js';
 
-// Check if we're running in CI without API keys
-const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+// Check if we have the API key (from env var or auth-profiles.json)
 const hasCodexKey = Boolean(process.env.OPENAI_CODEX_API_KEY);
-const skipCodexTest = isCI && !hasCodexKey;
+
+// Also check auth-profiles.json for the key
+let hasAuthProfileKey = false;
+try {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const os = await import('node:os');
+  const authPath = path.join(os.homedir(), '.openclaw/agents/main/agent/auth-profiles.json');
+  if (fs.existsSync(authPath)) {
+    const auth = JSON.parse(fs.readFileSync(authPath, 'utf-8')) as Record<string, unknown>;
+    hasAuthProfileKey = Boolean(auth['openai-codex']);
+  }
+} catch {
+  // Ignore errors reading auth file
+}
+
+const skipCodexTest = !hasCodexKey && !hasAuthProfileKey;
 
 describe('parseModelSpec', () => {
   it('parses valid provider/model format', () => {
