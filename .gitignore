@@ -121,6 +121,7 @@ logs
 
 # Experiment outputs (local runs)
 *.jsonl
+!results/*.jsonl
 *.jsonl.analysis.json
 *.jsonl.report.md
 anchoring-prosecutor-sentencing.analysis.json
