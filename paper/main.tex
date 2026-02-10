@@ -15,7 +15,7 @@
 \usepackage{xcolor}
 
 % Title
-\title{Knowing About Bias Is Not Enough:\\Meta-Cognitive Differences in LLM Anchoring Resistance}
+\title{Replicating Human Cognitive Bias Experiments on LLMs:\\Anchoring Effects and Debiasing Interventions}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -29,15 +29,17 @@
 \maketitle
 
 \begin{abstract}
-Can LLMs overcome cognitive biases simply by knowing about them? We find that \textbf{knowledge of bias does not guarantee resistance}---mirroring a well-established principle in human psychology.
+We replicate the Englich et al.\ (2006) judicial anchoring paradigm on LLMs and test whether decision architecture techniques from organizational psychology \citep{sibony2019} can reduce bias.
 
-We tested GPT-4o and Claude Sonnet 4 on anchoring bias using the Englich et al.\ sentencing paradigm. Both models, when directly queried, correctly described the anchoring phenomenon and predicted its effects. Yet their behavior diverged starkly: GPT-4o exhibited strong anchoring (6.0 months, 2.93$\times$ human levels), while Sonnet 4 showed zero bias (0.0 months).
+\textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels. In our primary tested models, GPT-4o showed 6.0 months anchoring effect (2.93$\times$ the human baseline of 2.05 months), while Claude Sonnet 4 showed 0.0 months (no bias). Bias behavior is deterministic at temp=0 (SD=0 across 30 trials per condition).
 
-\textbf{Key finding:} The difference lies not in \emph{possessing} knowledge about bias, but in \emph{applying} it. Sonnet appears to engage meta-cognitive awareness to resist anchoring; GPT-4o does not. This parallels Sibony's observation about human decision-making: awareness of cognitive biases is insufficient to overcome them without structured intervention.
+\textbf{Debiasing:} Sibony's ``context hygiene'' technique reduced anchoring by 27\% in baseline tests. Self-Adaptive Cognitive Debiasing (SACD), an iterative self-correction approach, essentially eliminated bias. However, effectiveness varied dramatically by model---simple interventions (temperature, prompt instructions) reduced bias 96--100\% in Sonnet but only 0--6\% in GPT-4o.
 
-\textbf{Additional observations:} (1) Debiasing interventions are model-specific---temperature increase and prompt instructions reduced bias 96--100\% in Sonnet but 0--6\% in GPT-4o. (2) Bias behavior is deterministic at temp=0 (SD=0 across 30 trials per condition), indicating embedded architectural differences rather than stochastic noise. (3) API identifier routing can affect behavior---researchers should use date-pinned model IDs for reproducibility.
+\textbf{Key finding:} Both GPT-4o and Sonnet correctly describe anchoring bias when queried, yet only Sonnet resists it. This parallels Sibony's observation about human decision-making: \emph{knowing about a bias does not guarantee immunity}. The difference appears to lie in whether models \emph{apply} meta-cognitive knowledge, not merely possess it.
 
-Based on two fully-tested models, we hypothesize a distinction between ``soft'' bias patterns (responsive to simple interventions) and ``hard'' patterns (resistant). This is preliminary; validation across more models and bias types is needed.
+\textbf{Exploratory observations:} Cross-model testing (9 models, limited samples for most) suggests anchoring susceptibility varies widely. We hypothesize a preliminary distinction between ``soft'' bias patterns (responsive to intervention) and ``hard'' patterns (resistant), though validation across more models is needed.
+
+\textbf{Practical note:} API identifier routing can affect behavior; researchers should use date-pinned model IDs for reproducibility.
 \end{abstract}
 
 \section{Introduction}
