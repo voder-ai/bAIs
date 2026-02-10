@@ -274,7 +274,7 @@ GPT-4o & Frontier & 4.96 mo & [$4.50$, $5.42$] & $\approx 2.42\times$ & Highest 
 Human baseline & --- & 2.05 mo & --- & $1.00\times$ & Englich et al. 2006 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias. Models sorted by observed bias magnitude. Full $n=30$ trials per condition were run for Codex, Claude Sonnet 4, and GPT-4o (exact ranges shown). $^\dagger$Other models used fewer trials; ranges estimated from pooled variance across models with complete data. Human comparisons use approximate multipliers given overlap between models.}
+\caption{Cross-model anchoring bias. Models sorted by observed bias magnitude. \textbf{Sample sizes:} Full $n=30$ trials per condition for Codex, Claude Sonnet 4, and GPT-4o (exact observed ranges shown). $^\dagger$Models marked with dagger used reduced samples ($n=10$--$15$ per condition due to API cost constraints); ranges for these models are \emph{estimated} from pooled variance across the three models with complete data, not directly observed. Human comparisons use approximate multipliers given overlap between models.}
 \label{tab:crossmodel}
 \end{table}
 
@@ -446,6 +446,15 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
     \item Cohen's $d$ values are provided for comparison with prior literature, not as inferential statistics
 \end{itemize}
 
+\textbf{Temperature=0 Limitation:}
+\begin{itemize}
+    \item All primary experiments use temperature=0 (deterministic sampling) to isolate model behavior from sampling randomness and ensure reproducibility
+    \item Temperature sweep experiments (Section~\ref{sec:model-id-variance}) were conducted only for Claude Sonnet 4 and GPT-4o on the anchoring task---we did not systematically test temperature effects for other models or bias types
+    \item Real-world LLM deployments typically use temperature $>0$ for more natural responses
+    \item Our findings may not fully transfer to stochastic settings: temperature $>0$ could amplify, dampen, or qualitatively change bias patterns through sampling variance
+    \item Practitioners deploying models at higher temperatures should validate bias behavior under their specific sampling configuration
+\end{itemize}
+
 \textbf{Methodological Constraints:}
 \begin{itemize}
     \item Sample sizes: $n=30$ scenarios per condition for primary experiments---adequate for detecting large patterns but limited by scenario diversity
@@ -464,9 +473,12 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
     \item This study focused on natural-language judgment tasks; code-domain experiments (e.g., anchoring in line count or complexity estimates) are left for future work
 \end{itemize}
 
-\textbf{Statistical Approach:}
+\textbf{Multiple Comparisons:}
 \begin{itemize}
-    \item We did not apply multiple comparison corrections (e.g., Bonferroni) as this is a descriptive study reporting observed patterns rather than testing formal hypotheses
+    \item This study involves many comparisons: 9 models, 4 bias types, multiple debiasing interventions, and numerous scenario variants
+    \item We did not apply multiple comparison corrections (e.g., Bonferroni, Holm-Bonferroni) because this is descriptive/exploratory work reporting observed patterns, not confirmatory hypothesis testing
+    \item Some observed patterns may be spurious given the number of comparisons; readers should interpret effect sizes and consistency across conditions rather than treating any single comparison as definitive
+    \item Future confirmatory studies should pre-register hypotheses and apply appropriate corrections
 \end{itemize}
 
 \textbf{Model Identifier Variance:}
