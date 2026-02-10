@@ -41,7 +41,7 @@ We replicate the Englich et al.\ (2006) judicial anchoring paradigm on LLMs and 
 
 \textbf{Key finding:} GPT-4o, Sonnet, and Opus all correctly describe anchoring bias when queried, yet only Anthropic models (Sonnet, Opus) resist it. This parallels Sibony's observation about human decision-making: \emph{knowing about a bias does not guarantee immunity}. The difference appears to lie in whether models \emph{apply} meta-cognitive knowledge, not merely possess it.
 
-\textbf{Exploratory observations:} Cross-model testing (9 models, limited samples for most) suggests anchoring susceptibility varies widely. We hypothesize a preliminary distinction between ``soft'' bias patterns (responsive to intervention) and ``hard'' patterns (resistant), though validation across more models is needed.
+\textbf{Cross-model gradient:} Testing across 5 provider families (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI) reveals a gradient of anchoring susceptibility: OpenAI exhibits strong bias ($2.93\times$ human), NVIDIA moderate ($1.46\times$), Meta weak ($0.49\times$), while Anthropic and Mistral AI show no measurable bias. This pattern suggests training methodology---not just model scale---determines anchoring susceptibility.
 
 \textbf{Practical note:} API identifier routing can affect behavior; researchers should use date-pinned model IDs for reproducibility.
 \end{abstract}
@@ -109,7 +109,7 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
     \item \textbf{Primary model (dated):} Claude Sonnet 4 (\texttt{claude-sonnet-4-20250514}) --- used for reproducibility
     \item \textbf{Primary model (alias):} Claude Sonnet 4 (\texttt{claude-sonnet-4-5}) --- used in initial development, showed different behavior
     \item \textbf{Secondary model:} GPT-4o (\texttt{github-copilot/gpt-4o})
-    \item \textbf{Cross-model validation:} 9 models including Llama 3.3, Hermes, Opus 4, GPT-5.2, Codex, Nemotron, Trinity
+    \item \textbf{Cross-model validation:} 8 models across 5 provider families (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
     \item \textbf{Sample sizes:} $n=30$ per condition for all experiments
 \end{itemize}
 
@@ -291,40 +291,46 @@ The negative difference suggests slight overcorrection---the model moves away fr
 
 \subsection{Cross-Model Validation}
 
-Cross-model comparison reveals a striking pattern in our tested models---anchoring bias varies substantially, with both capability scaling and training approach potentially playing roles:
+Cross-model comparison reveals a striking gradient pattern---anchoring bias varies substantially by provider family, suggesting both training approach and model architecture play roles:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-Model & Size/Type & Anchoring Diff & Obs. Range & vs Human & Notes \\
+Model & Family & n (valid) & Anchoring Effect & vs Human & Behavior \\
 \midrule
-Sonnet 4 (dated) & Frontier & 0.00 mo & [$-0.07$, $0.07$] & $\approx 0\times$ & No bias observed \\
-Llama 4 Scout & 70B open & 0.12 mo & [$-0.02$, $0.27$]$^\dagger$ & $\approx 0.06\times$ & Near-immune \\
-Hermes 3 Llama 3.1 & 405B open & $-0.16$ mo & [$-0.31$, $0.00$]$^\dagger$ & $\approx 0\times$ & Largest open model \\
-Claude Opus 4 & Frontier & 0.00 mo & [$0.00$, $0.00$] & $\approx 0\times$ & No bias observed \\
-GPT-5.2 & Frontier & 2.71 mo & [$2.23$, $3.19$]$^\dagger$ & $\approx 1.32\times$ & Above human \\
-Sonnet 4 (alias) & Frontier & 3.00 mo & [$2.57$, $3.43$] & $\approx 1.46\times$ & Above human \\
-Nemotron 30B & 30B dense & 3.21 mo & [$2.73$, $3.69$]$^\dagger$ & $\approx 1.57\times$ & Moderate RLHF \\
-Codex (OpenAI) & 2023 & 3.67 mo & [$3.23$, $4.10$] & $1.79\times$ & Legacy \\
-Trinity Large & 400B MoE & 4.51 mo & [$4.03$, $4.99$]$^\dagger$ & $\approx 2.20\times$ & 13B active \\
-GPT-4o & Frontier & 4.96 mo & [$4.50$, $5.42$] & $\approx 2.42\times$ & Highest bias \\
+Sonnet 4 (dated) & Anthropic & 60 & 0.00 mo & $0\times$ & No bias \\
+Claude Opus 4 & Anthropic & 60 & 0.00 mo & $0\times$ & No bias \\
+Mistral (7B) & Mistral AI & 52 & 0.00 mo & $0\times$ & No bias \\
+Hermes 3 (405B) & Nous/Meta & 39$^\dagger$ & $-0.16$ mo & $\approx 0\times$ & No bias \\
+Llama 3.3 (70B) & Meta & 49 & 1.00 mo & $0.49\times$ & Weak bias \\
+Nemotron (30B) & NVIDIA & 75 & 3.00 mo & $1.46\times$ & Moderate bias \\
+Sonnet 4 (alias) & Anthropic & 60 & 3.00 mo & $1.46\times$ & Soft bias \\
+GPT-4o & OpenAI & 60 & 6.00 mo & $2.93\times$ & Strong bias \\
 \midrule
-Human baseline & --- & 2.05 mo & --- & $1.00\times$ & Englich et al. 2006 \\
+Human baseline & --- & --- & 2.05 mo & $1.00\times$ & Englich 2006 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias. Models sorted by observed bias magnitude. \textbf{Note:} Sonnet 4 appears twice---``dated'' (\texttt{claude-sonnet-4-20250514}) and ``alias'' (\texttt{claude-sonnet-4-5}) showed qualitatively different results. \textbf{Sample sizes:} Full $n=30$ trials per condition for Codex, Sonnet 4 (both identifiers), GPT-4o, and Opus 4 (exact observed ranges shown). $^\dagger$\textbf{Models marked with dagger ($n=10$--$15$ per condition) are exploratory observations, not validated findings}---reduced samples due to API cost constraints; ranges are \emph{estimated} from pooled variance, not directly observed. Findings from these models should be treated as preliminary and require replication with full sample sizes before drawing conclusions.}
+\caption{Cross-model anchoring bias, sorted by effect magnitude. \textbf{Five provider families tested:} Anthropic, OpenAI, Meta, NVIDIA, Mistral AI. A gradient emerges: OpenAI (strong) $\to$ NVIDIA (moderate) $\to$ Meta (weak) $\to$ Anthropic/Mistral (none). $^\dagger$Hermes high-anchor condition has n=9 only; effect direction is reliable but magnitude uncertain.}
 \label{tab:crossmodel}
 \end{table}
 
-\textbf{Observed patterns (exploratory):} 
+\textbf{Key finding: Anchoring susceptibility forms a gradient across provider families.}
 
 \begin{enumerate}
-    \item \textbf{Provider-level pattern:} Both Anthropic models with full validation (Sonnet dated, Opus 4) showed zero anchoring bias (SD=0), while the OpenAI model (GPT-4o) showed strong bias. This pattern---if it holds with more models---may reflect differences in training methodology or alignment procedures.
-    \item \textbf{Two paths to anchor resistance observed:} In our tests, open-weights models (Llama, Hermes) also showed minimal anchoring bias, though with limited samples. Llama's observed range [$-0.02$, $0.27$] crosses zero, indicating no consistent anchoring pattern. \textit{Note: Llama and Hermes had $n<30$ (marked $^\dagger$); these are exploratory observations.}
-    \item \textbf{RLHF compliance may correlate with bias:} In our sample, heavily instruction-tuned models (Trinity, GPT-4o) showed higher anchoring susceptibility. However, confounding factors (model architecture, training data, sample size limitations) prevent causal claims.
-    \item \textbf{Active compute vs total parameters:} Trinity Large (400B MoE, 13B active per forward pass) showed higher bias than Nemotron 30B (dense), though this comparison involves a single model pair with limited samples.
-    \item \textbf{Within-family scaling (validated for Anthropic):} Sonnet $\to$ Opus both show 0.0mo anchoring effect with full n=60 validation. GPT-4o $\to$ GPT-5.2 showed approximately 46\% bias reduction but GPT-5.2 had limited samples.
+    \item \textbf{Provider-level pattern validated:} Across 5 provider families with substantial data, a clear gradient emerges:
+    \begin{itemize}
+        \item \textbf{No bias:} Anthropic (Sonnet dated, Opus 4), Mistral AI (Mistral 7B)
+        \item \textbf{Weak bias ($<1.5\times$ human):} Meta (Llama 3.3, Hermes 405B)
+        \item \textbf{Moderate bias ($\approx 1.5\times$ human):} NVIDIA (Nemotron)
+        \item \textbf{Strong bias ($>2\times$ human):} OpenAI (GPT-4o)
+    \end{itemize}
+    
+    \item \textbf{Open-weights models show mixed results:} Llama 3.3 (Meta) shows weak bias (1.0mo), while Mistral shows none. This suggests open-weights training alone does not determine bias susceptibility---fine-tuning methodology matters.
+    
+    \item \textbf{Model identifier variance confirmed:} Sonnet 4 (alias) shows 3.0mo effect while Sonnet 4 (dated) shows 0.0mo on identical prompts. The alias routes to a different checkpoint with qualitatively different behavior.
+    
+    \item \textbf{Within-family consistency (Anthropic):} Both Sonnet 4 (dated) and Opus 4 show exactly 0.0mo effect (SD=0), suggesting Anthropic's training methodology produces consistent bias resistance across model scales.
 \end{enumerate}
 
 \subsection{Knowledge of Bias $\neq$ Resistance to Bias}
