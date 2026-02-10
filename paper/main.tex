@@ -461,6 +461,8 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
     \item Single-coder response extraction without inter-rater reliability assessment
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls per decision)
+    \item \textbf{SACD/DeFrame baseline:} We did not test simpler interventions of equivalent token length (e.g., generic ``think carefully'' prompts) to isolate whether debiasing effects stem from the specific intervention content or simply from increased reasoning tokens
+    \item \textbf{Novel scenarios without human baseline:} Our novel scenario experiments lack human participant data for comparison---we cannot verify whether these scenarios produce the same bias magnitudes in humans as the original Englich et al. paradigm
     \item \textbf{Retry fraction not tracked:} Our parsing logic allowed up to 3 retries for malformed responses, but we did not record the fraction of trials requiring retries. High retry rates could indicate systematic parsing failures or model instability that might affect result interpretation. Future work should log retry counts per condition.
 \end{itemize}
 
