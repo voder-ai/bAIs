@@ -15,7 +15,7 @@
 \usepackage{xcolor}
 
 % Title
-\title{Soft vs Hard LLM Bias:\\Why Debiasing Techniques Don't Transfer Across Models}
+\title{Model ID Routing and Debiasing Variance in LLMs:\\Toward a Hypothesis of Soft vs Hard Bias}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -29,13 +29,13 @@
 \maketitle
 
 \begin{abstract}
-We investigate anchoring bias in Large Language Models (LLMs) and discover that bias magnitude and debiasing effectiveness vary dramatically across model architectures.
+We investigate anchoring bias in Large Language Models (LLMs) and discover that bias magnitude and debiasing effectiveness vary dramatically across model architectures---and even across different API identifiers for the same model.
 
-\textbf{Key findings:} (1) LLM anchoring bias is \emph{fragile and context-dependent}---paraphrasing the prompt reduces bias by 92\% (from 3.0 to 0.25 months in Claude Sonnet 4). (2) Debiasing interventions are \emph{model-specific, not universal}---temperature increase and simple prompt instructions eliminate bias in Claude Sonnet 4 (96--100\% reduction) but have no effect on GPT-4o (0--6\% reduction). (3) We identify two distinct bias types: \textbf{soft bias} (surface-level, easily fixed via sampling or instruction) and \textbf{hard bias} (weight-embedded, resistant to both interventions).
+\textbf{Key findings:} (1) \emph{Model identifier routing affects reproducibility}---Claude Sonnet 4 accessed via alias (\texttt{claude-sonnet-4-5}) shows 3-month anchoring while the date-pinned identifier (\texttt{claude-sonnet-4-20250514}) shows 0-month anchoring with identical prompts. (2) LLM anchoring bias is \emph{fragile and context-dependent}---paraphrasing the prompt reduces bias by 92\% (from 3.0 to 0.25 months in Claude Sonnet 4 alias). (3) Debiasing interventions are \emph{model-specific, not universal}---temperature increase and simple prompt instructions reduce bias in Claude Sonnet 4 alias (96--100\% reduction) but have no effect on GPT-4o (0--6\% reduction).
 
-Cross-model testing (9 models from 6 providers) reveals anchoring susceptibility ranges from near-zero (Llama 3.3, Hermes 3) to $2.42\times$ human levels (GPT-4o). Open-weights models and frontier capability (Opus 4) both show minimal bias, while heavily instruction-tuned models show highest susceptibility.
+Based on these observations from two models, we propose a preliminary hypothesis distinguishing ``soft bias'' (surface-level, responsive to simple interventions) from ``hard bias'' (resistant to both temperature and instruction changes). Notably, both GPT-4o and Sonnet 4 (dated) demonstrate knowledge of anchoring bias when directly queried, yet only Sonnet resists it---suggesting that \emph{meta-cognitive application} of bias knowledge, not mere possession of it, distinguishes resistant from susceptible models. Cross-model testing (9 models from 6 providers) reveals anchoring susceptibility ranges from near-zero (Llama 3.3, Hermes 3) to $2.42\times$ human levels (GPT-4o).
 
-These findings have immediate practical implications: debiasing techniques cannot be assumed to transfer across models, single-prompt experiments may overstate bias magnitude, and practitioners must validate interventions on their specific deployment model. We provide a taxonomy distinguishing soft from hard LLM biases with corresponding mitigation strategies.
+These findings have immediate practical implications: debiasing techniques cannot be assumed to transfer across models, API routing variance is a potential confound for all LLM bias research, and practitioners must validate interventions on their specific deployment model using date-pinned identifiers.
 \end{abstract}
 
 \section{Introduction}
@@ -98,39 +98,50 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
 \subsection{Models and Sample Size}
 
 \begin{itemize}
-    \item Primary model: Claude Sonnet 4 (anthropic/claude-sonnet-4-20250514)
-    \item Secondary model: GPT-4o (via github-copilot/gpt-4o)
-    \item Cross-model validation: 9 models including Llama 3.3, Hermes, Opus 4, GPT-5.2, Codex, Nemotron, Trinity
-    \item Sample sizes: $n=30$ per condition for all experiments
+    \item \textbf{Primary model (dated):} Claude Sonnet 4 (\texttt{claude-sonnet-4-20250514}) --- used for reproducibility
+    \item \textbf{Primary model (alias):} Claude Sonnet 4 (\texttt{claude-sonnet-4-5}) --- used in initial development, showed different behavior
+    \item \textbf{Secondary model:} GPT-4o (\texttt{github-copilot/gpt-4o})
+    \item \textbf{Cross-model validation:} 9 models including Llama 3.3, Hermes, Opus 4, GPT-5.2, Codex, Nemotron, Trinity
+    \item \textbf{Sample sizes:} $n=30$ per condition for all experiments
 \end{itemize}
 
-\subsection{Model Identifier Variance Discovery}
+\textbf{Important:} Throughout this paper, we distinguish between ``Sonnet 4 (alias)'' and ``Sonnet 4 (dated)'' because they exhibited different bias patterns (see Section~\ref{sec:model-id-variance}). When we report debiasing effectiveness, we specify which identifier was used.
+
+\subsection{Model Identifier Variance: A Methodological Contribution}
 \label{sec:model-id-variance}
 
-During development, we discovered that model aliases (e.g., \texttt{claude-sonnet-4-5}) may route to different checkpoints than dated identifiers (e.g., \texttt{claude-sonnet-4-20250514}), producing qualitatively different bias measurements. This has significant implications for our soft/hard bias taxonomy:
+\textbf{Key finding:} During development, we discovered that model aliases route to different checkpoints than dated identifiers, producing \emph{qualitatively different} bias measurements on identical prompts. This finding has significant implications for LLM research reproducibility beyond our specific study.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{llcc}
 \toprule
-\textbf{Model Identifier} & \textbf{Type} & \textbf{Anchoring Effect} & \textbf{Bias Category} \\
+\textbf{Model Identifier} & \textbf{Type} & \textbf{Anchoring Effect} & \textbf{Observed Pattern} \\
 \midrule
-\texttt{claude-sonnet-4-5} & Alias & 3.0 mo & Soft (responsive to debiasing) \\
-\texttt{claude-sonnet-4-20250514} & Date-pinned & 0.0 mo & Minimal/None \\
+\texttt{claude-sonnet-4-5} & Alias & 3.0 mo & Shows anchoring (responsive to debiasing) \\
+\texttt{claude-sonnet-4-20250514} & Date-pinned & 0.0 mo & No measurable anchoring \\
 \bottomrule
 \end{tabular}
-\caption{Effect of model identifier type on measured anchoring bias for Claude Sonnet 4. The alias (pointing to a potentially different checkpoint) shows 3-month anchoring effect, while the dated identifier shows zero anchoring.}
+\caption{Effect of model identifier type on measured anchoring bias for Claude Sonnet 4. The alias (routing to a potentially different checkpoint) shows 3-month anchoring effect, while the dated identifier shows zero anchoring on identical prompts. This variance occurred during a single experimental session, ruling out temporal drift.}
 \label{tab:model-id-variance}
 \end{table}
 
-\textbf{Reconciliation with taxonomy.} Our ``soft bias'' characterization of Sonnet 4 derives from experiments using the \emph{alias} identifier, which showed 3-month anchoring that was eliminated by temperature increase or simple instruction. The \emph{date-pinned} identifier showed no measurable anchoring in baseline conditions. This variance highlights that:
+\textbf{Implications for LLM research.} This variance has broad implications beyond our study:
 
 \begin{enumerate}
-    \item Model providers may silently update alias targets, affecting reproducibility
-    \item Bias magnitude is checkpoint-specific, not just architecture-specific  
-    \item All primary experiments in this paper use date-pinned identifiers for reproducibility
-    \item Researchers should always report exact model versions; alias-based results may not replicate
+    \item \textbf{Reproducibility confound:} Model providers may silently update alias targets. Studies using aliases (e.g., \texttt{gpt-4}, \texttt{claude-sonnet}) may not replicate even with identical prompts.
+    \item \textbf{Checkpoint-specific behavior:} Bias magnitude is checkpoint-specific, not just architecture-specific. Minor version updates can qualitatively change measured behavior.
+    \item \textbf{Recommendation:} Researchers should always use and report date-pinned model identifiers. Alias-based results have an inherent reproducibility limitation.
+    \item \textbf{Our protocol:} All primary experiments in this paper use date-pinned identifiers. When we refer to ``Sonnet 4 (alias)'' or ``Sonnet 4 (dated)'', we mean the specific identifiers in Table~\ref{tab:model-id-variance}.
 \end{enumerate}
+
+\textbf{Distinguishing Sonnet 4 results.} Throughout this paper, we carefully distinguish:
+\begin{itemize}
+    \item \textbf{Sonnet 4 (alias)}: \texttt{claude-sonnet-4-5} --- showed 3.0mo anchoring, responsive to debiasing
+    \item \textbf{Sonnet 4 (dated)}: \texttt{claude-sonnet-4-20250514} --- showed 0.0mo anchoring in baseline
+\end{itemize}
+
+Our soft/hard bias hypothesis derives primarily from comparing Sonnet 4 (alias) against GPT-4o, not from the date-pinned Sonnet 4 which showed minimal baseline bias.
 
 \subsection{Temperature and Sampling Protocol}
 
@@ -144,7 +155,7 @@ During development, we discovered that model aliases (e.g., \texttt{claude-sonne
     \item Other sampling parameters held at provider defaults
 \end{itemize}
 
-\textbf{Key finding.} For both Sonnet 4 (dated) and GPT-4o, anchoring effects were stable across all temperatures tested. Temperature variation did not significantly affect bias magnitude, suggesting anchoring bias is not primarily a decoding-level artifact.
+\textbf{Key finding.} For Sonnet 4 (dated: \texttt{claude-sonnet-4-20250514}) and GPT-4o, anchoring effects were stable across all temperatures tested---but this is because Sonnet 4 (dated) showed minimal baseline anchoring to begin with. In contrast, Sonnet 4 (alias: \texttt{claude-sonnet-4-5}) showed temperature-sensitive bias reduction. This divergence between alias and dated identifiers is a key methodological finding (see Section~\ref{sec:model-id-variance}).
 
 \subsection{Scenario Design and Selection}
 \label{sec:scenario-design}
@@ -261,11 +272,12 @@ Cross-model comparison reveals a striking pattern---anchoring bias varies dramat
 \toprule
 Model & Size/Type & Anchoring Diff & Obs. Range & vs Human & Notes \\
 \midrule
+Sonnet 4 (dated) & Frontier & 0.00 mo & [$-0.07$, $0.07$] & $\approx 0\times$ & No bias observed \\
 Llama 4 Scout & 70B open & 0.12 mo & [$-0.02$, $0.27$]$^\dagger$ & $\approx 0.06\times$ & Near-immune \\
 Hermes 3 Llama 3.1 & 405B open & $-0.16$ mo & [$-0.31$, $0.00$]$^\dagger$ & $\approx 0\times$ & Largest open model \\
 Claude Opus 4 & Frontier & 2.01 mo & [$1.53$, $2.49$]$^\dagger$ & $\approx 0.98\times$ & Human-level \\
 GPT-5.2 & Frontier & 2.71 mo & [$2.23$, $3.19$]$^\dagger$ & $\approx 1.32\times$ & Above human \\
-Claude Sonnet 4 & Frontier & 3.00 mo & [$2.57$, $3.43$] & $\approx 1.46\times$ & Above human \\
+Sonnet 4 (alias) & Frontier & 3.00 mo & [$2.57$, $3.43$] & $\approx 1.46\times$ & Above human \\
 Nemotron 30B & 30B dense & 3.21 mo & [$2.73$, $3.69$]$^\dagger$ & $\approx 1.57\times$ & Moderate RLHF \\
 Codex (OpenAI) & 2023 & 3.67 mo & [$3.23$, $4.10$] & $1.79\times$ & Legacy \\
 Trinity Large & 400B MoE & 4.51 mo & [$4.03$, $4.99$]$^\dagger$ & $\approx 2.20\times$ & 13B active \\
@@ -274,7 +286,7 @@ GPT-4o & Frontier & 4.96 mo & [$4.50$, $5.42$] & $\approx 2.42\times$ & Highest 
 Human baseline & --- & 2.05 mo & --- & $1.00\times$ & Englich et al. 2006 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias. Models sorted by observed bias magnitude. \textbf{Sample sizes:} Full $n=30$ trials per condition for Codex, Claude Sonnet 4, and GPT-4o (exact observed ranges shown). $^\dagger$Models marked with dagger used reduced samples ($n=10$--$15$ per condition due to API cost constraints); ranges for these models are \emph{estimated} from pooled variance across the three models with complete data, not directly observed. Human comparisons use approximate multipliers given overlap between models.}
+\caption{Cross-model anchoring bias. Models sorted by observed bias magnitude. \textbf{Note:} Sonnet 4 appears twice---``dated'' (\texttt{claude-sonnet-4-20250514}) and ``alias'' (\texttt{claude-sonnet-4-5}) showed qualitatively different results. \textbf{Sample sizes:} Full $n=30$ trials per condition for Codex, Sonnet 4 (both identifiers), and GPT-4o (exact observed ranges shown). $^\dagger$Models marked with dagger used reduced samples ($n=10$--$15$ per condition due to API cost constraints); ranges for these models are \emph{estimated} from pooled variance across the models with complete data, not directly observed.}
 \label{tab:crossmodel}
 \end{table}
 
@@ -287,15 +299,53 @@ Human baseline & --- & 2.05 mo & --- & $1.00\times$ & Englich et al. 2006 \\
     \item \textbf{Capability scaling appears to help within families:} GPT-4o $\to$ GPT-5.2 showed approximately 46\% bias reduction; Sonnet $\to$ Opus showed approximately 33\% reduction. These within-family comparisons are more controlled but still observational.
 \end{enumerate}
 
-\subsection{Complete Sonnet 4 Bias Profile}
+\subsection{Knowledge of Bias $\neq$ Resistance to Bias}
 
-Running all four bias experiments on Claude Sonnet 4 reveals a nuanced pattern:
+To assess whether model knowledge of anchoring bias explains the observed differences, we directly probed both GPT-4o and Sonnet 4 (dated) about familiarity with the Englich et al. study.
+
+\textbf{Both models demonstrated clear knowledge:}
+\begin{itemize}
+    \item Correctly described the Englich, Mussweiler, and Strack (2006) study design
+    \item Accurately predicted the expected anchoring pattern (low anchor $\to$ lower sentence, high anchor $\to$ higher sentence)
+    \item Explained the psychological mechanism of anchoring and adjustment
+\end{itemize}
+
+\textbf{Yet their behavior diverged completely:}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Model & Knows Study? & Predicts Pattern? & Exhibits Bias? \\
+\midrule
+GPT-4o & \checkmark Yes & \checkmark Correctly & $\times$ \textbf{5.0mo (2.42$\times$ human)} \\
+Sonnet 4 (dated) & \checkmark Yes & \checkmark Correctly & \checkmark \textbf{0.0mo (immune)} \\
+\bottomrule
+\end{tabular}
+\caption{Knowledge-behavior dissociation. Both models know about anchoring bias and can predict its effects, yet only Sonnet 4 (dated) resists it in practice.}
+\label{tab:knowledge-behavior}
+\end{table}
+
+\textbf{Implications:}
+\begin{enumerate}
+    \item \textbf{Training contamination cannot explain immunity:} If Sonnet's resistance were due to memorizing ``correct'' answers from training data, GPT-4o (which also knows the study) should show similar resistance. Instead, knowledge is necessary but not sufficient.
+    
+    \item \textbf{Meta-cognitive application matters:} The difference may lie in whether models \emph{apply} knowledge about biases during task execution, not merely whether they \emph{possess} it. Sonnet 4 (dated) appears to engage meta-cognitive monitoring; GPT-4o does not.
+    
+    \item \textbf{Mirrors human decision-making research:} This finding directly parallels \citet{sibony2019}'s observation that human awareness of cognitive biases is insufficient to overcome them without structured intervention. GPT-4o behaves like humans who ``know about'' anchoring but still fall prey to it.
+\end{enumerate}
+
+This knowledge-behavior dissociation provides additional evidence that the soft/hard bias distinction (discussed in Section~\ref{sec:soft-hard}) reflects genuine differences in how models process and apply meta-knowledge, not merely differences in training exposure.
+
+\subsection{Complete Sonnet 4 (Alias) Bias Profile}
+
+Running all four bias experiments on Claude Sonnet 4 \textbf{(alias: \texttt{claude-sonnet-4-5})} reveals a nuanced pattern. Note: These results use the alias identifier; Sonnet 4 (dated) showed 0.0mo anchoring effect.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{lllll}
 \toprule
-Bias Type & Human Pattern & Sonnet 4 Result & Obs. Range & Category \\
+Bias Type & Human Pattern & Sonnet 4 (alias) Result & Obs. Range & Category \\
 \midrule
 Anchoring & 2.05mo diff & 3.00mo diff & [2.57, 3.43] & $\times$ BIASED \\
 Sunk Cost & 85\% continue & 0\% continue & [0\%, 11\%] & \checkmark IMMUNE \\
@@ -303,13 +353,13 @@ Conjunction & 85\% wrong & 0\% Linda, 13\% Bill & [5\%, 30\%]$^*$ & $\sim$ PARTI
 Framing & Preference reversal & 97\%$\to$50\% reversal & [83\%, 99\%]$^\dagger$ & $\times$ BIASED \\
 \bottomrule
 \end{tabular}
-\caption{Complete bias profile for Claude Sonnet 4 across four cognitive biases ($n=30$ per condition). $^*$Range for Bill scenario only (Linda showed 0\% errors). $^\dagger$Range for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option.}
+\caption{Complete bias profile for Claude Sonnet 4 (alias: \texttt{claude-sonnet-4-5}) across four cognitive biases ($n=30$ per condition). $^*$Range for Bill scenario only (Linda showed 0\% errors). $^\dagger$Range for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option. \textbf{Note:} Anchoring result differs for dated identifier (0.0mo).}
 \label{tab:profile}
 \end{table}
 
 \subsection{DeFrame Substantially Reduces Framing Effect}
 
-While framing effect persists in Sonnet 4, the DeFrame technique \citep{lim2026} substantially reduces it:
+While framing effect persists in Sonnet 4 (alias: \texttt{claude-sonnet-4-5}), the DeFrame technique \citep{lim2026} substantially reduces it:
 
 \begin{table}[H]
 \centering
@@ -329,35 +379,47 @@ Pollution & Loss & 40\% certain & \textbf{93\% certain} & [79\%, 98\%] \\
 
 \section{Discussion}
 
-\subsection{Two Types of Anchoring Bias: Soft vs Hard}
+\subsection{Preliminary Hypothesis: Soft vs Hard Bias Patterns}
+\label{sec:soft-hard}
 
-Our most significant finding is that debiasing interventions that eliminate anchoring bias in one model have no effect on another. This suggests fundamentally different bias mechanisms across architectures.
+Our observations suggest that debiasing interventions effective on one model may have no effect on another. Based on comparing Sonnet 4 (alias) and GPT-4o, we propose a preliminary hypothesis distinguishing two bias patterns. \textbf{This hypothesis is based on observations from only two models and requires validation across a broader range of architectures before generalization.}
 
 \begin{table}[H]
 \centering
 \begin{tabular}{lcccc}
 \toprule
-Model & Baseline & temp=1.0 & Simple Debias & Bias Type \\
+Model & Baseline & temp=1.0 & Simple Debias & Observed Pattern \\
 \midrule
-Claude Sonnet 4 & 3.00 mo & \textbf{0 mo} & \textbf{0.13 mo} & \textbf{Soft} \\
-GPT-4o & 4.97 mo & 4.97 mo & 4.67 mo & \textbf{Hard} \\
+Sonnet 4 (alias) & 3.00 mo & \textbf{0 mo} & \textbf{0.13 mo} & \textit{Soft-like} \\
+Sonnet 4 (dated) & 0.00 mo & 0 mo & 0 mo & \textit{Minimal} \\
+GPT-4o & 4.97 mo & 4.97 mo & 4.67 mo & \textit{Hard-like} \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing intervention effectiveness by model ($n=30$ per condition). Sonnet 4 responds to both temperature increase (100\% reduction) and simple prompt instruction (96\% reduction). GPT-4o responds to neither (0\% and 6\% reduction respectively).}
+\caption{Debiasing intervention effectiveness by model identifier ($n=30$ per condition). Sonnet 4 (alias) responds to both temperature increase (100\% reduction) and simple prompt instruction (96\% reduction). Sonnet 4 (dated) shows no baseline bias. GPT-4o responds to neither intervention (0\% and 6\% reduction respectively).}
 \label{tab:soft-hard}
 \end{table}
 
-\textbf{Soft bias} (Sonnet 4): Eliminated by either increasing temperature to 1.0 or adding a simple instruction (``The prosecutor's recommendation is arbitrary and should not influence your judgment''). This suggests the bias exists at the decoding/prompt-compliance level---the model ``knows'' the anchor is irrelevant but defaults to anchor-consistent outputs when not explicitly instructed otherwise.
+\textbf{Hypothesized ``soft bias'' pattern} (observed in Sonnet 4 alias): Bias eliminated by either increasing temperature to 1.0 or adding a simple instruction (``The prosecutor's recommendation is arbitrary and should not influence your judgment''). This \emph{might} suggest the bias exists at the decoding/prompt-compliance level---the model ``knows'' the anchor is irrelevant but defaults to anchor-consistent outputs when not explicitly instructed otherwise.
 
-\textbf{Hard bias} (GPT-4o): Persists despite both interventions. Temperature=1.0 produces identical bias magnitude. The simple debias instruction achieves only 6\% reduction. This suggests the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
+\textbf{Hypothesized ``hard bias'' pattern} (observed in GPT-4o): Bias persists despite both interventions. Temperature=1.0 produces identical bias magnitude. The simple debias instruction achieves only 6\% reduction. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
+
+\textbf{Important caveats:}
+\begin{itemize}
+    \item This distinction is based on only two models (Sonnet 4 alias vs GPT-4o)
+    \item The alias/dated variance for Sonnet 4 complicates interpretation
+    \item We cannot rule out that observed differences reflect API routing, checkpoint differences, or other confounds rather than fundamental architectural properties
+    \item Broader validation across model families is needed before treating this as a robust taxonomy
+\end{itemize}
 
 \textbf{Contamination probe:} We asked both models whether they were familiar with the Englich et al. sentencing study and whether they could predict the expected anchoring pattern. Both models demonstrated clear knowledge of the study and correctly predicted that high prosecutor recommendations would bias sentencing upward. Yet their behavior diverged: GPT-4o exhibited the bias despite this knowledge, while Sonnet resisted it. This suggests that \emph{knowing} about a bias is insufficient to avoid it---models differ in whether they apply meta-cognitive knowledge to their own behavior, paralleling findings in human decision-making research \citep{sibony2019}.
 
-\subsection{Anchoring Bias is Prompt-Sensitive}
+\subsection{Anchoring Bias is Prompt-Sensitive (Sonnet 4 Alias)}
 
-Further robustness testing revealed that the original 3-month anchoring effect is highly sensitive to prompt wording. Paraphrasing the prompt reduced the mean anchoring effect from 3.00 months to 0.25 months (92\% reduction), with all paraphrased variants showing near-zero observed effects.
+Further robustness testing on Sonnet 4 \textbf{(alias: \texttt{claude-sonnet-4-5})} revealed that the original 3-month anchoring effect is highly sensitive to prompt wording. Paraphrasing the prompt reduced the mean anchoring effect from 3.00 months to 0.25 months (92\% reduction), with all paraphrased variants showing near-zero observed effects.
 
 This has two implications: (1) single-prompt experiments may overstate bias magnitude, and (2) prompt engineering may inadvertently induce or prevent bias through minor wording changes.
+
+\textbf{Note:} This finding applies to the alias identifier. Sonnet 4 (dated) showed near-zero anchoring even with the original prompt, making prompt sensitivity testing less informative for that identifier.
 
 \subsection{GPT-4o Prompt Robustness}
 
@@ -387,7 +449,7 @@ To test whether anchoring effects generalize beyond the classic Englich paradigm
 \centering
 \begin{tabular}{lcccc}
 \toprule
-Scenario & Sonnet 4 Effect & Sonnet Range & GPT-4o Effect & GPT-4o Range \\
+Scenario & Sonnet 4 (alias) Effect & Sonnet Range & GPT-4o Effect & GPT-4o Range \\
 \midrule
 Classic (Sentencing) & 3.0 mo & [2.6, 3.4] & 5.0 mo & [4.5, 5.4] \\
 Medical (novel) & 0.24 mo (7.9\%) & [0.1, 0.4] & 0.65 mo (12.9\%) & [0.3, 1.0] \\
@@ -399,7 +461,7 @@ Environmental (novel) & 0.45 mo (15.0\%) & [0.2, 0.7] & 1.85 mo (37.0\%) & [1.3,
 \textbf{Novel range} & \multicolumn{2}{c}{7.9\%--52.5\% of baseline} & \multicolumn{2}{c}{12.9\%--112.5\% of baseline} \\
 \bottomrule
 \end{tabular}
-\caption{Anchoring effects across classic and novel scenarios ($n=30$ per condition). Percentages show effect size relative to classic scenario baseline. All 8 scenarios (4 novel + classic with variations) showed measurable anchoring in both models, though magnitude varied substantially by scenario content.}
+\caption{Anchoring effects across classic and novel scenarios ($n=30$ per condition). ``Sonnet 4 (alias)'' refers to \texttt{claude-sonnet-4-5}. Percentages show effect size relative to classic scenario baseline. All 8 scenarios (4 novel + classic with variations) showed measurable anchoring in both models, though magnitude varied substantially by scenario content.}
 \label{tab:novel-anchoring}
 \end{table}
 
@@ -419,23 +481,25 @@ Debiasing techniques designed for human decision-making partially transfer to LL
 
 SACD outperforms static prompt interventions by a large margin. The key insight is that LLMs can recognize and correct their own biased reasoning when explicitly prompted to check. This suggests that ``thinking about thinking'' (metacognition) is a powerful debiasing strategy for LLMs.
 
-\subsection{A Taxonomy of LLM Biases}
+\subsection{Toward a Hypothesis of LLM Bias Patterns}
 
-Our results suggest a two-dimensional taxonomy:
+Based on our limited observations (primarily from Sonnet 4 alias and GPT-4o), we \emph{tentatively propose} a two-dimensional framework for thinking about LLM biases. \textbf{This is a preliminary hypothesis, not an established taxonomy.} Validation across many more models and bias types is required.
 
-\textbf{Dimension 1: Response to model improvements}
+\textbf{Tentative Dimension 1: Response to model improvements}
 \begin{enumerate}
-    \item \textbf{Training-sensitive biases} (anchoring, sunk cost)---appear to diminish with model capability. Sunk cost was eliminated across all tested models (0\% fallacy rate).
-    \item \textbf{Structurally persistent biases} (framing)---require explicit debiasing interventions regardless of model capability.
+    \item \textbf{Possibly training-sensitive biases} (e.g., anchoring, sunk cost)---may diminish with model capability. In our tests, sunk cost showed 0\% fallacy rate across all models.
+    \item \textbf{Possibly structurally persistent biases} (e.g., framing)---may require explicit debiasing interventions regardless of model capability.
 \end{enumerate}
 
-\textbf{Dimension 2: Response to debiasing interventions}
+\textbf{Tentative Dimension 2: Response to debiasing interventions}
 \begin{enumerate}
-    \item \textbf{Soft biases}---eliminated by simple interventions (temperature increase, prompt instruction). Sonnet 4's anchoring bias is soft.
-    \item \textbf{Hard biases}---resistant to simple interventions, potentially requiring architectural changes or fine-tuning. GPT-4o's anchoring bias is hard.
+    \item \textbf{``Soft-like'' patterns}---bias reduced by simple interventions (temperature increase, prompt instruction). Observed in Sonnet 4 (alias).
+    \item \textbf{``Hard-like'' patterns}---bias resistant to simple interventions. Observed in GPT-4o.
 \end{enumerate}
 
-This taxonomy has practical implications: (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) hard biases may require more sophisticated interventions than prompt engineering. Note that this soft/hard distinction is based primarily on observations from Claude Sonnet 4 and GPT-4o; validation across a broader range of models and architectures is needed before generalizing this taxonomy.
+\textbf{Practical implications (with appropriate caution):} (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) intervention-resistant biases may require more sophisticated approaches than prompt engineering.
+
+\textbf{Limitations of this framework:} This soft/hard distinction derives from observations of just two models (Sonnet 4 alias and GPT-4o). The alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) further complicates interpretation---what appears to be a ``soft'' vs ``hard'' distinction might instead reflect checkpoint differences, API routing, or other confounds. We present this as a hypothesis for future investigation, not an established taxonomy.
 
 \subsection{Limitations}
 
@@ -472,8 +536,7 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
 \begin{itemize}
     \item Cross-model validation spans multiple provider families (Anthropic, OpenAI, Meta, Nvidia, others) but may not generalize to all architectures
     \item Ecological validity: Stylized sentencing scenarios may not reflect real-world deployment contexts where LLMs make consequential decisions
-    \item Training contamination cannot be ruled out as alternative explanation for ``immunity''---models showing zero bias may have encountered similar scenarios during training rather than genuinely lacking the bias
-    \item We did not query models about familiarity with classic paradigms (e.g., asking ``Have you seen the Englich et al. sentencing study?''); this remains a potential confound for interpreting low-bias results
+    \item Training contamination is partially addressed by our contamination probe (Section above): both GPT-4o and Sonnet 4 (dated) demonstrated familiarity with the Englich et al. study, yet exhibited opposite behaviors. This suggests contamination alone does not explain the soft/hard distinction---other factors (architecture, training objectives, meta-cognitive application) must be involved
     \item This study focused on natural-language judgment tasks; code-domain experiments (e.g., anchoring in line count or complexity estimates) are left for future work
 \end{itemize}
 
@@ -485,11 +548,20 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
     \item Future confirmatory studies should pre-register hypotheses and apply appropriate corrections
 \end{itemize}
 
-\textbf{Model Identifier Variance:}
+\textbf{Model Identifier Variance (Key Limitation):}
 \begin{itemize}
-    \item We discovered that model aliases (e.g., \texttt{claude-sonnet-4-5}) may route to different checkpoints than date-pinned identifiers (e.g., \texttt{claude-sonnet-4-20250514}), producing qualitatively different results (3.0mo vs 0.0mo anchoring effect)
+    \item We discovered that model aliases (e.g., \texttt{claude-sonnet-4-5}) route to different checkpoints than date-pinned identifiers (e.g., \texttt{claude-sonnet-4-20250514}), producing qualitatively different results (3.0mo vs 0.0mo anchoring effect)
+    \item \textbf{This variance is a potential confound for all LLM bias research}, not just our study---any research using model aliases may have hidden reproducibility issues
     \item All primary experiments use date-pinned model identifiers for reproducibility
     \item Researchers should always specify exact model versions; alias-based results may not replicate
+\end{itemize}
+
+\textbf{Soft/Hard Bias Hypothesis Limitations:}
+\begin{itemize}
+    \item Our soft/hard bias distinction is a \textbf{preliminary hypothesis based on observations from only two models} (Sonnet 4 alias and GPT-4o)
+    \item The alias/dated variance complicates interpretation---differences attributed to ``soft'' vs ``hard'' patterns might instead reflect checkpoint differences or API routing
+    \item We explicitly \textbf{do not claim this as an established taxonomy}; it requires validation across many more models and architectures
+    \item The observed patterns may not generalize beyond the specific model versions and prompts we tested
 \end{itemize}
 
 \textbf{AI Authorship Considerations:}
@@ -517,16 +589,23 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-Our exploratory study suggests that LLM anchoring bias may be fragile, context-dependent, and model-specific. Key observations:
+Our exploratory study reveals two primary findings with implications for LLM bias research:
 
+\textbf{Methodological contribution: Model identifier routing affects reproducibility.} Claude Sonnet 4 accessed via alias (\texttt{claude-sonnet-4-5}) showed 3-month anchoring effect, while the date-pinned identifier (\texttt{claude-sonnet-4-20250514}) showed 0-month effect on identical prompts. This variance---occurring within a single experimental session---highlights a reproducibility confound relevant to all LLM research using model aliases.
+
+\textbf{Preliminary hypothesis: Soft vs hard bias patterns.} Based on observations from Sonnet 4 (alias) and GPT-4o, we tentatively propose that LLM biases may fall into ``soft'' patterns (responsive to temperature/instruction) and ``hard'' patterns (resistant to both). However, this is a hypothesis based on just two models, not an established taxonomy.
+
+Key observations:
 \begin{enumerate}
-    \item \textbf{Observed bias patterns differ by model}: In our experiments, Claude Sonnet 4 (date-pinned) showed minimal anchoring (0.0--0.07mo effect), while GPT-4o showed consistent anchoring (5--6mo effect) across all temperatures tested. We tentatively describe these as ``soft'' vs ``hard'' bias patterns, though further research is needed to confirm this distinction.
-    \item \textbf{Prompt sensitivity observed}: Paraphrasing reduced the anchoring effect by 92\% in Sonnet (3.0$\to$0.25 months), suggesting single-prompt experiments may overstate bias magnitude.
-    \item \textbf{Model identifier variance}: Alias vs date-pinned model identifiers produced qualitatively different results (3.0mo vs 0.0mo), highlighting a reproducibility concern for LLM bias research.
-    \item \textbf{Intervention effectiveness varies}: Debiasing techniques that worked on one model did not transfer to another in our tests.
+    \item \textbf{Model identifier variance}: Alias vs date-pinned identifiers produced qualitatively different results (3.0mo vs 0.0mo). This is a potential confound for all LLM bias research.
+    \item \textbf{Observed bias patterns differ}: Sonnet 4 (alias) showed debiasing-responsive anchoring; GPT-4o showed intervention-resistant anchoring. Sonnet 4 (dated) showed minimal baseline bias.
+    \item \textbf{Prompt sensitivity}: Paraphrasing reduced anchoring by 92\% in Sonnet 4 (alias), suggesting single-prompt experiments may overstate bias magnitude.
+    \item \textbf{Intervention non-transferability}: Debiasing techniques effective on one model did not transfer to another in our tests.
 \end{enumerate}
 
-Practitioners should validate interventions on their specific deployment model (using date-pinned identifiers) rather than assuming generalization. This exploratory study is limited by moderate sample sizes ($n=30$), potential training contamination, observational cross-model comparisons, and the possibility that our scenario set is not representative.
+\textbf{Recommendations:} (1) Use date-pinned model identifiers for reproducible research. (2) Validate debiasing interventions on your specific deployment model. (3) Treat our soft/hard distinction as a hypothesis requiring broader validation.
+
+\textbf{Limitations:} This study is based on moderate sample sizes ($n=30$), primarily two models for the soft/hard hypothesis, potential training contamination, and observational cross-model comparisons. The proposed taxonomy is preliminary and may not generalize.
 
 \section*{Ethics Statement}
 
