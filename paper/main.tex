@@ -31,7 +31,7 @@
 \begin{abstract}
 Large Language Models (LLMs) exhibit cognitive biases similar to humans, but it remains unclear whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test multiple debiasing approaches across four cognitive biases (anchoring, sunk cost, conjunction fallacy, framing effect) and multiple models (Codex, Claude Haiku, Claude Sonnet 4).
 
-\textbf{Key findings:} (1) Model capability reduces anchoring bias---Claude Opus 4 shows near-human levels ($0.98\times$), while instruction-tuned models like GPT-4o show $2.42\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (90\%$\rightarrow$80\% preference reversal). (3) Both bias types are addressable: DeFrame substantially reduces framing effect (93--100\% alignment with gain-frame preferences, 95\% CI [79\%, 100\%]), and open-weights models (Llama, Hermes) show minimal anchoring susceptibility (differences $<0.2$ months, 95\% CIs crossing zero).
+\textbf{Key findings:} (1) Model capability reduces anchoring bias---Claude Opus 4 shows near-human levels ($0.98\times$), while instruction-tuned models like GPT-4o show $2.42\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (97\%$\rightarrow$50\% preference reversal). (3) Both bias types are addressable: DeFrame substantially reduces framing effect (93--100\% alignment with gain-frame preferences, 95\% CI [79\%, 100\%]), and open-weights models (Llama, Hermes) show minimal anchoring susceptibility (differences $<0.2$ months, 95\% CIs crossing zero).
 
 We propose a taxonomy: \textbf{training-sensitive biases} (anchoring) can be reduced through capability scaling or open-weights training, but \emph{increased} by heavy RLHF instruction-tuning; \textbf{robust biases} (sunk cost) are eliminated across all models; while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with context hygiene (DeFrame) being most effective.
 \end{abstract}
@@ -109,6 +109,28 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
     \item Comparisons: vs. human baseline \citep{englich2006}, vs. no-debiasing baseline
 \end{itemize}
 
+\subsubsection{Statistical Methodology Details}
+
+\textbf{Confidence intervals.} All 95\% CIs reported in tables are for the \emph{difference} between conditions (e.g., high anchor minus low anchor), not for individual condition means. Bootstrap CIs (2000 iterations, percentile method) were used for anchoring experiments; Wilson score intervals were used for binary outcomes (sunk cost, conjunction, framing).
+
+\textbf{Welch's $t$-test.} We used Welch's unequal-variances $t$-test rather than Student's $t$-test because anchor conditions may have different variances. Degrees of freedom were computed via the Welch-Satterthwaite approximation:
+\[
+\nu = \frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}{\frac{(s_1^2/n_1)^2}{n_1-1} + \frac{(s_2^2/n_2)^2}{n_2-1}}
+\]
+where $s_i^2$ and $n_i$ are the variance and sample size for condition $i$.
+
+\textbf{``vs Human'' multiplier.} The ``vs Human'' column in cross-model tables represents the ratio of the model's anchoring difference to the human baseline difference from \citet{englich2006}:
+\[
+\text{vs Human} = \frac{\text{Diff}_{\text{model}}}{\text{Diff}_{\text{human}}} = \frac{\text{Diff}_{\text{model}}}{2.05\text{ mo}}
+\]
+Values $>1$ indicate stronger anchoring than humans; values $<1$ indicate weaker anchoring.
+
+\textbf{Cross-model pooled variance.} For models where we did not run full $n=30$ experiments (marked with $^\dagger$ in Table~\ref{tab:crossmodel}), we estimated confidence intervals using pooled variance from the models with complete data (Codex, Sonnet 4, GPT-4o). The pooled standard error was computed as:
+\[
+SE_{\text{pooled}} = \sqrt{\frac{1}{k}\sum_{i=1}^{k} SE_i^2}
+\]
+where $k=3$ reference models. This assumes similar within-condition variance across models, which is approximate but provides reasonable interval estimates.
+
 \section{Results}
 
 \subsection{Baseline Anchoring Bias}
@@ -122,10 +144,10 @@ Without debiasing interventions, LLMs show anchoring bias at $1.79\times$ human 
 Condition & Low Anchor & High Anchor & Diff & 95\% CI & Cohen's $d$ & vs Human \\
 \midrule
 Human \citep{englich2006} & 4.00 mo & 6.05 mo & 2.05 mo & --- & --- & --- \\
-LLM Baseline (Codex) & 5.33$\pm$0.96 & 9.00$\pm$0.83 & 3.67 mo & [3.23, 4.10] & 4.09 & $1.79\times$ \\
+LLM Baseline (Codex) & $5.33 \pm 0.96$ & $9.00 \pm 0.83$ & 3.67 mo & [3.23, 4.10] & 4.09 & $1.79\times$ \\
 \bottomrule
 \end{tabular}
-\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). 95\% CI computed via bootstrap (2000 iterations). Effect size is very large ($d > 0.8$), indicating robust anchoring effect.}
+\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). 95\% CI is for the \emph{difference} between conditions, computed via bootstrap (2000 iterations). Effect size is very large ($d > 0.8$), indicating robust anchoring effect.}
 \label{tab:baseline}
 \end{table}
 
@@ -159,10 +181,10 @@ SACD essentially eliminates anchoring bias:
 \toprule
 Condition & Low Anchor & High Anchor & Diff & 95\% CI & Cohen's $d$ & $p$-value \\
 \midrule
-SACD & 3.67$\pm$2.54 mo & 3.20$\pm$2.94 mo & $-0.47$ mo & [$-1.83$, $0.93$] & $-0.17$ & 0.51 \\
+SACD & $3.67 \pm 2.54$ mo & $3.20 \pm 2.94$ mo & $-0.47$ mo & [$-1.83$, $0.93$] & $-0.17$ & 0.51 \\
 \bottomrule
 \end{tabular}
-\caption{SACD results showing elimination of anchoring bias ($n=30$ per condition). 95\% CI crosses zero, confirming no significant anchoring effect. Effect size is negligible ($|d| < 0.2$).}
+\caption{SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm$ SD. 95\% CI is for the difference between conditions and crosses zero, confirming no significant anchoring effect. Effect size is negligible ($|d| < 0.2$). $p$-value from Welch's $t$-test.}
 \label{tab:sacd}
 \end{table}
 
