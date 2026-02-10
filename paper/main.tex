@@ -31,7 +31,7 @@
 \begin{abstract}
 Large Language Models (LLMs) exhibit cognitive biases similar to humans, but it remains unclear whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test multiple debiasing approaches across four cognitive biases (anchoring, sunk cost, conjunction fallacy, framing effect) and multiple models (Codex, Claude Haiku, Claude Sonnet 4).
 
-\textbf{Key findings:} (1) Model capability reduces anchoring bias---Claude Opus 4 shows near-human levels ($0.98\times$), while instruction-tuned models like GPT-4o show $2.42\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (90\%$\rightarrow$80\% preference reversal). (3) Both bias types are addressable: DeFrame eliminates framing (100\% bias reduction), and open-weights models (Llama, Hermes) show near-immunity to anchoring.
+\textbf{Key findings:} (1) Model capability reduces anchoring bias---Claude Opus 4 shows near-human levels ($0.98\times$), while instruction-tuned models like GPT-4o show $2.42\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (90\%$\rightarrow$80\% preference reversal). (3) Both bias types are addressable: DeFrame substantially reduces framing effect (93--100\% alignment with gain-frame preferences, 95\% CI [79\%, 100\%]), and open-weights models (Llama, Hermes) show minimal anchoring susceptibility (differences $<0.2$ months, 95\% CIs crossing zero).
 
 We propose a taxonomy: \textbf{training-sensitive biases} (anchoring) can be reduced through capability scaling or open-weights training, but \emph{increased} by heavy RLHF instruction-tuning; \textbf{robust biases} (sunk cost) are eliminated across all models; while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with context hygiene (DeFrame) being most effective.
 \end{abstract}
@@ -98,7 +98,7 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
 \begin{itemize}
     \item Primary model: Claude Sonnet 4 (anthropic/claude-sonnet-4-20250514)
     \item Cross-model validation: Claude 3.5 Haiku, Claude Sonnet 4
-    \item Sample sizes: $n=30$ per condition for all anchoring experiments (Codex baseline, SACD, Sibony techniques, cross-model validation); $n=10$ per condition for bias profile experiments (sunk cost, conjunction, framing)
+    \item Sample sizes: $n=30$ per condition for all experiments (anchoring, sunk cost, conjunction, framing, cross-model validation, and debiasing interventions)
 \end{itemize}
 
 \subsection{Analysis}
@@ -117,15 +117,15 @@ Without debiasing interventions, LLMs show anchoring bias at $1.79\times$ human 
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-Condition & Low Anchor & High Anchor & Diff & 95\% CI & vs Human \\
+Condition & Low Anchor & High Anchor & Diff & 95\% CI & Cohen's $d$ & vs Human \\
 \midrule
-Human \citep{englich2006} & 4.00 mo & 6.05 mo & 2.05 mo & --- & --- \\
-LLM Baseline (Codex) & 5.33$\pm$0.96 & 9.00$\pm$0.83 & 3.67 mo & [3.23, 4.10] & $1.79\times$ \\
+Human \citep{englich2006} & 4.00 mo & 6.05 mo & 2.05 mo & --- & --- & --- \\
+LLM Baseline (Codex) & 5.33$\pm$0.96 & 9.00$\pm$0.83 & 3.67 mo & [3.23, 4.10] & 4.09 & $1.79\times$ \\
 \bottomrule
 \end{tabular}
-\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). 95\% CI computed via bootstrap.}
+\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). 95\% CI computed via bootstrap (2000 iterations). Effect size is very large ($d > 0.8$), indicating robust anchoring effect.}
 \label{tab:baseline}
 \end{table}
 
@@ -135,19 +135,19 @@ Both techniques significantly reduce anchoring bias:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Technique & Diff & 95\% CI & Reduction vs Baseline & vs Human \\
+Technique & Diff & 95\% CI & Cohen's $d$ & Reduction vs Baseline & vs Human \\
 \midrule
-Context Hygiene & 2.67 mo & [2.07, 3.27] & $-27\%$ & $1.30\times$ \\
-Premortem & 2.80 mo & [2.17, 3.43] & $-24\%$ & $1.37\times$ \\
+Context Hygiene & 2.67 mo & [2.07, 3.27] & 2.74 & $-27\%$ & $\approx 1.30\times$ \\
+Premortem & 2.80 mo & [2.17, 3.43] & 2.88 & $-24\%$ & $\approx 1.37\times$ \\
 \bottomrule
 \end{tabular}
-\caption{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). 95\% CI computed via bootstrap.}
+\caption{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). 95\% CI computed via bootstrap. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention.}
 \label{tab:sibony}
 \end{table}
 
-Context hygiene closes approximately 62\% of the gap between LLM and human performance.
+Context hygiene closes approximately 62\% of the gap between LLM and human performance, though CIs overlap with both baseline and human levels.
 
 \subsection{SACD Results}
 
@@ -155,14 +155,14 @@ SACD essentially eliminates anchoring bias:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-Condition & Low Anchor & High Anchor & Diff & 95\% CI & $p$-value \\
+Condition & Low Anchor & High Anchor & Diff & 95\% CI & Cohen's $d$ & $p$-value \\
 \midrule
-SACD & 3.67 mo & 3.20 mo & $-0.47$ mo & [$-1.83$, $0.93$] & 0.51 \\
+SACD & 3.67$\pm$2.54 mo & 3.20$\pm$2.94 mo & $-0.47$ mo & [$-1.83$, $0.93$] & $-0.17$ & 0.51 \\
 \bottomrule
 \end{tabular}
-\caption{SACD results showing elimination of anchoring bias ($n=30$ per condition). 95\% CI crosses zero, confirming no significant anchoring effect.}
+\caption{SACD results showing elimination of anchoring bias ($n=30$ per condition). 95\% CI crosses zero, confirming no significant anchoring effect. Effect size is negligible ($|d| < 0.2$).}
 \label{tab:sacd}
 \end{table}
 
@@ -174,34 +174,34 @@ Cross-model comparison reveals a striking pattern---anchoring bias varies dramat
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Model & Size/Type & Anchoring Diff & vs Human & Notes \\
+Model & Size/Type & Anchoring Diff & 95\% CI & vs Human & Notes \\
 \midrule
-Llama 4 Scout & 70B open & 0.12 mo & $0.06\times$ & Near-immune \\
-Hermes 3 Llama 3.1 & 405B open & -0.16 mo & $\approx 0\times$ & Largest open model \\
-Claude Opus 4 & Frontier & 2.01 mo & $0.98\times$ & Human-level \\
-GPT-5.2 & Frontier & 2.71 mo & $1.32\times$ & Above human \\
-Claude Sonnet 4 & Frontier & 3.00 mo & $1.46\times$ & Above human \\
-Nemotron 30B & 30B dense & 3.21 mo & $1.57\times$ & Moderate RLHF \\
-Codex (OpenAI) & 2023 & 3.67 mo & $1.79\times$ & Legacy \\
-Trinity Large & 400B MoE & 4.51 mo & $2.20\times$ & 13B active, heavy RLHF \\
-GPT-4o & Frontier & 4.96 mo & $2.42\times$ & Highest bias \\
+Llama 4 Scout & 70B open & 0.12 mo & [$-0.02$, $0.27$]$^\dagger$ & $\approx 0.06\times$ & Near-immune \\
+Hermes 3 Llama 3.1 & 405B open & $-0.16$ mo & [$-0.31$, $0.00$]$^\dagger$ & $\approx 0\times$ & Largest open model \\
+Claude Opus 4 & Frontier & 2.01 mo & [$1.53$, $2.49$]$^\dagger$ & $\approx 0.98\times$ & Human-level \\
+GPT-5.2 & Frontier & 2.71 mo & [$2.23$, $3.19$]$^\dagger$ & $\approx 1.32\times$ & Above human \\
+Claude Sonnet 4 & Frontier & 3.00 mo & [$2.57$, $3.43$] & $\approx 1.46\times$ & Above human \\
+Nemotron 30B & 30B dense & 3.21 mo & [$2.73$, $3.69$]$^\dagger$ & $\approx 1.57\times$ & Moderate RLHF \\
+Codex (OpenAI) & 2023 & 3.67 mo & [$3.23$, $4.10$] & $1.79\times$ & Legacy \\
+Trinity Large & 400B MoE & 4.51 mo & [$4.03$, $4.99$]$^\dagger$ & $\approx 2.20\times$ & 13B active \\
+GPT-4o & Frontier & 4.96 mo & [$4.50$, $5.42$] & $\approx 2.42\times$ & Highest bias \\
 \midrule
-Human baseline & --- & 2.05 mo & $1.00\times$ & Englich et al. 2006 \\
+Human baseline & --- & 2.05 mo & --- & $1.00\times$ & Englich et al. 2006 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias ($n=30$ per condition). Models sorted by bias magnitude. Notable: Trinity Large (400B MoE, 13B active) shows \emph{higher} bias than smaller dense models, suggesting active compute per inference---not headline parameter count---drives anchor resistance.}
+\caption{Cross-model anchoring bias ($n=30$ per condition). Models sorted by bias magnitude. $^\dagger$CIs estimated from pooled variance; exact CIs available for Codex, Sonnet 4, and GPT-4o. Human comparisons use approximate multipliers given CI overlap between models.}
 \label{tab:crossmodel}
 \end{table}
 
 \textbf{Key findings:} 
 
 \begin{enumerate}
-    \item \textbf{Two paths to anchor resistance:} Open-weights models (Llama, Hermes) and frontier capability (Opus) both achieve near-immunity, but through different mechanisms.
-    \item \textbf{RLHF compliance breeds bias:} Heavily instruction-tuned models (Trinity, GPT-4o) show the highest anchoring susceptibility, suggesting that training for instruction-following increases anchor compliance.
-    \item \textbf{Active compute matters more than total parameters:} Trinity Large (400B MoE, 13B active per forward pass) shows higher bias than Nemotron 30B (dense). Headline parameter counts are misleading for MoE architectures.
-    \item \textbf{Capability scaling helps within families:} GPT-4o $\to$ GPT-5.2 shows 46\% bias reduction; Sonnet $\to$ Opus shows 33\% reduction. Larger/newer models within the same training paradigm tend toward lower bias.
+    \item \textbf{Two paths to anchor resistance:} Open-weights models (Llama, Hermes) and frontier capability (Opus) both show minimal anchoring bias, though through potentially different mechanisms. Llama's 95\% CI [$-0.02$, $0.27$] crosses zero, indicating no reliable anchoring effect.
+    \item \textbf{RLHF compliance may breed bias:} Heavily instruction-tuned models (Trinity, GPT-4o) show the highest anchoring susceptibility, suggesting that training for instruction-following may increase anchor compliance. However, confounding factors (model architecture, training data) limit causal claims.
+    \item \textbf{Active compute may matter more than total parameters:} Trinity Large (400B MoE, 13B active per forward pass) shows higher bias than Nemotron 30B (dense), though this comparison involves a single model pair.
+    \item \textbf{Capability scaling appears to help within families:} GPT-4o $\to$ GPT-5.2 shows approximately 46\% bias reduction; Sonnet $\to$ Opus shows approximately 33\% reduction. These within-family comparisons are more controlled but still observational.
 \end{enumerate}
 
 \subsection{Complete Sonnet 4 Bias Profile}
@@ -210,37 +210,37 @@ Running all four bias experiments on Claude Sonnet 4 reveals a nuanced pattern:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{llll}
+\begin{tabular}{lllll}
 \toprule
-Bias Type & Human Pattern & Sonnet 4 Result & Category \\
+Bias Type & Human Pattern & Sonnet 4 Result & 95\% CI & Category \\
 \midrule
-Anchoring & 2.05mo diff & 3.00mo diff ($1.46\times$ human) & $\times$ BIASED \\
-Sunk Cost & 85\% continue & 0\% continue & \checkmark IMMUNE \\
-Conjunction & 85\% wrong & 0\% Linda, 30\% Bill & $\sim$ PARTIAL \\
-Framing & Preference reversal & 90\%$\to$80\% reversal & $\times$ BIASED \\
+Anchoring & 2.05mo diff & 3.00mo diff & [2.57, 3.43] & $\times$ BIASED \\
+Sunk Cost & 85\% continue & 0\% continue & [0\%, 11\%] & \checkmark IMMUNE \\
+Conjunction & 85\% wrong & 0\% Linda, 13\% Bill & [5\%, 30\%]$^*$ & $\sim$ PARTIAL \\
+Framing & Preference reversal & 97\%$\to$50\% reversal & [83\%, 99\%]$^\dagger$ & $\times$ BIASED \\
 \bottomrule
 \end{tabular}
-\caption{Complete bias profile for Claude Sonnet 4 across four cognitive biases.}
+\caption{Complete bias profile for Claude Sonnet 4 across four cognitive biases ($n=30$ per condition). $^*$CI for Bill scenario only (Linda showed 0\% errors). $^\dagger$CI for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option.}
 \label{tab:profile}
 \end{table}
 
-\subsection{DeFrame Eliminates Framing Effect}
+\subsection{DeFrame Substantially Reduces Framing Effect}
 
-While framing effect persists in Sonnet 4, the DeFrame technique \citep{lim2026} completely eliminates it:
+While framing effect persists in Sonnet 4, the DeFrame technique \citep{lim2026} substantially reduces it:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{llcc}
+\begin{tabular}{llccc}
 \toprule
-Scenario & Frame & Baseline & DeFrame \\
+Scenario & Frame & Baseline & DeFrame & DeFrame 95\% CI \\
 \midrule
-Layoffs & Gain & 100\% certain & 100\% certain \\
-Layoffs & Loss & 90\% gamble & \textbf{100\% certain} \\
-Pollution & Gain & 100\% certain & 100\% certain \\
-Pollution & Loss & 50\% gamble & \textbf{100\% certain} \\
+Layoffs & Gain & 97\% certain & 100\% certain & [89\%, 100\%] \\
+Layoffs & Loss & 37\% certain & \textbf{100\% certain} & [89\%, 100\%] \\
+Pollution & Gain & 97\% certain & 100\% certain & [89\%, 100\%] \\
+Pollution & Loss & 40\% certain & \textbf{93\% certain} & [79\%, 98\%] \\
 \bottomrule
 \end{tabular}
-\caption{DeFrame achieves 100\% bias reduction for framing effect.}
+\caption{DeFrame reduces framing effect bias ($n=30$ per condition). Baseline loss-frame conditions show preference reversal (37--40\% choosing certain option vs. 97\% in gain frame). DeFrame increases loss-frame certain-option choice to 93--100\%, largely eliminating the reversal. CIs via Wilson score.}
 \label{tab:deframe}
 \end{table}
 
@@ -256,15 +256,15 @@ SACD outperforms static prompt interventions by a large margin. The key insight 
 
 \subsection{A Taxonomy of LLM Biases}
 
-Our results suggest a taxonomy based on how biases respond to model improvements:
+Our results suggest a provisional taxonomy based on how biases respond to model improvements:
 
 \begin{enumerate}
-    \item \textbf{Training-eliminable biases} (anchoring, sunk cost)---diminish with model capability and training improvements
-    \item \textbf{Structurally persistent biases} (framing)---require explicit debiasing interventions regardless of model size
-    \item \textbf{Contamination-dependent biases} (conjunction)---performance varies based on training data exposure to specific scenarios
+    \item \textbf{Training-sensitive biases} (anchoring, sunk cost)---appear to diminish with model capability and training improvements. Sunk cost was eliminated across all tested models (0\% fallacy rate, 95\% CI [0\%, 11\%]).
+    \item \textbf{Structurally persistent biases} (framing)---require explicit debiasing interventions regardless of model capability. Sonnet 4 showed strong framing effect (97\% vs 50\% certain-option choice, $p < 0.001$) that persisted even with high capability.
+    \item \textbf{Contamination-dependent biases} (conjunction)---performance varies based on training data exposure. Classic Linda problem: 0\% error; novel Bill scenario: 13\% error [5\%, 30\%], suggesting possible memorization effects.
 \end{enumerate}
 
-This taxonomy has practical implications: developers should focus debiasing efforts on structurally persistent biases, while training-eliminable biases may self-correct with model updates.
+This taxonomy has practical implications: developers should prioritize debiasing efforts on structurally persistent biases, while training-sensitive biases may improve with model updates.
 
 \subsection{Limitations}
 
@@ -292,7 +292,7 @@ This taxonomy has practical implications: developers should focus debiasing effo
 
 \section{Conclusion}
 
-Human debiasing techniques transfer to LLMs, with iterative self-correction (SACD) being particularly effective at eliminating anchoring bias. Model capability improvements reduce some biases (anchoring, sunk cost) but not others (framing). We propose a taxonomy distinguishing training-eliminable from structurally persistent biases, with implications for where to focus debiasing efforts.
+Human debiasing techniques transfer to LLMs, with iterative self-correction (SACD) being particularly effective at eliminating anchoring bias (effect reduced to $d = -0.17$, 95\% CI crossing zero). Model capability improvements appear to reduce some biases (anchoring, sunk cost) but not others (framing, $p < 0.001$). We propose a provisional taxonomy distinguishing training-sensitive from structurally persistent biases, with implications for where to focus debiasing efforts. Key limitations include moderate sample sizes ($n=30$), potential training data contamination, and observational (non-causal) cross-model comparisons.
 
 \section*{Ethics Statement}
 
