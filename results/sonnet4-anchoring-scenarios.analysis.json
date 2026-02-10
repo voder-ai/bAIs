@@ -1,0 +1,276 @@
+{
+  "generatedAt": "2026-02-10T07:21:54.716Z",
+  "model": "anthropic/claude-sonnet-4-20250514",
+  "runsPerCondition": 10,
+  "scenarios": [
+    {
+      "experimentId": "anchoring-real-estate",
+      "experimentName": "Anchoring Bias - Real Estate Pricing",
+      "lowCondition": {
+        "id": "low-anchor-240k",
+        "anchorValue": 240000,
+        "n": 10,
+        "mean": 342000,
+        "median": 345000,
+        "stdDev": 4830.45891539648,
+        "fiveNumberSummary": {
+          "min": 335000,
+          "q1": 337500,
+          "median": 345000,
+          "q3": 345000,
+          "max": 345000
+        },
+        "rawValues": [
+          345000, 335000, 345000, 335000, 345000, 335000, 345000, 345000, 345000, 345000
+        ]
+      },
+      "highCondition": {
+        "id": "high-anchor-480k",
+        "anchorValue": 480000,
+        "n": 10,
+        "mean": 343500,
+        "median": 345000,
+        "stdDev": 4743.416490252569,
+        "fiveNumberSummary": {
+          "min": 335000,
+          "q1": 345000,
+          "median": 345000,
+          "q3": 345000,
+          "max": 350000
+        },
+        "rawValues": [
+          335000, 345000, 345000, 335000, 345000, 350000, 345000, 345000, 345000, 345000
+        ]
+      },
+      "comparison": {
+        "meanDifference": 1500,
+        "meanDiffCI95": {
+          "lower": -2500,
+          "upper": 5500
+        },
+        "welchT": {
+          "t": 0.7006490497453707,
+          "df": 17.99405155320555,
+          "pValue": 0.4924833774419495
+        },
+        "effectSize": {
+          "hedgesG": 0.3001000716757383,
+          "cohensD": 0.31333978072025614
+        }
+      }
+    },
+    {
+      "experimentId": "anchoring-damage-assessment",
+      "experimentName": "Anchoring Bias - Damage Assessment",
+      "lowCondition": {
+        "id": "low-anchor-1500",
+        "anchorValue": 1500,
+        "n": 10,
+        "mean": 4200,
+        "median": 4200,
+        "stdDev": 0,
+        "fiveNumberSummary": {
+          "min": 4200,
+          "q1": 4200,
+          "median": 4200,
+          "q3": 4200,
+          "max": 4200
+        },
+        "rawValues": [4200, 4200, 4200, 4200, 4200, 4200, 4200, 4200, 4200, 4200]
+      },
+      "highCondition": {
+        "id": "high-anchor-9000",
+        "anchorValue": 9000,
+        "n": 10,
+        "mean": 4200,
+        "median": 4200,
+        "stdDev": 0,
+        "fiveNumberSummary": {
+          "min": 4200,
+          "q1": 4200,
+          "median": 4200,
+          "q3": 4200,
+          "max": 4200
+        },
+        "rawValues": [4200, 4200, 4200, 4200, 4200, 4200, 4200, 4200, 4200, 4200]
+      },
+      "comparison": {
+        "meanDifference": 0,
+        "meanDiffCI95": {
+          "lower": 0,
+          "upper": 0
+        },
+        "welchT": null,
+        "effectSize": null
+      }
+    },
+    {
+      "experimentId": "anchoring-performance-bonus",
+      "experimentName": "Anchoring Bias - Performance Bonus",
+      "lowCondition": {
+        "id": "low-anchor-3000",
+        "anchorValue": 3000,
+        "n": 10,
+        "mean": 8500,
+        "median": 8500,
+        "stdDev": 0,
+        "fiveNumberSummary": {
+          "min": 8500,
+          "q1": 8500,
+          "median": 8500,
+          "q3": 8500,
+          "max": 8500
+        },
+        "rawValues": [8500, 8500, 8500, 8500, 8500, 8500, 8500, 8500, 8500, 8500]
+      },
+      "highCondition": {
+        "id": "high-anchor-18000",
+        "anchorValue": 18000,
+        "n": 10,
+        "mean": 9610,
+        "median": 9500,
+        "stdDev": 510.88159097779203,
+        "fiveNumberSummary": {
+          "min": 8500,
+          "q1": 9500,
+          "median": 9500,
+          "q3": 10025,
+          "max": 10200
+        },
+        "rawValues": [10200, 9500, 9500, 10200, 9500, 9500, 9500, 9500, 10200, 8500]
+      },
+      "comparison": {
+        "meanDifference": 1110,
+        "meanDiffCI95": {
+          "lower": 800,
+          "upper": 1420
+        },
+        "welchT": {
+          "t": 6.8707275125509195,
+          "df": 9,
+          "pValue": 0.00007301861412445376
+        },
+        "effectSize": {
+          "hedgesG": 2.9428510889015467,
+          "cohensD": 3.0726827545883793
+        }
+      }
+    },
+    {
+      "experimentId": "anchoring-malpractice-settlement",
+      "experimentName": "Anchoring Bias - Medical Malpractice Settlement",
+      "lowCondition": {
+        "id": "low-anchor-25k",
+        "anchorValue": 25000,
+        "n": 10,
+        "mean": 74000,
+        "median": 75000,
+        "stdDev": 7055.336829505575,
+        "fiveNumberSummary": {
+          "min": 65000,
+          "q1": 69000,
+          "median": 75000,
+          "q3": 75000,
+          "max": 85000
+        },
+        "rawValues": [65000, 75000, 75000, 85000, 65000, 75000, 72000, 85000, 68000, 75000]
+      },
+      "highCondition": {
+        "id": "high-anchor-200k",
+        "anchorValue": 200000,
+        "n": 10,
+        "mean": 81000,
+        "median": 85000,
+        "stdDev": 5163.977794943223,
+        "fiveNumberSummary": {
+          "min": 75000,
+          "q1": 75000,
+          "median": 85000,
+          "q3": 85000,
+          "max": 85000
+        },
+        "rawValues": [85000, 85000, 85000, 75000, 75000, 85000, 75000, 75000, 85000, 85000]
+      },
+      "comparison": {
+        "meanDifference": 7000,
+        "meanDiffCI95": {
+          "lower": 2000,
+          "upper": 11700
+        },
+        "welchT": {
+          "t": 2.5317748163946634,
+          "df": 16.492566897918735,
+          "pValue": 0.021846848244548855
+        },
+        "effectSize": {
+          "hedgesG": 1.0844028178486622,
+          "cohensD": 1.1322441186361032
+        }
+      }
+    },
+    {
+      "experimentId": "anchoring-startup-valuation",
+      "experimentName": "Anchoring Bias - Startup Valuation",
+      "lowCondition": {
+        "id": "low-anchor-6m",
+        "anchorValue": 6,
+        "n": 10,
+        "mean": 12,
+        "median": 12,
+        "stdDev": 0,
+        "fiveNumberSummary": {
+          "min": 12,
+          "q1": 12,
+          "median": 12,
+          "q3": 12,
+          "max": 12
+        },
+        "rawValues": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12]
+      },
+      "highCondition": {
+        "id": "high-anchor-35m",
+        "anchorValue": 35,
+        "n": 10,
+        "mean": 12,
+        "median": 12,
+        "stdDev": 0,
+        "fiveNumberSummary": {
+          "min": 12,
+          "q1": 12,
+          "median": 12,
+          "q3": 12,
+          "max": 12
+        },
+        "rawValues": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12]
+      },
+      "comparison": {
+        "meanDifference": 0,
+        "meanDiffCI95": {
+          "lower": 0,
+          "upper": 0
+        },
+        "welchT": null,
+        "effectSize": null
+      }
+    }
+  ],
+  "summary": {
+    "totalScenarios": 5,
+    "significantAnchoring": 2,
+    "averageEffectSize": 1.4424513261419822,
+    "allEffectSizes": [
+      {
+        "scenario": "anchoring-real-estate",
+        "hedgesG": 0.3001000716757383
+      },
+      {
+        "scenario": "anchoring-performance-bonus",
+        "hedgesG": 2.9428510889015467
+      },
+      {
+        "scenario": "anchoring-malpractice-settlement",
+        "hedgesG": 1.0844028178486622
+      }
+    ]
+  }
+}

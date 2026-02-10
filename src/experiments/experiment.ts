@@ -21,7 +21,17 @@ export type PromptStep = Readonly<{
     | 'debiasing-instruction'
     | 'recruiter-evaluation'
     | 'candidate-evaluation'
-    | 'final-recommendation';
+    | 'final-recommendation'
+    | 'listing-evaluation'
+    | 'comparable-evaluation'
+    | 'initial-estimate-evaluation'
+    | 'bodyshop-evaluation'
+    | 'bonus-suggestion-evaluation'
+    | 'peer-comparison-evaluation'
+    | 'mediator-evaluation'
+    | 'plaintiff-evaluation'
+    | 'analyst-evaluation'
+    | 'founder-evaluation';
   prompts: ReadonlyArray<PromptTemplate>;
 }>;
 

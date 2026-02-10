@@ -1,0 +1,142 @@
+{
+  "experimentId": "anchoring-prompt-robustness",
+  "generatedAt": "2026-02-10T07:21:36.107Z",
+  "model": "anthropic/claude-sonnet-4-20250514",
+  "runsPerCondition": 10,
+  "paraphraseCount": 4,
+  "totalTrials": 80,
+  "errorCount": 0,
+  "paraphrases": [
+    {
+      "paraphraseId": "original",
+      "lowAnchor": {
+        "n": 10,
+        "mean": 6,
+        "median": 6,
+        "stdDev": 0,
+        "raw": [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+      },
+      "highAnchor": {
+        "n": 10,
+        "mean": 6.2,
+        "median": 6,
+        "stdDev": 0.6324555320336759,
+        "raw": [6, 6, 6, 6, 6, 8, 6, 6, 6, 6]
+      },
+      "anchoringEffect": 0.20000000000000018,
+      "welchTTest": {
+        "t": 1.0000000000000009,
+        "df": 8.999999999999998,
+        "pTwoSided": 0.3434363961259732
+      },
+      "effectSize": {
+        "cohensD": 0.44721359549995837,
+        "hedgesG": 0.42831724639432633
+      },
+      "ci95": {
+        "lower": 0,
+        "upper": 0.5999999999999996
+      }
+    },
+    {
+      "paraphraseId": "formal",
+      "lowAnchor": {
+        "n": 10,
+        "mean": 6,
+        "median": 6,
+        "stdDev": 0,
+        "raw": [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+      },
+      "highAnchor": {
+        "n": 10,
+        "mean": 6.2,
+        "median": 6,
+        "stdDev": 0.6324555320336759,
+        "raw": [6, 6, 6, 6, 8, 6, 6, 6, 6, 6]
+      },
+      "anchoringEffect": 0.20000000000000018,
+      "welchTTest": {
+        "t": 1.0000000000000009,
+        "df": 8.999999999999998,
+        "pTwoSided": 0.3434363961259732
+      },
+      "effectSize": {
+        "cohensD": 0.44721359549995837,
+        "hedgesG": 0.42831724639432633
+      },
+      "ci95": {
+        "lower": 0,
+        "upper": 0.5999999999999996
+      }
+    },
+    {
+      "paraphraseId": "conversational",
+      "lowAnchor": {
+        "n": 10,
+        "mean": 6,
+        "median": 6,
+        "stdDev": 0,
+        "raw": [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+      },
+      "highAnchor": {
+        "n": 10,
+        "mean": 6,
+        "median": 6,
+        "stdDev": 0,
+        "raw": [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+      },
+      "anchoringEffect": 0,
+      "welchTTest": null,
+      "effectSize": null,
+      "ci95": {
+        "lower": 0,
+        "upper": 0
+      }
+    },
+    {
+      "paraphraseId": "structured",
+      "lowAnchor": {
+        "n": 10,
+        "mean": 6,
+        "median": 6,
+        "stdDev": 0,
+        "raw": [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+      },
+      "highAnchor": {
+        "n": 10,
+        "mean": 6.6,
+        "median": 6,
+        "stdDev": 1.2649110640673518,
+        "raw": [6, 9, 6, 6, 9, 6, 6, 6, 6, 6]
+      },
+      "anchoringEffect": 0.5999999999999996,
+      "welchTTest": {
+        "t": 1.4999999999999993,
+        "df": 8.999999999999998,
+        "pTwoSided": 0.16785065605678984
+      },
+      "effectSize": {
+        "cohensD": 0.6708203932499365,
+        "hedgesG": 0.6424758695914885
+      },
+      "ci95": {
+        "lower": 0,
+        "upper": 1.5
+      }
+    }
+  ],
+  "crossParaphraseStats": {
+    "anchoringEffects": [0.20000000000000018, 0.20000000000000018, 0, 0.5999999999999996],
+    "meanAnchoringEffect": 0.25,
+    "stdDevAnchoringEffect": 0.25166114784235816,
+    "minAnchoringEffect": 0,
+    "maxAnchoringEffect": 0.5999999999999996,
+    "effectsConsistent": true,
+    "allSignificant": false
+  },
+  "humanBaseline": {
+    "study": "Englich et al. (2006), Study 2",
+    "anchoringEffect": 2.05
+  },
+  "conclusion": "NOT ROBUST: Anchoring effect only significant in 0/4 paraphrases. Results depend on prompt wording. Findings may not generalize."
+}

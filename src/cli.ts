@@ -3,6 +3,8 @@
 import { Command } from 'commander';
 
 import { runAnchoringProsecutorSentencing } from './run/runAnchoringProsecutorSentencing.js';
+import { runAnchoringPromptRobustness } from './run/runAnchoringPromptRobustness.js';
+import { runAnchoringNovelScenarios } from './run/runAnchoringNovelScenarios.js';
 import { runAnchoringSalary } from './run/runAnchoringSalary.js';
 import { runAnchoringSACD } from './run/runAnchoringSACD.js';
 import { runChoiceExperiment } from './run/runChoiceExperiment.js';
@@ -150,6 +152,72 @@ run
     }
 
     await runAnchoringProsecutorSentencing(runOptions);
+  });
+
+run
+  .command('anchoring-prompt-robustness')
+  .description(
+    'Run prompt robustness test: anchoring effect across 4 paraphrases of the Lena M. case',
+  )
+  .option('-n, --runs <number>', 'Number of trials to run per condition per paraphrase', '10')
+  .option('--model <provider/model>', 'Model to use (e.g., anthropic/claude-sonnet-4-20250514)')
+  .option('--delay-ms <number>', 'Delay between API calls in milliseconds (for rate limiting)', '0')
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const delayMs = options.delayMs ? parseInt(options.delayMs, 10) : 0;
+    const llmProvider = await createLlmProvider(options.model);
+
+    const runOptions: {
+      runsPerCondition: number;
+      llmProvider: LlmProvider;
+      outPath?: string;
+      delayMs?: number;
+    } = {
+      runsPerCondition: runs,
+      llmProvider,
+      delayMs,
+    };
+
+    if (options.out) {
+      runOptions.outPath = options.out;
+    }
+
+    await runAnchoringPromptRobustness(runOptions);
+  });
+
+run
+  .command('anchoring-novel-scenarios')
+  .description('Run anchoring with novel scenarios (contamination test)')
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '30')
+  .option('--model <provider/model>', 'Model to use (e.g., anthropic/claude-sonnet-4-20250514)')
+  .option('--delay-ms <number>', 'Delay between API calls in milliseconds (for rate limiting)', '0')
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .option('--artifacts <mode>', 'Where to output analysis: console | files | both', 'console')
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const delayMs = options.delayMs ? parseInt(options.delayMs, 10) : 0;
+    const artifactsOutput = parseArtifacts(options.artifacts);
+    const llmProvider = await createLlmProvider(options.model);
+
+    const runOptions: {
+      runsPerCondition: number;
+      llmProvider: LlmProvider;
+      outPath?: string;
+      artifactsOutput?: 'console' | 'files' | 'both';
+      delayMs?: number;
+    } = {
+      runsPerCondition: runs,
+      llmProvider,
+      artifactsOutput,
+      delayMs,
+    };
+
+    if (options.out) {
+      runOptions.outPath = options.out;
+    }
+
+    await runAnchoringNovelScenarios(runOptions);
   });
 
 run

@@ -122,12 +122,14 @@ async function main() {
     const hasPass = reviewLower.includes('verdict') && reviewLower.includes('pass');
 
     // Count critical and minor gaps
-    const criticalSection = review.match(/## Critical Gaps[\s\S]*?(?=## Minor|## Verdict|$)/i)?.[0] || '';
+    const criticalSection =
+      review.match(/## Critical Gaps[\s\S]*?(?=## Minor|## Verdict|$)/i)?.[0] || '';
     const minorSection = review.match(/## Minor Gaps[\s\S]*?(?=## Verdict|$)/i)?.[0] || '';
-    
+
     const criticalGaps = (criticalSection.match(/\*\*Gap\*\*:/gi) || []).length;
-    const minorGaps = (minorSection.match(/\*\*Gap\*\*:/gi) || []).length ||
-                      (minorSection.match(/^-\s+/gm) || []).length;
+    const minorGaps =
+      (minorSection.match(/\*\*Gap\*\*:/gi) || []).length ||
+      (minorSection.match(/^-\s+/gm) || []).length;
 
     console.log('\n=== SUMMARY ===');
     console.log(`🚨 Critical gaps: ${criticalGaps}`);

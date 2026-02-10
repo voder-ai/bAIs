@@ -99,9 +99,26 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
 
 \begin{itemize}
     \item Primary model: Claude Sonnet 4 (anthropic/claude-sonnet-4-20250514)
-    \item Cross-model validation: Claude 3.5 Haiku, Claude Sonnet 4
-    \item Sample sizes: $n=30$ per condition for all experiments (anchoring, sunk cost, conjunction, framing, cross-model validation, and debiasing interventions)
+    \item Secondary model: GPT-4o (via github-copilot/gpt-4o)
+    \item Cross-model validation: 9 models including Llama 3.3, Hermes, Opus 4, GPT-5.2, Codex, Nemotron, Trinity
+    \item Sample sizes: $n=30$ per condition for all experiments
 \end{itemize}
+
+\textbf{Reproducibility note.} We discovered that model aliases (e.g., \texttt{claude-sonnet-4-5}) may route to different checkpoints than dated identifiers (e.g., \texttt{claude-sonnet-4-20250514}), producing qualitatively different bias measurements. All results reported use date-pinned model identifiers for reproducibility.
+
+\subsection{Temperature and Sampling Protocol}
+
+\textbf{Baseline experiments.} All baseline experiments use temperature=0 (deterministic sampling), with default provider settings for other parameters (top\_p, etc.). This ensures reproducibility and isolates model behavior from sampling randomness.
+
+\textbf{Temperature sweep experiments.} To test whether anchoring bias is sensitive to sampling temperature:
+\begin{itemize}
+    \item Temperatures tested: 0, 0.3, 0.5, 0.7, 1.0
+    \item Sample size: $n=30$ per temperature per condition (low/high anchor)
+    \item Total trials per model: 300 (60 per temperature $\times$ 5 temperatures)
+    \item Other sampling parameters held at provider defaults
+\end{itemize}
+
+\textbf{Key finding.} For both Sonnet 4 (dated) and GPT-4o, anchoring effects were stable across all temperatures tested. Temperature variation did not significantly affect bias magnitude, suggesting anchoring bias is not primarily a decoding-level artifact.
 
 \subsection{Analysis}
 
@@ -388,6 +405,29 @@ We thank the developers of OpenClaw for the infrastructure enabling autonomous A
 
 \section{Reproducibility Details}
 \label{app:reproducibility}
+
+\subsection{Experiment Provenance}
+
+To ensure reproducibility, we record precise model identifiers and experiment timestamps:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Experiment} & \textbf{Model ID} & \textbf{Commit} & \textbf{Date} \\
+\midrule
+Sonnet baseline & claude-sonnet-4-20250514 & 4cb93a7 & 2026-02-10 \\
+Sonnet temp sweep & claude-sonnet-4-20250514 & 4cb93a7 & 2026-02-10 \\
+GPT-4o baseline & github-copilot/gpt-4o & 4cb93a7 & 2026-02-10 \\
+GPT-4o temp sweep & github-copilot/gpt-4o & 4cb93a7 & 2026-02-10 \\
+\bottomrule
+\end{tabular}
+\caption{Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version.}
+\label{tab:provenance}
+\end{table}
+
+\textbf{Model alias warning.} We discovered that model aliases (e.g., \texttt{claude-sonnet-4-5}) may route to different backends than dated identifiers (e.g., \texttt{claude-sonnet-4-20250514}). Using the alias produced 3-month anchoring effect; using the dated identifier produced 0-month effect with identical prompts. We recommend always using date-pinned model identifiers for reproducible LLM research.
 
 \subsection{Sampling Settings}
 

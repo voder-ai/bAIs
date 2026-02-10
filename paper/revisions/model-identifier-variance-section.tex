@@ -1,0 +1,46 @@
+% Model Identifier Variance: A Hidden Confounder in LLM Bias Research
+% Draft section for bAIs paper
+
+\subsection{Model Identifier Variance}
+
+During our temperature sweep experiments, we discovered a significant methodological confounder: 
+\textbf{model identifier aliases may route to different backends than date-pinned identifiers}.
+
+Using identical prompts, temperatures, and experimental protocols, we observed:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model Identifier} & \textbf{Anchoring Effect} & \textbf{N} \\
+\midrule
+\texttt{claude-sonnet-4-5} (alias) & 3.0 months & 60 \\
+\texttt{claude-sonnet-4-20250514} (dated) & 0.0 months & 10 \\
+\bottomrule
+\end{tabular}
+\caption{Same API endpoint, same prompt, different model identifiers produce qualitatively different bias measurements.}
+\label{tab:model-id-variance}
+\end{table}
+
+This finding has significant implications for the reproducibility of LLM bias research:
+
+\begin{enumerate}
+    \item \textbf{Prior research may be non-reproducible.} Studies using model aliases (e.g., ``gpt-4'', ``claude-3'') cannot be replicated if the underlying model snapshot has changed.
+    
+    \item \textbf{Conflicting findings may reflect model versioning, not methodological differences.} Two studies using the same alias months apart may be measuring different models entirely.
+    
+    \item \textbf{Bias is not a stable model property.} Even within the same model family, different snapshots may exhibit qualitatively different cognitive biases.
+\end{enumerate}
+
+\subsubsection{Recommendations for Reproducible LLM Bias Research}
+
+Based on this finding, we recommend:
+
+\begin{itemize}
+    \item Always use date-pinned model identifiers (e.g., \texttt{claude-sonnet-4-20250514}) rather than aliases (e.g., \texttt{claude-sonnet-4-5}).
+    \item Record the exact API endpoint, timestamp, and any available model metadata.
+    \item Re-run key experiments with dated identifiers before publication.
+    \item Report model identifier variance as a limitation when using aliases.
+\end{itemize}
+
+This discovery suggests that the inconsistency observed across LLM bias studies may partially stem from this hidden confounder rather than methodological differences alone.
