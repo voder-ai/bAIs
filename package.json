@@ -16,7 +16,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "prepare": "husky install",
-    "postinstall": "patch-package"
+    "postinstall": "command -v patch-package >/dev/null && patch-package || true"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.72.1",
