@@ -351,6 +351,8 @@ GPT-4o & 4.97 mo & 4.97 mo & 4.67 mo & \textbf{Hard} \\
 
 \textbf{Hard bias} (GPT-4o): Persists despite both interventions. Temperature=1.0 produces identical bias magnitude. The simple debias instruction achieves only 6\% reduction. This suggests the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
 
+\textbf{Contamination probe:} We asked both models whether they were familiar with the Englich et al. sentencing study and whether they could predict the expected anchoring pattern. Both models demonstrated clear knowledge of the study and correctly predicted that high prosecutor recommendations would bias sentencing upward. Yet their behavior diverged: GPT-4o exhibited the bias despite this knowledge, while Sonnet resisted it. This suggests that \emph{knowing} about a bias is insufficient to avoid it---models differ in whether they apply meta-cognitive knowledge to their own behavior, paralleling findings in human decision-making research \citep{sibony2019}.
+
 \subsection{Anchoring Bias is Prompt-Sensitive}
 
 Further robustness testing revealed that the original 3-month anchoring effect is highly sensitive to prompt wording. Paraphrasing the prompt reduced the mean anchoring effect from 3.00 months to 0.25 months (92\% reduction), with all paraphrased variants showing near-zero observed effects.
