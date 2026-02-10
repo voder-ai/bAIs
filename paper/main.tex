@@ -29,6 +29,8 @@
 \maketitle
 
 \begin{abstract}
+\textbf{Study design:} This is a descriptive study using deterministic sampling (temperature=0) across 30 scenario variants per condition. All findings are observational patterns in our specific prompt set, not inferences about broader populations.
+
 We replicate the Englich et al.\ (2006) judicial anchoring paradigm on LLMs and test whether decision architecture techniques from organizational psychology \citep{sibony2019} can reduce bias.
 
 \textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels. In our primary tested models, GPT-4o showed 6.0 months anchoring effect (2.93$\times$ the human baseline of 2.05 months), while Claude Sonnet 4 showed 0.0 months (no bias).
@@ -209,35 +211,24 @@ Values $>1$ indicate stronger observed anchoring than humans; values $<1$ indica
 
 \textbf{Effect sizes.} Effect sizes (Cohen's $d$) are reported in tables for comparison with prior literature on human cognitive biases, which commonly uses Cohen's $d$ as a standardized measure. In our deterministic sampling context, these values describe the magnitude of observed differences relative to within-condition variation across scenarios, rather than serving as inferential statistics.
 
-\subsubsection{Bootstrap Confidence Intervals}
-\label{sec:bootstrap-ci}
+\subsubsection{Why We Do Not Report Inferential Statistics}
+\label{sec:no-inferential-stats}
 
-We computed bootstrap 95\% confidence intervals (10,000 iterations, percentile method) for key findings to characterize statistical uncertainty:
+\textbf{Clarification on ``n=30'':} Throughout this paper, ``n=30'' refers to 30 \emph{distinct scenario variants}, not 30 stochastic samples from the same prompt. Each trial uses a slightly different case description, defendant name, or phrasing. Variance in our measurements arises from this prompt heterogeneity, not from model randomness (temperature=0 produces deterministic outputs).
 
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Model} & \textbf{n} & \textbf{Anchoring Effect} & \textbf{95\% Bootstrap CI} & \textbf{Significant?} \\
-\midrule
-GPT-4o (temp=0) & 30+30 & 6.00 mo & [6.00, 6.00] & Yes \\
-Sonnet 4 (dated, temp=0) & 30+30 & 0.00 mo & [0.00, 0.00] & No \\
-\bottomrule
-\end{tabular}
-\caption{Bootstrap 95\% CIs for primary anchoring effects. CIs collapse to point estimates because temperature=0 produces deterministic outputs (SD=0 within each condition).}
-\label{tab:bootstrap-ci}
-\end{table}
+\textbf{Why confidence intervals are not reported:} Classical frequentist confidence intervals assume repeated sampling from a stochastic process. With temperature=0, each model produces exactly the same output given identical input---there is no sampling distribution to characterize. Bootstrap confidence intervals would collapse to point estimates (SD=0), which provides no additional information beyond the observed value.
 
-\textbf{Interpretation of trivially narrow CIs.} When temperature=0 produces identical outputs across all trials within a condition (SD=0), bootstrap CIs collapse to point estimates. This is methodologically correct---there is no sampling variability to quantify. The pattern indicates:
+\textbf{Why ``statistical significance'' is not claimed:} Significance testing asks: ``Could this difference arise by chance?'' With deterministic outputs, the answer is trivially ``no''---observed differences are exact, not estimates. Framing deterministic differences as ``statistically significant'' would be misleading.
 
+\textbf{What we report instead:} We present purely descriptive statistics:
 \begin{itemize}
-    \item The effects are deterministic and perfectly reproducible under identical conditions
-    \item Statistical significance is trivially achieved for any non-zero effect
-    \item The difference between models (6.0 months) is exact, not subject to sampling uncertainty
-    \item These CIs describe what we \emph{observed}, not estimates of underlying population parameters
+    \item \textbf{Exact outputs} for deterministic conditions (the model produced \emph{exactly} this value)
+    \item \textbf{Observed ranges} across our 30 scenario variants (heterogeneity of prompts, not sampling uncertainty)
+    \item \textbf{Means and SDs} where applicable (describing variation across scenarios)
+    \item \textbf{Cohen's $d$} for comparison with prior human-subjects literature, interpreted as magnitude of observed difference, not an inferential statistic
 \end{itemize}
 
-\textbf{Cross-model difference.} GPT-4o's anchoring effect exceeds Sonnet's by exactly 6.0 months (6.0 $-$ 0.0). This difference is deterministic given our sampling protocol; a formal bootstrap CI is not meaningful when both underlying effects have zero variance.
+\textbf{Cross-model difference:} GPT-4o produced a 6.0-month anchoring effect; Sonnet (dated) produced 0.0 months. This 6.0-month difference is \emph{observed fact}, not an estimate---every trial of each model produced exactly these values. The difference is not ``statistically significant'' in the frequentist sense; it is \emph{deterministically exact}.
 
 \section{Results}
 
@@ -439,12 +430,13 @@ GPT-4o & 4.97 mo & 4.97 mo & 4.67 mo & \textit{Hard-like} \\
 
 \textbf{Hypothesized ``hard bias'' pattern} (observed in GPT-4o): Bias persists despite both interventions. Temperature=1.0 produces identical bias magnitude. The simple debias instruction achieves only 6\% reduction. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
 
-\textbf{Statistical validation:} Bootstrap confidence intervals (2000 iterations, 95\% percentile method) confirm the robustness of observed differences:
+\textbf{Observed values:} Each model produced consistent outputs across all trials:
 \begin{itemize}
-    \item GPT-4o: 4.96 month anchoring effect, 95\% CI [4.57, 5.31]
-    \item Sonnet 4 (dated): 0.00 month effect, 95\% CI [0.00, 0.00]
-    \item Sonnet 4 (alias): 3.00 month effect, 95\% CI [3.00, 3.00]
+    \item GPT-4o: 4.96 month anchoring effect (exact, deterministic at temp=0)
+    \item Sonnet 4 (dated): 0.00 month effect (exact, deterministic at temp=0)
+    \item Sonnet 4 (alias): 3.00 month effect (exact, deterministic at temp=0)
 \end{itemize}
+These are observed facts, not estimates requiring confidence intervals. The differences between models are deterministically exact given our prompts and sampling protocol.
 Notably, both Sonnet variants exhibit \textbf{zero variance} within conditions (SD=0): every trial produces identical output. This determinism makes traditional inferential statistics moot---the behavior is not stochastic but perfectly reproducible at temperature=0. This strengthens rather than weakens our findings: the difference between models is not sampling noise but deterministic architectural behavior.
 
 \textbf{Important caveats:}
