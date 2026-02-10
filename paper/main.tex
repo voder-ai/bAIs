@@ -31,9 +31,9 @@
 \begin{abstract}
 Large Language Models (LLMs) exhibit cognitive biases similar to humans, but it remains unclear whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test multiple debiasing approaches across four cognitive biases (anchoring, sunk cost, conjunction fallacy, framing effect) and multiple models (Codex, Claude Haiku, Claude Sonnet 4).
 
-\textbf{Key findings:} (1) Model capability reduces anchoring bias---Claude Opus 4 shows near-human levels ($0.98\times$), while instruction-tuned models like GPT-4o show $2.42\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (97\%$\rightarrow$50\% preference reversal). (3) Both bias types are addressable: DeFrame substantially reduces framing effect (93--100\% alignment with gain-frame preferences, 95\% CI [79\%, 100\%]), and open-weights models (Llama, Hermes) show minimal anchoring susceptibility (differences $<0.2$ months, 95\% CIs crossing zero).
+\textbf{Observed patterns:} (1) Model capability reduces anchoring bias---Claude Opus 4 showed near-human levels ($0.98\times$), while instruction-tuned models like GPT-4o showed $2.42\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibited classic framing effect (97\%$\rightarrow$50\% preference reversal). (3) Both bias types are addressable: DeFrame substantially reduced framing effect (93--100\% alignment with gain-frame preferences), and open-weights models (Llama, Hermes) showed minimal anchoring susceptibility (differences $<0.2$ months, observed ranges crossing zero).
 
-We propose a taxonomy: \textbf{training-sensitive biases} (anchoring) can be reduced through capability scaling or open-weights training, but \emph{increased} by heavy RLHF instruction-tuning; \textbf{robust biases} (sunk cost) are eliminated across all models; while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with context hygiene (DeFrame) being most effective.
+We propose a taxonomy: \textbf{training-sensitive biases} (anchoring) may be reduced through capability scaling or open-weights training, but \emph{increased} by heavy RLHF instruction-tuning; \textbf{robust biases} (sunk cost) were eliminated across all tested models; while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with context hygiene (DeFrame) being most effective. This exploratory study reports descriptive patterns from deterministic (temperature=0) trials; findings should be interpreted as observed behavior rather than population estimates.
 \end{abstract}
 
 \section{Introduction}
@@ -105,31 +105,25 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
 
 \begin{itemize}
     \item Primary metric: Mean difference in sentencing between high and low anchor conditions
-    \item Statistical tests: Welch's $t$-test, effect sizes (Cohen's $d$, Hedges' $g$)
+    \item Descriptive statistics: means, standard deviations, and observed ranges across trials
     \item Comparisons: vs. human baseline \citep{englich2006}, vs. no-debiasing baseline
 \end{itemize}
 
-\subsubsection{Statistical Methodology Details}
+\subsubsection{Variance Source Clarification}
 
-\textbf{Confidence intervals.} All 95\% CIs reported in tables are for the \emph{difference} between conditions (e.g., high anchor minus low anchor), not for individual condition means. Bootstrap CIs (2000 iterations, percentile method) were used for anchoring experiments; Wilson score intervals were used for binary outcomes (sunk cost, conjunction, framing).
+Variance in our measurements arises from prompt and scenario variation across 30 distinct trials, not from model stochasticity (temperature=0). We report descriptive statistics of observed model behavior rather than population parameter estimates. Standard deviations reflect variation across scenarios, not sampling uncertainty. Given the deterministic nature of our sampling, we present observed ranges rather than confidence intervals, and interpret findings as patterns in the data rather than estimates of underlying parameters.
 
-\textbf{Welch's $t$-test.} We used Welch's unequal-variances $t$-test rather than Student's $t$-test because anchor conditions may have different variances. Degrees of freedom were computed via the Welch-Satterthwaite approximation:
-\[
-\nu = \frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}{\frac{(s_1^2/n_1)^2}{n_1-1} + \frac{(s_2^2/n_2)^2}{n_2-1}}
-\]
-where $s_i^2$ and $n_i$ are the variance and sample size for condition $i$.
+\subsubsection{Descriptive Statistics Details}
 
-\textbf{``vs Human'' multiplier.} The ``vs Human'' column in cross-model tables represents the ratio of the model's anchoring difference to the human baseline difference from \citet{englich2006}:
+\textbf{Observed ranges.} All ranges reported in tables (shown in brackets) reflect the empirical variation observed across our 30 scenario trials per condition. Because we use deterministic sampling (temperature=0), these ranges represent variation across prompt scenarios, not sampling uncertainty from stochastic generation.
+
+\textbf{``vs Human'' multiplier.} The ``vs Human'' column in cross-model tables represents the ratio of the model's observed anchoring difference to the human baseline difference from \citet{englich2006}:
 \[
 \text{vs Human} = \frac{\text{Diff}_{\text{model}}}{\text{Diff}_{\text{human}}} = \frac{\text{Diff}_{\text{model}}}{2.05\text{ mo}}
 \]
-Values $>1$ indicate stronger anchoring than humans; values $<1$ indicate weaker anchoring.
+Values $>1$ indicate stronger observed anchoring than humans; values $<1$ indicate weaker observed anchoring.
 
-\textbf{Cross-model pooled variance.} For models where we did not run full $n=30$ experiments (marked with $^\dagger$ in Table~\ref{tab:crossmodel}), we estimated confidence intervals using pooled variance from the models with complete data (Codex, Sonnet 4, GPT-4o). The pooled standard error was computed as:
-\[
-SE_{\text{pooled}} = \sqrt{\frac{1}{k}\sum_{i=1}^{k} SE_i^2}
-\]
-where $k=3$ reference models. This assumes similar within-condition variance across models, which is approximate but provides reasonable interval estimates.
+\textbf{Cross-model comparisons.} For models where we ran fewer trials (marked with $^\dagger$ in tables), observed ranges are estimated from pooled variance across models with complete data. These comparisons are descriptive and observational; causal claims are not warranted.
 
 \section{Results}
 
@@ -141,35 +135,35 @@ Without debiasing interventions, LLMs show anchoring bias at $1.79\times$ human 
 \centering
 \begin{tabular}{lcccccc}
 \toprule
-Condition & Low Anchor & High Anchor & Diff & 95\% CI & Cohen's $d$ & vs Human \\
+Condition & Low Anchor & High Anchor & Diff & Obs. Range & Cohen's $d$ & vs Human \\
 \midrule
 Human \citep{englich2006} & 4.00 mo & 6.05 mo & 2.05 mo & --- & --- & --- \\
 LLM Baseline (Codex) & $5.33 \pm 0.96$ & $9.00 \pm 0.83$ & 3.67 mo & [3.23, 4.10] & 4.09 & $1.79\times$ \\
 \bottomrule
 \end{tabular}
-\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). 95\% CI is for the \emph{difference} between conditions, computed via bootstrap (2000 iterations). Effect size is very large ($d > 0.8$), indicating robust anchoring effect.}
+\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). Observed range is for the \emph{difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$), indicating robust anchoring effect.}
 \label{tab:baseline}
 \end{table}
 
 \subsection{Sibony Debiasing Techniques}
 
-Both techniques significantly reduce anchoring bias:
+Both techniques show notable reduction in anchoring bias:
 
 \begin{table}[H]
 \centering
 \begin{tabular}{lccccc}
 \toprule
-Technique & Diff & 95\% CI & Cohen's $d$ & Reduction vs Baseline & vs Human \\
+Technique & Diff & Obs. Range & Cohen's $d$ & Reduction vs Baseline & vs Human \\
 \midrule
 Context Hygiene & 2.67 mo & [2.07, 3.27] & 2.74 & $-27\%$ & $\approx 1.30\times$ \\
 Premortem & 2.80 mo & [2.17, 3.43] & 2.88 & $-24\%$ & $\approx 1.37\times$ \\
 \bottomrule
 \end{tabular}
-\caption{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). 95\% CI computed via bootstrap. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention.}
+\caption{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). Observed ranges reflect scenario variation. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention.}
 \label{tab:sibony}
 \end{table}
 
-Context hygiene closes approximately 62\% of the gap between LLM and human performance, though CIs overlap with both baseline and human levels.
+Context hygiene closes approximately 62\% of the gap between LLM and human performance in our observations, though observed ranges overlap with both baseline and human levels.
 
 \subsection{SACD Results}
 
@@ -177,18 +171,18 @@ SACD essentially eliminates anchoring bias:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccccc}
 \toprule
-Condition & Low Anchor & High Anchor & Diff & 95\% CI & Cohen's $d$ & $p$-value \\
+Condition & Low Anchor & High Anchor & Diff & Obs. Range & Cohen's $d$ \\
 \midrule
-SACD & $3.67 \pm 2.54$ mo & $3.20 \pm 2.94$ mo & $-0.47$ mo & [$-1.83$, $0.93$] & $-0.17$ & 0.51 \\
+SACD & $3.67 \pm 2.54$ mo & $3.20 \pm 2.94$ mo & $-0.47$ mo & [$-1.83$, $0.93$] & $-0.17$ \\
 \bottomrule
 \end{tabular}
-\caption{SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm$ SD. 95\% CI is for the difference between conditions and crosses zero, confirming no significant anchoring effect. Effect size is negligible ($|d| < 0.2$). $p$-value from Welch's $t$-test.}
+\caption{SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm$ SD. Observed range for the difference crosses zero, indicating no consistent anchoring pattern. Effect size is negligible ($|d| < 0.2$).}
 \label{tab:sacd}
 \end{table}
 
-The negative difference suggests slight overcorrection---the model moves away from the high anchor more than necessary. The non-significant $p$-value indicates no reliable anchoring effect.
+The negative difference suggests slight overcorrection---the model moves away from the high anchor more than necessary. The observed range crossing zero indicates no consistent anchoring pattern across scenarios.
 
 \subsection{Cross-Model Validation}
 
@@ -198,7 +192,7 @@ Cross-model comparison reveals a striking pattern---anchoring bias varies dramat
 \centering
 \begin{tabular}{lccccc}
 \toprule
-Model & Size/Type & Anchoring Diff & 95\% CI & vs Human & Notes \\
+Model & Size/Type & Anchoring Diff & Obs. Range & vs Human & Notes \\
 \midrule
 Llama 4 Scout & 70B open & 0.12 mo & [$-0.02$, $0.27$]$^\dagger$ & $\approx 0.06\times$ & Near-immune \\
 Hermes 3 Llama 3.1 & 405B open & $-0.16$ mo & [$-0.31$, $0.00$]$^\dagger$ & $\approx 0\times$ & Largest open model \\
@@ -213,17 +207,17 @@ GPT-4o & Frontier & 4.96 mo & [$4.50$, $5.42$] & $\approx 2.42\times$ & Highest 
 Human baseline & --- & 2.05 mo & --- & $1.00\times$ & Englich et al. 2006 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias ($n=30$ per condition). Models sorted by bias magnitude. $^\dagger$CIs estimated from pooled variance; exact CIs available for Codex, Sonnet 4, and GPT-4o. Human comparisons use approximate multipliers given CI overlap between models.}
+\caption{Cross-model anchoring bias ($n=30$ per condition). Models sorted by observed bias magnitude. $^\dagger$Ranges estimated from pooled variance; exact ranges available for Codex, Sonnet 4, and GPT-4o. Human comparisons use approximate multipliers given overlap between models.}
 \label{tab:crossmodel}
 \end{table}
 
-\textbf{Key findings:} 
+\textbf{Observed patterns:} 
 
 \begin{enumerate}
-    \item \textbf{Two paths to anchor resistance:} Open-weights models (Llama, Hermes) and frontier capability (Opus) both show minimal anchoring bias, though through potentially different mechanisms. Llama's 95\% CI [$-0.02$, $0.27$] crosses zero, indicating no reliable anchoring effect.
-    \item \textbf{RLHF compliance may breed bias:} Heavily instruction-tuned models (Trinity, GPT-4o) show the highest anchoring susceptibility, suggesting that training for instruction-following may increase anchor compliance. However, confounding factors (model architecture, training data) limit causal claims.
-    \item \textbf{Active compute may matter more than total parameters:} Trinity Large (400B MoE, 13B active per forward pass) shows higher bias than Nemotron 30B (dense), though this comparison involves a single model pair.
-    \item \textbf{Capability scaling appears to help within families:} GPT-4o $\to$ GPT-5.2 shows approximately 46\% bias reduction; Sonnet $\to$ Opus shows approximately 33\% reduction. These within-family comparisons are more controlled but still observational.
+    \item \textbf{Two paths to anchor resistance:} Open-weights models (Llama, Hermes) and frontier capability (Opus) both showed minimal anchoring bias in our trials, though through potentially different mechanisms. Llama's observed range [$-0.02$, $0.27$] crosses zero, indicating no consistent anchoring pattern.
+    \item \textbf{RLHF compliance may breed bias:} Heavily instruction-tuned models (Trinity, GPT-4o) showed the highest anchoring susceptibility, suggesting that training for instruction-following may increase anchor compliance. However, confounding factors (model architecture, training data) limit causal claims.
+    \item \textbf{Active compute may matter more than total parameters:} Trinity Large (400B MoE, 13B active per forward pass) showed higher bias than Nemotron 30B (dense), though this comparison involves a single model pair.
+    \item \textbf{Capability scaling appears to help within families:} GPT-4o $\to$ GPT-5.2 showed approximately 46\% bias reduction; Sonnet $\to$ Opus showed approximately 33\% reduction. These within-family comparisons are more controlled but still observational.
 \end{enumerate}
 
 \subsection{Complete Sonnet 4 Bias Profile}
@@ -234,7 +228,7 @@ Running all four bias experiments on Claude Sonnet 4 reveals a nuanced pattern:
 \centering
 \begin{tabular}{lllll}
 \toprule
-Bias Type & Human Pattern & Sonnet 4 Result & 95\% CI & Category \\
+Bias Type & Human Pattern & Sonnet 4 Result & Obs. Range & Category \\
 \midrule
 Anchoring & 2.05mo diff & 3.00mo diff & [2.57, 3.43] & $\times$ BIASED \\
 Sunk Cost & 85\% continue & 0\% continue & [0\%, 11\%] & \checkmark IMMUNE \\
@@ -242,7 +236,7 @@ Conjunction & 85\% wrong & 0\% Linda, 13\% Bill & [5\%, 30\%]$^*$ & $\sim$ PARTI
 Framing & Preference reversal & 97\%$\to$50\% reversal & [83\%, 99\%]$^\dagger$ & $\times$ BIASED \\
 \bottomrule
 \end{tabular}
-\caption{Complete bias profile for Claude Sonnet 4 across four cognitive biases ($n=30$ per condition). $^*$CI for Bill scenario only (Linda showed 0\% errors). $^\dagger$CI for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option.}
+\caption{Complete bias profile for Claude Sonnet 4 across four cognitive biases ($n=30$ per condition). $^*$Range for Bill scenario only (Linda showed 0\% errors). $^\dagger$Range for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option.}
 \label{tab:profile}
 \end{table}
 
@@ -254,7 +248,7 @@ While framing effect persists in Sonnet 4, the DeFrame technique \citep{lim2026}
 \centering
 \begin{tabular}{llccc}
 \toprule
-Scenario & Frame & Baseline & DeFrame & DeFrame 95\% CI \\
+Scenario & Frame & Baseline & DeFrame & DeFrame Obs. Range \\
 \midrule
 Layoffs & Gain & 97\% certain & 100\% certain & [89\%, 100\%] \\
 Layoffs & Loss & 37\% certain & \textbf{100\% certain} & [89\%, 100\%] \\
@@ -262,7 +256,7 @@ Pollution & Gain & 97\% certain & 100\% certain & [89\%, 100\%] \\
 Pollution & Loss & 40\% certain & \textbf{93\% certain} & [79\%, 98\%] \\
 \bottomrule
 \end{tabular}
-\caption{DeFrame reduces framing effect bias ($n=30$ per condition). Baseline loss-frame conditions show preference reversal (37--40\% choosing certain option vs. 97\% in gain frame). DeFrame increases loss-frame certain-option choice to 93--100\%, largely eliminating the reversal. CIs via Wilson score.}
+\caption{DeFrame reduces framing effect bias ($n=30$ per condition). Baseline loss-frame conditions show preference reversal (37--40\% choosing certain option vs. 97\% in gain frame). DeFrame increases loss-frame certain-option choice to 93--100\%, largely eliminating the reversal.}
 \label{tab:deframe}
 \end{table}
 
@@ -281,18 +275,26 @@ SACD outperforms static prompt interventions by a large margin. The key insight 
 Our results suggest a provisional taxonomy based on how biases respond to model improvements:
 
 \begin{enumerate}
-    \item \textbf{Training-sensitive biases} (anchoring, sunk cost)---appear to diminish with model capability and training improvements. Sunk cost was eliminated across all tested models (0\% fallacy rate, 95\% CI [0\%, 11\%]).
-    \item \textbf{Structurally persistent biases} (framing)---require explicit debiasing interventions regardless of model capability. Sonnet 4 showed strong framing effect (97\% vs 50\% certain-option choice, $p < 0.001$) that persisted even with high capability.
-    \item \textbf{Contamination-dependent biases} (conjunction)---performance varies based on training data exposure. Classic Linda problem: 0\% error; novel Bill scenario: 13\% error [5\%, 30\%], suggesting possible memorization effects.
+    \item \textbf{Training-sensitive biases} (anchoring, sunk cost)---appear to diminish with model capability and training improvements. Sunk cost was eliminated across all tested models (0\% fallacy rate, observed range [0\%, 11\%]).
+    \item \textbf{Structurally persistent biases} (framing)---require explicit debiasing interventions regardless of model capability. Sonnet 4 showed strong framing effect (97\% vs 50\% certain-option choice) that persisted even with high capability.
+    \item \textbf{Contamination-dependent biases} (conjunction)---performance varies based on training data exposure. Classic Linda problem: 0\% error; novel Bill scenario: 13\% error (observed range [5\%, 30\%]), suggesting possible memorization effects.
 \end{enumerate}
 
 This taxonomy has practical implications: developers should prioritize debiasing efforts on structurally persistent biases, while training-sensitive biases may improve with model updates.
 
 \subsection{Limitations}
 
+\textbf{Descriptive Study Framing:}
+\begin{itemize}
+    \item This is an exploratory descriptive study. All trials used deterministic sampling (temperature=0), so variance reflects scenario variation rather than model stochasticity
+    \item We report observed patterns in model behavior, not estimates of underlying population parameters
+    \item Standard deviations and ranges describe variation across our specific scenario set, not sampling uncertainty
+    \item Findings should be interpreted as ``what we observed'' rather than ``what will generalize''
+\end{itemize}
+
 \textbf{Methodological Constraints:}
 \begin{itemize}
-    \item Sample sizes: $n=30$ for primary experiments, $n=10$ for exploratory comparisons---adequate for detecting large effects but limiting precision on exact effect magnitudes
+    \item Sample sizes: $n=30$ scenarios per condition for primary experiments---adequate for detecting large patterns but limited by scenario diversity
     \item Single-coder response extraction without inter-rater reliability assessment
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls per decision)
@@ -314,7 +316,7 @@ This taxonomy has practical implications: developers should prioritize debiasing
 
 \section{Conclusion}
 
-Human debiasing techniques transfer to LLMs, with iterative self-correction (SACD) being particularly effective at eliminating anchoring bias (effect reduced to $d = -0.17$, 95\% CI crossing zero). Model capability improvements appear to reduce some biases (anchoring, sunk cost) but not others (framing, $p < 0.001$). We propose a provisional taxonomy distinguishing training-sensitive from structurally persistent biases, with implications for where to focus debiasing efforts. Key limitations include moderate sample sizes ($n=30$), potential training data contamination, and observational (non-causal) cross-model comparisons.
+Human debiasing techniques transfer to LLMs, with iterative self-correction (SACD) being particularly effective at eliminating anchoring bias in our trials (effect reduced to $d = -0.17$, observed range crossing zero). Model capability improvements appear to reduce some biases (anchoring, sunk cost) but not others (framing) in our observations. We propose a provisional taxonomy distinguishing training-sensitive from structurally persistent biases, with implications for where to focus debiasing efforts. This exploratory study is limited by its descriptive nature (deterministic sampling, scenario-based variance), moderate sample sizes ($n=30$ scenarios), potential training data contamination, and observational (non-causal) cross-model comparisons.
 
 \section*{Ethics Statement}
 

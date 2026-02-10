@@ -21,11 +21,11 @@
 \citation{sibony2019}
 \citation{lyu2025}
 \citation{englich2006}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \citation{tversky1974}
 \citation{kahneman1979}
 \citation{tversky1981}
 \citation{arkes1985}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \citation{binz2023}
 \citation{lou2024}
 \citation{icse2026bias}
@@ -38,41 +38,45 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}LLM Debiasing Attempts}{2}{subsection.2.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{2}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Experimental Paradigm}{2}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Conditions}{2}{subsection.3.2}\protected@file@percent }
 \citation{englich2006}
 \citation{englich2006}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Conditions}{3}{subsection.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Models and Sample Size}{3}{subsection.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Analysis}{3}{subsection.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{3}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Baseline Anchoring Bias}{3}{subsection.4.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm $ SD ($n=30$). 95\% CI computed via bootstrap.}}{3}{table.1}\protected@file@percent }
-\newlabel{tab:baseline}{{1}{3}{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm $ SD ($n=30$). 95\% CI computed via bootstrap}{table.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Sibony Debiasing Techniques}{3}{subsection.4.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). 95\% CI computed via bootstrap.}}{4}{table.2}\protected@file@percent }
-\newlabel{tab:sibony}{{2}{4}{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). 95\% CI computed via bootstrap}{table.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.1}Variance Source Clarification}{3}{subsubsection.3.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.4.2}Descriptive Statistics Details}{3}{subsubsection.3.4.2}\protected@file@percent }
+\citation{englich2006}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{4}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Baseline Anchoring Bias}{4}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm $ SD ($n=30$). Observed range is for the \emph  {difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$), indicating robust anchoring effect.}}{4}{table.1}\protected@file@percent }
+\newlabel{tab:baseline}{{1}{4}{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm $ SD ($n=30$). Observed range is for the \emph {difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$), indicating robust anchoring effect}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Sibony Debiasing Techniques}{4}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). Observed ranges reflect scenario variation. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention.}}{4}{table.2}\protected@file@percent }
+\newlabel{tab:sibony}{{2}{4}{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). Observed ranges reflect scenario variation. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention}{table.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}SACD Results}{4}{subsection.4.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces SACD results showing elimination of anchoring bias ($n=30$ per condition). 95\% CI crosses zero, confirming no significant anchoring effect.}}{4}{table.3}\protected@file@percent }
-\newlabel{tab:sacd}{{3}{4}{SACD results showing elimination of anchoring bias ($n=30$ per condition). 95\% CI crosses zero, confirming no significant anchoring effect}{table.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Cross-Model Validation}{4}{subsection.4.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Cross-model anchoring bias ($n=30$ per condition). Models sorted by bias magnitude. Notable: Trinity Large (400B MoE, 13B active) shows \emph  {higher} bias than smaller dense models, suggesting active compute per inference---not headline parameter count---drives anchor resistance.}}{4}{table.4}\protected@file@percent }
-\newlabel{tab:crossmodel}{{4}{4}{Cross-model anchoring bias ($n=30$ per condition). Models sorted by bias magnitude. Notable: Trinity Large (400B MoE, 13B active) shows \emph {higher} bias than smaller dense models, suggesting active compute per inference---not headline parameter count---drives anchor resistance}{table.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm $ SD. Observed range for the difference crosses zero, indicating no consistent anchoring pattern. Effect size is negligible ($|d| < 0.2$).}}{5}{table.3}\protected@file@percent }
+\newlabel{tab:sacd}{{3}{5}{SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm $ SD. Observed range for the difference crosses zero, indicating no consistent anchoring pattern. Effect size is negligible ($|d| < 0.2$)}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Cross-Model Validation}{5}{subsection.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Cross-model anchoring bias ($n=30$ per condition). Models sorted by observed bias magnitude. $^\dagger $Ranges estimated from pooled variance; exact ranges available for Codex, Sonnet 4, and GPT-4o. Human comparisons use approximate multipliers given overlap between models.}}{5}{table.4}\protected@file@percent }
+\newlabel{tab:crossmodel}{{4}{5}{Cross-model anchoring bias ($n=30$ per condition). Models sorted by observed bias magnitude. $^\dagger $Ranges estimated from pooled variance; exact ranges available for Codex, Sonnet 4, and GPT-4o. Human comparisons use approximate multipliers given overlap between models}{table.4}{}}
 \citation{lim2026}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Complete Sonnet 4 Bias Profile}{5}{subsection.4.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Complete bias profile for Claude Sonnet 4 across four cognitive biases.}}{5}{table.5}\protected@file@percent }
-\newlabel{tab:profile}{{5}{5}{Complete bias profile for Claude Sonnet 4 across four cognitive biases}{table.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}DeFrame Eliminates Framing Effect}{5}{subsection.4.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces DeFrame achieves 100\% bias reduction for framing effect.}}{5}{table.6}\protected@file@percent }
-\newlabel{tab:deframe}{{6}{5}{DeFrame achieves 100\% bias reduction for framing effect}{table.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{5}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Human Techniques Transfer to LLMs}{5}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Iterative Self-Correction is Highly Effective}{5}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}A Taxonomy of LLM Biases}{6}{subsection.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Limitations}{6}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Complete Sonnet 4 Bias Profile}{6}{subsection.4.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Complete bias profile for Claude Sonnet 4 across four cognitive biases ($n=30$ per condition). $^*$Range for Bill scenario only (Linda showed 0\% errors). $^\dagger $Range for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option.}}{6}{table.5}\protected@file@percent }
+\newlabel{tab:profile}{{5}{6}{Complete bias profile for Claude Sonnet 4 across four cognitive biases ($n=30$ per condition). $^*$Range for Bill scenario only (Linda showed 0\% errors). $^\dagger $Range for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}DeFrame Substantially Reduces Framing Effect}{6}{subsection.4.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces DeFrame reduces framing effect bias ($n=30$ per condition). Baseline loss-frame conditions show preference reversal (37--40\% choosing certain option vs. 97\% in gain frame). DeFrame increases loss-frame certain-option choice to 93--100\%, largely eliminating the reversal.}}{6}{table.6}\protected@file@percent }
+\newlabel{tab:deframe}{{6}{6}{DeFrame reduces framing effect bias ($n=30$ per condition). Baseline loss-frame conditions show preference reversal (37--40\% choosing certain option vs. 97\% in gain frame). DeFrame increases loss-frame certain-option choice to 93--100\%, largely eliminating the reversal}{table.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{6}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Human Techniques Transfer to LLMs}{6}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Iterative Self-Correction is Highly Effective}{6}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}A Taxonomy of LLM Biases}{7}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Limitations}{7}{subsection.5.4}\protected@file@percent }
 \bibstyle{plainnat}
 \bibdata{references}
 \bibcite{arkes1985}{{1}{1985}{{Arkes and Blumer}}{{}}}
 \bibcite{binz2023}{{2}{2023}{{Binz and Schulz}}{{}}}
 \bibcite{englich2006}{{3}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{8}{section.6}\protected@file@percent }
 \bibcite{jones2022}{{4}{2022}{{Jones and Steinhardt}}{{}}}
 \bibcite{kahneman1979}{{5}{1979}{{Kahneman and Tversky}}{{}}}
 \bibcite{lim2026}{{6}{2026}{{Lim et~al.}}{{}}}
@@ -81,17 +85,16 @@
 \bibcite{sibony2019}{{9}{2019}{{Sibony}}{{}}}
 \bibcite{tversky1974}{{10}{1974}{{Tversky and Kahneman}}{{}}}
 \bibcite{tversky1981}{{11}{1981}{{Tversky and Kahneman}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{7}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}Reproducibility Details}{8}{appendix.A}\protected@file@percent }
-\newlabel{app:reproducibility}{{A}{8}{Reproducibility Details}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Sampling Settings}{8}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchoring Experiment Prompt}{8}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Context Hygiene Prompt Addition}{9}{subsection.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Premortem Prompt Addition}{9}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}DeFrame Intervention}{9}{subsection.A.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Framing Effect Prompts}{9}{subsection.A.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Conjunction Fallacy Prompts}{10}{subsection.A.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.8}Sunk Cost Fallacy Prompts}{11}{subsection.A.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.9}Output Parsing and Retry Logic}{12}{subsection.A.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.10}Code Availability}{12}{subsection.A.10}\protected@file@percent }
-\gdef \@abspage@last{12}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Reproducibility Details}{9}{appendix.A}\protected@file@percent }
+\newlabel{app:reproducibility}{{A}{9}{Reproducibility Details}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Sampling Settings}{9}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchoring Experiment Prompt}{9}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Context Hygiene Prompt Addition}{10}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Premortem Prompt Addition}{10}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}DeFrame Intervention}{10}{subsection.A.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Framing Effect Prompts}{11}{subsection.A.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Conjunction Fallacy Prompts}{12}{subsection.A.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.8}Sunk Cost Fallacy Prompts}{12}{subsection.A.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.9}Output Parsing and Retry Logic}{13}{subsection.A.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.10}Code Availability}{13}{subsection.A.10}\protected@file@percent }
+\gdef \@abspage@last{13}
