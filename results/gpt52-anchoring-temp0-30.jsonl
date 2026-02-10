@@ -1,0 +1,1 @@
+{"experimentId":"anchoring-prosecutor-sentencing","model":"openai-codex/gpt-5.2","conditionId":"low-anchor-3mo","runIndex":0,"params":{"prosecutorRecommendationMonths":3},"result":null,"error":"No text content in response","collectedAt":"2026-02-09T23:12:58.054Z"}
