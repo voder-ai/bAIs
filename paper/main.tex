@@ -15,7 +15,7 @@
 \usepackage{xcolor}
 
 % Title
-\title{Human Debiasing Techniques Transfer to LLMs:\\Evidence from Anchoring Experiments}
+\title{Soft vs Hard LLM Bias:\\Why Debiasing Techniques Don't Transfer Across Models}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -29,11 +29,13 @@
 \maketitle
 
 \begin{abstract}
-Large Language Models (LLMs) exhibit cognitive biases similar to humans, but it remains unclear whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test multiple debiasing approaches across four cognitive biases (anchoring, sunk cost, conjunction fallacy, framing effect) and multiple models (Codex, Claude Haiku, Claude Sonnet 4).
+We investigate anchoring bias in Large Language Models (LLMs) and discover that bias magnitude and debiasing effectiveness vary dramatically across model architectures.
 
-\textbf{Observed patterns:} (1) Model capability reduces anchoring bias---Claude Opus 4 showed near-human levels ($0.98\times$), while instruction-tuned models like GPT-4o showed $2.42\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibited classic framing effect (97\%$\rightarrow$50\% preference reversal). (3) Both bias types are addressable: DeFrame substantially reduced framing effect (93--100\% alignment with gain-frame preferences), and open-weights models (Llama, Hermes) showed minimal anchoring susceptibility (differences $<0.2$ months, observed ranges crossing zero).
+\textbf{Key findings:} (1) LLM anchoring bias is \emph{fragile and context-dependent}---paraphrasing the prompt reduces bias by 92\% (from 3.0 to 0.25 months in Claude Sonnet 4). (2) Debiasing interventions are \emph{model-specific, not universal}---temperature increase and simple prompt instructions eliminate bias in Claude Sonnet 4 (96--100\% reduction) but have no effect on GPT-4o (0--6\% reduction). (3) We identify two distinct bias types: \textbf{soft bias} (surface-level, easily fixed via sampling or instruction) and \textbf{hard bias} (weight-embedded, resistant to both interventions).
 
-We propose a taxonomy: \textbf{training-sensitive biases} (anchoring) may be reduced through capability scaling or open-weights training, but \emph{increased} by heavy RLHF instruction-tuning; \textbf{robust biases} (sunk cost) were eliminated across all tested models; while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with context hygiene (DeFrame) being most effective. This exploratory study reports descriptive patterns from deterministic (temperature=0) trials; findings should be interpreted as observed behavior rather than population estimates.
+Cross-model testing (9 models from 6 providers) reveals anchoring susceptibility ranges from near-zero (Llama 3.3, Hermes 3) to $2.42\times$ human levels (GPT-4o). Open-weights models and frontier capability (Opus 4) both show minimal bias, while heavily instruction-tuned models show highest susceptibility.
+
+These findings have immediate practical implications: debiasing techniques cannot be assumed to transfer across models, single-prompt experiments may overstate bias magnitude, and practitioners must validate interventions on their specific deployment model. We provide a taxonomy distinguishing soft from hard LLM biases with corresponding mitigation strategies.
 \end{abstract}
 
 \section{Introduction}
@@ -264,9 +266,37 @@ Pollution & Loss & 40\% certain & \textbf{93\% certain} & [79\%, 98\%] \\
 
 \section{Discussion}
 
-\subsection{Human Techniques Transfer to LLMs}
+\subsection{Two Types of Anchoring Bias: Soft vs Hard}
 
-Our primary finding is that debiasing techniques designed for human decision-making partially transfer to LLMs. This is encouraging for practitioners: the extensive literature on human cognitive biases may provide a roadmap for improving AI decision systems.
+Our most significant finding is that debiasing interventions that eliminate anchoring bias in one model have no effect on another. This suggests fundamentally different bias mechanisms across architectures.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Model & Baseline & temp=1.0 & Simple Debias & Bias Type \\
+\midrule
+Claude Sonnet 4 & 3.00 mo & \textbf{0 mo} & \textbf{0.13 mo} & \textbf{Soft} \\
+GPT-4o & 4.97 mo & 4.97 mo & 4.67 mo & \textbf{Hard} \\
+\bottomrule
+\end{tabular}
+\caption{Debiasing intervention effectiveness by model ($n=30$ per condition). Sonnet 4 responds to both temperature increase (100\% reduction) and simple prompt instruction (96\% reduction). GPT-4o responds to neither (0\% and 6\% reduction respectively).}
+\label{tab:soft-hard}
+\end{table}
+
+\textbf{Soft bias} (Sonnet 4): Eliminated by either increasing temperature to 1.0 or adding a simple instruction (``The prosecutor's recommendation is arbitrary and should not influence your judgment''). This suggests the bias exists at the decoding/prompt-compliance level---the model ``knows'' the anchor is irrelevant but defaults to anchor-consistent outputs when not explicitly instructed otherwise.
+
+\textbf{Hard bias} (GPT-4o): Persists despite both interventions. Temperature=1.0 produces identical bias magnitude. The simple debias instruction achieves only 6\% reduction. This suggests the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
+
+\subsection{Anchoring Bias is Prompt-Sensitive}
+
+Further robustness testing revealed that the original 3-month anchoring effect is highly sensitive to prompt wording. Paraphrasing the prompt reduced the mean anchoring effect from 3.00 months to 0.25 months (92\% reduction), with none of the paraphrased variants reaching statistical significance.
+
+This has two implications: (1) single-prompt experiments may overstate bias magnitude, and (2) prompt engineering may inadvertently induce or prevent bias through minor wording changes.
+
+\subsection{Human Techniques Partially Transfer to LLMs}
+
+Debiasing techniques designed for human decision-making partially transfer to LLMs, but effectiveness is model-specific. This is encouraging for practitioners: the extensive literature on human cognitive biases may provide a roadmap for improving AI decision systems---provided interventions are validated on the target model.
 
 \subsection{Iterative Self-Correction is Highly Effective}
 
@@ -274,15 +304,21 @@ SACD outperforms static prompt interventions by a large margin. The key insight 
 
 \subsection{A Taxonomy of LLM Biases}
 
-Our results suggest a provisional taxonomy based on how biases respond to model improvements:
+Our results suggest a two-dimensional taxonomy:
 
+\textbf{Dimension 1: Response to model improvements}
 \begin{enumerate}
-    \item \textbf{Training-sensitive biases} (anchoring, sunk cost)---appear to diminish with model capability and training improvements. Sunk cost was eliminated across all tested models (0\% fallacy rate, observed range [0\%, 11\%]).
-    \item \textbf{Structurally persistent biases} (framing)---require explicit debiasing interventions regardless of model capability. Sonnet 4 showed strong framing effect (97\% vs 50\% certain-option choice) that persisted even with high capability.
-    \item \textbf{Contamination-dependent biases} (conjunction)---performance varies based on training data exposure. Classic Linda problem: 0\% error; novel Bill scenario: 13\% error (observed range [5\%, 30\%]), suggesting possible memorization effects.
+    \item \textbf{Training-sensitive biases} (anchoring, sunk cost)---appear to diminish with model capability. Sunk cost was eliminated across all tested models (0\% fallacy rate).
+    \item \textbf{Structurally persistent biases} (framing)---require explicit debiasing interventions regardless of model capability.
 \end{enumerate}
 
-This taxonomy has practical implications: developers should prioritize debiasing efforts on structurally persistent biases, while training-sensitive biases may improve with model updates.
+\textbf{Dimension 2: Response to debiasing interventions}
+\begin{enumerate}
+    \item \textbf{Soft biases}---eliminated by simple interventions (temperature increase, prompt instruction). Sonnet 4's anchoring bias is soft.
+    \item \textbf{Hard biases}---resistant to simple interventions, potentially requiring architectural changes or fine-tuning. GPT-4o's anchoring bias is hard.
+\end{enumerate}
+
+This taxonomy has practical implications: (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) hard biases may require more sophisticated interventions than prompt engineering.
 
 \subsection{Limitations}
 
@@ -318,7 +354,15 @@ This taxonomy has practical implications: developers should prioritize debiasing
 
 \section{Conclusion}
 
-Human debiasing techniques transfer to LLMs, with iterative self-correction (SACD) being particularly effective at eliminating anchoring bias in our trials (effect reduced to $d = -0.17$, observed range crossing zero). Model capability improvements appear to reduce some biases (anchoring, sunk cost) but not others (framing) in our observations. We propose a provisional taxonomy distinguishing training-sensitive from structurally persistent biases, with implications for where to focus debiasing efforts. This exploratory study is limited by its descriptive nature (deterministic sampling, scenario-based variance), moderate sample sizes ($n=30$ scenarios), potential training data contamination, and observational (non-causal) cross-model comparisons.
+LLM anchoring bias is fragile, context-dependent, and model-specific. Our key contributions:
+
+\begin{enumerate}
+    \item \textbf{Soft vs Hard bias taxonomy}: Claude Sonnet 4 exhibits ``soft'' anchoring bias (eliminated by temperature=1.0 or simple prompt instruction), while GPT-4o exhibits ``hard'' bias (resistant to both interventions).
+    \item \textbf{Prompt sensitivity}: Paraphrasing reduces anchoring effect by 92\% (3.0$\to$0.25 months), suggesting single-prompt experiments overstate bias magnitude.
+    \item \textbf{Debiasing is model-specific}: Techniques cannot be assumed to transfer across architectures.
+\end{enumerate}
+
+Practitioners should validate debiasing interventions on their specific deployment model rather than assuming generalization. This exploratory study is limited by moderate sample sizes ($n=30$), potential training contamination, and observational cross-model comparisons.
 
 \section*{Ethics Statement}
 

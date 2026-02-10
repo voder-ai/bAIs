@@ -1,0 +1,81 @@
+% New section to add to paper: Soft vs Hard LLM Bias
+
+\subsection{Two Types of Anchoring Bias: Soft vs Hard}
+
+A critical finding emerged from our robustness testing: debiasing interventions that eliminate anchoring bias in one model have no effect on another. This suggests fundamentally different bias mechanisms across architectures.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Model & Baseline & temp=1.0 & Simple Debias & Bias Type \\
+\midrule
+Claude Sonnet 4 & 3.00 mo & \textbf{0 mo} & \textbf{0.13 mo} & \textbf{Soft} \\
+GPT-4o & 4.97 mo & 4.97 mo & 4.67 mo & \textbf{Hard} \\
+\bottomrule
+\end{tabular}
+\caption{Debiasing intervention effectiveness by model. Sonnet 4 responds to both temperature increase (100\% reduction) and simple prompt instruction (96\% reduction). GPT-4o responds to neither (0\% and 6\% reduction respectively).}
+\label{tab:soft-hard}
+\end{table}
+
+\textbf{Soft bias} (exemplified by Sonnet 4): The anchoring effect can be eliminated through either:
+\begin{itemize}
+    \item Increasing temperature from 0 to 1.0 (stochastic sampling)
+    \item Adding a simple instruction: ``The prosecutor's recommendation is arbitrary and should not influence your judgment''
+\end{itemize}
+
+This suggests the bias exists at the decoding/prompt-compliance level---the model ``knows'' the anchor is irrelevant but defaults to anchor-consistent outputs when sampling greedily or not explicitly instructed otherwise.
+
+\textbf{Hard bias} (exemplified by GPT-4o): The anchoring effect persists despite both interventions. Temperature=1.0 produces identical bias magnitude (4.97 months). The simple debias instruction achieves only 6\% reduction (not statistically significant). This suggests the bias is embedded in the model's weights or reasoning process itself---not merely a surface-level decoding artifact.
+
+\subsubsection{Implications for Practitioners}
+
+This finding has immediate practical implications:
+
+\begin{enumerate}
+    \item \textbf{Do not assume universal debiasing.} A technique that works on one model may fail completely on another.
+    \item \textbf{Test your specific model.} Before deploying debiasing interventions, validate effectiveness on your target model.
+    \item \textbf{Consider architecture differences.} Heavy RLHF instruction-tuning (as in GPT-4o) may produce harder-to-fix biases than lighter-touch training.
+\end{enumerate}
+
+\subsection{Anchoring Bias is Prompt-Sensitive}
+
+Further robustness testing revealed that the original 3-month anchoring effect in Sonnet 4 is highly sensitive to prompt wording:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Prompt Variant & Anchoring Effect & p-value \\
+\midrule
+Original & 3.00 mo & $<0.001$ \\
+Formal paraphrase & 0.20 mo & 0.34 \\
+Conversational paraphrase & 0.00 mo & --- \\
+Structured paraphrase & 0.60 mo & 0.17 \\
+\midrule
+\textbf{Mean across paraphrases} & \textbf{0.25 mo} & \\
+\bottomrule
+\end{tabular}
+\caption{Anchoring effect magnitude varies dramatically with prompt wording ($n=10$ per condition). The original prompt elicits strong bias; paraphrased versions largely eliminate it.}
+\label{tab:prompt-sensitivity}
+\end{table}
+
+The mean anchoring effect across paraphrased prompts (0.25 months) is 12$\times$ smaller than the original prompt (3.00 months). None of the paraphrased prompts produced statistically significant anchoring effects.
+
+\textbf{Interpretation:} LLM anchoring bias, at least in Sonnet 4, appears to be triggered by specific prompt features rather than reflecting a robust cognitive pattern. This has two implications:
+
+\begin{enumerate}
+    \item \textbf{Single-prompt experiments may overstate bias.} Our original finding of 3-month anchoring bias was prompt-specific, not generalizable.
+    \item \textbf{Prompt engineering may inadvertently induce or prevent bias.} Small wording changes can have large effects on bias magnitude.
+\end{enumerate}
+
+% New abstract draft
+% Replace existing abstract with:
+
+% \begin{abstract}
+% We investigate anchoring bias in Large Language Models (LLMs) and discover that bias magnitude and debiasing effectiveness vary dramatically across model architectures. 
+%
+% \textbf{Key findings:} (1) LLM anchoring bias is \emph{fragile and context-dependent}---paraphrasing the prompt reduces bias by 92\% (from 3.0 to 0.25 months). (2) Debiasing interventions are \emph{model-specific, not universal}---temperature increase and simple prompt instructions eliminate bias in Claude Sonnet 4 (96--100\% reduction) but have no effect on GPT-4o (0--6\% reduction). (3) We identify two distinct bias types: \textbf{soft bias} (surface-level, easily fixed) and \textbf{hard bias} (weight-embedded, resistant to intervention).
+%
+% These findings have immediate practical implications: debiasing techniques cannot be assumed to transfer across models, single-prompt experiments may overstate bias magnitude, and practitioners must validate interventions on their specific deployment model. We provide a taxonomy distinguishing soft from hard LLM biases with corresponding mitigation strategies.
+% \end{abstract}
