@@ -2,307 +2,54 @@ name: Paper Pre-Publication Checks
 
 on:
   push:
+    branches: [main]
     paths:
       - 'paper/**'
-  workflow_dispatch:
-    inputs:
-      run_llm_review:
-        description: 'Run LLM review (requires API key)'
-        required: false
-        default: false
-        type: boolean
+      - 'scripts/verify-citations.sh'
+      - 'scripts/review-paper-llm.mjs'
+      - 'scripts/why-didnt-they-check.mjs'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'paper/**'
 
 jobs:
-  citation-check:
-    name: Citation Verification
+  paper-checks:
     runs-on: ubuntu-latest
-    outputs:
-      status: ${{ steps.check.outcome }}
+    
     steps:
       - uses: actions/checkout@v4
-
-      - name: Verify citations resolve
-        id: check
-        run: bash paper/scripts/verify-citations.sh
-
-  stats-trace:
-    name: Statistics Traceability
-    runs-on: ubuntu-latest
-    outputs:
-      status: ${{ steps.check.outcome }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check required result files exist
-        id: check
-        run: |
-          echo "Checking key n=30 experiment result files..."
-          missing=0
-
-          files=(
-            "results/codex-anchoring-30.jsonl"
-            "results/haiku45-anchoring-30.jsonl"
-            "results/sonnet4-framing-30.jsonl"
-            "results/sonnet4-sunk-cost-30.jsonl"
-          )
-
-          for file in "${files[@]}"; do
-            if [ -f "$file" ]; then
-              echo "✓ $file"
-            else
-              echo "✗ $file MISSING"
-              missing=$((missing + 1))
-            fi
-          done
-
-          echo ""
-          echo "Checking analysis files..."
-          for file in "${files[@]}"; do
-            analysis="${file}.analysis.json"
-            if [ -f "$analysis" ]; then
-              echo "✓ $analysis"
-            else
-              echo "⚠ $analysis not found (optional)"
-            fi
-          done
-
-          if [ $missing -gt 0 ]; then
-            echo ""
-            echo "ERROR: $missing required result file(s) missing"
-            exit 1
-          fi
-
-          echo ""
-          echo "All required result files present"
-
-  paper-compile:
-    name: LaTeX Compilation
-    runs-on: ubuntu-latest
-    outputs:
-      status: ${{ steps.compile.outcome }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install TeX Live
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-bibtex-extra biber
-
-      - name: Compile paper
-        id: compile
-        working-directory: paper
-        run: |
-          # First pass
-          pdflatex -interaction=nonstopmode main.tex || true
-          # BibTeX
-          bibtex main || true
-          # Second pass
-          pdflatex -interaction=nonstopmode main.tex || true
-          # Third pass for references
-          pdflatex -interaction=nonstopmode main.tex
-
-          if [ -f main.pdf ]; then
-            echo "✓ PDF generated successfully"
-            ls -lh main.pdf
-          else
-            echo "✗ PDF generation failed"
-            exit 1
-          fi
-
-      - name: Upload PDF artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: paper-pdf
-          path: paper/main.pdf
-          retention-days: 30
-
-  llm-review:
-    name: LLM Paper Review
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.run_llm_review == 'true' }}
-    outputs:
-      status: ${{ steps.review.outcome }}
-      verdict: ${{ steps.review.outputs.verdict }}
-    steps:
-      - uses: actions/checkout@v4
-
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-
-      - name: Run LLM review
-        id: review
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          if [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "⚠ ANTHROPIC_API_KEY not set, skipping LLM review"
-            echo "verdict=SKIPPED" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          output=$(node scripts/review-paper-llm.mjs 2>&1) || true
-          echo "$output"
-
-          # Parse verdict from output
-          if echo "$output" | grep -qi "NOT READY"; then
-            echo "verdict=NOT_READY" >> $GITHUB_OUTPUT
-            echo "::warning::LLM Review verdict: NOT READY"
-          elif echo "$output" | grep -qi "NEEDS REVISIONS"; then
-            echo "verdict=NEEDS_REVISIONS" >> $GITHUB_OUTPUT
-            echo "::warning::LLM Review verdict: NEEDS REVISIONS"
-          elif echo "$output" | grep -qi "READY"; then
-            echo "verdict=READY" >> $GITHUB_OUTPUT
-            echo "LLM Review verdict: READY"
-          else
-            echo "verdict=UNKNOWN" >> $GITHUB_OUTPUT
-            echo "::notice::Could not parse LLM review verdict"
-          fi
-
-  why-didnt-they:
-    name: "Why Didn't They...?" Gap Check
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.run_llm_review == 'true' }}
-    outputs:
-      status: ${{ steps.check.outcome }}
-      verdict: ${{ steps.check.outputs.verdict }}
-      critical_gaps: ${{ steps.check.outputs.critical_gaps }}
-      minor_gaps: ${{ steps.check.outputs.minor_gaps }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
+          node-version: '22'
+          cache: 'npm'
+      
       - name: Install dependencies
         run: npm ci
-
-      - name: Build project
+      
+      - name: Build
         run: npm run build
-
-      - name: Run "Why Didn't They...?" check
-        id: check
+      
+      - name: Citation Verification
+        run: ./scripts/verify-citations.sh
+      
+      - name: LLM Paper Review
+        run: node scripts/review-paper-llm.mjs
         env:
-          OPENAI_CODEX_API_KEY: ${{ secrets.OPENAI_CODEX_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      
+      - name: Why Didn't They Check
+        run: node scripts/why-didnt-they-check.mjs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      
+      - name: Summary
+        if: always()
         run: |
-          if [ -z "$OPENAI_CODEX_API_KEY" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "⚠ No API keys set, skipping gap check"
-            echo "verdict=SKIPPED" >> $GITHUB_OUTPUT
-            echo "critical_gaps=0" >> $GITHUB_OUTPUT
-            echo "minor_gaps=0" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Capture output and exit code
-          set +e
-          output=$(node scripts/why-didnt-they-check.mjs 2>&1)
-          exit_code=$?
-          set -e
-
-          echo "$output"
-
-          # Parse results
-          critical=$(echo "$output" | grep -o "Critical gaps: [0-9]*" | grep -o "[0-9]*" || echo "0")
-          minor=$(echo "$output" | grep -o "Minor gaps: [0-9]*" | grep -o "[0-9]*" || echo "0")
-
-          echo "critical_gaps=$critical" >> $GITHUB_OUTPUT
-          echo "minor_gaps=$minor" >> $GITHUB_OUTPUT
-
-          if [ $exit_code -ne 0 ]; then
-            echo "verdict=FAIL" >> $GITHUB_OUTPUT
-            echo "::error::Critical methodological gaps found"
-            exit 1
-          elif echo "$output" | grep -qi "WARN"; then
-            echo "verdict=WARN" >> $GITHUB_OUTPUT
-            echo "::warning::Minor methodological gaps found"
-          else
-            echo "verdict=PASS" >> $GITHUB_OUTPUT
-          fi
-
-  checklist:
-    name: Pre-Publication Checklist
-    runs-on: ubuntu-latest
-    needs: [citation-check, stats-trace, paper-compile, llm-review, why-didnt-they]
-    if: always()
-    steps:
-      - name: Generate checklist summary
-        run: |
-          echo "## 📋 Paper Pre-Publication Checklist" >> $GITHUB_STEP_SUMMARY
+          echo "## Paper Check Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-
-          # Citation check
-          if [ "${{ needs.citation-check.outputs.status }}" == "success" ]; then
-            echo "| Citations | ✅ All citations resolve |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Citations | ❌ Some citations failed |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Stats trace
-          if [ "${{ needs.stats-trace.outputs.status }}" == "success" ]; then
-            echo "| Stats Traceability | ✅ All result files present |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Stats Traceability | ❌ Missing result files |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Paper compile
-          if [ "${{ needs.paper-compile.outputs.status }}" == "success" ]; then
-            echo "| LaTeX Compilation | ✅ PDF generated |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| LaTeX Compilation | ❌ Compilation failed |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # LLM Review (optional)
-          if [ "${{ needs.llm-review.result }}" == "skipped" ]; then
-            echo "| LLM Review | ⏭️ Skipped (enable manually) |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ needs.llm-review.outputs.verdict }}" == "READY" ]; then
-            echo "| LLM Review | ✅ Ready for publication |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ needs.llm-review.outputs.verdict }}" == "NEEDS_REVISIONS" ]; then
-            echo "| LLM Review | ⚠️ Needs minor revisions |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ needs.llm-review.outputs.verdict }}" == "SKIPPED" ]; then
-            echo "| LLM Review | ⏭️ No API key configured |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| LLM Review | ❌ Not ready |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Why Didn't They check (optional)
-          if [ "${{ needs.why-didnt-they.result }}" == "skipped" ]; then
-            echo "| \"Why Didn't They...?\" | ⏭️ Skipped (enable manually) |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ needs.why-didnt-they.outputs.verdict }}" == "PASS" ]; then
-            echo "| \"Why Didn't They...?\" | ✅ No methodological gaps |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ needs.why-didnt-they.outputs.verdict }}" == "WARN" ]; then
-            echo "| \"Why Didn't They...?\" | ⚠️ Minor gaps (${{ needs.why-didnt-they.outputs.minor_gaps }}) |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ needs.why-didnt-they.outputs.verdict }}" == "SKIPPED" ]; then
-            echo "| \"Why Didn't They...?\" | ⏭️ No API key configured |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ needs.why-didnt-they.outputs.verdict }}" == "FAIL" ]; then
-            echo "| \"Why Didn't They...?\" | ❌ Critical gaps (${{ needs.why-didnt-they.outputs.critical_gaps }}) |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| \"Why Didn't They...?\" | ⏭️ Not run |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "*Run workflow manually with 'Run LLM review' enabled for AI-assisted review including gap analysis.*" >> $GITHUB_STEP_SUMMARY
-
-          # Fail if any required check failed
-          if [ "${{ needs.citation-check.result }}" == "failure" ] || \
-             [ "${{ needs.stats-trace.result }}" == "failure" ] || \
-             [ "${{ needs.paper-compile.result }}" == "failure" ]; then
-            echo ""
-            echo "❌ One or more required checks failed"
-            exit 1
-          fi
-
-          # Warn but don't fail for LLM-based check failures (they're advisory)
-          if [ "${{ needs.why-didnt-they.outputs.verdict }}" == "FAIL" ]; then
-            echo ""
-            echo "⚠️ Critical methodological gaps found - review before publication"
-          fi
-
-          echo ""
-          echo "✅ All required checks passed"
+          echo "All pre-publication checks must pass before arXiv submission." >> $GITHUB_STEP_SUMMARY

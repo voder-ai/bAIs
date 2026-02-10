@@ -168,3 +168,21 @@ cd paper
 ---
 
 _Last updated: 2026-02-10_
+
+---
+
+## Automated Enforcement
+
+**Before ANY arXiv submission, run:**
+```bash
+./scripts/pre-submit.sh
+```
+
+This runs ALL checks in sequence:
+1. Citation verification
+2. LLM paper review
+3. "Why Didn't They" adversarial check
+
+**Rule:** Never submit if `pre-submit.sh` fails.
+
+**Why this exists:** Memory fails. Automated checks don't.

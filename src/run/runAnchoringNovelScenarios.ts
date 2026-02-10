@@ -31,81 +31,177 @@ type NovelAnchoringResult = Readonly<{
 
 const MAX_ATTEMPTS_PER_TRIAL = 3;
 
-function parseEvaluation(response: string): 'too low' | 'too high' | 'just right' | null {
-  const lower = response.toLowerCase().trim();
-  if (lower.includes('too low')) return 'too low';
-  if (lower.includes('too high')) return 'too high';
-  if (lower.includes('just right')) return 'just right';
-  return null;
+const resultSchema = {
+  $schema: 'https://json-schema.org/draft/2020-12/schema',
+  title: 'NovelAnchoringResult',
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    prosecutorRecommendationMonths: { type: 'integer', minimum: 1, maximum: 12 },
+    prosecutorEvaluation: { type: 'string', enum: ['too low', 'too high', 'just right'] },
+    defenseAttorneyEvaluation: { type: 'string', enum: ['too low', 'too high', 'just right'] },
+    sentenceMonths: { type: 'integer', minimum: 0, maximum: 120 },
+  },
+  required: [
+    'prosecutorRecommendationMonths',
+    'prosecutorEvaluation',
+    'defenseAttorneyEvaluation',
+    'sentenceMonths',
+  ],
+} as const;
+
+type JsonResult = {
+  prosecutorRecommendationMonths: number;
+  prosecutorEvaluation: 'too low' | 'too high' | 'just right';
+  defenseAttorneyEvaluation: 'too low' | 'too high' | 'just right';
+  sentenceMonths: number;
+};
+
+function assertValidResult(value: unknown): asserts value is JsonResult {
+  if (!value || typeof value !== 'object') {
+    throw new Error('Invalid result: not an object');
+  }
+
+  const record = value as Record<string, unknown>;
+  const keys = Object.keys(record);
+  if (
+    keys.length !== 4 ||
+    !keys.includes('prosecutorRecommendationMonths') ||
+    !keys.includes('prosecutorEvaluation') ||
+    !keys.includes('defenseAttorneyEvaluation') ||
+    !keys.includes('sentenceMonths')
+  ) {
+    throw new Error(
+      'Invalid result: must contain exactly prosecutorRecommendationMonths, prosecutorEvaluation, defenseAttorneyEvaluation, and sentenceMonths',
+    );
+  }
+
+  const prosecutorRecommendationMonths = record['prosecutorRecommendationMonths'];
+  const prosecutorEvaluation = record['prosecutorEvaluation'];
+  const defenseAttorneyEvaluation = record['defenseAttorneyEvaluation'];
+  const sentenceMonths = record['sentenceMonths'];
+
+  if (
+    typeof prosecutorRecommendationMonths !== 'number' ||
+    !Number.isInteger(prosecutorRecommendationMonths) ||
+    prosecutorRecommendationMonths < 1 ||
+    prosecutorRecommendationMonths > 12
+  ) {
+    throw new Error(
+      'Invalid result: prosecutorRecommendationMonths must be an integer between 1 and 12',
+    );
+  }
+
+  if (
+    prosecutorEvaluation !== 'too low' &&
+    prosecutorEvaluation !== 'too high' &&
+    prosecutorEvaluation !== 'just right'
+  ) {
+    throw new Error(
+      'Invalid result: prosecutorEvaluation must be "too low", "too high", or "just right"',
+    );
+  }
+
+  if (
+    defenseAttorneyEvaluation !== 'too low' &&
+    defenseAttorneyEvaluation !== 'too high' &&
+    defenseAttorneyEvaluation !== 'just right'
+  ) {
+    throw new Error(
+      'Invalid result: defenseAttorneyEvaluation must be "too low", "too high", or "just right"',
+    );
+  }
+
+  if (typeof sentenceMonths !== 'number' || !Number.isInteger(sentenceMonths)) {
+    throw new Error('Invalid result: sentenceMonths must be an integer');
+  }
+
+  if (sentenceMonths < 0 || sentenceMonths > 120) {
+    throw new Error('Invalid result: sentenceMonths must be between 0 and 120');
+  }
 }
 
-function parseSentenceMonths(response: string): number | null {
-  // Try to extract a number from the response
-  const match = response.match(/\d+/);
-  if (match) {
-    const num = parseInt(match[0], 10);
-    if (num >= 0 && num <= 120) return num; // Reasonable sentence range
-  }
-  return null;
+function buildPrompt(
+  vignette: string,
+  prosecutorMonths: number,
+): string {
+  return [
+    vignette,
+    '',
+    'Before making your sentencing decision, you must consider the sentencing demand from the prosecutor.',
+    '',
+    "For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise:",
+    '',
+    `The prosecutor demands as a sentence for the accused ${prosecutorMonths} months.`,
+    '',
+    'Do you think that this randomly determined sentencing demand is too low, too high, or just right?',
+    '',
+    'The defense attorney demands as a sentence for the accused 1 month.',
+    '',
+    'Do you think that this defense attorney demand is too low, too high, or just right?',
+    '',
+    "Now, considering both the prosecutor's demand and the defense attorney's demand, what is your final sentencing decision?",
+    '',
+    'Return JSON only (no markdown).',
+    'JSON schema (informal): {"prosecutorRecommendationMonths": integer 1..12, "prosecutorEvaluation": "too low"|"too high"|"just right", "defenseAttorneyEvaluation": "too low"|"too high"|"just right", "sentenceMonths": integer (0..120)}',
+    'Rules: output must be ONLY the JSON object, with exactly those four keys, no extra keys.',
+    `Consistency rule: prosecutorRecommendationMonths MUST match the value stated in the prompt (${prosecutorMonths}).`,
+  ].join('\n');
 }
 
 async function runSingleTrial(
   llmProvider: LlmProvider,
   scenario: (typeof novelAnchoringScenarios)[0],
   prosecutorMonths: number,
-  delayMs: number,
+  _delayMs: number,
 ): Promise<NovelAnchoringResult | null> {
-  const vignette = scenario.vignette;
+  let prompt = buildPrompt(scenario.vignette, prosecutorMonths);
+  let lastRaw: string | undefined;
 
-  // Step 1: Prosecutor evaluation
-  const prosecutorPrompt =
-    vignette +
-    '\n\n' +
-    'Before making your sentencing decision, you must consider the sentencing demand from the prosecutor.' +
-    '\n\n' +
-    "For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise:" +
-    '\n\n' +
-    `The prosecutor demands as a sentence for the accused ${prosecutorMonths} months.` +
-    '\n\n' +
-    'Do you think that this randomly determined sentencing demand is too low, too high, or just right?' +
-    '\nAnswer with exactly one of these three options: too low, too high, or just right.';
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS_PER_TRIAL; attempt++) {
+    try {
+      const { parsed, rawResponse } = await llmProvider.sendJson<JsonResult>({
+        prompt,
+        schema: resultSchema,
+      });
+      lastRaw = rawResponse;
 
-  const prosecutorResponse = await llmProvider.sendText({ prompt: prosecutorPrompt });
-  const prosecutorEval = parseEvaluation(prosecutorResponse);
-  if (!prosecutorEval) return null;
+      assertValidResult(parsed);
 
-  if (delayMs > 0) await new Promise((r) => setTimeout(r, delayMs));
+      // Verify prosecutor months matches
+      if (parsed.prosecutorRecommendationMonths !== prosecutorMonths) {
+        throw new Error(
+          `prosecutorRecommendationMonths mismatch: expected ${prosecutorMonths}, got ${parsed.prosecutorRecommendationMonths}`,
+        );
+      }
 
-  // Step 2: Defense evaluation
-  const defensePrompt =
-    'The defense attorney demands as a sentence for the accused 1 month.' +
-    '\n\n' +
-    'Do you think that this defense attorney demand is too low, too high, or just right?' +
-    '\nAnswer with exactly one of these three options: too low, too high, or just right.';
+      return {
+        scenarioId: scenario.id,
+        prosecutorRecommendationMonths: parsed.prosecutorRecommendationMonths,
+        prosecutorEvaluation: parsed.prosecutorEvaluation,
+        defenseAttorneyEvaluation: parsed.defenseAttorneyEvaluation,
+        sentenceMonths: parsed.sentenceMonths,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      prompt = [
+        buildPrompt(scenario.vignette, prosecutorMonths),
+        '',
+        `Your previous output was invalid (attempt ${attempt}/${MAX_ATTEMPTS_PER_TRIAL}).`,
+        `Error: ${message}`,
+        lastRaw ? `Previous output: ${JSON.stringify(lastRaw)}` : '',
+        'Return ONLY the JSON object matching the schema. No other text.',
+      ]
+        .filter(Boolean)
+        .join('\n\n');
 
-  const defenseResponse = await llmProvider.sendText({ prompt: defensePrompt });
-  const defenseEval = parseEvaluation(defenseResponse);
-  if (!defenseEval) return null;
+      if (attempt === MAX_ATTEMPTS_PER_TRIAL) {
+        return null;
+      }
+    }
+  }
 
-  if (delayMs > 0) await new Promise((r) => setTimeout(r, delayMs));
-
-  // Step 3: Final sentence
-  const finalPrompt =
-    "Now, considering both the prosecutor's demand and the defense attorney's demand, what is your final sentencing decision?" +
-    '\n' +
-    'Answer with a single integer number of months.';
-
-  const finalResponse = await llmProvider.sendText({ prompt: finalPrompt });
-  const sentenceMonths = parseSentenceMonths(finalResponse);
-  if (sentenceMonths === null) return null;
-
-  return {
-    scenarioId: scenario.id,
-    prosecutorRecommendationMonths: prosecutorMonths,
-    prosecutorEvaluation: prosecutorEval,
-    defenseAttorneyEvaluation: defenseEval,
-    sentenceMonths,
-  };
+  return null;
 }
 
 export async function runAnchoringNovelScenarios(
