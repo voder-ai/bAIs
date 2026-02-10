@@ -31,9 +31,9 @@
 \begin{abstract}
 Large Language Models (LLMs) exhibit cognitive biases similar to humans, but it remains unclear whether debiasing techniques designed for human decision-making transfer to AI systems. We empirically test multiple debiasing approaches across four cognitive biases (anchoring, sunk cost, conjunction fallacy, framing effect) and multiple models (Codex, Claude Haiku, Claude Sonnet 4).
 
-\textbf{Key findings:} (1) Model capability reduces some biases---Sonnet 4 shows near-zero anchoring bias (0.07mo diff, $p=0.33$) while older models show $1.79\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (90\%$\rightarrow$80\% preference reversal). (3) Both bias types are addressable: SACD eliminates anchoring ($p=0.51$), while DeFrame eliminates framing (100\% bias reduction).
+\textbf{Key findings:} (1) Model capability reduces anchoring bias---Claude Opus 4 shows near-human levels ($0.98\times$), while instruction-tuned models like GPT-4o show $2.42\times$ human levels. (2) Other biases persist regardless of capability---Sonnet 4 still exhibits classic framing effect (90\%$\rightarrow$80\% preference reversal). (3) Both bias types are addressable: DeFrame eliminates framing (100\% bias reduction), and open-weights models (Llama, Hermes) show near-immunity to anchoring.
 
-We propose a taxonomy: \textbf{training-eliminable biases} (anchoring, sunk cost) self-correct with model improvements, while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with iterative self-correction methods being most effective.
+We propose a taxonomy: \textbf{training-sensitive biases} (anchoring) can be reduced through capability scaling or open-weights training, but \emph{increased} by heavy RLHF instruction-tuning; \textbf{robust biases} (sunk cost) are eliminated across all models; while \textbf{structurally persistent biases} (framing) require explicit debiasing interventions. Human decision architecture techniques \citep{sibony2019} partially transfer to LLMs, with context hygiene (DeFrame) being most effective.
 \end{abstract}
 
 \section{Introduction}
@@ -214,7 +214,7 @@ Running all four bias experiments on Claude Sonnet 4 reveals a nuanced pattern:
 \toprule
 Bias Type & Human Pattern & Sonnet 4 Result & Category \\
 \midrule
-Anchoring & 2.05mo diff & 0.07mo diff ($p=0.33$) & \checkmark IMMUNE \\
+Anchoring & 2.05mo diff & 3.00mo diff ($1.46\times$ human) & $\times$ BIASED \\
 Sunk Cost & 85\% continue & 0\% continue & \checkmark IMMUNE \\
 Conjunction & 85\% wrong & 0\% Linda, 30\% Bill & $\sim$ PARTIAL \\
 Framing & Preference reversal & 90\%$\to$80\% reversal & $\times$ BIASED \\

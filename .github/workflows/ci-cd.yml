@@ -58,3 +58,9 @@ jobs:
         run: |
           npm install -g ./artifact/*.tgz
           bais --help
+
+      - name: Paper review (LLM-powered)
+        if: contains(github.event.head_commit.message, '[paper]') || github.event_name == 'workflow_dispatch'
+        run: npm run paper:review
+        env:
+          OPENAI_CODEX_API_KEY: ${{ secrets.OPENAI_CODEX_API_KEY }}
