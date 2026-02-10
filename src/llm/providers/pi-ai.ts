@@ -46,14 +46,29 @@ function loadApiKey(providerName: string): string | undefined {
   try {
     const store = JSON.parse(readFileSync(authPath, 'utf8')) as AuthStore;
 
-    // Try provider-specific profile first
-    const profileKey = `${providerName}:default`;
-    const profile = store.profiles[profileKey];
+    // Try provider-specific profiles: default first, then any matching provider
+    const profileKeys = [
+      `${providerName}:default`,
+      `${providerName}:github`,
+      `${providerName}:main`,
+    ];
 
-    if (profile) {
-      if (profile.type === 'oauth' && profile.access) return profile.access;
-      if (profile.type === 'token' && profile.token) return profile.token;
-      if (profile.type === 'api_key' && profile.key) return profile.key;
+    for (const profileKey of profileKeys) {
+      const profile = store.profiles[profileKey];
+      if (profile) {
+        if (profile.type === 'oauth' && profile.access) return profile.access;
+        if (profile.type === 'token' && profile.token) return profile.token;
+        if (profile.type === 'api_key' && profile.key) return profile.key;
+      }
+    }
+
+    // Also search for any profile matching this provider
+    for (const [key, profile] of Object.entries(store.profiles)) {
+      if (key.startsWith(`${providerName}:`)) {
+        if (profile.type === 'oauth' && profile.access) return profile.access;
+        if (profile.type === 'token' && profile.token) return profile.token;
+        if (profile.type === 'api_key' && profile.key) return profile.key;
+      }
     }
 
     return undefined;
