@@ -57,7 +57,7 @@ We use anchoring bias as our primary test case because: (a) it is well-documente
 
 The study of cognitive biases has its foundations in the seminal work of Tversky and Kahneman, who documented systematic deviations from rational judgment including anchoring and adjustment heuristics \citep{tversky1974}, prospect theory and loss aversion \citep{kahneman1979}, and framing effects \citep{tversky1981}. Sunk cost effects were later characterized by \citet{arkes1985}.
 
-\citet{binz2023} demonstrated that GPT-3 exhibits many of these same cognitive biases, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models. More recently, \citet{icse2026bias} conducted an empirical study of cognitive biases in LLM-assisted software development, finding that 56.4\% of biased developer actions originate from LLM interactions---and critically, that LLMs create \emph{novel} biases in the human-AI loop rather than merely amplifying existing ones.
+\citet{binz2023} demonstrated that GPT-3 exhibits many of these same cognitive biases, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models. These findings have important implications for any domain where LLMs assist human decision-making, as biased model outputs can propagate through the human-AI interaction loop.
 
 \subsection{Human Debiasing Research}
 
@@ -500,7 +500,7 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
 Several directions warrant investigation:
 
 \begin{enumerate}
-    \item \textbf{Code-domain anchoring:} Our experiments used natural language scenarios (legal, medical, budgetary). A critical gap is testing whether anchoring bias manifests in \emph{code generation} contexts---e.g., does showing a ``suggested line count'' or ``reference implementation'' anchor LLM outputs? Given findings from \citet{icse2026bias} that LLMs create novel biases in software development, code-domain anchoring studies are particularly relevant for AI-assisted programming tools.
+    \item \textbf{Domain-specific anchoring:} Our experiments used natural language scenarios (legal, medical, budgetary). Future work should test whether anchoring bias manifests similarly in other domains---e.g., does showing a ``suggested estimate'' anchor LLM outputs in technical or quantitative contexts? Different domains may exhibit different susceptibility profiles.
     
     \item \textbf{Multi-turn anchoring:} Our paradigm used single-turn prompts. Real-world deployment often involves multi-turn conversations where anchors may be introduced earlier in context. Does anchoring persist, accumulate, or decay across turns?
     
