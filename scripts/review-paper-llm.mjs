@@ -121,7 +121,7 @@ async function main() {
     const isReady = reviewLower.includes('ready for publication');
     const needsRevisions = reviewLower.includes('needs minor revisions');
     const hasCriticalFails = (review.match(/❌\s*FAIL/gi) || []).length > 0;
-    
+
     // Count issues
     const passCount = (review.match(/✅\s*PASS/gi) || []).length;
     const minorCount = (review.match(/⚠️\s*MINOR/gi) || []).length;
