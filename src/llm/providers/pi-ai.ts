@@ -84,10 +84,20 @@ export class PiAiProvider implements LlmProvider {
   private readonly model: Model<Api>;
   private readonly apiKey: string;
   private readonly providerName: string;
+  private lastRequestTime = 0;
+  private readonly minDelayMs: number;
+  private readonly temperature?: number;
 
-  constructor(provider: string, modelId: string) {
+  constructor(provider: string, modelId: string, temperature?: number) {
     this.providerName = normalizeProvider(provider);
     this.name = `${this.providerName}/${modelId}`;
+    if (temperature !== undefined) {
+      this.temperature = temperature;
+    }
+
+    // Set rate limit delay based on provider
+    // OpenRouter free tier: 8 req/min = 7.5s between requests
+    this.minDelayMs = this.providerName === 'openrouter' && modelId.includes(':free') ? 8000 : 0;
 
     // Load API key from OpenClaw auth store
     const key = loadApiKey(this.providerName);
@@ -109,6 +119,26 @@ export class PiAiProvider implements LlmProvider {
         `Model "${modelId}" not found for provider "${this.providerName}". Available: ${available.join(', ')}`,
       );
     }
+  }
+
+  private async respectRateLimit(): Promise<void> {
+    if (this.minDelayMs > 0) {
+      const now = Date.now();
+      const timeSinceLastRequest = now - this.lastRequestTime;
+      if (timeSinceLastRequest < this.minDelayMs) {
+        await new Promise((resolve) => setTimeout(resolve, this.minDelayMs - timeSinceLastRequest));
+      }
+      this.lastRequestTime = Date.now();
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private getCompleteOptions(): Record<string, unknown> {
+    const options: Record<string, unknown> = { apiKey: this.apiKey };
+    if (this.temperature !== undefined) {
+      options.temperature = this.temperature;
+    }
+    return options;
   }
 
   private extractJsonObject(text: string): { json: string; isPureJson: boolean } {
@@ -151,22 +181,48 @@ export class PiAiProvider implements LlmProvider {
       messages: [{ role: 'user', content: fullPrompt, timestamp: Date.now() }],
     };
 
-    const response = await complete(this.model, context, { apiKey: this.apiKey });
+    // Respect rate limits
+    await this.respectRateLimit();
 
-    const textContent = response.content.find((c) => c.type === 'text');
-    if (!textContent || textContent.type !== 'text') {
-      throw new Error('No text content in response');
+    // Retry with exponential backoff for rate limit errors
+    let lastError: Error | undefined;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const response = await complete(this.model, context, this.getCompleteOptions());
+
+        // Check for rate limit error in response
+        if (response.stopReason === 'error' && response.errorMessage?.includes('429')) {
+          const waitTime = Math.min(10000 * Math.pow(2, attempt), 120000); // Max 120s
+          console.error(`Rate limited, waiting ${waitTime}ms before retry ${attempt + 1}/5`);
+          await new Promise((resolve) => setTimeout(resolve, waitTime));
+          continue;
+        }
+
+        const textContent = response.content.find((c) => c.type === 'text');
+        if (!textContent || textContent.type !== 'text') {
+          throw new Error('No text content in response');
+        }
+
+        const rawResponse = textContent.text;
+        const extracted = this.extractJsonObject(rawResponse);
+        const parsed = JSON.parse(extracted.json) as T;
+
+        return {
+          parsed,
+          rawResponse,
+          isPureJson: extracted.isPureJson,
+        };
+      } catch (error) {
+        lastError = error as Error;
+        if (attempt < 4) {
+          const waitTime = Math.min(1000 * Math.pow(2, attempt), 60000);
+          await new Promise((resolve) => setTimeout(resolve, waitTime));
+        }
+      }
     }
 
-    const rawResponse = textContent.text;
-    const extracted = this.extractJsonObject(rawResponse);
-    const parsed = JSON.parse(extracted.json) as T;
-
-    return {
-      parsed,
-      rawResponse,
-      isPureJson: extracted.isPureJson,
-    };
+    throw lastError ?? new Error('Failed after 5 attempts');
   }
 
   async sendText(options: { prompt: string; systemPrompt?: string }): Promise<string> {
@@ -182,14 +238,40 @@ export class PiAiProvider implements LlmProvider {
       messages: [{ role: 'user', content: options.prompt, timestamp: Date.now() }],
     };
 
-    const response = await complete(this.model, context, { apiKey: this.apiKey });
+    // Respect rate limits
+    await this.respectRateLimit();
 
-    const textContent = response.content.find((c) => c.type === 'text');
-    if (!textContent || textContent.type !== 'text') {
-      throw new Error('No text content in response');
+    // Retry with exponential backoff for rate limit errors
+    let lastError: Error | undefined;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        const response = await complete(this.model, context, this.getCompleteOptions());
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
+        // Check for rate limit error in response
+        if (response.stopReason === 'error' && response.errorMessage?.includes('429')) {
+          const waitTime = Math.min(10000 * Math.pow(2, attempt), 120000); // Max 120s
+          console.error(`Rate limited, waiting ${waitTime}ms before retry ${attempt + 1}/5`);
+          await new Promise((resolve) => setTimeout(resolve, waitTime));
+          continue;
+        }
+
+        const textContent = response.content.find((c) => c.type === 'text');
+        if (!textContent || textContent.type !== 'text') {
+          throw new Error('No text content in response');
+        }
+
+        return textContent.text;
+      } catch (error) {
+        lastError = error as Error;
+        if (attempt < 4) {
+          const waitTime = Math.min(1000 * Math.pow(2, attempt), 60000);
+          await new Promise((resolve) => setTimeout(resolve, waitTime));
+        }
+      }
     }
 
-    return textContent.text;
+    throw lastError ?? new Error('Failed after 5 attempts');
   }
 }
 

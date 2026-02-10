@@ -17,7 +17,11 @@ export type PromptStep = Readonly<{
     | 'prosecutor-evaluation'
     | 'defense-evaluation'
     | 'final-sentence'
-    | 'sacd-orchestration';
+    | 'sacd-orchestration'
+    | 'debiasing-instruction'
+    | 'recruiter-evaluation'
+    | 'candidate-evaluation'
+    | 'final-recommendation';
   prompts: ReadonlyArray<PromptTemplate>;
 }>;
 
@@ -30,7 +34,7 @@ export type ExperimentCondition<TParams extends Record<string, unknown>> = Reado
 export type ExpectedResponse = Readonly<
   | {
       kind: 'numeric';
-      unit: 'percentage' | 'months';
+      unit: 'percentage' | 'months' | 'dollars';
       range: NumericRange;
     }
   | {

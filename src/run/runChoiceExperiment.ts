@@ -22,6 +22,7 @@ export type RunChoiceExperimentOptions<TParams extends Record<string, unknown>> 
   llmProvider: LlmProvider;
   outPath?: string | undefined;
   artifactsOutput?: ArtifactsOutputMode | undefined;
+  delayMs?: number | undefined;
 }>;
 
 type ChoiceResult = Readonly<{
@@ -313,6 +314,11 @@ export async function runChoiceExperiment<TParams extends Record<string, unknown
         await appendFile(outPath, line, 'utf8');
       } else {
         process.stdout.write(line);
+      }
+
+      // Delay between API calls (for rate limiting)
+      if (options.delayMs && options.delayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, options.delayMs));
       }
     }
   }

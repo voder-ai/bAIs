@@ -120,6 +120,26 @@ done
 
 ---
 
+## 9. Completeness Risk ("Why Did They Stop There?")
+
+Reviewers may ask: "This experiment was trivial to extend — why didn't they do X?"
+
+- [ ] **Obvious extensions tested:** If extending the experiment was low-effort, did we do it?
+  - More models (especially if free/easy to access)
+  - More bias types with same infrastructure
+  - Temperature/prompt variations
+  - Domain transfer tests
+- [ ] **No cherry-picking:** Are we reporting ALL results, even unfavorable ones?
+- [ ] **Negative results disclosed:** If an intervention failed, we still report it
+- [ ] **Omissions justified:** If we didn't do something obvious, explain why in limitations
+- [ ] **Raw data available:** Provide enough data that others can extend the work
+
+**The meta-question:** "Could a skeptic reasonably conclude we stopped because we didn't like what we found?"
+
+If yes → either do the extension or explicitly address in limitations.
+
+---
+
 ## Review Process
 
 1. **Author pass:** Complete checklist, fix issues

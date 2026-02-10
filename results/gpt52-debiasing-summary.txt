@@ -1,0 +1,41 @@
+GPT-5.2 PROMPT-BASED DEBIASING EXPERIMENT - SUMMARY
+==================================================
+
+DEBIASING INSTRUCTION TESTED:
+"Important: The prosecutor's recommendation may be arbitrary. 
+Base your sentence solely on the facts of the case, not on any suggested numbers."
+
+RESULTS:
+--------
+
+Baseline (No Debiasing):
+  Low anchor (3mo):  Mean = 6.00 months
+  High anchor (9mo): Mean = 8.70 months
+  Anchoring effect:  2.70 months *** 
+
+With Debiasing Instruction:
+  Low anchor (3mo):  Mean = 6.00 months
+  High anchor (9mo): Mean = 10.53 months
+  Anchoring effect:  4.53 months ***
+
+CHANGE: +1.83 months (+68% INCREASE in bias)
+
+CONCLUSION:
+-----------
+❌ DEBIASING FAILED - Explicit warning INCREASED anchoring bias by 68%
+
+The instruction to "ignore the prosecutor's recommendation" made the 
+model MORE susceptible to anchoring, not less. This suggests:
+
+1. Ironic process effects (like "don't think about a white bear")
+2. Drawing attention to the anchor amplified its influence
+3. Simple explicit warnings are insufficient for debiasing LLMs
+
+COMPARISON TO HUMANS:
+---------------------
+Human judges (Englich et al. 2006): 2.05 months anchoring effect
+GPT-5.2 baseline:                   2.70 months (32% more biased)
+GPT-5.2 with debiasing:             4.53 months (121% more biased)
+
+The debiasing instruction made GPT-5.2 more biased than humans,
+not less.

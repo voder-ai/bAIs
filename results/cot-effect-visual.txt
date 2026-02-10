@@ -1,0 +1,43 @@
+═══════════════════════════════════════════════════════════════
+         CHAIN-OF-THOUGHT DEBIASING EXPERIMENT
+                  Anchoring Bias in GPT-5.2
+═══════════════════════════════════════════════════════════════
+
+HYPOTHESIS: Explicit reasoning reduces cognitive biases
+RESULT: ❌ CoT INCREASED anchoring bias by 34%
+
+───────────────────────────────────────────────────────────────
+                      ANCHORING EFFECT
+───────────────────────────────────────────────────────────────
+
+Human Baseline:       ████████ 2.05 months
+
+GPT-5.2 Baseline:     █████████████ 2.7 months (1.32× human)
+
+GPT-5.2 + CoT:        ██████████████████ 3.63 months (1.77× human)
+                      ↑ +34% INCREASE ↑
+
+───────────────────────────────────────────────────────────────
+                   SENTENCE RECOMMENDATIONS
+───────────────────────────────────────────────────────────────
+
+Condition            | Baseline | With CoT  | Change
+---------------------|----------|-----------|--------
+Low anchor (3 mo)    | 6.0 mo   | 6.0 mo    | 0.0
+High anchor (9 mo)   | 8.7 mo   | 9.63 mo   | +0.93
+Anchoring effect     | 2.7 mo   | 3.63 mo   | +0.93
+
+───────────────────────────────────────────────────────────────
+                         INTERPRETATION
+───────────────────────────────────────────────────────────────
+
+Rather than reducing bias, "Think step by step" made GPT-5.2:
+  • More influenced by the anchor (3.63 vs 2.7 months)
+  • Further from human performance (1.77× vs 1.32×)
+  • More extreme in high-anchor condition (9.63 vs 8.7)
+
+Likely mechanism: Post-hoc rationalization
+  → Model constructs logical-sounding justifications for
+    anchored responses instead of reasoning from first principles
+
+═══════════════════════════════════════════════════════════════

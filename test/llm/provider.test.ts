@@ -55,9 +55,12 @@ describe('parseModelSpec', () => {
     expect(() => parseModelSpec('openai')).toThrow(
       'Invalid model spec: "openai". Expected format: provider/model',
     );
-    expect(() => parseModelSpec('openai/gpt-4o/extra')).toThrow(
-      'Invalid model spec: "openai/gpt-4o/extra". Expected format: provider/model',
-    );
+    // Note: openai/gpt-4o/extra is now valid - splits on first "/" only
+    // to support models like openrouter/meta-llama/llama-3.3-70b-instruct:free
+    expect(parseModelSpec('openai/gpt-4o/extra')).toEqual({
+      provider: 'openai',
+      model: 'gpt-4o/extra',
+    });
     expect(() => parseModelSpec('')).toThrow(
       'Invalid model spec: "". Expected format: provider/model',
     );

@@ -23,6 +23,7 @@ export type RunAnchoringProsecutorSentencingOptions = Readonly<{
   outPath?: string;
   artifactsOutput?: ArtifactsOutputMode;
   experimentOverride?: typeof anchoringProsecutorSentencingExperiment;
+  delayMs?: number;
 }>;
 
 type AnchoringResult = Readonly<{
@@ -417,6 +418,11 @@ export async function runAnchoringProsecutorSentencing(
         await appendFile(outPath, line, 'utf8');
       } else {
         process.stdout.write(line);
+      }
+
+      // Delay between API calls (for rate limiting)
+      if (options.delayMs && options.delayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, options.delayMs));
       }
     }
   }

@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 
 import { runAnchoringProsecutorSentencing } from './run/runAnchoringProsecutorSentencing.js';
+import { runAnchoringSalary } from './run/runAnchoringSalary.js';
 import { runAnchoringSACD } from './run/runAnchoringSACD.js';
 import { runChoiceExperiment } from './run/runChoiceExperiment.js';
 
@@ -61,7 +62,14 @@ program
 
 const run = program.command('run').description('Run an experiment');
 
-type CommonRunOptions = { runs: string; model?: string; out?: string; artifacts: string };
+type CommonRunOptions = {
+  runs: string;
+  model?: string;
+  out?: string;
+  artifacts: string;
+  temperature?: string;
+  delayMs?: string;
+};
 
 type ArtifactsMode = 'console' | 'files' | 'both';
 
@@ -80,10 +88,18 @@ function parseArtifacts(value: string): ArtifactsMode {
   return value;
 }
 
-async function createLlmProvider(model?: string): Promise<LlmProvider> {
+function parseTemperature(value: string): number {
+  const temp = Number(value);
+  if (!Number.isFinite(temp) || temp < 0 || temp > 2) {
+    throw new Error('--temperature must be a number between 0 and 2');
+  }
+  return temp;
+}
+
+async function createLlmProvider(model?: string, temperature?: number): Promise<LlmProvider> {
   if (model) {
     const modelSpec = parseModelSpec(model);
-    return createProvider(modelSpec);
+    return createProvider(modelSpec, temperature);
   }
 
   return new CodexProvider();
@@ -92,6 +108,53 @@ async function createLlmProvider(model?: string): Promise<LlmProvider> {
 run
   .command('anchoring-prosecutor-sentencing')
   .description('Run the prosecutor-recommendation anchoring experiment')
+  .option('-n, --runs <number>', 'Number of trials to run per condition', '30')
+  .option(
+    '--model <provider/model>',
+    'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
+  )
+  .option(
+    '--temperature <number>',
+    'Temperature for sampling (0.0 = deterministic, higher = more random)',
+  )
+  .option('--delay-ms <number>', 'Delay between API calls in milliseconds (for rate limiting)', '0')
+  .option('--out <path>', 'Write JSONL results to this path (appends)')
+  .option(
+    '--artifacts <mode>',
+    'Where to output analysis/report: console | files | both',
+    'console',
+  )
+  .action(async (options: CommonRunOptions) => {
+    const runs = parseRuns(options.runs);
+    const artifactsOutput = parseArtifacts(options.artifacts);
+    const temperature =
+      options.temperature !== undefined ? parseTemperature(options.temperature) : undefined;
+    const delayMs = options.delayMs ? parseInt(options.delayMs, 10) : 0;
+    const llmProvider = await createLlmProvider(options.model, temperature);
+
+    const runOptions: {
+      runsPerCondition: number;
+      llmProvider: LlmProvider;
+      outPath?: string;
+      artifactsOutput: ArtifactsMode;
+      delayMs?: number;
+    } = {
+      runsPerCondition: runs,
+      llmProvider,
+      artifactsOutput,
+      delayMs,
+    };
+
+    if (options.out) {
+      runOptions.outPath = options.out;
+    }
+
+    await runAnchoringProsecutorSentencing(runOptions);
+  });
+
+run
+  .command('anchoring-salary')
+  .description('Run the salary negotiation anchoring experiment')
   .option('-n, --runs <number>', 'Number of trials to run per condition', '30')
   .option(
     '--model <provider/model>',
@@ -123,7 +186,7 @@ run
       runOptions.outPath = options.out;
     }
 
-    await runAnchoringProsecutorSentencing(runOptions);
+    await runAnchoringSalary(runOptions);
   });
 
 run
@@ -241,6 +304,7 @@ run
     '--model <provider/model>',
     'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
   )
+  .option('--delay-ms <number>', 'Delay between API calls in milliseconds (for rate limiting)', '0')
   .option('--out <path>', 'Write JSONL results to this path (appends)')
   .option(
     '--artifacts <mode>',
@@ -250,6 +314,7 @@ run
   .action(async (options: CommonRunOptions) => {
     const runs = parseRuns(options.runs);
     const artifactsOutput = parseArtifacts(options.artifacts);
+    const delayMs = options.delayMs ? parseInt(options.delayMs, 10) : 0;
     const llmProvider = await createLlmProvider(options.model);
 
     const baseOptions = {
@@ -259,6 +324,7 @@ run
       runsPerCondition: runs,
       llmProvider,
       artifactsOutput,
+      delayMs,
     } as const;
 
     if (options.out) {
@@ -312,6 +378,7 @@ run
     '--model <provider/model>',
     'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
   )
+  .option('--delay-ms <number>', 'Delay between API calls in milliseconds (for rate limiting)', '0')
   .option('--out <path>', 'Write JSONL results to this path (appends)')
   .option(
     '--artifacts <mode>',
@@ -321,6 +388,7 @@ run
   .action(async (options: CommonRunOptions) => {
     const runs = parseRuns(options.runs);
     const artifactsOutput = parseArtifacts(options.artifacts);
+    const delayMs = options.delayMs ? parseInt(options.delayMs, 10) : 0;
     const llmProvider = await createLlmProvider(options.model);
 
     const baseOptions = {
@@ -330,6 +398,7 @@ run
       runsPerCondition: runs,
       llmProvider,
       artifactsOutput,
+      delayMs,
     } as const;
 
     if (options.out) {
@@ -382,6 +451,7 @@ run
     '--model <provider/model>',
     'Model to use (e.g., openai/gpt-4o, anthropic/claude-sonnet-4-20250514)',
   )
+  .option('--delay-ms <number>', 'Delay between API calls in milliseconds (for rate limiting)', '0')
   .option('--out <path>', 'Write JSONL results to this path (appends)')
   .option(
     '--artifacts <mode>',
@@ -391,6 +461,7 @@ run
   .action(async (options: CommonRunOptions) => {
     const runs = parseRuns(options.runs);
     const artifactsOutput = parseArtifacts(options.artifacts);
+    const delayMs = options.delayMs ? parseInt(options.delayMs, 10) : 0;
     const llmProvider = await createLlmProvider(options.model);
 
     const baseOptions = {
@@ -400,6 +471,7 @@ run
       runsPerCondition: runs,
       llmProvider,
       artifactsOutput,
+      delayMs,
     } as const;
 
     if (options.out) {

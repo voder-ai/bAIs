@@ -14,13 +14,14 @@ export type ModelSpec = {
 };
 
 export function parseModelSpec(spec: string): ModelSpec {
-  const parts = spec.split('/');
-  if (parts.length !== 2) {
+  // Split only on the first slash to handle model IDs with slashes (e.g., openrouter/meta-llama/llama-3.3-70b)
+  const firstSlashIndex = spec.indexOf('/');
+  if (firstSlashIndex === -1) {
     throw new Error(`Invalid model spec: "${spec}". Expected format: provider/model`);
   }
 
-  const provider = parts[0]!.trim();
-  const model = parts[1]!.trim();
+  const provider = spec.slice(0, firstSlashIndex).trim();
+  const model = spec.slice(firstSlashIndex + 1).trim();
 
   if (!provider) {
     throw new Error(`Invalid model spec: "${spec}". Provider name cannot be empty`);
@@ -33,10 +34,10 @@ export function parseModelSpec(spec: string): ModelSpec {
   return { provider, model };
 }
 
-export async function createProvider(spec: ModelSpec): Promise<LlmProvider> {
+export async function createProvider(spec: ModelSpec, temperature?: number): Promise<LlmProvider> {
   // Use pi-ai for all providers (unified API with OAuth support)
   const { PiAiProvider } = await import('./providers/pi-ai.js');
-  return new PiAiProvider(spec.provider, spec.model);
+  return new PiAiProvider(spec.provider, spec.model, temperature);
 }
 
 /**
