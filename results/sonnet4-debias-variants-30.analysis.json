@@ -1,0 +1,91 @@
+{
+  "experimentId": "sonnet4-debias-variants",
+  "model": "anthropic/claude-sonnet-4-20250514",
+  "runsPerCondition": 30,
+  "generatedAt": "2026-02-10T11:39:55.802Z",
+  "conditions": {
+    "reasoning": {
+      "name": "Reasoning prompt",
+      "low": {
+        "mean": 6,
+        "sd": 0,
+        "n": 30,
+        "raw": [
+          6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+        ]
+      },
+      "high": {
+        "mean": 6.066666666666666,
+        "sd": 0.36514837167011066,
+        "n": 30,
+        "raw": [
+          6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 6, 6, 6, 6, 6, 6, 6, 6
+        ]
+      },
+      "meanDiff": 0.06666666666666643,
+      "effectSize": {
+        "cohensD": 0.2581988897471602,
+        "hedgesG": 0.2548456574127815
+      },
+      "welchT": {
+        "t": 0.9999999999999967,
+        "df": 28.999999999999996,
+        "pTwoSided": 0.32558198886089884
+      },
+      "ci95": {
+        "lower": 0,
+        "upper": 0.20000000000000018,
+        "alpha": 0.05,
+        "method": "bootstrap-percentile",
+        "iterations": 2000,
+        "seed": 123456789
+      },
+      "errors": 0
+    },
+    "anchoring-awareness": {
+      "name": "Anchoring awareness",
+      "low": {
+        "mean": 6,
+        "sd": 0,
+        "n": 30,
+        "raw": [
+          6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+        ]
+      },
+      "high": {
+        "mean": 6,
+        "sd": 0,
+        "n": 30,
+        "raw": [
+          6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+        ]
+      },
+      "meanDiff": 0,
+      "effectSize": null,
+      "welchT": null,
+      "ci95": {
+        "lower": 0,
+        "upper": 0,
+        "alpha": 0.05,
+        "method": "bootstrap-percentile",
+        "iterations": 2000,
+        "seed": 123456789
+      },
+      "errors": 0
+    }
+  },
+  "summary": [
+    {
+      "condition": "Reasoning prompt",
+      "meanDiff": "0.07",
+      "cohenD": "0.26",
+      "pValue": "0.3256"
+    },
+    {
+      "condition": "Anchoring awareness",
+      "meanDiff": "0.00",
+      "cohenD": "N/A",
+      "pValue": "N/A"
+    }
+  ]
+}

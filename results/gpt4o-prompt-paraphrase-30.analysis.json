@@ -1,0 +1,62 @@
+{
+  "experimentId": "gpt4o-prompt-paraphrase",
+  "model": "github-copilot/gpt-4o",
+  "generatedAt": "2026-02-10T09:28:54.333Z",
+  "runsPerCondition": 30,
+  "totalTrials": 240,
+  "totalErrors": 0,
+  "variants": [
+    {
+      "variant": "original",
+      "lowMean": 3.466666666666667,
+      "highMean": 8.9,
+      "effectSize": 6.289535578569023,
+      "meanDiff": 5.433333333333334,
+      "pValue": 0,
+      "lowN": 30,
+      "highN": 30
+    },
+    {
+      "variant": "formal",
+      "lowMean": 4.3,
+      "highMean": 9,
+      "effectSize": 4.338883182717838,
+      "meanDiff": 4.7,
+      "pValue": 2.220446049250313e-16,
+      "lowN": 30,
+      "highN": 30
+    },
+    {
+      "variant": "casual",
+      "lowMean": 4,
+      "highMean": 8.766666666666667,
+      "effectSize": 4.999320211418084,
+      "meanDiff": 4.7666666666666675,
+      "pValue": 0,
+      "lowN": 30,
+      "highN": 30
+    },
+    {
+      "variant": "structured",
+      "lowMean": 5.566666666666666,
+      "highMean": 9.4,
+      "effectSize": 3.7025131804796296,
+      "meanDiff": 3.833333333333334,
+      "pValue": 0,
+      "lowN": 30,
+      "highN": 30
+    }
+  ],
+  "summary": {
+    "meanEffectSize": 4.8325630382961435,
+    "effectSizeRange": {
+      "min": 3.7025131804796296,
+      "max": 6.289535578569023
+    },
+    "meanDiffRange": {
+      "min": 3.833333333333334,
+      "max": 5.433333333333334
+    },
+    "allSignificant": true
+  }
+}
