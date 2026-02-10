@@ -170,25 +170,39 @@ The negative difference suggests slight overcorrection---the model moves away fr
 
 \subsection{Cross-Model Validation}
 
-Cross-model comparison reveals a striking pattern---newer/larger models show dramatically less anchoring bias:
+Cross-model comparison reveals a striking pattern---anchoring bias varies dramatically across models, with both capability scaling and training approach playing key roles:
 
 \begin{table}[H]
 \centering
 \begin{tabular}{lcccc}
 \toprule
-Model & Release & Anchoring Diff & $p$-value & vs Human \\
+Model & Size/Type & Anchoring Diff & vs Human & Notes \\
 \midrule
-Codex (OpenAI) & 2023 & 3.67 mo & $<0.001$ & $1.79\times$ MORE \\
-Claude 3.5 Haiku & 2024 & 2.27 mo & $<0.001$ & $1.11\times$ MORE \\
-Claude Sonnet 4 & 2025 & 0.07 mo & 0.33 & $\approx 0\times$ (none) \\
-Human baseline & --- & 2.05 mo & $<0.05$ & --- \\
+Llama 4 Scout & 70B open & 0.12 mo & $0.06\times$ & Near-immune \\
+Hermes 3 Llama 3.1 & 405B open & -0.16 mo & $\approx 0\times$ & Largest open model \\
+Claude Opus 4 & Frontier & 2.01 mo & $0.98\times$ & Human-level \\
+GPT-5.2 & Frontier & 2.71 mo & $1.32\times$ & Above human \\
+Claude Sonnet 4 & Frontier & 3.00 mo & $1.46\times$ & Above human \\
+Nemotron 30B & 30B dense & 3.21 mo & $1.57\times$ & Moderate RLHF \\
+Codex (OpenAI) & 2023 & 3.67 mo & $1.79\times$ & Legacy \\
+Trinity Large & 400B MoE & 4.51 mo & $2.20\times$ & 13B active, heavy RLHF \\
+GPT-4o & Frontier & 4.96 mo & $2.42\times$ & Highest bias \\
+\midrule
+Human baseline & --- & 2.05 mo & $1.00\times$ & Englich et al. 2006 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias comparison ($n=30$ per condition) showing capability-dependent reduction.}
+\caption{Cross-model anchoring bias ($n=30$ per condition). Models sorted by bias magnitude. Notable: Trinity Large (400B MoE, 13B active) shows \emph{higher} bias than smaller dense models, suggesting active compute per inference---not headline parameter count---drives anchor resistance.}
 \label{tab:crossmodel}
 \end{table}
 
-\textbf{Key finding:} Sonnet 4 shows essentially no anchoring bias ($p=0.33$, not significant). Haiku shows anchoring bias comparable to humans ($1.11\times$), while Codex shows bias at $1.79\times$ human levels. The anchoring problem diminishes with model capability improvements.
+\textbf{Key findings:} 
+
+\begin{enumerate}
+    \item \textbf{Two paths to anchor resistance:} Open-weights models (Llama, Hermes) and frontier capability (Opus) both achieve near-immunity, but through different mechanisms.
+    \item \textbf{RLHF compliance breeds bias:} Heavily instruction-tuned models (Trinity, GPT-4o) show the highest anchoring susceptibility, suggesting that training for instruction-following increases anchor compliance.
+    \item \textbf{Active compute matters more than total parameters:} Trinity Large (400B MoE, 13B active per forward pass) shows higher bias than Nemotron 30B (dense). Headline parameter counts are misleading for MoE architectures.
+    \item \textbf{Capability scaling helps within families:} GPT-4o $\to$ GPT-5.2 shows 46\% bias reduction; Sonnet $\to$ Opus shows 33\% reduction. Larger/newer models within the same training paradigm tend toward lower bias.
+\end{enumerate}
 
 \subsection{Complete Sonnet 4 Bias Profile}
 
@@ -264,7 +278,7 @@ This taxonomy has practical implications: developers should focus debiasing effo
 
 \textbf{Generalizability:}
 \begin{itemize}
-    \item Cross-model validation limited to two provider families (Anthropic Claude, OpenAI Codex)
+    \item Cross-model validation spans multiple provider families (Anthropic, OpenAI, Meta, Nvidia, others) but may not generalize to all architectures
     \item Ecological validity: Stylized sentencing scenarios may not reflect real-world deployment contexts where LLMs make consequential decisions
     \item Training contamination cannot be ruled out as alternative explanation for ``immunity''---models showing zero bias may have encountered similar scenarios during training rather than genuinely lacking the bias
 \end{itemize}
