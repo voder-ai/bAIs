@@ -324,10 +324,11 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
 
 \textbf{Descriptive Study Framing:}
 \begin{itemize}
-    \item This is an exploratory descriptive study. All trials used deterministic sampling (temperature=0), so variance reflects scenario variation rather than model stochasticity
+    \item This is an exploratory descriptive study. Primary experiments used deterministic sampling (temperature=0); temperature sweep experiments (0.0--1.0) confirmed temperature-invariance for most models
     \item We report observed patterns in model behavior, not estimates of underlying population parameters
     \item Standard deviations and ranges describe variation across our specific scenario set, not sampling uncertainty
     \item Findings should be interpreted as ``what we observed'' rather than ``what will generalize''
+    \item Cohen's $d$ values are provided for comparison with prior literature, not as inferential statistics
 \end{itemize}
 
 \textbf{Methodological Constraints:}
@@ -345,6 +346,13 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
     \item Training contamination cannot be ruled out as alternative explanation for ``immunity''---models showing zero bias may have encountered similar scenarios during training rather than genuinely lacking the bias
 \end{itemize}
 
+\textbf{Model Identifier Variance:}
+\begin{itemize}
+    \item We discovered that model aliases (e.g., \texttt{claude-sonnet-4-5}) may route to different checkpoints than date-pinned identifiers (e.g., \texttt{claude-sonnet-4-20250514}), producing qualitatively different results (3.0mo vs 0.0mo anchoring effect)
+    \item All primary experiments use date-pinned model identifiers for reproducibility
+    \item Researchers should always specify exact model versions; alias-based results may not replicate
+\end{itemize}
+
 \textbf{AI Authorship Considerations:}
 \begin{itemize}
     \item Circular methodology: This research was designed, conducted, and written by an AI system (Voder AI). While fresh-context reviews and human oversight were employed, we cannot fully rule out systematic blind spots that an AI author cannot detect in its own work
@@ -354,15 +362,16 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
 
 \section{Conclusion}
 
-LLM anchoring bias is fragile, context-dependent, and model-specific. Our key contributions:
+Our exploratory study suggests that LLM anchoring bias may be fragile, context-dependent, and model-specific. Key observations:
 
 \begin{enumerate}
-    \item \textbf{Soft vs Hard bias taxonomy}: Claude Sonnet 4 exhibits ``soft'' anchoring bias (eliminated by temperature=1.0 or simple prompt instruction), while GPT-4o exhibits ``hard'' bias (resistant to both interventions).
-    \item \textbf{Prompt sensitivity}: Paraphrasing reduces anchoring effect by 92\% (3.0$\to$0.25 months), suggesting single-prompt experiments overstate bias magnitude.
-    \item \textbf{Debiasing is model-specific}: Techniques cannot be assumed to transfer across architectures.
+    \item \textbf{Observed bias patterns differ by model}: In our experiments, Claude Sonnet 4 (date-pinned) showed minimal anchoring (0.0--0.07mo effect), while GPT-4o showed consistent anchoring (5--6mo effect) across all temperatures tested. We tentatively describe these as ``soft'' vs ``hard'' bias patterns, though further research is needed to confirm this distinction.
+    \item \textbf{Prompt sensitivity observed}: Paraphrasing reduced the anchoring effect by 92\% in Sonnet (3.0$\to$0.25 months), suggesting single-prompt experiments may overstate bias magnitude.
+    \item \textbf{Model identifier variance}: Alias vs date-pinned model identifiers produced qualitatively different results (3.0mo vs 0.0mo), highlighting a reproducibility concern for LLM bias research.
+    \item \textbf{Intervention effectiveness varies}: Debiasing techniques that worked on one model did not transfer to another in our tests.
 \end{enumerate}
 
-Practitioners should validate debiasing interventions on their specific deployment model rather than assuming generalization. This exploratory study is limited by moderate sample sizes ($n=30$), potential training contamination, and observational cross-model comparisons.
+Practitioners should validate interventions on their specific deployment model (using date-pinned identifiers) rather than assuming generalization. This exploratory study is limited by moderate sample sizes ($n=30$), potential training contamination, observational cross-model comparisons, and the possibility that our scenario set is not representative.
 
 \section*{Ethics Statement}
 
