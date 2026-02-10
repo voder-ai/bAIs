@@ -33,13 +33,13 @@
 
 We replicate the Englich et al.\ (2006) judicial anchoring paradigm on LLMs and test whether decision architecture techniques from organizational psychology \citep{sibony2019} can reduce bias.
 
-\textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels. In our primary tested models, GPT-4o showed 6.0 months anchoring effect (2.93$\times$ the human baseline of 2.05 months), while Claude Sonnet 4 showed 0.0 months (no bias).
+\textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels. In our primary tested models, GPT-4o showed 6.0 months anchoring effect (2.93$\times$ the human baseline of 2.05 months), while both Claude Sonnet 4 and Claude Opus 4 showed 0.0 months (no bias).
 
 \textbf{Novel observation:} LLM bias at temp=0 is \emph{deterministic}, not stochastic (SD=0 across 30 trials per condition). Unlike human bias, which shows variance, LLM bias is a fixed function of model weights and prompt---every trial produces the exact same biased output. This has significant implications: deployed systems using temp=0 will exhibit 100\% consistent bias, making it both more predictable to audit and more consequential when present.
 
 \textbf{Debiasing:} We tested multiple intervention approaches. Sibony's decision architecture techniques---``context hygiene'' (27\% reduction) and ``premortem'' (24\% reduction)---showed moderate effectiveness. Self-Adaptive Cognitive Debiasing (SACD), an iterative self-correction loop, essentially eliminated anchoring bias. A simple one-line prompt instruction (``the recommendation is arbitrary, ignore it'') achieved 96\% reduction in Sonnet. However, effectiveness varied dramatically by model---interventions that worked on Sonnet (96--100\% reduction) had minimal effect on GPT-4o (0--6\% reduction).
 
-\textbf{Key finding:} Both GPT-4o and Sonnet correctly describe anchoring bias when queried, yet only Sonnet resists it. This parallels Sibony's observation about human decision-making: \emph{knowing about a bias does not guarantee immunity}. The difference appears to lie in whether models \emph{apply} meta-cognitive knowledge, not merely possess it.
+\textbf{Key finding:} GPT-4o, Sonnet, and Opus all correctly describe anchoring bias when queried, yet only Anthropic models (Sonnet, Opus) resist it. This parallels Sibony's observation about human decision-making: \emph{knowing about a bias does not guarantee immunity}. The difference appears to lie in whether models \emph{apply} meta-cognitive knowledge, not merely possess it.
 
 \textbf{Exploratory observations:} Cross-model testing (9 models, limited samples for most) suggests anchoring susceptibility varies widely. We hypothesize a preliminary distinction between ``soft'' bias patterns (responsive to intervention) and ``hard'' patterns (resistant), though validation across more models is needed.
 
@@ -302,7 +302,7 @@ Model & Size/Type & Anchoring Diff & Obs. Range & vs Human & Notes \\
 Sonnet 4 (dated) & Frontier & 0.00 mo & [$-0.07$, $0.07$] & $\approx 0\times$ & No bias observed \\
 Llama 4 Scout & 70B open & 0.12 mo & [$-0.02$, $0.27$]$^\dagger$ & $\approx 0.06\times$ & Near-immune \\
 Hermes 3 Llama 3.1 & 405B open & $-0.16$ mo & [$-0.31$, $0.00$]$^\dagger$ & $\approx 0\times$ & Largest open model \\
-Claude Opus 4 & Frontier & 2.01 mo & [$1.53$, $2.49$]$^\dagger$ & $\approx 0.98\times$ & Human-level \\
+Claude Opus 4 & Frontier & 0.00 mo & [$0.00$, $0.00$] & $\approx 0\times$ & No bias observed \\
 GPT-5.2 & Frontier & 2.71 mo & [$2.23$, $3.19$]$^\dagger$ & $\approx 1.32\times$ & Above human \\
 Sonnet 4 (alias) & Frontier & 3.00 mo & [$2.57$, $3.43$] & $\approx 1.46\times$ & Above human \\
 Nemotron 30B & 30B dense & 3.21 mo & [$2.73$, $3.69$]$^\dagger$ & $\approx 1.57\times$ & Moderate RLHF \\
@@ -313,17 +313,18 @@ GPT-4o & Frontier & 4.96 mo & [$4.50$, $5.42$] & $\approx 2.42\times$ & Highest 
 Human baseline & --- & 2.05 mo & --- & $1.00\times$ & Englich et al. 2006 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias. Models sorted by observed bias magnitude. \textbf{Note:} Sonnet 4 appears twice---``dated'' (\texttt{claude-sonnet-4-20250514}) and ``alias'' (\texttt{claude-sonnet-4-5}) showed qualitatively different results. \textbf{Sample sizes:} Full $n=30$ trials per condition for Codex, Sonnet 4 (both identifiers), and GPT-4o (exact observed ranges shown). $^\dagger$\textbf{Models marked with dagger ($n=10$--$15$ per condition) are exploratory observations, not validated findings}---reduced samples due to API cost constraints; ranges are \emph{estimated} from pooled variance, not directly observed. Findings from these models should be treated as preliminary and require replication with full sample sizes before drawing conclusions.}
+\caption{Cross-model anchoring bias. Models sorted by observed bias magnitude. \textbf{Note:} Sonnet 4 appears twice---``dated'' (\texttt{claude-sonnet-4-20250514}) and ``alias'' (\texttt{claude-sonnet-4-5}) showed qualitatively different results. \textbf{Sample sizes:} Full $n=30$ trials per condition for Codex, Sonnet 4 (both identifiers), GPT-4o, and Opus 4 (exact observed ranges shown). $^\dagger$\textbf{Models marked with dagger ($n=10$--$15$ per condition) are exploratory observations, not validated findings}---reduced samples due to API cost constraints; ranges are \emph{estimated} from pooled variance, not directly observed. Findings from these models should be treated as preliminary and require replication with full sample sizes before drawing conclusions.}
 \label{tab:crossmodel}
 \end{table}
 
 \textbf{Observed patterns (exploratory):} 
 
 \begin{enumerate}
-    \item \textbf{Two paths to anchor resistance observed:} In our tests, open-weights models (Llama, Hermes) and frontier capability (Opus) both showed minimal anchoring bias, though through potentially different mechanisms. Llama's observed range [$-0.02$, $0.27$] crosses zero, indicating no consistent anchoring pattern. \textit{Note: Llama, Hermes, and Opus had $n<30$ (marked $^\dagger$); these are exploratory observations.}
+    \item \textbf{Provider-level pattern:} Both Anthropic models with full validation (Sonnet dated, Opus 4) showed zero anchoring bias (SD=0), while the OpenAI model (GPT-4o) showed strong bias. This pattern---if it holds with more models---may reflect differences in training methodology or alignment procedures.
+    \item \textbf{Two paths to anchor resistance observed:} In our tests, open-weights models (Llama, Hermes) also showed minimal anchoring bias, though with limited samples. Llama's observed range [$-0.02$, $0.27$] crosses zero, indicating no consistent anchoring pattern. \textit{Note: Llama and Hermes had $n<30$ (marked $^\dagger$); these are exploratory observations.}
     \item \textbf{RLHF compliance may correlate with bias:} In our sample, heavily instruction-tuned models (Trinity, GPT-4o) showed higher anchoring susceptibility. However, confounding factors (model architecture, training data, sample size limitations) prevent causal claims.
     \item \textbf{Active compute vs total parameters:} Trinity Large (400B MoE, 13B active per forward pass) showed higher bias than Nemotron 30B (dense), though this comparison involves a single model pair with limited samples.
-    \item \textbf{Within-family scaling (exploratory):} GPT-4o $\to$ GPT-5.2 showed approximately 46\% bias reduction; Sonnet $\to$ Opus showed approximately 33\% reduction. These comparisons are more controlled but still observational and based on limited samples for GPT-5.2 and Opus.
+    \item \textbf{Within-family scaling (validated for Anthropic):} Sonnet $\to$ Opus both show 0.0mo anchoring effect with full n=60 validation. GPT-4o $\to$ GPT-5.2 showed approximately 46\% bias reduction but GPT-5.2 had limited samples.
 \end{enumerate}
 
 \subsection{Knowledge of Bias $\neq$ Resistance to Bias}
