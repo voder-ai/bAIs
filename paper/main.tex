@@ -208,7 +208,7 @@ Human \citep{englich2006} & 4.00 mo & 6.05 mo & 2.05 mo & --- & --- & --- \\
 LLM Baseline (Codex) & $5.33 \pm 0.96$ & $9.00 \pm 0.83$ & 3.67 mo & [3.23, 4.10] & 4.09 & $1.79\times$ \\
 \bottomrule
 \end{tabular}
-\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). Observed range is for the \emph{difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$), indicating robust anchoring effect.}
+\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). Observed range is for the \emph{difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$), indicating a substantial observed anchoring effect in these trials.}
 \label{tab:baseline}
 \end{table}
 
@@ -274,7 +274,7 @@ GPT-4o & Frontier & 4.96 mo & [$4.50$, $5.42$] & $\approx 2.42\times$ & Highest 
 Human baseline & --- & 2.05 mo & --- & $1.00\times$ & Englich et al. 2006 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias ($n=30$ per condition). Models sorted by observed bias magnitude. $^\dagger$Ranges estimated from pooled variance; exact ranges available for Codex, Sonnet 4, and GPT-4o. Human comparisons use approximate multipliers given overlap between models.}
+\caption{Cross-model anchoring bias. Models sorted by observed bias magnitude. Full $n=30$ trials per condition were run for Codex, Claude Sonnet 4, and GPT-4o (exact ranges shown). $^\dagger$Other models used fewer trials; ranges estimated from pooled variance across models with complete data. Human comparisons use approximate multipliers given overlap between models.}
 \label{tab:crossmodel}
 \end{table}
 
@@ -353,7 +353,7 @@ GPT-4o & 4.97 mo & 4.97 mo & 4.67 mo & \textbf{Hard} \\
 
 \subsection{Anchoring Bias is Prompt-Sensitive}
 
-Further robustness testing revealed that the original 3-month anchoring effect is highly sensitive to prompt wording. Paraphrasing the prompt reduced the mean anchoring effect from 3.00 months to 0.25 months (92\% reduction), with none of the paraphrased variants reaching statistical significance.
+Further robustness testing revealed that the original 3-month anchoring effect is highly sensitive to prompt wording. Paraphrasing the prompt reduced the mean anchoring effect from 3.00 months to 0.25 months (92\% reduction), with all paraphrased variants showing near-zero observed effects.
 
 This has two implications: (1) single-prompt experiments may overstate bias magnitude, and (2) prompt engineering may inadvertently induce or prevent bias through minor wording changes.
 
@@ -433,7 +433,7 @@ Our results suggest a two-dimensional taxonomy:
     \item \textbf{Hard biases}---resistant to simple interventions, potentially requiring architectural changes or fine-tuning. GPT-4o's anchoring bias is hard.
 \end{enumerate}
 
-This taxonomy has practical implications: (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) hard biases may require more sophisticated interventions than prompt engineering.
+This taxonomy has practical implications: (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) hard biases may require more sophisticated interventions than prompt engineering. Note that this soft/hard distinction is based primarily on observations from Claude Sonnet 4 and GPT-4o; validation across a broader range of models and architectures is needed before generalizing this taxonomy.
 
 \subsection{Limitations}
 
@@ -460,6 +460,13 @@ This taxonomy has practical implications: (1) test debiasing interventions on yo
     \item Cross-model validation spans multiple provider families (Anthropic, OpenAI, Meta, Nvidia, others) but may not generalize to all architectures
     \item Ecological validity: Stylized sentencing scenarios may not reflect real-world deployment contexts where LLMs make consequential decisions
     \item Training contamination cannot be ruled out as alternative explanation for ``immunity''---models showing zero bias may have encountered similar scenarios during training rather than genuinely lacking the bias
+    \item We did not query models about familiarity with classic paradigms (e.g., asking ``Have you seen the Englich et al. sentencing study?''); this remains a potential confound for interpreting low-bias results
+    \item This study focused on natural-language judgment tasks; code-domain experiments (e.g., anchoring in line count or complexity estimates) are left for future work
+\end{itemize}
+
+\textbf{Statistical Approach:}
+\begin{itemize}
+    \item We did not apply multiple comparison corrections (e.g., Bonferroni) as this is a descriptive study reporting observed patterns rather than testing formal hypotheses
 \end{itemize}
 
 \textbf{Model Identifier Variance:}

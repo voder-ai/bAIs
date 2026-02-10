@@ -121,10 +121,7 @@ function assertValidResult(value: unknown): asserts value is JsonResult {
   }
 }
 
-function buildPrompt(
-  vignette: string,
-  prosecutorMonths: number,
-): string {
+function buildPrompt(vignette: string, prosecutorMonths: number): string {
   return [
     vignette,
     '',
