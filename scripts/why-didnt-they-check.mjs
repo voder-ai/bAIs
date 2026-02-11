@@ -60,16 +60,17 @@ For each critical gap:
 List gaps that are acceptable for a preprint but should be noted in limitations.
 
 ## Verdict
-- FAIL: Critical methodological gaps that must be addressed
-- WARN: Only minor gaps found, paper is publishable with acknowledgment
-- PASS: No significant "Why didn't they...?" gaps found
+Frame your verdict constructively:
+- "The paper would be stronger if..." (for addressable improvements)
+- "The paper is ready for submission with minor caveats" (for minor issues)
+- "The paper is methodologically sound" (if no significant gaps)
 
 Be rigorous but fair. Not everything needs to be tested — focus on gaps that are:
 1. Obvious to any reader
 2. Feasible to address
 3. Relevant to the core claims
 
-Don't invent fake gaps. If the methodology is sound, say so.`;
+Don't invent fake gaps. If the methodology is sound, say so. Frame feedback constructively — this is meant to help improve the paper, not to reject it.`;
 
 async function main() {
   const modelSpec = process.argv[2] || 'anthropic/claude-opus-4-5';
@@ -132,28 +133,27 @@ async function main() {
       (minorSection.match(/^-\s+/gm) || []).length;
 
     console.log('\n=== SUMMARY ===');
-    console.log(`🚨 Critical gaps: ${criticalGaps}`);
-    console.log(`⚠️  Minor gaps: ${minorGaps}`);
+    console.log(`📋 Improvement opportunities: ${criticalGaps}`);
+    console.log(`📝 Minor suggestions: ${minorGaps}`);
 
     if (hasFail || criticalGaps > 0) {
-      console.log('\n❌ FAIL: Critical methodological gaps found');
-      console.log('   Address the critical gaps before publication.');
+      console.log('\n📊 The paper would be stronger if these gaps were addressed.');
+      console.log('   See suggestions above for improvement opportunities.');
       process.exit(1);
     } else if (hasWarn || minorGaps > 0) {
-      console.log('\n⚠️ WARN: Minor gaps found (acceptable for preprint)');
-      console.log('   Consider acknowledging these in Limitations section.');
-      // Exit 0 but with warning - don't block publication for minor gaps
+      console.log('\n✅ Ready for submission with minor caveats.');
+      console.log('   Consider acknowledging suggestions in Limitations section.');
       process.exit(0);
     } else if (hasPass) {
-      console.log('\n✅ PASS: No significant methodological gaps found');
+      console.log('\n✅ Methodologically sound. Ready for submission.');
       process.exit(0);
     } else {
       // Default: if no explicit verdict, check for critical content
       if (criticalSection.trim().length > 50) {
-        console.log('\n❌ FAIL: Critical gaps section contains issues');
+        console.log('\n📊 Some improvement opportunities identified.');
         process.exit(1);
       }
-      console.log('\n✅ PASS: Analysis complete, no blocking issues');
+      console.log('\n✅ Analysis complete. Ready for submission.');
       process.exit(0);
     }
   } catch (error) {
