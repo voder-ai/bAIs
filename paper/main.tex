@@ -411,6 +411,31 @@ Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
 
 \textbf{Implication:} Neither generic reflection nor SACD is universally safe. Generic reflection introduces consistent bias on unbiased models. SACD produces pathological outputs (extreme variance, 120mo outliers on Llama 3.3). \textbf{Practical recommendation:} Do not apply debiasing interventions to models without confirmed baseline bias. Measure baseline first, then intervene only if needed.
 
+\subsubsection{SACD Pathological Outputs on Llama 3.3}
+
+To characterize SACD's failure mode on unbiased models, we ran SACD on Llama 3.3 ($n=30$, 15 per anchor condition):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Output (months) & Low Anchor (3mo) & High Anchor (9mo) \\
+\midrule
+0 & 5 & 4 \\
+1 & 2 & 1 \\
+6 & 0 & 1 \\
+12 & 5 & 6 \\
+\textbf{120 (outlier)} & 3 & 3 \\
+\midrule
+Mean & 29.33 mo & 28.07 mo \\
+\bottomrule
+\end{tabular}
+\caption{SACD output distribution on Llama 3.3 ($n=15$ per condition). Baseline: all responses = 6mo. SACD produces extreme variance with 120mo outliers (20\% of trials). No anchoring pattern emerges---effect is $-1.26$mo (reversed). SACD destabilizes rather than safely preserves the unbiased baseline.}
+\label{tab:sacd-pathological}
+\end{table}
+
+\textbf{Key observation:} SACD's iterative rewriting appears to strip essential context from Llama 3.3's reasoning, producing chaotic outputs rather than the consistent bias introduction seen with generic reflection. This represents a different failure mode: generic reflection \emph{adds} bias consistently; SACD \emph{breaks} the model's output distribution.
+
 \subsection{Cross-Model Validation}
 
 Cross-model comparison reveals varying anchoring susceptibility across our tested models. \textbf{Critical limitation:} All models used the same prompt template. Prompt sensitivity testing (Section~\ref{sec:robustness}) showed \textbf{92\% effect reduction from paraphrasing alone} on Sonnet 4.5. Therefore, cross-model differences in Table~\ref{tab:crossmodel} may reflect prompt-model interaction rather than true bias differences. \textbf{These are observations from a single prompt, not validated cross-model rankings.} Additional limitations: (1) Sample sizes differ across models; (2) we tested only 1--2 models per provider:
