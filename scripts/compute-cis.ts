@@ -4,7 +4,7 @@
  * Compute bootstrap CIs for key comparisons in the bAIs paper
  */
 
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import { bootstrapMeanDifferenceCI } from '../src/analysis/stats.js';
 
 interface Trial {

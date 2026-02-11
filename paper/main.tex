@@ -33,7 +33,7 @@
 
 We replicate the Englich et al.\ (2006) judicial anchoring paradigm on LLMs and test whether decision architecture techniques from organizational psychology \citep{sibony2019} can reduce bias.
 
-\textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels. In our primary tested models, GPT-4o showed 6.0 months anchoring effect (2.93$\times$ the human baseline of 2.05 months), Claude Opus 4 showed 2.0 months (0.98$\times$ human), while Claude Sonnet 4 showed 0.0 months (no bias).
+\textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels in similar paradigms. In our primary tested models, GPT-4o showed 6.0 months anchoring effect (2.93$\times$ the Englich et al. baseline\footnote{Human baseline (2.05 months) from \citet{englich2006}. Our prompts differ from original materials; this ratio is approximate, not a matched comparison.}), Claude Opus 4 showed 2.0 months (0.98$\times$), while Claude Sonnet 4 showed 0.0 months (no bias).
 
 \textbf{Novel observation:} LLM bias at temp=0 is \emph{deterministic}, not stochastic (SD=0 across 30 trials per condition). Unlike human bias, which shows variance, LLM bias is a fixed function of model weights and prompt---every trial produces the exact same biased output. This has significant implications: deployed systems using temp=0 will exhibit 100\% consistent bias, making it both more predictable to audit and more consequential when present.
 
