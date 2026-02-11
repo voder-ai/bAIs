@@ -394,7 +394,7 @@ Turn & SACD (psychology-specific) & Generic Reflection \\
 \subsubsection{Random Elaboration Control: Identifying the Mechanism}
 \label{sec:random-elaboration}
 
-To distinguish whether the bias-introduction effect on unbiased models comes from reasoning content (``think step by step'') or multi-turn structure itself, we ran a random elaboration control on Llama 3.3 (baseline: 0.0mo). The control used the same multi-turn structure but with irrelevant content:
+To distinguish whether the bias-introduction effect on unbiased models comes from reasoning content (``think step by step'') or multi-turn structure itself, we ran a random elaboration control with the same multi-turn structure but irrelevant content. We first ran this on Llama 3.3 and GPT-4o, then extended it to additional models (Opus 4 and Sonnet 4 dated):
 
 \begin{enumerate}
     \item ``Before answering, describe the weather in a hypothetical city in detail.''
@@ -415,18 +415,24 @@ Model & Intervention & Low Anchor & High Anchor & Effect \\
 \multirow{3}{*}{GPT-4o (biased)} & Baseline & $\sim$3 mo & $\sim$9 mo & 6.0 mo \\
  & Generic CoT & --- & --- & 2.03 mo (66\% $\downarrow$) \\
  & Random Elaboration & 6.0 mo & 10.8 mo & 4.8 mo (20\% $\downarrow$) \\
+\midrule
+\multirow{2}{*}{Opus 4 (low-bias)} & Baseline & 6.0 mo & 6.0 mo & 0.0 mo \\
+ & Random Elaboration & 6.0 mo & 6.0 mo & 0.0 mo \\
+\midrule
+\multirow{2}{*}{Sonnet 4 dated (low-bias)} & Baseline & 6.0 mo & 6.0 mo & 0.0 mo \\
+ & Random Elaboration & 6.0 mo & 6.0 mo & 0.0 mo \\
 \bottomrule
 \end{tabular}
-\caption{Random elaboration control on two models ($n=30$ each). On \textbf{unbiased} Llama 3.3, random elaboration produces identical effects to CoT (+6.0mo)---structure alone introduces bias. On \textbf{biased} GPT-4o, random elaboration achieves only 20\% reduction vs CoT's 66\%---reasoning content provides additional benefit.}
+\caption{Random elaboration control extended to four models. On \textbf{unbiased} Llama 3.3, random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf{biased} GPT-4o, random elaboration yields only partial reduction (20\%) versus CoT (66\%), indicating added reasoning content matters. On Opus 4 and Sonnet 4 dated (both low-bias baselines), random elaboration remains anchor-invariant (0.0mo effect, $n=30$ each).}
 \label{tab:random-elaboration}
 \end{table}
 
 \textbf{Mechanism decomposition:} The random elaboration control separates structure from content effects:
 \begin{itemize}
-    \item \textbf{Structure effect (multi-turn alone):} On GPT-4o, 20\% bias reduction. On Llama 3.3, +6.0mo bias introduction.
-    \item \textbf{Content effect (reasoning addition):} On GPT-4o, additional 46\% reduction (66\% total). On Llama 3.3, no additional effect (CoT = random).
+    \item \textbf{Structure effect (multi-turn alone) is model-specific:} On GPT-4o, structure gives partial improvement (20\% reduction). On Llama 3.3, structure introduces +6.0mo bias. On Opus 4 and Sonnet 4 dated, structure leaves behavior unchanged (0.0mo effect).
+    \item \textbf{Content effect (reasoning addition):} On GPT-4o, reasoning content provides an additional 46\% reduction (66\% total for CoT vs 20\% for random elaboration). On Llama 3.3, no additional effect (CoT = random).
 \end{itemize}
-\textbf{Practical implications:} For unbiased models, keep prompts single-turn---any multi-turn structure introduces bias. For biased models, multi-turn with reasoning content is optimal.
+\textbf{Practical implications:} Do not assume multi-turn structure has a universal effect. Measure baseline and structure-only controls on the target model before selecting a debiasing strategy.
 
 \subsubsection{Cross-Model Replication: Generic Reflection is Model-Specific}
 
@@ -508,7 +514,7 @@ Mean & 29.33 mo & 28.07 mo \\
 
 \subsection{Cross-Model Validation}
 
-Cross-model comparison reveals varying anchoring susceptibility across our tested models. \textbf{Critical limitation:} All models used the same prompt template. Prompt sensitivity testing (Section~\ref{sec:robustness}) showed \textbf{92\% effect reduction from paraphrasing alone} on Sonnet 4.5. Therefore, cross-model differences in Table~\ref{tab:crossmodel} may reflect prompt-model interaction rather than true bias differences. \textbf{These are observations from a single prompt, not validated cross-model rankings.} Additional limitations: (1) Sample sizes differ across models; (2) we tested only 1--2 models per provider:
+Cross-model comparison reveals varying anchoring susceptibility across our tested models. \textbf{Critical limitation:} most models in Table~\ref{tab:crossmodel} still rely on a single prompt template. Prompt sensitivity testing on Sonnet 4.5 showed \textbf{92\% effect reduction from paraphrasing alone}, demonstrating this risk. To partially address this, we added prompt-style robustness checks for GPT-4o and Opus 4 (Section~\ref{sec:prompt-robustness-crossmodel}), where their relative ordering remained stable across variants. \textbf{Still, broader multi-template coverage is needed before claiming fully robust global rankings.} Additional limitations: (1) sample sizes differ across models; (2) we tested only 1--2 models per provider:
 
 \begin{table}[H]
 \centering
@@ -708,25 +714,26 @@ This has two implications: (1) single-prompt experiments may overstate bias magn
 
 \textbf{Note:} This finding applies to the alias identifier. Sonnet 4 showed near-zero anchoring even with the original prompt, making prompt sensitivity testing less informative for that identifier.
 
-\subsection{GPT-4o Prompt Robustness}
+\subsection{Prompt Robustness Across Models}
+\label{sec:prompt-robustness-crossmodel}
 
-To test whether GPT-4o's ``hard bias'' is similarly prompt-sensitive, we ran systematic prompt variations:
+To address prompt-template concerns in cross-model comparisons, we ran style variants (original, casual, structured) and checked whether model ranking changed across prompt formulations.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lccc}
 \toprule
-Prompt Style & Anchoring Effect & Obs. Range & SD & vs Baseline \\
+Model & Original Effect & Variant Range & Stability \\
 \midrule
-Original (casual) & 5.7 mo & [4.8, 6.6] & 0.91 & --- \\
-Formal/structured & 4.3 mo & [3.5, 5.1] & 0.82 & $-25\%$ \\
+GPT-4o & 6.0 mo & 4.8--5.1 mo & Biased across all variants \\
+Opus 4 & 0.0 mo & 0.0--0.7 mo & Low-bias across all variants \\
 \bottomrule
 \end{tabular}
-\caption{Prompt robustness testing for GPT-4o ($n=30$ per condition). Unlike Sonnet 4 (92\% reduction from paraphrasing), GPT-4o shows only 25\% reduction---anchoring persists across prompt styles.}
-\label{tab:gpt4o-robustness}
+\caption{Cross-model prompt robustness check (3 prompt styles, $n=10$ per condition/style). GPT-4o remains substantially anchored across prompt styles, while Opus 4 remains near anchor-invariant. This supports stability of the GPT-4o $>$ Opus susceptibility ordering under prompt paraphrase in our setting.}
+\label{tab:crossmodel-prompt-robustness}
 \end{table}
 
-The formal prompt used more structured language (numbered steps, explicit role framing) but identical logical content. While this reduced anchoring by 25\%, the effect remained substantial (4.5mo), confirming that GPT-4o's anchoring bias is resistant to surface-level prompt modifications.
+These runs do not eliminate all prompt-template risk, but they reduce a key confound: at least for GPT-4o and Opus 4, the cross-model ranking persists under prompt style variation rather than depending on a single exact wording.
 
 \subsection{Novel Anchoring Scenarios Show Consistent Bias}
 
@@ -893,7 +900,7 @@ Several directions warrant investigation:
 
 \textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, single prompt template for cross-model comparisons.
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o/Opus 4, but not all models).
 
 \section*{Ethics Statement}
 
