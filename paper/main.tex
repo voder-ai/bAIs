@@ -547,10 +547,10 @@ GPT-4o & 6.00 mo & 6.00 mo & 6.00 mo & \textbf{HARD} \\
 GPT-4.1 & 3.10 mo & 3.20 mo & 3.20 mo & \textbf{HARD} \\
 Opus 4.5 & 5.00 mo & 5.00 mo & 5.00 mo & \textbf{HARD} \\
 Sonnet 4.5 & 3.00 mo & --- & \textbf{0 mo} & \textbf{SOFT} \\
-Llama 3.3 & 0.00 mo & --- & --- & \textbf{SOFT} \\
+Llama 3.3 & 0.00 mo & 0.00 mo & 0.10 mo & \textbf{SOFT} \\
 \bottomrule
 \end{tabular}
-\caption{Temperature sensitivity across 5 models ($n=20$ per temperature). HARD models show constant bias regardless of temperature. SOFT models show low or decreasing bias. Llama 3.3 baseline from paid OpenRouter tier ($n=60$).}
+\caption{Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures. Llama 3.3 shows 0.0mo at all temperatures tested.}
 \label{tab:soft-hard}
 \end{table}
 
@@ -675,7 +675,7 @@ SACD outperformed static prompt interventions in our GPT-4o experiments. However
 
 \subsection{Preliminary Hypothesis: Two Patterns Observed in Our Tested Models}
 
-Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, each with $n=60$), we \emph{tentatively propose} a hypothesis about bias patterns. \textbf{This is a preliminary observation from two models, not a validated taxonomy.} Extensive validation across many more models and bias types is required before this could be considered established.
+Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, Sonnet 4.5, Llama 3.3), we \emph{tentatively propose} a hypothesis about bias patterns. \textbf{This is a preliminary observation from five models on one bias type, not a validated taxonomy.} Extensive validation across many more models and bias types is required before this could be considered established.
 
 \textbf{Observed Pattern 1: Response to model improvements (speculative)}
 \begin{enumerate}
@@ -697,7 +697,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 
 \textbf{Descriptive Study Framing:}
 \begin{itemize}
-    \item This is an exploratory descriptive study. Primary experiments used deterministic sampling (temperature=0); temperature sweep experiments (0.0--1.0) were performed on only \textbf{two models} (Sonnet 4, GPT-4o) and \textbf{one bias type} (anchoring). Temperature effects on other models and biases remain unexplored
+    \item This is an exploratory descriptive study. Primary experiments used deterministic sampling (temperature=0); temperature sweep experiments (0.0--1.0) were performed on \textbf{five models} and \textbf{one bias type} (anchoring). Temperature effects on other bias types remain unexplored
     \item We report observed patterns in model behavior, not estimates of underlying population parameters
     \item Standard deviations and ranges describe variation across our specific scenario set, not sampling uncertainty
     \item Findings should be interpreted as ``what we observed'' rather than ``what will generalize''
@@ -707,7 +707,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 \textbf{Temperature=0 Limitation:}
 \begin{itemize}
     \item All primary experiments use temperature=0 (deterministic sampling) to isolate model behavior from sampling randomness and ensure reproducibility
-    \item Temperature sweep experiments (Section~\ref{sec:model-id-variance}) were conducted only for Claude Sonnet 4 and GPT-4o on the anchoring task---we did not systematically test temperature effects for other models or bias types
+    \item Temperature sweep experiments were conducted on five models (GPT-4o, GPT-4.1, Opus 4.5, Sonnet 4.5, Llama 3.3) for the anchoring task only---we did not systematically test temperature effects for other bias types
     \item Real-world LLM deployments typically use temperature $>0$ for more natural responses
     \item Our findings may not fully transfer to stochastic settings: temperature $>0$ could amplify, dampen, or qualitatively change bias patterns through sampling variance
     \item Practitioners deploying models at higher temperatures should validate bias behavior under their specific sampling configuration
@@ -752,7 +752,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 
 \textbf{Soft/Hard Bias Hypothesis Limitations:}
 \begin{itemize}
-    \item Our soft/hard bias distinction is a \textbf{preliminary hypothesis based on observations from only two models} (Sonnet 4.5 and GPT-4o)
+    \item Our soft/hard bias distinction is a \textbf{preliminary hypothesis based on observations from five models} (GPT-4o, GPT-4.1, Opus 4.5, Sonnet 4.5, Llama 3.3) on one bias type
     \item The alias/dated variance complicates interpretation---differences attributed to ``soft'' vs ``hard'' patterns might instead reflect checkpoint differences or API routing
     \item We explicitly \textbf{do not claim this as an established taxonomy}; it requires validation across many more models and architectures
     \item The observed patterns may not generalize beyond the specific model versions and prompts we tested
