@@ -421,16 +421,16 @@ To characterize SACD's failure mode on unbiased models, we ran SACD on Llama 3.3
 \toprule
 Output (months) & Low Anchor (3mo) & High Anchor (9mo) \\
 \midrule
-0 & 5 & 4 \\
+0 & 3 & 6 \\
 1 & 2 & 1 \\
-6 & 0 & 1 \\
-12 & 5 & 6 \\
+6 & 1 & 0 \\
+12 & 6 & 5 \\
 \textbf{120 (outlier)} & 3 & 3 \\
 \midrule
 Mean & 29.33 mo & 28.07 mo \\
 \bottomrule
 \end{tabular}
-\caption{SACD output distribution on Llama 3.3 ($n=15$ per condition). Baseline: all responses = 6mo. SACD produces extreme variance with 120mo outliers (20\% of trials). No anchoring pattern emerges---effect is $-1.26$mo (reversed). SACD destabilizes rather than safely preserves the unbiased baseline.}
+\caption{SACD output distribution on Llama 3.3 ($n=15$ per condition). Baseline: all responses = 6mo. SACD produces extreme variance with 120mo outliers (20\% of trials). Notably, the pattern is \textbf{reversed}: high anchor produces \emph{more} 0mo responses (6 vs 3), suggesting complete disruption rather than bias introduction. Effect: $-1.26$mo.}
 \label{tab:sacd-pathological}
 \end{table}
 
