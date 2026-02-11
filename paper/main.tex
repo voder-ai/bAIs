@@ -103,6 +103,8 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
     \end{itemize}
 \end{enumerate}
 
+\textbf{SACD Error/Refusal Rates:} SACD's iterative prompting occasionally triggered safety refusals or parsing errors. We quantified these rates: Anthropic models showed 0\% error rate (0/60 trials), GPT-4o showed 1.4\% (2/139 trials). These negligible rates indicate SACD did not systematically bias the analyzable sample.
+
 \subsection{Models and Sample Size}
 
 \begin{itemize}
@@ -685,7 +687,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 
 \textbf{Practical implications (with appropriate caution):} (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) intervention-resistant biases may require more sophisticated approaches than prompt engineering.
 
-\textbf{Critical limitations of this hypothesis:} This soft/hard distinction derives from observations of \textbf{just two models} (Sonnet 4.5 and GPT-4o). The alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) further complicates interpretation---what appears to be a ``soft'' vs ``hard'' distinction might instead reflect checkpoint differences, API routing, or other confounds. We present this as a hypothesis for future investigation, not an established finding.
+\textbf{Critical limitations of this hypothesis:} This soft/hard distinction is \textbf{not a validated taxonomy}---it derives from observations of \textbf{just two models} (Sonnet 4.5 and GPT-4o) on \textbf{one bias type} (anchoring). The alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) further complicates interpretation---what appears to be a ``soft'' vs ``hard'' distinction might instead reflect checkpoint differences, API routing, or other confounds. We present this as a \textbf{preliminary label for observed patterns}, not an established finding or generalizable framework.
 
 \subsection{Limitations}
 
