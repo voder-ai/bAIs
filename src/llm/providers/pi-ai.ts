@@ -147,7 +147,6 @@ export class PiAiProvider implements LlmProvider {
     }
   }
 
-   
   private getCompleteOptions(): Record<string, unknown> {
     const options: Record<string, unknown> = { apiKey: this.apiKey };
     if (this.temperature !== undefined) {
@@ -203,7 +202,6 @@ export class PiAiProvider implements LlmProvider {
     let lastError: Error | undefined;
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
-         
         const response = await complete(this.model, context, this.getCompleteOptions());
 
         // Check for rate limit error in response
@@ -261,7 +259,6 @@ export class PiAiProvider implements LlmProvider {
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
         const response = await complete(this.model, context, this.getCompleteOptions());
-         
 
         // Check for rate limit error in response
         if (response.stopReason === 'error' && response.errorMessage?.includes('429')) {

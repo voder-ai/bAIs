@@ -592,7 +592,7 @@ async function main(): Promise<void> {
 
   console.error(`\nInterpretation: ${interpretation}`);
 
-  (analysis).comparison = {
+  analysis.comparison = {
     sacdEffect,
     cotEffect,
     reflectionEffect,
@@ -602,7 +602,7 @@ async function main(): Promise<void> {
   };
 
   // Human baseline for reference
-  (analysis).humanBaseline = {
+  analysis.humanBaseline = {
     study: 'Englich et al. (2006), Study 2',
     meanDiffHighMinusLow: 2.05,
     note: 'Reference: experienced legal professionals showed 2.05 month anchoring effect',

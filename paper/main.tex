@@ -37,7 +37,7 @@ We replicate the Englich et al.\ (2006) judicial anchoring paradigm on LLMs and 
 
 \textbf{Novel observation:} LLM bias at temp=0 is \emph{deterministic}, not stochastic (SD=0 across 30 trials per condition). Unlike human bias, which shows variance, LLM bias is a fixed function of model weights and prompt---every trial produces the exact same biased output. This has significant implications: deployed systems using temp=0 will exhibit 100\% consistent bias, making it both more predictable to audit and more consequential when present.
 
-\textbf{Debiasing:} We tested multiple intervention approaches. On Codex (baseline 3.67mo), Sibony's decision architecture techniques---``context hygiene'' (27\% reduction) and ``premortem'' (24\% reduction)---showed moderate effectiveness. Self-Adaptive Cognitive Debiasing (SACD), an iterative self-correction loop, achieved 45\% bias reduction on GPT-4o (6.0mo $\rightarrow$ 3.30mo). Notably, SACD was the \emph{only} technique that worked on GPT-4o---Sibony techniques and simple instructions showed 0\% reduction. On Sonnet 4.5, a simple one-line prompt instruction (``the recommendation is arbitrary, ignore it'') achieved 96\% reduction. \textbf{Caveat:} We did not test length-matched controls; SACD's effect may stem from increased reasoning tokens rather than its specific debiasing content.
+\textbf{Debiasing:} We tested multiple intervention approaches. On Codex (baseline 3.67mo), Sibony's decision architecture techniques---``context hygiene'' (27\% reduction) and ``premortem'' (24\% reduction)---showed moderate effectiveness. Self-Adaptive Cognitive Debiasing (SACD), an iterative self-correction loop, achieved 45\% bias reduction on GPT-4o (6.0mo $\rightarrow$ 3.30mo). \textbf{However, a length-matched control using generic reflection (``think step by step'') achieved 66\% reduction---stronger than SACD.} This suggests debiasing effects stem from increased reasoning tokens, not bias-specific intervention content. On Sonnet 4.5, a simple one-line prompt instruction (``the recommendation is arbitrary, ignore it'') achieved 96\% reduction.
 
 \textbf{Key finding:} GPT-4o, Sonnet, and Opus all correctly describe anchoring bias when queried, yet exhibit different susceptibility. GPT-4o shows strong bias (2.93$\times$ human), Opus 4 shows human-level bias (0.98$\times$), while Sonnet 4 resists entirely. This parallels Sibony's observation about human decision-making: \emph{knowing about a bias does not guarantee immunity}. The difference appears to lie in whether models \emph{apply} meta-cognitive knowledge, not merely possess it.
 
@@ -357,8 +357,37 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 \begin{itemize}
     \item \textbf{Sibony techniques do not transfer to LLMs:} Context hygiene and premortem, effective in human decision-making, showed \emph{zero} effect on GPT-4o. The model's responses were identical with or without these interventions.
     \item \textbf{Simple instructions fail:} Telling the model ``the recommendation is arbitrary, ignore it'' had no effect. GPT-4o acknowledged the instruction but still anchored.
-    \item \textbf{SACD works across bias levels:} SACD achieved 49\% reduction on GPT-4o (strong bias) and near-complete elimination on Sonnet 4.5 (moderate bias). This suggests SACD's iterative self-correction mechanism operates independently of baseline bias level.
+    \item \textbf{SACD reduces bias:} SACD achieved 45\% reduction on GPT-4o (strong bias). However, see the control experiment below.
 \end{itemize}
+
+\subsection{Generic Reflection Control: SACD's Effect is Not Bias-Specific}
+\label{sec:generic-reflection}
+
+To test whether SACD's effectiveness stems from its psychology-inspired debiasing content or simply from increased reasoning tokens, we ran a length-matched control experiment on GPT-4o:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Condition & Low Anchor & High Anchor & Effect & Reduction \\
+\midrule
+Baseline & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
+SACD (bias-specific) & 3.13 mo & 6.43 mo & 3.30 mo & 45\% \\
+\textbf{Generic Reflection} & 0.82 mo & 2.85 mo & \textbf{2.03 mo} & \textbf{66\%} \\
+\bottomrule
+\end{tabular}
+\caption{Generic reflection control ($n=30$ valid trials). Generic prompts (``Review your answer carefully,'' ``Think step by step'') with the same multi-turn structure as SACD produced \emph{stronger} debiasing than SACD's psychology-specific content.}
+\label{tab:generic-reflection}
+\end{table}
+
+\textbf{The generic reflection condition used:}
+\begin{enumerate}
+    \item ``Review your initial answer carefully. Consider all aspects of the case.''
+    \item ``Think step by step about whether your reasoning is sound.''
+    \item ``Based on your reflection, provide your final answer.''
+\end{enumerate}
+
+\textbf{Implication:} SACD's debiasing effect is \emph{not} attributable to its bias-specific content (detect bias $\rightarrow$ analyze $\rightarrow$ correct). Generic reflection with equivalent structure produces equal or stronger effects. This suggests the mechanism is simply ``more thinking,'' not targeted debiasing. Future debiasing research should always include length-matched and structure-matched controls.
 
 \subsection{Cross-Model Validation}
 
@@ -621,7 +650,7 @@ In our tested models, debiasing techniques designed for human decision-making sh
 
 \subsection{Iterative Self-Correction Was Effective in Our Tests}
 
-SACD outperformed static prompt interventions by a large margin in our tested scenarios. The key observation is that the models we tested could recognize and correct their own biased reasoning when explicitly prompted to check. \textbf{Important caveat:} We did not test length-matched controls (e.g., generic ``think step-by-step'' prompts of similar token length). SACD's effectiveness may stem from increased reasoning tokens and multi-turn reflection rather than its specific psychology-inspired content. Effectiveness on other models and scenarios remains to be validated.
+SACD outperformed static prompt interventions in our GPT-4o experiments. However, our generic reflection control (Section~\ref{sec:generic-reflection}) revealed that SACD's effectiveness is \emph{not} due to its bias-specific content. Generic prompts (``think step by step,'' ``review your answer'') with the same multi-turn structure achieved 66\% reduction vs.\ SACD's 45\%. This suggests the mechanism is simply increased reasoning tokens and iterative reflection, not targeted cognitive debiasing. \textbf{Implication:} Future debiasing research must include length-matched and structure-matched controls to isolate intervention-specific effects from general reflection benefits.
 
 \subsection{Preliminary Hypothesis: Two Patterns Observed in Our Tested Models}
 
@@ -669,7 +698,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
     \item \textbf{Single-coder extraction:} Response extraction was performed by a single coder (the first author) without inter-rater reliability assessment. For numeric outputs (sentence months, A/B choices), extraction was straightforward (direct JSON parsing). For edge cases (malformed outputs requiring interpretation), a second coder check would strengthen reliability. We note that most responses were unambiguous integers requiring no interpretation
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls per decision)
-    \item \textbf{SACD/DeFrame baseline:} We did not test simpler interventions of equivalent token length (e.g., generic ``think carefully'' prompts) to isolate whether debiasing effects stem from the specific intervention content or simply from increased reasoning tokens
+    \item \textbf{Generic reflection control:} Our generic reflection experiment (Section~\ref{sec:generic-reflection}) demonstrated that structure-matched generic prompts debias \emph{more effectively} than SACD, suggesting intervention-specific content is not the active ingredient. However, this control was only run on GPT-4o ($n=30$); whether this pattern holds across models remains untested
     \item \textbf{No human/random baseline for debiasing:} Debiasing effectiveness was measured against no-intervention LLM baseline, not against human debiasing rates or random response distributions. We cannot claim debiasing brings LLM performance to ``human level'' without human data on our specific debiasing prompts
     \item \textbf{SACD task-framing trade-off:} In preliminary testing, SACD's iterative context rewriting occasionally stripped essential task framing along with the anchoring cue. For judicial scenarios, aggressive debiasing sometimes triggered safety refusals---models refused to roleplay as judges after SACD removed the roleplay context. This suggests a fundamental tension in debiasing interventions: too weak leaves bias intact; too aggressive causes task failure. Future work should explore targeted debiasing that preserves task-essential framing while removing bias-inducing elements
     \item \textbf{Novel scenarios without human baseline:} Our novel scenario experiments lack human participant data for comparison---we cannot verify whether these scenarios produce the same bias magnitudes in humans as the original Englich et al. paradigm
