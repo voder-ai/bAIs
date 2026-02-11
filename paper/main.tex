@@ -664,7 +664,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 \textbf{Methodological Constraints:}
 \begin{itemize}
     \item Sample sizes: $n=30$ scenarios per condition for primary experiments---adequate for detecting large patterns but limited by scenario diversity
-    \item Single-coder response extraction without inter-rater reliability assessment
+    \item \textbf{Single-coder extraction:} Response extraction was performed by a single coder (the first author) without inter-rater reliability assessment. For numeric outputs (sentence months, A/B choices), extraction was straightforward (direct JSON parsing). For edge cases (malformed outputs requiring interpretation), a second coder check would strengthen reliability. We note that most responses were unambiguous integers requiring no interpretation
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls per decision)
     \item \textbf{SACD/DeFrame baseline:} We did not test simpler interventions of equivalent token length (e.g., generic ``think carefully'' prompts) to isolate whether debiasing effects stem from the specific intervention content or simply from increased reasoning tokens
