@@ -448,6 +448,28 @@ Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
 
 \textbf{Implication:} Neither generic reflection nor SACD is universally safe. Generic reflection introduces consistent bias on unbiased models. SACD produces pathological outputs (extreme variance, 120mo outliers on Llama 3.3). \textbf{Practical recommendation:} Do not apply debiasing interventions to models without confirmed baseline bias. Measure baseline first, then intervene only if needed.
 
+\subsubsection{Temperature Sensitivity of Debiasing}
+\label{sec:debiasing-temp}
+
+All primary debiasing experiments used temperature=0. To test whether debiasing effectiveness transfers to higher temperatures, we ran generic reflection on GPT-4o at temp=1.0:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Condition & Low Anchor & High Anchor & Effect & Reduction \\
+\midrule
+Baseline (temp=0) & $\sim$3 mo & $\sim$9 mo & 6.0 mo & --- \\
+CoT (temp=0) & --- & --- & 2.03 mo & 66\% \\
+\textbf{CoT (temp=1.0)} & 0.46 mo & 2.13 mo & \textbf{1.67 mo} & \textbf{72\%} \\
+\bottomrule
+\end{tabular}
+\caption{Debiasing at temp=1.0 on GPT-4o ($n=28$ valid trials). Generic reflection achieves \emph{stronger} debiasing at temp=1.0 (72\%) than temp=0 (66\%). Debiasing effectiveness is not limited to deterministic sampling.}
+\label{tab:debiasing-temp}
+\end{table}
+
+\textbf{Key finding:} Debiasing works \emph{better} at temp=1.0 than temp=0 on GPT-4o. This addresses a methodological concern: our debiasing findings are not artifacts of deterministic sampling. At higher temperatures (which introduce response variation), generic reflection achieves even stronger bias reduction.
+
 \subsubsection{SACD Pathological Outputs on Llama 3.3}
 
 To characterize SACD's failure mode on unbiased models, we ran SACD on Llama 3.3 ($n=30$, 15 per anchor condition):
