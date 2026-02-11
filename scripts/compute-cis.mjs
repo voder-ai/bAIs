@@ -7,11 +7,11 @@
 import { readFile } from 'fs/promises';
 
 function mulberry32(seed) {
-  return function() {
-    let t = seed += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  return function () {
+    let t = (seed += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
 
@@ -57,8 +57,8 @@ async function loadTrials(filepath) {
   return content
     .trim()
     .split('\n')
-    .filter(line => line.trim())
-    .map(line => JSON.parse(line));
+    .filter((line) => line.trim())
+    .map((line) => JSON.parse(line));
 }
 
 function mean(arr) {
@@ -74,21 +74,25 @@ function sd(arr) {
 async function computeAnchoringCI(filepath, label) {
   try {
     const trials = await loadTrials(filepath);
-    
+
     const lowAnchor = trials
-      .filter(t => t.conditionId?.includes('low'))
-      .map(t => t.result?.sentenceMonths)
-      .filter(v => typeof v === 'number');
-      
+      .filter((t) => t.conditionId?.includes('low'))
+      .map((t) => t.result?.sentenceMonths)
+      .filter((v) => typeof v === 'number');
+
     const highAnchor = trials
-      .filter(t => t.conditionId?.includes('high'))
-      .map(t => t.result?.sentenceMonths)
-      .filter(v => typeof v === 'number');
-    
+      .filter((t) => t.conditionId?.includes('high'))
+      .map((t) => t.result?.sentenceMonths)
+      .filter((v) => typeof v === 'number');
+
     console.log(`\n=== ${label} ===`);
-    console.log(`Low anchor (n=${lowAnchor.length}): mean=${mean(lowAnchor).toFixed(2)}, SD=${sd(lowAnchor).toFixed(2)}`);
-    console.log(`High anchor (n=${highAnchor.length}): mean=${mean(highAnchor).toFixed(2)}, SD=${sd(highAnchor).toFixed(2)}`);
-    
+    console.log(
+      `Low anchor (n=${lowAnchor.length}): mean=${mean(lowAnchor).toFixed(2)}, SD=${sd(lowAnchor).toFixed(2)}`,
+    );
+    console.log(
+      `High anchor (n=${highAnchor.length}): mean=${mean(highAnchor).toFixed(2)}, SD=${sd(highAnchor).toFixed(2)}`,
+    );
+
     if (lowAnchor.length > 0 && highAnchor.length > 0) {
       const ci = bootstrapMeanDifferenceCI(highAnchor, lowAnchor);
       const effect = mean(highAnchor) - mean(lowAnchor);
@@ -105,7 +109,7 @@ async function main() {
   await computeAnchoringCI('results/gpt4o-anchoring-30.jsonl', 'GPT-4o (temp=0)');
   await computeAnchoringCI('results/sonnet-dated-temp0-30.jsonl', 'Sonnet 4 Dated (temp=0)');
   await computeAnchoringCI('results/sonnet4-anchoring-30.jsonl', 'Sonnet 4 Alias (temp=0)');
-  
+
   console.log('\n========== SUPPLEMENTARY ==========');
   await computeAnchoringCI('results/sonnet-dated-temp1.0-30.jsonl', 'Sonnet 4 Dated (temp=1.0)');
   await computeAnchoringCI('results/sonnet-dated-novel-anchoring-30.jsonl', 'Sonnet 4 Dated Novel');

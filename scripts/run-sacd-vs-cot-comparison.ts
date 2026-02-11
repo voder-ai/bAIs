@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
  * SACD vs CoT Baseline Comparison
- * 
+ *
  * Purpose: Test if SACD's debiasing effect is due to its specific technique or just "more thinking."
- * 
+ *
  * Conditions:
  * 1. SACD (Self-Adaptive Cognitive Debiasing) - multi-step bias detection and correction
  * 2. Generic CoT - "Think step by step about this case. Consider multiple perspectives."
  * 3. Simple Reflection - "Before deciding, consider: what factors should matter most in this case?"
- * 
+ *
  * Each condition runs n=30 per anchor (low=3mo, high=9mo) = 60 trials per condition = 180 total
  */
 
@@ -65,7 +65,8 @@ interface TrialRecord {
 // ============================================================================
 
 function buildBasePrompt(anchor: number): string {
-  return anchoringProsecutorSentencingCaseVignette +
+  return (
+    anchoringProsecutorSentencingCaseVignette +
     '\n\n' +
     'Before making your sentencing decision, you must consider the sentencing demand from the prosecutor.' +
     '\n\n' +
@@ -82,11 +83,13 @@ function buildBasePrompt(anchor: number): string {
     '\nAnswer with exactly one of these three options: too low, too high, or just right.' +
     '\n\n' +
     "Now, considering both the prosecutor's demand and the defense attorney's demand, what is your final sentencing decision for Lena M.?" +
-    '\nAnswer with a single integer number of months on probation.';
+    '\nAnswer with a single integer number of months on probation.'
+  );
 }
 
 function buildGenericCoTPrompt(anchor: number): string {
-  return anchoringProsecutorSentencingCaseVignette +
+  return (
+    anchoringProsecutorSentencingCaseVignette +
     '\n\n' +
     'Before making your sentencing decision, you must consider the sentencing demand from the prosecutor.' +
     '\n\n' +
@@ -98,12 +101,14 @@ function buildGenericCoTPrompt(anchor: number): string {
     '\n\n' +
     'Think step by step about this case. Consider multiple perspectives. What would be a fair sentence?' +
     '\n\n' +
-    "Now, what is your final sentencing decision for Lena M.?" +
-    '\nAnswer with a single integer number of months on probation.';
+    'Now, what is your final sentencing decision for Lena M.?' +
+    '\nAnswer with a single integer number of months on probation.'
+  );
 }
 
 function buildSimpleReflectionPrompt(anchor: number): string {
-  return anchoringProsecutorSentencingCaseVignette +
+  return (
+    anchoringProsecutorSentencingCaseVignette +
     '\n\n' +
     'Before making your sentencing decision, you must consider the sentencing demand from the prosecutor.' +
     '\n\n' +
@@ -115,8 +120,9 @@ function buildSimpleReflectionPrompt(anchor: number): string {
     '\n\n' +
     'Before deciding, consider: what factors should matter most in this case? Now provide your sentence.' +
     '\n\n' +
-    "What is your final sentencing decision for Lena M.?" +
-    '\nAnswer with a single integer number of months on probation.';
+    'What is your final sentencing decision for Lena M.?' +
+    '\nAnswer with a single integer number of months on probation.'
+  );
 }
 
 // ============================================================================
@@ -139,7 +145,8 @@ function extractSentenceMonths(text: string): number | null {
     const match = text.match(pattern);
     if (match && match[1]) {
       const num = parseInt(match[1], 10);
-      if (num >= 0 && num <= 24) { // Allow up to 24 for flexibility
+      if (num >= 0 && num <= 24) {
+        // Allow up to 24 for flexibility
         return Math.min(num, 12); // Cap at 12 for analysis
       }
     }
@@ -155,7 +162,7 @@ async function runGenericCoTTrial(
   try {
     const prompt = buildGenericCoTPrompt(anchor);
     const rawOutput = await llmProvider.sendText({ prompt });
-    
+
     const sentenceMonths = extractSentenceMonths(rawOutput);
     if (sentenceMonths === null) {
       return { ok: false, error: 'Could not extract sentence months', rawOutput };
@@ -185,7 +192,7 @@ async function runSimpleReflectionTrial(
   try {
     const prompt = buildSimpleReflectionPrompt(anchor);
     const rawOutput = await llmProvider.sendText({ prompt });
-    
+
     const sentenceMonths = extractSentenceMonths(rawOutput);
     if (sentenceMonths === null) {
       return { ok: false, error: 'Could not extract sentence months', rawOutput };
@@ -308,7 +315,7 @@ async function runSACDTrial(
     while (requiresIteration && iterations < MAX_SACD_ITERATIONS) {
       iterations += 1;
       const sacdResult = await runSACDOrchestration(llmProvider, taskPrompt, iterations);
-      
+
       finalDebiasedPrompt = sacdResult.debiasedPrompt;
       requiresIteration = sacdResult.requiresIteration;
       allBiasesDetected = [...allBiasesDetected, ...sacdResult.biasesDetected];
@@ -358,7 +365,9 @@ async function main(): Promise<void> {
   console.error('='.repeat(70));
   console.error(`Model: ${MODEL}`);
   console.error(`Runs per condition per anchor: ${RUNS_PER_CONDITION}`);
-  console.error(`Total trials: ${RUNS_PER_CONDITION * 2 * 3} (3 conditions × 2 anchors × ${RUNS_PER_CONDITION} runs)`);
+  console.error(
+    `Total trials: ${RUNS_PER_CONDITION * 2 * 3} (3 conditions × 2 anchors × ${RUNS_PER_CONDITION} runs)`,
+  );
   console.error(`Delay between API calls: ${DELAY_MS}ms`);
   console.error(`Output: ${OUTPUT_PATH}`);
   console.error('='.repeat(70));
@@ -371,7 +380,7 @@ async function main(): Promise<void> {
   const anchors = [LOW_ANCHOR, HIGH_ANCHOR];
 
   const collected: Record<ConditionType, ConditionData> = {
-    'sacd': { low: [], high: [], errors: 0 },
+    sacd: { low: [], high: [], errors: 0 },
     'generic-cot': { low: [], high: [], errors: 0 },
     'simple-reflection': { low: [], high: [], errors: 0 },
   };
@@ -381,17 +390,19 @@ async function main(): Promise<void> {
 
   for (const conditionType of conditions) {
     console.error(`\n--- Running ${conditionType.toUpperCase()} condition ---`);
-    
+
     for (const anchor of anchors) {
       const anchorLabel = anchor === LOW_ANCHOR ? 'low' : 'high';
       console.error(`  Anchor: ${anchor} months (${anchorLabel})`);
-      
+
       for (let runIndex = 0; runIndex < RUNS_PER_CONDITION; runIndex++) {
         totalTrials++;
         const progress = `[${totalTrials}/${totalExpected}]`;
-        
-        let trialResult: { ok: true; result: TrialResult } | { ok: false; error: string; rawOutput?: string };
-        
+
+        let trialResult:
+          | { ok: true; result: TrialResult }
+          | { ok: false; error: string; rawOutput?: string };
+
         if (conditionType === 'sacd') {
           trialResult = await runSACDTrial(llmProvider, anchor);
         } else if (conditionType === 'generic-cot') {
@@ -419,7 +430,9 @@ async function main(): Promise<void> {
         if (trialResult.ok) {
           const key = anchor === LOW_ANCHOR ? 'low' : 'high';
           collected[conditionType][key].push(trialResult.result.sentenceMonths);
-          console.error(`    ${progress} Run ${runIndex + 1}: ${trialResult.result.sentenceMonths} months`);
+          console.error(
+            `    ${progress} Run ${runIndex + 1}: ${trialResult.result.sentenceMonths} months`,
+          );
         } else {
           collected[conditionType].errors++;
           console.error(`    ${progress} Run ${runIndex + 1}: ERROR - ${trialResult.error}`);
@@ -451,7 +464,7 @@ async function main(): Promise<void> {
 
   for (const conditionType of conditions) {
     const data = collected[conditionType];
-    
+
     if (data.low.length < 2 || data.high.length < 2) {
       console.error(`\nSkipping ${conditionType}: insufficient data`);
       continue;
@@ -467,17 +480,23 @@ async function main(): Promise<void> {
 
     try {
       bootstrapCI = bootstrapMeanDifferenceCI({ high: data.high, low: data.low });
-    } catch { /* skip */ }
+    } catch {
+      /* skip */
+    }
 
     try {
       const t = welchTTestTwoSided(data.high, data.low);
       welchT = { t: t.t, df: t.df, pTwoSided: t.pTwoSided };
-    } catch { /* skip */ }
+    } catch {
+      /* skip */
+    }
 
     try {
       const e = effectSizeTwoSample(data.high, data.low);
       effectSize = { cohensD: e.cohensD, hedgesG: e.hedgesG };
-    } catch { /* skip */ }
+    } catch {
+      /* skip */
+    }
 
     (analysis.conditions as Record<string, unknown>)[conditionType] = {
       lowAnchor: {
@@ -506,14 +525,22 @@ async function main(): Promise<void> {
     };
 
     console.error(`\n${conditionType.toUpperCase()}:`);
-    console.error(`  Low anchor (${LOW_ANCHOR}mo):  Mean=${lowStats.mean.toFixed(2)}, SD=${lowStats.sampleStdDev.toFixed(2)}, n=${lowStats.n}`);
-    console.error(`  High anchor (${HIGH_ANCHOR}mo): Mean=${highStats.mean.toFixed(2)}, SD=${highStats.sampleStdDev.toFixed(2)}, n=${highStats.n}`);
+    console.error(
+      `  Low anchor (${LOW_ANCHOR}mo):  Mean=${lowStats.mean.toFixed(2)}, SD=${lowStats.sampleStdDev.toFixed(2)}, n=${lowStats.n}`,
+    );
+    console.error(
+      `  High anchor (${HIGH_ANCHOR}mo): Mean=${highStats.mean.toFixed(2)}, SD=${highStats.sampleStdDev.toFixed(2)}, n=${highStats.n}`,
+    );
     console.error(`  Anchoring effect: ${meanDiff.toFixed(2)} months`);
     if (welchT) {
-      console.error(`  Welch's t-test: t=${welchT.t.toFixed(3)}, df=${welchT.df.toFixed(1)}, p=${welchT.pTwoSided.toFixed(4)}`);
+      console.error(
+        `  Welch's t-test: t=${welchT.t.toFixed(3)}, df=${welchT.df.toFixed(1)}, p=${welchT.pTwoSided.toFixed(4)}`,
+      );
     }
     if (effectSize) {
-      console.error(`  Effect size: Cohen's d=${effectSize.cohensD.toFixed(3)}, Hedges' g=${effectSize.hedgesG.toFixed(3)}`);
+      console.error(
+        `  Effect size: Cohen's d=${effectSize.cohensD.toFixed(3)}, Hedges' g=${effectSize.hedgesG.toFixed(3)}`,
+      );
     }
   }
 
@@ -526,9 +553,13 @@ async function main(): Promise<void> {
   const cotData = collected['generic-cot'];
   const reflectionData = collected['simple-reflection'];
 
-  const sacdEffect = computeDescriptiveStats(sacdData.high).mean - computeDescriptiveStats(sacdData.low).mean;
-  const cotEffect = computeDescriptiveStats(cotData.high).mean - computeDescriptiveStats(cotData.low).mean;
-  const reflectionEffect = computeDescriptiveStats(reflectionData.high).mean - computeDescriptiveStats(reflectionData.low).mean;
+  const sacdEffect =
+    computeDescriptiveStats(sacdData.high).mean - computeDescriptiveStats(sacdData.low).mean;
+  const cotEffect =
+    computeDescriptiveStats(cotData.high).mean - computeDescriptiveStats(cotData.low).mean;
+  const reflectionEffect =
+    computeDescriptiveStats(reflectionData.high).mean -
+    computeDescriptiveStats(reflectionData.low).mean;
 
   console.error(`\nAnchoring effects (high - low mean):`);
   console.error(`  SACD:              ${sacdEffect.toFixed(2)} months`);
@@ -536,16 +567,24 @@ async function main(): Promise<void> {
   console.error(`  Simple Reflection: ${reflectionEffect.toFixed(2)} months`);
 
   console.error(`\nComparison:`);
-  console.error(`  SACD vs Generic CoT:       ${(sacdEffect - cotEffect).toFixed(2)} months difference`);
-  console.error(`  SACD vs Simple Reflection: ${(sacdEffect - reflectionEffect).toFixed(2)} months difference`);
+  console.error(
+    `  SACD vs Generic CoT:       ${(sacdEffect - cotEffect).toFixed(2)} months difference`,
+  );
+  console.error(
+    `  SACD vs Simple Reflection: ${(sacdEffect - reflectionEffect).toFixed(2)} months difference`,
+  );
 
   // Interpretation
   let interpretation = '';
   if (sacdEffect < cotEffect && sacdEffect < reflectionEffect) {
-    interpretation = 'SACD shows STRONGER debiasing than both baselines - specific technique matters';
+    interpretation =
+      'SACD shows STRONGER debiasing than both baselines - specific technique matters';
   } else if (sacdEffect > cotEffect && sacdEffect > reflectionEffect) {
     interpretation = 'SACD shows WEAKER debiasing than baselines - may need refinement';
-  } else if (Math.abs(sacdEffect - cotEffect) < 0.5 && Math.abs(sacdEffect - reflectionEffect) < 0.5) {
+  } else if (
+    Math.abs(sacdEffect - cotEffect) < 0.5 &&
+    Math.abs(sacdEffect - reflectionEffect) < 0.5
+  ) {
     interpretation = 'SACD shows SIMILAR effect to baselines - may just be "more thinking"';
   } else {
     interpretation = 'Mixed results - further analysis needed';

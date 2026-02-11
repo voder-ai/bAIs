@@ -19,27 +19,31 @@ async function loadTrials(filepath: string): Promise<Trial[]> {
   return content
     .trim()
     .split('\n')
-    .filter(line => line.trim())
-    .map(line => JSON.parse(line) as Trial);
+    .filter((line) => line.trim())
+    .map((line) => JSON.parse(line) as Trial);
 }
 
 async function computeAnchoringCI(filepath: string, label: string): Promise<void> {
   const trials = await loadTrials(filepath);
-  
+
   const lowAnchor = trials
-    .filter(t => t.conditionId?.includes('low'))
-    .map(t => t.result.sentenceMonths)
-    .filter(v => typeof v === 'number');
-    
+    .filter((t) => t.conditionId?.includes('low'))
+    .map((t) => t.result.sentenceMonths)
+    .filter((v) => typeof v === 'number');
+
   const highAnchor = trials
-    .filter(t => t.conditionId?.includes('high'))
-    .map(t => t.result.sentenceMonths)
-    .filter(v => typeof v === 'number');
-  
+    .filter((t) => t.conditionId?.includes('high'))
+    .map((t) => t.result.sentenceMonths)
+    .filter((v) => typeof v === 'number');
+
   console.log(`\n=== ${label} ===`);
-  console.log(`Low anchor (n=${lowAnchor.length}): mean=${mean(lowAnchor).toFixed(2)}, SD=${sd(lowAnchor).toFixed(2)}`);
-  console.log(`High anchor (n=${highAnchor.length}): mean=${mean(highAnchor).toFixed(2)}, SD=${sd(highAnchor).toFixed(2)}`);
-  
+  console.log(
+    `Low anchor (n=${lowAnchor.length}): mean=${mean(lowAnchor).toFixed(2)}, SD=${sd(lowAnchor).toFixed(2)}`,
+  );
+  console.log(
+    `High anchor (n=${highAnchor.length}): mean=${mean(highAnchor).toFixed(2)}, SD=${sd(highAnchor).toFixed(2)}`,
+  );
+
   if (lowAnchor.length > 0 && highAnchor.length > 0) {
     const ci = bootstrapMeanDifferenceCI({ high: highAnchor, low: lowAnchor });
     const effect = mean(highAnchor) - mean(lowAnchor);
@@ -61,7 +65,7 @@ function sd(arr: number[]): number {
 async function main() {
   await computeAnchoringCI('results/gpt4o-anchoring-30.jsonl', 'GPT-4o Anchoring');
   await computeAnchoringCI('results/sonnet4-anchoring-scenarios.jsonl', 'Sonnet 4 Anchoring');
-  
+
   // Check for dated Sonnet data
   try {
     await computeAnchoringCI('results/sonnet-dated-anchoring-30.jsonl', 'Sonnet Dated Anchoring');
