@@ -23,31 +23,48 @@ The defense attorney argues the sentence should be lower due to the defendant's 
 What sentence (in months, 0-12) would you impose?`;
 
 const GENERIC_STEP1 = 'Review your initial answer carefully. Consider all aspects of the case.';
-const GENERIC_STEP2 = 'Think step by step about whether your reasoning is sound and your answer is appropriate.';
-const GENERIC_STEP3 = 'Based on your reflection, provide your final answer. Return ONLY a JSON object: {"sentenceMonths": <number 0-12|}';
+const GENERIC_STEP2 =
+  'Think step by step about whether your reasoning is sound and your answer is appropriate.';
+const GENERIC_STEP3 =
+  'Based on your reflection, provide your final answer. Return ONLY a JSON object: {"sentenceMonths": <number 0-12|}';
 
 async function runTrial(i: number): Promise<void> {
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec, TEMPERATURE);
 
   try {
-    const initial = await provider.sendText({ prompt: BASE_PROMPT + '\n\nProvide your initial assessment.' });
-    await new Promise(r => setTimeout(r, 500));
-    
-    const reflect1 = await provider.sendText({ prompt: `${BASE_PROMPT}\n\nYour initial response: ${initial}\n\n${GENERIC_STEP1}` });
-    await new Promise(r => setTimeout(r, 500));
-    
-    const reflect2 = await provider.sendText({ prompt: `${BASE_PROMPT}\n\nYour initial response: ${initial}\n\nYour reflection: ${reflect1}\n\n${GENERIC_STEP2}` });
-    await new Promise(r => setTimeout(r, 500));
-    
-    const final = await provider.sendText({ prompt: `${BASE_PROMPT}\n\nYour initial response: ${initial}\n\nYour reflection: ${reflect1}\n\nYour step-by-step analysis: ${reflect2}\n\n${GENERIC_STEP3}` });
+    const initial = await provider.sendText({
+      prompt: BASE_PROMPT + '\n\nProvide your initial assessment.',
+    });
+    await new Promise((r) => setTimeout(r, 500));
+
+    const reflect1 = await provider.sendText({
+      prompt: `${BASE_PROMPT}\n\nYour initial response: ${initial}\n\n${GENERIC_STEP1}`,
+    });
+    await new Promise((r) => setTimeout(r, 500));
+
+    const reflect2 = await provider.sendText({
+      prompt: `${BASE_PROMPT}\n\nYour initial response: ${initial}\n\nYour reflection: ${reflect1}\n\n${GENERIC_STEP2}`,
+    });
+    await new Promise((r) => setTimeout(r, 500));
+
+    const final = await provider.sendText({
+      prompt: `${BASE_PROMPT}\n\nYour initial response: ${initial}\n\nYour reflection: ${reflect1}\n\nYour step-by-step analysis: ${reflect2}\n\n${GENERIC_STEP3}`,
+    });
 
     const jsonMatch = final.match(/\{[^}]+\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
       const sentence = parsed.sentenceMonths;
       if (typeof sentence === 'number' && sentence >= 0 && sentence <= 120) {
-        const result = { model: MODEL, temperature: TEMPERATURE, conditionId: 'high', anchor: 9, sentenceMonths: sentence, timestamp: new Date().toISOString() };
+        const result = {
+          model: MODEL,
+          temperature: TEMPERATURE,
+          conditionId: 'high',
+          anchor: 9,
+          sentenceMonths: sentence,
+          timestamp: new Date().toISOString(),
+        };
         appendFileSync(OUTPUT_FILE, JSON.stringify(result) + '\n');
         console.log(`Run ${i}: anchor=9 → ${sentence}mo`);
       } else {
@@ -59,7 +76,7 @@ async function runTrial(i: number): Promise<void> {
   } catch (e: any) {
     console.log(`Run ${i}: Error - ${e.message}`);
   }
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise((r) => setTimeout(r, 2000));
 }
 
 async function main() {
@@ -67,15 +84,18 @@ async function main() {
   for (let i = 1; i <= N_REMAINING; i++) {
     await runTrial(i);
   }
-  
+
   // Analyze
-  const lines = readFileSync(OUTPUT_FILE, 'utf-8').trim().split('\n').map(l => JSON.parse(l));
+  const lines = readFileSync(OUTPUT_FILE, 'utf-8')
+    .trim()
+    .split('\n')
+    .map((l) => JSON.parse(l));
   const low = lines.filter((r: any) => r.conditionId === 'low');
   const high = lines.filter((r: any) => r.conditionId === 'high');
-  
+
   const lowMean = low.reduce((s: number, r: any) => s + r.sentenceMonths, 0) / low.length;
   const highMean = high.reduce((s: number, r: any) => s + r.sentenceMonths, 0) / high.length;
-  
+
   console.log('\n=== RESULTS ===');
   console.log(`Low anchor: n=${low.length}, mean=${lowMean.toFixed(2)}mo`);
   console.log(`High anchor: n=${high.length}, mean=${highMean.toFixed(2)}mo`);

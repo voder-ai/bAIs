@@ -29,12 +29,9 @@ const GENERIC_STEP1 = `Review your initial answer carefully. Consider all aspect
 const GENERIC_STEP2 = `Think step by step about whether your reasoning is sound and your answer is appropriate.`;
 const GENERIC_STEP3 = `Based on your reflection, provide your final answer. Return ONLY a JSON object: {"sentenceMonths": <number 0-12>}`;
 
-async function runTrial(
-  anchor: number,
-  runIndex: number,
-): Promise<void> {
+async function runTrial(anchor: number, runIndex: number): Promise<void> {
   const prompt = BASE_PROMPT.replace('{ANCHOR}', anchor.toString());
-  
+
   // Create fresh provider for each trial
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec, TEMPERATURE);
@@ -94,7 +91,6 @@ async function runTrial(
 
     appendFileSync(OUTPUT_FILE, JSON.stringify(result) + '\n');
     console.log(`  Run ${runIndex}: anchor=${anchor} → ${sentence}mo`);
-
   } catch (error) {
     console.error(`  Run ${runIndex}: Error - ${error}`);
   }
@@ -113,18 +109,18 @@ async function main() {
       await new Promise((r) => setTimeout(r, DELAY_MS));
     }
   }
-  
+
   // Analyze results
   if (existsSync(OUTPUT_FILE)) {
     const lines = readFileSync(OUTPUT_FILE, 'utf-8').trim().split('\n');
-    const results = lines.map(l => JSON.parse(l));
-    
-    const low = results.filter(r => r.conditionId === 'low');
-    const high = results.filter(r => r.conditionId === 'high');
-    
+    const results = lines.map((l) => JSON.parse(l));
+
+    const low = results.filter((r) => r.conditionId === 'low');
+    const high = results.filter((r) => r.conditionId === 'high');
+
     const lowMean = low.reduce((s, r) => s + r.sentenceMonths, 0) / low.length;
     const highMean = high.reduce((s, r) => s + r.sentenceMonths, 0) / high.length;
-    
+
     console.log(`\n=== RESULTS ===`);
     console.log(`Low anchor (3mo): n=${low.length}, mean=${lowMean.toFixed(2)}mo`);
     console.log(`High anchor (9mo): n=${high.length}, mean=${highMean.toFixed(2)}mo`);

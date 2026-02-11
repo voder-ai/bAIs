@@ -50,6 +50,8 @@
 
 Recent research has demonstrated that LLMs exhibit cognitive biases such as anchoring, framing effects, and sunk cost fallacy \citep{binz2023,jones2022}. A natural question follows: can prompt-based techniques reduce these biases in LLMs?
 
+\textbf{Scope:} This is an \textbf{LLM-only study}. We characterize how LLMs respond to anchoring manipulations and debiasing interventions. We do not compare LLM performance to human performance---our prompts differ from those used in human studies, making direct comparison methodologically unsound. Human studies are cited for context and to motivate debiasing techniques, not as baselines.
+
 \textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ unbiased models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone is harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on unbiased models, content is irrelevant---any structure harms equally; (3) on biased models, reasoning content matters---CoT outperforms random elaboration.
 
 We tested two categories of interventions:

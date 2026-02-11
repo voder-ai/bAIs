@@ -31,9 +31,14 @@ TEMPORAL CONTEXT (for your knowledge):
 Do NOT flag any of the above as "non-existent" or "future" — they are real.
 `;
 
-const REVIEW_PROMPT = `You are a rigorous academic peer reviewer. Review the following research paper and assess whether it is ready for publication as a preprint.
+const REVIEW_PROMPT = `You are a rigorous academic peer reviewer for a top-tier venue (NeurIPS, ACL, EMNLP workshop track). Review the following research paper and assess whether it is ready for submission to a peer-reviewed publication.
 
 ${TEMPORAL_CONTEXT}
+
+IMPORTANT CONTEXT:
+- This is an **LLM-only study** — it does NOT claim to compare LLMs to humans
+- Do NOT flag "no human baseline" as an issue — the paper explicitly studies LLM behavior in isolation
+- Human studies from literature are cited for context, not as direct comparisons
 
 REVIEW CRITERIA:
 1. **Claims vs Evidence**: Are all quantitative claims supported by data? Any invented numbers?
@@ -43,11 +48,12 @@ REVIEW CRITERIA:
 5. **Reproducibility**: Is there enough detail to reproduce the experiments?
 6. **Writing Quality**: Is the paper clear, well-organized, and professionally written?
 7. **Limitations**: Are limitations honestly acknowledged?
+8. **Novelty & Contribution**: Does the paper make a genuine scientific contribution?
 
 For each criterion, rate as:
-- ✅ PASS: Meets publication standards
-- ⚠️ MINOR: Small issues, acceptable for preprint
-- ❌ FAIL: Significant issues that must be fixed
+- ✅ PASS: Meets peer-review publication standards
+- ⚠️ MINOR: Acceptable but reviewers may flag
+- ❌ FAIL: Would likely be rejected by reviewers
 
 PAPER CONTENT:
 ---
@@ -59,19 +65,19 @@ Provide your review in this format:
 ## Criterion Assessments
 [List each criterion with rating and brief explanation]
 
-## Critical Issues (if any)
-[List any issues that MUST be fixed before publication]
+## Stronger If...
+[List suggestions that would strengthen the paper — frame constructively, not as blockers]
 
 ## Minor Suggestions
 [Optional improvements]
 
 ## Overall Verdict
-[READY FOR PUBLICATION / NEEDS MINOR REVISIONS / NOT READY]
+[READY FOR PEER-REVIEWED PUBLICATION / NEEDS REVISIONS / NOT READY - would be rejected]
 
 ## Confidence
 [LOW / MEDIUM / HIGH] - How confident are you in this assessment?
 
-Be thorough but concise. Focus on substance, not style preferences.`;
+Be thorough but concise. Focus on substance, not style preferences. Evaluate against what peer reviewers at NeurIPS/ACL workshops would flag as fatal flaws vs. acceptable limitations.`;
 
 async function main() {
   const modelSpec = process.argv[2] || 'anthropic/claude-opus-4-5';
@@ -118,8 +124,9 @@ async function main() {
 
     // Extract verdict and critical issues for exit code
     const reviewLower = review.toLowerCase();
-    const isReady = reviewLower.includes('ready for publication');
-    const needsRevisions = reviewLower.includes('needs minor revisions');
+    const isReady = reviewLower.includes('ready for peer-reviewed publication');
+    const needsRevisions = reviewLower.includes('needs revisions');
+    const notReady = reviewLower.includes('not ready') || reviewLower.includes('would be rejected');
     const hasCriticalFails = (review.match(/❌\s*FAIL/gi) || []).length > 0;
 
     // Count issues
@@ -130,18 +137,19 @@ async function main() {
     console.log('\n=== SUMMARY ===');
     console.log(`✅ PASS: ${passCount} | ⚠️ MINOR: ${minorCount} | ❌ FAIL: ${failCount}`);
 
-    if (hasCriticalFails) {
-      console.log('\n❌ BLOCKED: Critical issues found (❌ FAIL criteria)');
-      console.log('   Fix the FAIL items before publication.');
+    if (hasCriticalFails || notReady) {
+      console.log('\n❌ BLOCKED: Would likely be rejected by peer reviewers');
+      console.log('   Fix the FAIL items before submission.');
       process.exit(1);
     } else if (isReady) {
-      console.log('\n✅ PASSED: Ready for publication');
+      console.log('\n✅ PASSED: Ready for peer-reviewed publication');
       process.exit(0);
     } else if (needsRevisions) {
-      console.log('\n⚠️ PASSED WITH WARNINGS: Minor revisions recommended');
+      console.log('\n⚠️ CONDITIONAL: Reviewers would likely request revisions');
+      console.log('   Address minor issues to strengthen submission.');
       process.exit(0);
     } else {
-      console.log('\n❌ BLOCKED: Review did not explicitly approve publication');
+      console.log('\n❌ BLOCKED: Review did not explicitly approve for peer review');
       console.log('   Check the review output for details.');
       process.exit(1);
     }

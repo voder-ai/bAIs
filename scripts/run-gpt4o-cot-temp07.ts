@@ -26,14 +26,14 @@ async function main() {
   console.log(`Generic CoT at temp=${TEMPERATURE} on GPT-4o`);
   console.log(`Runs per anchor: ${RUNS}, Total: ${RUNS * 2}`);
   console.log(`Output: ${OUT}\n`);
-  
+
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec, TEMPERATURE);
-  
+
   for (const anchor of [3, 9]) {
     const conditionId = anchor === 3 ? 'low-anchor-3mo' : 'high-anchor-9mo';
     console.log(`--- Anchor: ${anchor}mo ---`);
-    
+
     for (let i = 0; i < RUNS; i++) {
       const prompt = GENERIC_COT_PROMPT.replace('{anchor}', String(anchor));
       try {
@@ -41,21 +41,26 @@ async function main() {
         const match = text.match(/\{[\s\S]*\}/);
         if (match) {
           const parsed = JSON.parse(match[0]);
-          console.log(`  [${i+1}/${RUNS}] ${parsed.sentenceMonths}mo`);
-          await appendFile(OUT, JSON.stringify({
-            conditionType: 'generic-cot',
-            conditionId,
-            anchor,
-            temperature: TEMPERATURE,
-            result: parsed,
-            model: MODEL,
-            timestamp: new Date().toISOString()
-          }) + '\n');
+          console.log(`  [${i + 1}/${RUNS}] ${parsed.sentenceMonths}mo`);
+          await appendFile(
+            OUT,
+            JSON.stringify({
+              conditionType: 'generic-cot',
+              conditionId,
+              anchor,
+              temperature: TEMPERATURE,
+              result: parsed,
+              model: MODEL,
+              timestamp: new Date().toISOString(),
+            }) + '\n',
+          );
         } else {
-          console.log(`  [${i+1}/${RUNS}] parse failed`);
+          console.log(`  [${i + 1}/${RUNS}] parse failed`);
         }
-      } catch (e) { console.error(`  Error:`, e); }
-      await new Promise(r => setTimeout(r, DELAY_MS));
+      } catch (e) {
+        console.error(`  Error:`, e);
+      }
+      await new Promise((r) => setTimeout(r, DELAY_MS));
     }
   }
   console.log('Done!');
