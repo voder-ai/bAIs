@@ -72,7 +72,7 @@ Be rigorous but fair. Not everything needs to be tested — focus on gaps that a
 Don't invent fake gaps. If the methodology is sound, say so.`;
 
 async function main() {
-  const modelSpec = process.argv[2] || 'openai-codex/gpt-5.1';
+  const modelSpec = process.argv[2] || 'anthropic/claude-opus-4-5';
   const paperPath = process.argv[3] || join(__dirname, '../paper/main.tex');
 
   console.log('🔍 "Why Didn\'t They...?" Methodological Gap Check');

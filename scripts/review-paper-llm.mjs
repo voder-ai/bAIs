@@ -74,7 +74,7 @@ Provide your review in this format:
 Be thorough but concise. Focus on substance, not style preferences.`;
 
 async function main() {
-  const modelSpec = process.argv[2] || 'openai-codex/gpt-5.1';
+  const modelSpec = process.argv[2] || 'anthropic/claude-opus-4-5';
   const paperPath = process.argv[3] || join(__dirname, '../paper/main.tex');
 
   console.log('📄 Reading paper from: ' + paperPath);
