@@ -48,22 +48,22 @@ PAPER CONTENT:
 
 OUTPUT FORMAT:
 
-## Critical Gaps (MUST FIX before publication)
-List gaps that would cause immediate rejection at a top venue. These are "obvious oversights" that undermine the core claims.
+## The Paper Would Be Stronger If...
+List improvements that would strengthen the paper's contributions. Frame constructively as opportunities, not gaps.
 
-For each critical gap:
-- **Gap**: What's missing
-- **Impact**: Why it matters for the paper's claims
-- **Suggested Fix**: How to address it (or acknowledge it)
+For each improvement:
+- **Opportunity**: What could be added/improved
+- **Benefit**: How it would strengthen the paper
+- **Suggestion**: How to address it
 
 ## Minor Gaps (SHOULD ACKNOWLEDGE)
-List gaps that are acceptable for a preprint but should be noted in limitations.
+List gaps that are acceptable for peer-reviewed publication but should be noted in limitations.
 
 ## Verdict
-Frame your verdict constructively:
+Frame your verdict for PEER-REVIEWED PUBLICATION (NeurIPS workshop, ACL, EMNLP):
 - "The paper would be stronger if..." (for addressable improvements)
-- "The paper is ready for submission with minor caveats" (for minor issues)
-- "The paper is methodologically sound" (if no significant gaps)
+- "The paper is ready for peer-reviewed publication with minor caveats" (for minor issues)
+- "The paper is methodologically sound for publication" (if no significant gaps)
 
 Be rigorous but fair. Not everything needs to be tested — focus on gaps that are:
 1. Obvious to any reader
