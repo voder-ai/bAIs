@@ -31,7 +31,7 @@
 \begin{abstract}
 \textbf{Study design:} Descriptive study using deterministic sampling (temperature=0) across 30 scenario variants per condition. All findings are observational patterns in our specific prompt set.
 
-\textbf{Main finding:} Psychology-inspired debiasing techniques offer no advantage over generic reflection. On GPT-4o (baseline: 6.0 months anchoring effect), Self-Adaptive Cognitive Debiasing (SACD)---an iterative bias-detection loop---achieved 45\% reduction. But a structure-matched control using generic prompts (``think step by step,'' ``review your answer'') achieved \textbf{66\% reduction}. The control outperformed the intervention. This suggests debiasing effects stem from increased reasoning tokens, not psychology-specific content. Future debiasing research must include length-matched controls.
+\textbf{Main finding (GPT-4o, n=30):} In our experiments, psychology-inspired debiasing showed no advantage over generic reflection. On GPT-4o (baseline: 6.0 months anchoring effect), Self-Adaptive Cognitive Debiasing (SACD)---an iterative bias-detection loop---achieved 45\% reduction. But a structure-matched control using generic prompts (``think step by step,'' ``review your answer'') achieved \textbf{66\% reduction}. The control outperformed the intervention in this test. This may suggest debiasing effects stem from increased reasoning tokens, not psychology-specific content---but replication on other models is needed. Future debiasing research should consider length-matched controls.
 
 \textbf{Replication:} LLMs exhibit anchoring bias in the judicial sentencing paradigm. GPT-4o showed 6.0 months effect, Claude Opus 4 showed 2.0 months, Sonnet 4 showed 0.0 months (no bias). For context, \citet{englich2006} observed 2.05 months in humans, but our prompts differ from theirs---direct comparison is not valid.
 
@@ -39,7 +39,7 @@
 
 \textbf{Intervention null results:} On GPT-4o, Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{0\% reduction}---identical to baseline. Simple instructions (``ignore the anchor'') also showed 0\% effect. Only multi-turn reflection helped, and generic reflection worked better than targeted debiasing.
 
-\textbf{Cross-model variation:} Testing 5 provider families reveals varying susceptibility: OpenAI strong ($2.93\times$), NVIDIA moderate ($1.46\times$), Meta weak ($0.49\times$), Anthropic/Mistral none. \textbf{Caution:} Pattern observed in one prompt set; not a validated taxonomy.
+\textbf{Cross-model variation:} Testing 5 provider families in our prompt set, we observed varying susceptibility: OpenAI (6.0mo), NVIDIA (3.0mo), Meta (1.1mo), Anthropic/Mistral (0mo). \textbf{Caution:} Pattern observed in one prompt set with 1--2 models per family; not a validated taxonomy.
 
 \textbf{Practical note:} API identifier routing affects behavior; use date-pinned model IDs for reproducibility.
 \end{abstract}
@@ -48,7 +48,7 @@
 
 Recent research has demonstrated that LLMs exhibit cognitive biases analogous to those documented in human psychology \citep{binz2023,jones2022}. A natural question follows: can techniques developed to reduce human cognitive biases be adapted for LLMs?
 
-\textbf{Our central finding is negative:} Psychology-inspired debiasing interventions offer no advantage over generic reflection. When we tested Self-Adaptive Cognitive Debiasing (SACD)---an iterative loop designed to detect and correct specific biases---against a structure-matched control using generic prompts (``think step by step''), the generic control performed \emph{better} (66\% vs 45\% bias reduction on GPT-4o). This suggests the active ingredient in multi-turn debiasing is simply ``more thinking,'' not the psychology-specific content.
+\textbf{Our central finding is negative:} In our GPT-4o experiments, psychology-inspired debiasing interventions showed no advantage over generic reflection. When we tested Self-Adaptive Cognitive Debiasing (SACD)---an iterative loop designed to detect and correct specific biases---against a structure-matched control using generic prompts (``think step by step''), the generic control performed \emph{better} (66\% vs 45\% bias reduction). This may suggest the active ingredient in multi-turn debiasing is simply ``more thinking,'' not the psychology-specific content---though replication on additional models is needed to confirm this pattern.
 
 We tested two categories of interventions:
 
