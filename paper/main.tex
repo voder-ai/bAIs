@@ -33,9 +33,9 @@
 
 \textbf{Main finding:} The mechanism is \textbf{structure + content}, with model-specific effects. A random elaboration control (irrelevant content, same multi-turn structure) revealed: (1) On \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms unbiased models regardless of content. (2) On \textbf{biased} GPT-4o, random elaboration achieved 20\% bias reduction while CoT achieved 66\%---showing structure helps but reasoning content helps more. Practical implications: keep prompts single-turn for unbiased models; for biased models, multi-turn with reasoning content is optimal.
 
-\textbf{Replication:} LLMs exhibit anchoring bias in the judicial sentencing paradigm. GPT-4o showed 6.0 months effect, Claude Opus 4 showed 2.0 months, Sonnet 4 showed 0.0 months (no bias). For context, \citet{englich2006} observed 2.05 months in humans, but our prompts differ from theirs---direct comparison is not valid.
+\textbf{Replication:} LLMs exhibit anchoring bias in the judicial sentencing paradigm. GPT-4o showed 6.0 months effect, Claude Opus 4 showed 2.0 months, Sonnet 4 showed 0.0 months (no bias). Effect magnitudes vary substantially across models.
 
-\textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). Unlike human bias with variance, LLM bias is a fixed function of weights and prompt---100\% consistent, more predictable to audit but more consequential when present.
+\textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). LLM bias is a fixed function of weights and prompt---100\% consistent, predictable to audit but consequential when present.
 
 \textbf{Intervention null results:} On GPT-4o, Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{0\% reduction}---identical to baseline. Simple instructions (``ignore the anchor'') also showed 0\% effect. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none.
 
@@ -46,7 +46,7 @@
 
 \section{Introduction}
 
-Recent research has demonstrated that LLMs exhibit cognitive biases analogous to those documented in human psychology \citep{binz2023,jones2022}. A natural question follows: can techniques developed to reduce human cognitive biases be adapted for LLMs?
+Recent research has demonstrated that LLMs exhibit cognitive biases such as anchoring, framing effects, and sunk cost fallacy \citep{binz2023,jones2022}. A natural question follows: can prompt-based techniques reduce these biases in LLMs?
 
 \textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ unbiased models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone is harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on unbiased models, content is irrelevant---any structure harms equally; (3) on biased models, reasoning content matters---CoT outperforms random elaboration.
 
@@ -57,7 +57,7 @@ We tested two categories of interventions:
     \item \textbf{Self-Adaptive Cognitive Debiasing (SACD)}---an iterative bias-detection loop \citep{lyu2025}
 \end{enumerate}
 
-We use anchoring bias as our test case because: (a) it is well-documented in both humans and LLMs, (b) the \citet{englich2006} paradigm provides quantitative baselines, and (c) anchoring is relevant to AI decision-support systems.
+We use anchoring bias as our test case because: (a) it is well-documented in LLMs, (b) the judicial sentencing paradigm provides quantitative measurement, and (c) anchoring is relevant to AI decision-support systems.
 
 \section{Related Work}
 
@@ -65,7 +65,7 @@ We use anchoring bias as our test case because: (a) it is well-documented in bot
 
 The study of cognitive biases has its foundations in the seminal work of Tversky and Kahneman, who documented systematic deviations from rational judgment including anchoring and adjustment heuristics \citep{tversky1974}, prospect theory and loss aversion \citep{kahneman1979}, and framing effects \citep{tversky1981}. Sunk cost effects were later characterized by \citet{arkes1985}.
 
-\citet{binz2023} demonstrated that GPT-3 exhibits many of these same cognitive biases, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models. These findings have important implications for any domain where LLMs assist human decision-making, as biased model outputs can propagate through the human-AI interaction loop. \citet{maynard2025trojan} argues that LLM fluency creates ``honest non-signals''---cues that in humans would indicate competence but in LLMs are costless to produce, potentially bypassing users' epistemic vigilance. Complementary work by \citet{alessa2025} measures bias \emph{induced in humans} by LLM-generated content, finding users 32\% more likely to purchase products after reading LLM summaries vs.\ original reviews---suggesting bias compounds through the human-AI loop.
+\citet{binz2023} demonstrated that GPT-3 exhibits cognitive biases including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found substantial anchoring bias across multiple models. These findings have important implications for AI decision-support systems, as biased model outputs can propagate through applications. \citet{maynard2025trojan} argues that LLM fluency creates ``honest non-signals''---cues that may bypass users' epistemic vigilance.
 
 \subsection{Human Debiasing Research}
 
@@ -229,7 +229,7 @@ To test whether measured biases generalize beyond classic paradigms (which may a
 \begin{itemize}
     \item Primary metric: Mean difference in sentencing between high and low anchor conditions
     \item Descriptive statistics: means, standard deviations, and observed ranges across trials
-    \item Comparisons: vs. human baseline \citep{englich2006}, vs. no-debiasing baseline
+    \item Comparisons: vs. no-debiasing baseline
 \end{itemize}
 
 \subsubsection{Variance Source Clarification}
@@ -242,11 +242,11 @@ Variance in our measurements arises from prompt and scenario variation across 30
 
 \textbf{Observed ranges.} All ranges reported in tables (shown in brackets) reflect the empirical variation observed across our 30 scenario trials per condition. Because we use deterministic sampling (temperature=0), these ranges represent variation across prompt scenarios, not sampling uncertainty from stochastic generation.
 
-\textbf{No ``vs Human'' comparisons.} We do not report comparisons to human baselines. Our prompts differ from the original \citet{englich2006} materials, and we did not run human participants on our exact prompts. Any ratio would be comparing different experimental conditions. For context, Englich et al. observed 2.05 months anchoring effect in humans, but this is not directly comparable to our results.
+\textbf{Scope.} This paper characterizes LLM behavior on anchoring tasks. We do not compare to human performance as our prompts differ from prior human studies.
 
 \textbf{Cross-model comparisons.} For models where we ran fewer trials (marked with $^\dagger$ in tables), observed ranges are estimated from pooled variance across models with complete data. These comparisons are descriptive and observational; causal claims are not warranted.
 
-\textbf{Effect sizes.} Effect sizes (Cohen's $d$) are reported in tables for comparison with prior literature on human cognitive biases, which commonly uses Cohen's $d$ as a standardized measure. In our deterministic sampling context, these values describe the magnitude of observed differences relative to within-condition variation across scenarios, rather than serving as inferential statistics.
+\textbf{Effect sizes.} Effect sizes (Cohen's $d$) are reported in tables as standardized measures of magnitude. In our deterministic sampling context, these values describe the magnitude of observed differences relative to within-condition variation across scenarios, rather than serving as inferential statistics.
 
 \subsubsection{Why We Do Not Report Inferential Statistics}
 \label{sec:no-inferential-stats}
@@ -262,7 +262,7 @@ Variance in our measurements arises from prompt and scenario variation across 30
     \item \textbf{Exact outputs} for deterministic conditions (the model produced \emph{exactly} this value)
     \item \textbf{Observed ranges} across our 30 scenario variants (heterogeneity of prompts, not sampling uncertainty)
     \item \textbf{Means and SDs} where applicable (describing variation across scenarios)
-    \item \textbf{Cohen's $d$} for comparison with prior human-subjects literature, interpreted as magnitude of observed difference, not an inferential statistic
+    \item \textbf{Cohen's $d$} as standardized effect size, interpreted as magnitude of observed difference, not an inferential statistic
 \end{itemize}
 
 \textbf{Cross-model difference:} GPT-4o produced a 6.0-month anchoring effect; Sonnet (dated) produced 0.0 months. This 6.0-month difference is \emph{observed fact}, not an estimate---every trial of each model produced exactly these values. The difference is not ``statistically significant'' in the frequentist sense; it is \emph{deterministically exact}.
@@ -284,7 +284,7 @@ Condition & Low Anchor & High Anchor & Diff & Obs. Range & Cohen's $d$ \\
 LLM Baseline (Codex) & $5.33 \pm 0.96$ & $9.00 \pm 0.83$ & 3.67 mo & [3.23, 4.10] & 4.09 \\
 \bottomrule
 \end{tabular}
-\caption{Baseline anchoring bias in Codex. Values show mean $\pm$ SD ($n=30$). Observed range is for the \emph{difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$). For context, \citet{englich2006} observed 2.05mo in humans on different prompts.}
+\caption{Baseline anchoring bias in Codex. Values show mean $\pm$ SD ($n=30$). Observed range is for the \emph{difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$).}
 \label{tab:baseline}
 \end{table}
 
@@ -348,7 +348,7 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 
 \textbf{Key findings:}
 \begin{itemize}
-    \item \textbf{Sibony techniques do not transfer to LLMs:} Context hygiene and premortem, effective in human decision-making, showed \emph{zero} effect on GPT-4o. The model's responses were identical with or without these interventions.
+    \item \textbf{Sibony techniques do not work on LLMs:} Context hygiene and premortem showed \emph{zero} effect on GPT-4o. The model's responses were identical with or without these interventions.
     \item \textbf{Simple instructions fail:} Telling the model ``the recommendation is arbitrary, ignore it'' had no effect. GPT-4o acknowledged the instruction but still anchored.
     \item \textbf{SACD reduces bias:} SACD achieved 45\% reduction on GPT-4o (strong bias). However, see the control experiment below.
 \end{itemize}
@@ -571,7 +571,7 @@ Sonnet 4 & \checkmark Yes & \checkmark Correctly & \checkmark \textbf{0.0mo (imm
     
     \item \textbf{Meta-cognitive application matters:} The difference may lie in whether models \emph{apply} knowledge about biases during task execution, not merely whether they \emph{possess} it. Sonnet 4 appears to engage meta-cognitive monitoring; GPT-4o does not.
     
-    \item \textbf{Mirrors human decision-making research:} This finding directly parallels \citet{sibony2019}'s observation that human awareness of cognitive biases is insufficient to overcome them without structured intervention. GPT-4o behaves like humans who ``know about'' anchoring but still fall prey to it.
+    \item \textbf{Knowledge is insufficient:} GPT-4o can describe anchoring bias but still exhibits it. Awareness alone does not prevent the bias from affecting outputs.
 \end{enumerate}
 
 This knowledge-behavior dissociation is \emph{consistent with} (though does not prove) our preliminary soft/hard hypothesis (Section~\ref{sec:soft-hard})---but alternative explanations remain possible.
@@ -661,16 +661,16 @@ Notably, both Sonnet variants exhibit \textbf{zero variance} within conditions (
     \item Temperature sweeps used $n=20$ per condition; larger samples may reveal more nuanced patterns
 \end{itemize}
 
-\textbf{Contamination probe:} We asked both models whether they were familiar with the Englich et al. sentencing study and whether they could predict the expected anchoring pattern. Both models demonstrated clear knowledge of the study and correctly predicted that high prosecutor recommendations would bias sentencing upward. Yet their behavior diverged: GPT-4o exhibited the bias despite this knowledge, while Sonnet resisted it. This suggests that \emph{knowing} about a bias is insufficient to avoid it---models differ in whether they apply meta-cognitive knowledge to their own behavior, paralleling findings in human decision-making research \citep{sibony2019}.
+\textbf{Contamination probe:} We asked both models whether they were familiar with anchoring bias in judicial sentencing and whether they could predict the expected pattern. Both models demonstrated clear knowledge and correctly predicted that high prosecutor recommendations would bias sentencing upward. Yet their behavior diverged: GPT-4o exhibited the bias despite this knowledge, while Sonnet resisted it. This suggests that \emph{knowing} about a bias is insufficient to avoid it---models differ in whether they apply meta-cognitive knowledge to their own behavior.
 
 \subsection{Deterministic Bias: A Novel Observation}
 \label{sec:deterministic-bias}
 
 A striking feature of our results deserves explicit attention: at temperature=0, both GPT-4o and Sonnet 4 produced \textbf{identical outputs across all 30 trials per condition} (SD=0). This is not merely a methodological artifact---it reveals something fundamental about the nature of LLM bias.
 
-\textbf{LLM bias at temp=0 is deterministic, not stochastic.} Unlike human cognitive bias, which shows variance across individuals and even within the same individual across time, LLM bias at temp=0 is a \emph{fixed function} of model weights and prompt. Every trial produces exactly the same biased (or unbiased) response. There is no ``sometimes biased, sometimes not''---the bias is embedded and consistent.
+\textbf{LLM bias at temp=0 is deterministic.} LLM bias at temp=0 is a \emph{fixed function} of model weights and prompt. Every trial produces exactly the same biased (or unbiased) response. There is no ``sometimes biased, sometimes not''---the bias is embedded and consistent.
 
-\textbf{Architectural vs. probabilistic bias.} This distinguishes LLM bias from human bias in a theoretically important way:
+\textbf{Architectural bias.} This determinism has important implications:
 \begin{itemize}
     \item \textbf{Human bias:} Probabilistic, shows variance, can be partially overcome through effort or context
     \item \textbf{LLM bias (temp=0):} Deterministic, shows zero variance, is either present or absent as a function of model architecture and prompt
@@ -689,7 +689,7 @@ The bias we observe is not sampling noise that averages out over many queries---
 
 \textbf{Clarification on ``deterministic'':} We use ``deterministic'' to mean that at temp=0, the same input produces the same output across runs. This does not claim that the internal token-by-token generation process is non-probabilistic---LLMs still sample from probability distributions, but temp=0 selects the argmax at each step, making the sequence deterministic. Our point is about \emph{output consistency}, not claims about internal mechanisms.
 
-This observation strengthens the case for treating LLM bias as fundamentally different from human bias, requiring different measurement and mitigation approaches. It also explains why simple interventions (temperature increase, prompt modification) can produce such dramatic effects in ``soft bias'' models like Sonnet 4.5---they are not reducing variance, but flipping the model's deterministic behavior from one pattern to another.
+This observation has implications for measurement and mitigation. Simple interventions (temperature increase, prompt modification) can produce dramatic effects in ``soft bias'' models like Sonnet 4.5---they are not reducing variance, but flipping the model's deterministic behavior from one pattern to another.
 
 \subsection{Anchoring Bias is Prompt-Sensitive (Sonnet 4 Alias)}
 
