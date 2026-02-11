@@ -48,13 +48,13 @@ PAPER CONTENT:
 
 OUTPUT FORMAT:
 
-## The Paper Would Be Stronger If...
-List improvements that would strengthen the paper's contributions. Frame constructively as opportunities, not gaps.
+## The Paper Would Be Stronger If You Fixed...
+List improvements that would strengthen the paper's contributions. Frame constructively as actionable fixes.
 
 For each improvement:
-- **Opportunity**: What could be added/improved
+- **Fix**: What specific change to make
 - **Benefit**: How it would strengthen the paper
-- **Suggestion**: How to address it
+- **How**: Concrete steps to implement
 
 ## Minor Gaps (SHOULD ACKNOWLEDGE)
 List gaps that are acceptable for peer-reviewed publication but should be noted in limitations.
