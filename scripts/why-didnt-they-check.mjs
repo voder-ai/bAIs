@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const SKEPTICAL_REVIEWER_PROMPT = `You are a skeptical peer reviewer reading this paper for the first time. Your job is to identify the "Why didn't they...?" questions that any careful reader would immediately ask.
 
-CONTEXT: This paper studies cognitive biases in LLM code generation. The experiments involve prompting models to generate code for various tasks.
+CONTEXT: This paper studies cognitive biases in LLMs using judgment tasks (judicial sentencing scenarios adapted from psychology literature).
 
 IDENTIFY METHODOLOGICAL GAPS in these categories:
 
