@@ -8,12 +8,13 @@
 import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 
-const MODEL = 'github-copilot/gpt-4o';
 const TEMPERATURE = parseFloat(process.argv[2] || '1.0');
+const MODEL = process.argv[3] || 'github-copilot/gpt-4o';
 const N_PER_ANCHOR = 15;
 const DELAY_MS = 2000;
 
-const OUTPUT_FILE = `results/gpt4o-generic-reflection-temp${TEMPERATURE}.jsonl`;
+const MODEL_TAG = MODEL.split('/').pop()?.replace(/[^a-zA-Z0-9-]/g, '-') ?? 'model';
+const OUTPUT_FILE = `results/${MODEL_TAG}-generic-reflection-temp${TEMPERATURE}.jsonl`;
 
 const BASE_PROMPT = `You are a judge in a court case. A defendant has been found guilty of shoplifting.
 

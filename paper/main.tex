@@ -485,7 +485,9 @@ Temperature & Baseline Effect & CoT Effect & Reduction & Pattern \\
 
 \textbf{Key finding:} CoT debiasing effectiveness is \textbf{non-monotonic with temperature}. There is a ``dead zone'' at temp=0.7 where CoT provides no benefit over baseline. At temp=1.0, CoT achieves stronger debiasing (72\%) than at temp=0 (66\%). Critically, baseline anchoring remains stable across temperatures ($\sim$6mo), confirming that CoT---not temperature alone---is the debiasing mechanism at temp=1.0.
 
-\textbf{Implications:} (1) Debiasing findings are not artifacts of deterministic sampling. (2) Temperature interacts with debiasing interventions in unexpected ways. (3) Practitioners should test debiasing at their target temperature, not assume transfer from temp=0.
+\textbf{Additional replication (Opus 4.5, temp=0.7):} We ran a targeted top-up replication of generic reflection at temp=0.7 on Opus 4.5 ($n=27$ valid: low $n=15$, high $n=12$). The observed effect was 1.48 months (low mean 0.27, high mean 1.75), indicating debiasing signal persisted rather than collapsing to a GPT-4o-style dead zone at 0.7.
+
+\textbf{Implications:} (1) Debiasing findings are not artifacts of deterministic sampling. (2) Temperature interacts with debiasing interventions in model-specific ways. (3) Practitioners should test debiasing at their target temperature and model, not assume transfer from temp=0 or across providers.
 
 \subsubsection{SACD Pathological Outputs on Llama 3.3}
 
@@ -773,7 +775,11 @@ In our tested models, debiasing techniques designed for human decision-making sh
 
 \subsection{Iterative Self-Correction Was Effective in Our Tests}
 
-SACD outperformed static prompt interventions in our GPT-4o experiments. However, our generic reflection control (Section~\ref{sec:generic-reflection}) revealed that SACD's effectiveness is \emph{not} due to its bias-specific content. Generic prompts (``think step by step,'' ``review your answer'') with the same multi-turn structure achieved 66\% reduction vs.\ SACD's 45\%. This suggests the mechanism is simply increased reasoning tokens and iterative reflection, not targeted cognitive debiasing. \textbf{Implication:} Future debiasing research must include length-matched and structure-matched controls to isolate intervention-specific effects from general reflection benefits.
+SACD outperformed static prompt interventions in our GPT-4o experiments. However, our generic reflection control (Section~\ref{sec:generic-reflection}) revealed that SACD's effectiveness is \emph{not} due to its bias-specific content. Generic prompts (``think step by step,'' ``review your answer'') with the same multi-turn structure achieved 66\% reduction vs.\ SACD's 45\%. This suggests the mechanism is primarily increased reasoning process rather than SACD-specific psychology framing.
+
+\textbf{Turn/length confound reporting:} Generic reflection in our protocol uses a fixed 4-step interaction (initial answer + review + step-by-step reflection + final answer). SACD uses iterative rewriting with variable internal iterations (typically 2 in our Sonnet SACD logs), producing substantially longer outputs by design. We therefore treat SACD-vs-generic comparisons as process-level comparisons, not clean content-only comparisons.
+
+\textbf{Implication:} Future debiasing research must include length-matched and structure-matched controls (or explicit token-budget controls) to isolate intervention-specific effects from general reflection benefits.
 
 \subsection{Preliminary Hypothesis: Two Patterns Observed in Our Tested Models}
 
