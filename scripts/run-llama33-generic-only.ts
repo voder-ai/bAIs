@@ -20,11 +20,11 @@ Respond ONLY with valid JSON:
 async function main() {
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec, 0);
-  
+
   for (const anchor of [3, 9]) {
     const conditionId = anchor === 3 ? 'low-anchor-3mo' : 'high-anchor-9mo';
     console.log(`--- Anchor: ${anchor}mo ---`);
-    
+
     for (let i = 0; i < RUNS; i++) {
       const prompt = GENERIC_COT_TEMPLATE.replace('{anchor}', String(anchor));
       try {
@@ -32,18 +32,23 @@ async function main() {
         const match = text.match(/\{[\s\S]*\}/);
         if (match) {
           const parsed = JSON.parse(match[0]);
-          console.log(`  [${i+1}/${RUNS}] ${parsed.sentenceMonths}mo`);
-          await appendFile(OUT, JSON.stringify({
-            conditionType: 'generic-cot',
-            conditionId,
-            anchor,
-            result: parsed,
-            model: MODEL,
-            timestamp: new Date().toISOString()
-          }) + '\n');
+          console.log(`  [${i + 1}/${RUNS}] ${parsed.sentenceMonths}mo`);
+          await appendFile(
+            OUT,
+            JSON.stringify({
+              conditionType: 'generic-cot',
+              conditionId,
+              anchor,
+              result: parsed,
+              model: MODEL,
+              timestamp: new Date().toISOString(),
+            }) + '\n',
+          );
         }
-      } catch (e) { console.error(`  Error:`, e); }
-      await new Promise(r => setTimeout(r, DELAY_MS));
+      } catch (e) {
+        console.error(`  Error:`, e);
+      }
+      await new Promise((r) => setTimeout(r, DELAY_MS));
     }
   }
   console.log('Done!');
