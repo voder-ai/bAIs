@@ -35,11 +35,6 @@ const REVIEW_PROMPT = `You are a rigorous academic peer reviewer for a top-tier 
 
 ${TEMPORAL_CONTEXT}
 
-IMPORTANT CONTEXT:
-- This is an **LLM-only study** — it does NOT claim to compare LLMs to humans
-- Do NOT flag "no human baseline" as an issue — the paper explicitly studies LLM behavior in isolation
-- Human studies from literature are cited for context, not as direct comparisons
-
 REVIEW CRITERIA:
 1. **Claims vs Evidence**: Are all quantitative claims supported by data? Any invented numbers?
 2. **Methodology**: Is the experimental design sound? Are there confounds?
@@ -65,8 +60,8 @@ Provide your review in this format:
 ## Criterion Assessments
 [List each criterion with rating and brief explanation]
 
-## Stronger If...
-[List suggestions that would strengthen the paper — frame constructively, not as blockers]
+## The Paper Would Be Stronger If You Fixed...
+[List specific issues that should be addressed, with concrete suggestions for how to fix each one]
 
 ## Minor Suggestions
 [Optional improvements]
