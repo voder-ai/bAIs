@@ -33,7 +33,7 @@
 
 \textbf{Main finding:} Psychology-inspired debiasing techniques offer no advantage over generic reflection. On GPT-4o (baseline: 6.0 months anchoring effect), Self-Adaptive Cognitive Debiasing (SACD)---an iterative bias-detection loop---achieved 45\% reduction. But a structure-matched control using generic prompts (``think step by step,'' ``review your answer'') achieved \textbf{66\% reduction}. The control outperformed the intervention. This suggests debiasing effects stem from increased reasoning tokens, not psychology-specific content. Future debiasing research must include length-matched controls.
 
-\textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels. GPT-4o showed 6.0 months effect (2.93$\times$ Englich et al.\footnote{Human baseline from \citet{englich2006}. Our prompts differ; ratio is approximate.}), Claude Opus 4 showed 2.0 months (0.98$\times$), Sonnet 4 showed 0.0 months (no bias).
+\textbf{Replication:} LLMs exhibit anchoring bias in the judicial sentencing paradigm. GPT-4o showed 6.0 months effect, Claude Opus 4 showed 2.0 months, Sonnet 4 showed 0.0 months (no bias). For context, \citet{englich2006} observed 2.05 months in humans, but our prompts differ from theirs---direct comparison is not valid.
 
 \textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). Unlike human bias with variance, LLM bias is a fixed function of weights and prompt---100\% consistent, more predictable to audit but more consequential when present.
 
@@ -240,13 +240,7 @@ Variance in our measurements arises from prompt and scenario variation across 30
 
 \textbf{Observed ranges.} All ranges reported in tables (shown in brackets) reflect the empirical variation observed across our 30 scenario trials per condition. Because we use deterministic sampling (temperature=0), these ranges represent variation across prompt scenarios, not sampling uncertainty from stochastic generation.
 
-\textbf{``vs Human'' multiplier.} The ``vs Human'' column in cross-model tables represents the ratio of the model's observed anchoring difference to the human baseline difference from \citet{englich2006}:
-\[
-\text{vs Human} = \frac{\text{Diff}_{\text{model}}}{\text{Diff}_{\text{human}}} = \frac{\text{Diff}_{\text{model}}}{2.05\text{ mo}}
-\]
-Values $>1$ indicate stronger observed anchoring than humans; values $<1$ indicate weaker observed anchoring.
-
-\textbf{Important limitation:} This ``vs Human'' comparison is approximate. Our prompts differ from the original Englich et al. (2006) materials (simplified vignettes, different phrasing), and we did not run human participants on our exact prompts. The human baseline serves as a reference point for magnitude, not a matched comparison. Claims about models being ``more biased than humans'' should be interpreted with this caveat.
+\textbf{No ``vs Human'' comparisons.} We do not report comparisons to human baselines. Our prompts differ from the original \citet{englich2006} materials, and we did not run human participants on our exact prompts. Any ratio would be comparing different experimental conditions. For context, Englich et al. observed 2.05 months anchoring effect in humans, but this is not directly comparable to our results.
 
 \textbf{Cross-model comparisons.} For models where we ran fewer trials (marked with $^\dagger$ in tables), observed ranges are estimated from pooled variance across models with complete data. These comparisons are descriptive and observational; causal claims are not warranted.
 
@@ -277,41 +271,38 @@ Values $>1$ indicate stronger observed anchoring than humans; values $<1$ indica
 
 \textbf{Note on Codex:} Early experiments (baseline anchoring, Sibony techniques, SACD on moderate bias) used OpenAI Codex, which has since been deprecated. These results demonstrate technique efficacy on a historical model but may not transfer to current models. Our GPT-4o experiments (Section~\ref{sec:gpt4o-debiasing}) provide more current validation.
 
-Without debiasing interventions, our baseline model (Codex) showed anchoring bias at $1.79\times$ human levels:
+Without debiasing interventions, our baseline model (Codex) showed substantial anchoring bias (3.67mo effect):
 
 \begin{table}[H]
 \centering
 \begin{tabular}{lcccccc}
 \toprule
-Condition & Low Anchor & High Anchor & Diff & Obs. Range & Cohen's $d$ & vs Human \\
+Condition & Low Anchor & High Anchor & Diff & Obs. Range & Cohen's $d$ \\
 \midrule
-Human \citep{englich2006} & 4.00 mo & 6.05 mo & 2.05 mo & --- & --- & --- \\
-LLM Baseline (Codex) & $5.33 \pm 0.96$ & $9.00 \pm 0.83$ & 3.67 mo & [3.23, 4.10] & 4.09 & $1.79\times$ \\
+LLM Baseline (Codex) & $5.33 \pm 0.96$ & $9.00 \pm 0.83$ & 3.67 mo & [3.23, 4.10] & 4.09 \\
 \bottomrule
 \end{tabular}
-\caption{Baseline anchoring bias comparison between humans and LLMs. LLM values show mean $\pm$ SD ($n=30$). Observed range is for the \emph{difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$), indicating a substantial observed anchoring effect in these trials.}
+\caption{Baseline anchoring bias in Codex. Values show mean $\pm$ SD ($n=30$). Observed range is for the \emph{difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$). For context, \citet{englich2006} observed 2.05mo in humans on different prompts.}
 \label{tab:baseline}
 \end{table}
 
 \subsection{Sibony Debiasing Techniques}
 
-Both techniques show notable reduction in anchoring bias when tested on Codex (baseline: 3.67mo anchoring effect, $1.79\times$ human):
+Both techniques show notable reduction in anchoring bias when tested on Codex (baseline: 3.67mo anchoring effect):
 
 \begin{table}[H]
 \centering
 \begin{tabular}{lccccc}
 \toprule
-Technique & Diff & Obs. Range & Cohen's $d$ & Reduction vs Baseline & vs Human \\
+Technique & Diff & Obs. Range & Cohen's $d$ & Reduction vs Baseline \\
 \midrule
-Context Hygiene & 2.67 mo & [2.07, 3.27] & 2.74 & $-27\%$ & $\approx 1.30\times$ \\
-Premortem & 2.80 mo & [2.17, 3.43] & 2.88 & $-24\%$ & $\approx 1.37\times$ \\
+Context Hygiene & 2.67 mo & [2.07, 3.27] & 2.74 & $-27\%$ \\
+Premortem & 2.80 mo & [2.17, 3.43] & 2.88 & $-24\%$ \\
 \bottomrule
 \end{tabular}
-\caption{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). Observed ranges reflect scenario variation. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention.}
+\caption{Effect of Sibony debiasing techniques on anchoring bias in Codex ($n=30$ per condition). Observed ranges reflect scenario variation. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention.}
 \label{tab:sibony}
 \end{table}
-
-Context hygiene closes approximately 62\% of the gap between LLM and human performance in our observations, though observed ranges overlap with both baseline and human levels.
 
 \subsection{SACD Results}
 
@@ -334,7 +325,7 @@ The negative difference suggests slight overcorrection---the model moves away fr
 
 \subsection{GPT-4o Debiasing: SACD as the Only Effective Technique}
 
-To test whether debiasing techniques transfer to models with strong baseline bias, we ran a comprehensive debiasing experiment on GPT-4o (baseline: 6.0mo, $2.93\times$ human):
+To test whether debiasing techniques transfer to models with strong baseline bias, we ran a comprehensive debiasing experiment on GPT-4o (baseline: 6.0mo effect):
 
 \begin{table}[H]
 \centering
@@ -399,18 +390,16 @@ Cross-model comparison reveals varying anchoring susceptibility across our teste
 \centering
 \begin{tabular}{lcccccc}
 \toprule
-Model & Family & n (valid) & Anchoring Effect & vs Human & Behavior \\
+Model & Family & n (valid) & Anchoring Effect & Behavior \\
 \midrule
-Sonnet 4 & Anthropic & 60 & 0.00 mo & $0\times$ & No bias \\
-Claude Opus 4 & Anthropic & 60 & 2.00 mo & $0.98\times$ & Moderate bias \\
-Mistral (7B) & Mistral AI & 52 & 0.00 mo & $0\times$ & No bias \\
-Hermes 3 (405B) & Nous/Meta & 60 & $-0.33$ mo & $\approx 0\times$ & No bias \\
-Llama 3.3 (70B) & Meta & 60 & 1.10 mo & $0.54\times$ & Weak bias \\
-Nemotron (30B) & NVIDIA & 75 & 3.00 mo & $1.46\times$ & Moderate bias \\
-Sonnet 4.5 & Anthropic & 60 & 3.00 mo & $1.46\times$ & Soft bias \\
-GPT-4o & OpenAI & 60 & 6.00 mo & $2.93\times$ & Strong bias \\
-\midrule
-Human baseline & --- & --- & 2.05 mo & $1.00\times$ & Englich 2006 \\
+Sonnet 4 & Anthropic & 60 & 0.00 mo & No bias \\
+Claude Opus 4 & Anthropic & 60 & 2.00 mo & Moderate bias \\
+Mistral (7B) & Mistral AI & 52 & 0.00 mo & No bias \\
+Hermes 3 (405B) & Nous/Meta & 60 & $-0.33$ mo & No bias \\
+Llama 3.3 (70B) & Meta & 60 & 1.10 mo & Weak bias \\
+Nemotron (30B) & NVIDIA & 75 & 3.00 mo & Moderate bias \\
+Sonnet 4.5 & Anthropic & 60 & 3.00 mo & Moderate bias \\
+GPT-4o & OpenAI & 60 & 6.00 mo & Strong bias \\
 \bottomrule
 \end{tabular}
 \caption{Cross-model anchoring bias, sorted by effect magnitude. \textbf{Five provider families tested} with 1--2 models each. Observed pattern in our prompts: OpenAI (strong) $\to$ NVIDIA (moderate) $\to$ Meta (weak) $\to$ Anthropic/Mistral (none). \textbf{Caution:} Unequal sample sizes and single prompt template limit generalizability.}
@@ -423,9 +412,9 @@ Human baseline & --- & --- & 2.05 mo & $1.00\times$ & Englich 2006 \\
     \item \textbf{Observed pattern (not validated):} Across 5 provider families with 1--2 models each, we observe varying susceptibility:
     \begin{itemize}
         \item \textbf{No bias:} Anthropic Sonnet 4, Mistral AI (Mistral 7B)
-        \item \textbf{Weak bias ($<1.5\times$ human):} Meta (Llama 3.3, Hermes 405B)
-        \item \textbf{Moderate bias ($\approx 1\times$ human):} Anthropic (Opus 4), NVIDIA (Nemotron)
-        \item \textbf{Strong bias ($>2\times$ human):} OpenAI (GPT-4o)
+        \item \textbf{Weak bias ($<1.5$ months):} Meta (Llama 3.3, Hermes 405B)
+        \item \textbf{Moderate bias ($2$--$3$ months):} Anthropic (Opus 4), NVIDIA (Nemotron)
+        \item \textbf{Strong bias ($>5$ months):} OpenAI (GPT-4o)
     \end{itemize}
     
     \item \textbf{Open-weights models show mixed results:} Llama 3.3 (Meta) shows weak bias (1.0mo), while Mistral shows none. This suggests open-weights training alone does not determine bias susceptibility---fine-tuning methodology matters.
@@ -454,7 +443,7 @@ To assess whether model knowledge of anchoring bias explains the observed differ
 \toprule
 Model & Knows Study? & Predicts Pattern? & Exhibits Bias? \\
 \midrule
-GPT-4o & \checkmark Yes & \checkmark Correctly & $\times$ \textbf{6.0mo (2.93$\times$ human)} \\
+GPT-4o & \checkmark Yes & \checkmark Correctly & $\times$ \textbf{6.0mo effect} \\
 Sonnet 4 & \checkmark Yes & \checkmark Correctly & \checkmark \textbf{0.0mo (immune)} \\
 \bottomrule
 \end{tabular}
@@ -602,17 +591,17 @@ To test whether GPT-4o's ``hard bias'' is similarly prompt-sensitive, we ran sys
 \centering
 \begin{tabular}{lccccc}
 \toprule
-Prompt Style & Anchoring Effect & Obs. Range & SD & vs Baseline & vs Human \\
+Prompt Style & Anchoring Effect & Obs. Range & SD & vs Baseline \\
 \midrule
-Original (casual) & 5.7 mo & [4.8, 6.6] & 0.91 & --- & $2.78\times$ \\
-Formal/structured & 4.3 mo & [3.5, 5.1] & 0.82 & $-25\%$ & $2.10\times$ \\
+Original (casual) & 5.7 mo & [4.8, 6.6] & 0.91 & --- \\
+Formal/structured & 4.3 mo & [3.5, 5.1] & 0.82 & $-25\%$ \\
 \bottomrule
 \end{tabular}
-\caption{Prompt robustness testing for GPT-4o ($n=30$ per condition). Unlike Sonnet 4 (92\% reduction from paraphrasing), GPT-4o shows only 25\% reduction---anchoring persists across prompt styles, consistent with ``hard bias'' classification.}
+\caption{Prompt robustness testing for GPT-4o ($n=30$ per condition). Unlike Sonnet 4 (92\% reduction from paraphrasing), GPT-4o shows only 25\% reduction---anchoring persists across prompt styles.}
 \label{tab:gpt4o-robustness}
 \end{table}
 
-The formal prompt used more structured language (numbered steps, explicit role framing) but identical logical content. While this reduced anchoring by 25\%, the effect remained substantial ($>2\times$ human levels), confirming that GPT-4o's anchoring bias is resistant to surface-level prompt modifications.
+The formal prompt used more structured language (numbered steps, explicit role framing) but identical logical content. While this reduced anchoring by 25\%, the effect remained substantial (4.5mo), confirming that GPT-4o's anchoring bias is resistant to surface-level prompt modifications.
 
 \subsection{Novel Anchoring Scenarios Show Consistent Bias}
 
