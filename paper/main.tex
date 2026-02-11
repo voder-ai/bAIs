@@ -384,26 +384,28 @@ SACD (bias-specific) & 3.13 mo & 6.43 mo & 3.30 mo & 45\% \\
 
 \subsubsection{Cross-Model Replication: Generic Reflection is Model-Specific}
 
-To test whether the GPT-4o finding generalizes, we ran the same generic reflection experiment on Sonnet 4 (\texttt{claude-sonnet-4-20250514}), which has no baseline anchoring bias:
+To test whether the GPT-4o finding generalizes, we ran the same generic reflection experiment on four models with varying baseline bias:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccc}
 \toprule
-Model & Baseline & SACD Effect & Generic Reflection Effect & Better Technique \\
+Model & Baseline & Generic Reflection Effect & Reduction & Pattern \\
 \midrule
-GPT-4o (biased) & 6.0 mo & 3.30 mo (45\% $\downarrow$) & 2.03 mo (66\% $\downarrow$) & Generic \\
-Sonnet 4 (unbiased) & 0.0 mo & $\sim$0 mo & \textbf{3.07 mo} ($\uparrow$) & SACD \\
+GPT-4o & 6.0 mo & 2.03 mo & 66\% $\downarrow$ & Helps \\
+Opus 4.5 & 5.0 mo & 1.24 mo & 75\% $\downarrow$ & Helps \\
+Sonnet 4.5 & 3.0 mo & 0.10 mo & 97\% $\downarrow$ & Helps \\
+Sonnet 4 (dated) & 0.0 mo & \textbf{3.07 mo} & $\uparrow$ & \textbf{Hurts} \\
 \bottomrule
 \end{tabular}
-\caption{Generic reflection is model-specific ($n=30$ per condition). On biased models (GPT-4o), generic reflection reduces bias. On unbiased models (Sonnet 4), it \emph{introduces} bias where none existed.}
+\caption{Generic reflection across 4 models. On biased models, generic reflection reduces bias (66--97\%). On Sonnet 4 (no baseline bias), it \emph{introduces} 3.07mo bias.}
 \label{tab:generic-reflection-crossmodel}
 \end{table}
 
 \textbf{Key finding:} Generic reflection is a double-edged sword:
 \begin{itemize}
-    \item On \textbf{biased models} (GPT-4o): Generic reflection reduces anchoring (66\% improvement)
-    \item On \textbf{unbiased models} (Sonnet 4): Generic reflection \emph{introduces} anchoring (3.07mo effect where baseline was 0.0mo)
+    \item On \textbf{biased models} (GPT-4o, Opus 4.5, Sonnet 4.5): Generic reflection reduces anchoring (66--97\% improvement)
+    \item On \textbf{unbiased models} (Sonnet 4 dated): Generic reflection \emph{introduces} anchoring (3.07mo effect where baseline was 0.0mo)
 \end{itemize}
 
 \textbf{Implication:} Blanket ``think step by step'' advice is not universally beneficial. On models that already exhibit no bias, extended reasoning can introduce bias that wasn't present. SACD's psychology-specific framing appears protective---it does not induce bias on unbiased models. This suggests debiasing strategy should be tailored to model-specific bias profiles.
@@ -795,7 +797,7 @@ Several directions warrant investigation:
 
 \textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on two models (GPT-4o, Sonnet 4), single prompt template for cross-model comparisons.
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on four models, single prompt template for cross-model comparisons.
 
 \section*{Ethics Statement}
 
