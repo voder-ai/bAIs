@@ -436,7 +436,7 @@ Sonnet 4 & \checkmark Yes & \checkmark Correctly & \checkmark \textbf{0.0mo (imm
     \item \textbf{Mirrors human decision-making research:} This finding directly parallels \citet{sibony2019}'s observation that human awareness of cognitive biases is insufficient to overcome them without structured intervention. GPT-4o behaves like humans who ``know about'' anchoring but still fall prey to it.
 \end{enumerate}
 
-This knowledge-behavior dissociation provides additional evidence that the soft/hard bias distinction (discussed in Section~\ref{sec:soft-hard}) reflects genuine differences in how models process and apply meta-knowledge, not merely differences in training exposure.
+This knowledge-behavior dissociation is \emph{consistent with} (though does not prove) our preliminary soft/hard hypothesis (Section~\ref{sec:soft-hard})---but alternative explanations remain possible.
 
 \subsection{Complete Sonnet 4.5 Bias Profile}
 
@@ -673,7 +673,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 \begin{itemize}
     \item Cross-model validation spans multiple provider families (Anthropic, OpenAI, Meta, Nvidia, others) but may not generalize to all architectures
     \item Ecological validity: Stylized sentencing scenarios may not reflect real-world deployment contexts where LLMs make consequential decisions
-    \item Training contamination is partially addressed by our contamination probe (Section above): both GPT-4o and Sonnet 4 demonstrated familiarity with the Englich et al. study, yet exhibited opposite behaviors. This suggests contamination alone does not explain the soft/hard distinction---other factors (architecture, training objectives, meta-cognitive application) must be involved
+    \item Training contamination: Our contamination probe found both GPT-4o and Sonnet 4 demonstrated familiarity with the Englich et al. study, yet exhibited opposite behaviors. This is \emph{consistent with} contamination not being the sole explanation, but does not rule out other confounds
     \item This study focused on natural-language judgment tasks; code-domain experiments (e.g., anchoring in line count or complexity estimates) are left for future work
 \end{itemize}
 
