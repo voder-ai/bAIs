@@ -451,24 +451,26 @@ Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
 \subsubsection{Temperature Sensitivity of Debiasing}
 \label{sec:debiasing-temp}
 
-All primary debiasing experiments used temperature=0. To test whether debiasing effectiveness transfers to higher temperatures, we ran generic reflection on GPT-4o at temp=1.0:
+All primary debiasing experiments used temperature=0. To test whether debiasing effectiveness transfers to higher temperatures, we ran both baseline and generic reflection (CoT) on GPT-4o at temp=0.7 and temp=1.0:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Condition & Low Anchor & High Anchor & Effect & Reduction \\
+Temperature & Baseline Effect & CoT Effect & Reduction & Pattern \\
 \midrule
-Baseline (temp=0) & $\sim$3 mo & $\sim$9 mo & 6.0 mo & --- \\
-CoT (temp=0) & --- & --- & 2.03 mo & 66\% \\
-\textbf{CoT (temp=1.0)} & 0.46 mo & 2.13 mo & \textbf{1.67 mo} & \textbf{72\%} \\
+0 & 6.0 mo & 2.03 mo & 66\% & CoT helps \\
+0.7 & 6.0 mo & 6.0 mo & \textbf{0\%} & \textbf{CoT fails} \\
+1.0 & 5.9 mo & 1.67 mo & \textbf{72\%} & CoT helps more \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing at temp=1.0 on GPT-4o ($n=28$ valid trials). Generic reflection achieves \emph{stronger} debiasing at temp=1.0 (72\%) than temp=0 (66\%). Debiasing effectiveness is not limited to deterministic sampling.}
+\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), works \emph{best} at temp=1.0 (72\%).}
 \label{tab:debiasing-temp}
 \end{table}
 
-\textbf{Key finding:} Debiasing works \emph{better} at temp=1.0 than temp=0 on GPT-4o. This addresses a methodological concern: our debiasing findings are not artifacts of deterministic sampling. At higher temperatures (which introduce response variation), generic reflection achieves even stronger bias reduction.
+\textbf{Key finding:} CoT debiasing effectiveness is \textbf{non-monotonic with temperature}. There is a ``dead zone'' at temp=0.7 where CoT provides no benefit over baseline. At temp=1.0, CoT achieves stronger debiasing (72\%) than at temp=0 (66\%). Critically, baseline anchoring remains stable across temperatures ($\sim$6mo), confirming that CoT---not temperature alone---is the debiasing mechanism at temp=1.0.
+
+\textbf{Implications:} (1) Debiasing findings are not artifacts of deterministic sampling. (2) Temperature interacts with debiasing interventions in unexpected ways. (3) Practitioners should test debiasing at their target temperature, not assume transfer from temp=0.
 
 \subsubsection{SACD Pathological Outputs on Llama 3.3}
 
