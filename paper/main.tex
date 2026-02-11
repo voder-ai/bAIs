@@ -127,11 +127,11 @@ GPT-4o & 60 & 60 & 0 & Via GitHub Copilot \\
 Opus 4 & 60 & 60 & 0 & --- \\
 Nemotron 30B & 85 & 75 & 10 & Base + topup runs \\
 Hermes 405B & 70 & 60 & 10 & Base + topup runs \\
-Llama 3.3 70B & 95 & 60 & 35 & High parse failure rate \\
+Llama 3.3 70B & 60 & 60 & 0 & Paid OpenRouter tier \\
 Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
 \bottomrule
 \end{tabular}
-\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Models with high exclusion rates (Llama, Mistral) had difficulty following JSON output format; exclusions are scenario-independent.}
+\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent.}
 \label{tab:sample-sizes}
 \end{table}
 
@@ -422,7 +422,7 @@ Sonnet 4 & Anthropic & 60 & 0.00 mo & No bias \\
 Claude Opus 4 & Anthropic & 60 & 2.00 mo & Moderate bias \\
 Mistral (7B) & Mistral AI & 52 & 0.00 mo & No bias \\
 Hermes 3 (405B) & Nous/Meta & 60 & $-0.33$ mo & No bias \\
-Llama 3.3 (70B) & Meta & 60 & 1.10 mo & Weak bias \\
+Llama 3.3 (70B) & Meta & 60 & 0.00 mo & No bias \\
 Nemotron (30B) & NVIDIA & 75 & 3.00 mo & Moderate bias \\
 Sonnet 4.5 & Anthropic & 60 & 3.00 mo & Moderate bias \\
 GPT-4o & OpenAI & 60 & 6.00 mo & Strong bias \\
@@ -437,13 +437,12 @@ GPT-4o & OpenAI & 60 & 6.00 mo & Strong bias \\
 \begin{enumerate}
     \item \textbf{Observed pattern (not validated):} Across 5 provider families with 1--2 models each, we observe varying susceptibility:
     \begin{itemize}
-        \item \textbf{No bias:} Anthropic Sonnet 4, Mistral AI (Mistral 7B)
-        \item \textbf{Weak bias ($<1.5$ months):} Meta (Llama 3.3, Hermes 405B)
+        \item \textbf{No bias:} Anthropic Sonnet 4, Mistral AI (Mistral 7B), Meta (Llama 3.3, Hermes 405B)
         \item \textbf{Moderate bias ($2$--$3$ months):} Anthropic (Opus 4), NVIDIA (Nemotron)
         \item \textbf{Strong bias ($>5$ months):} OpenAI (GPT-4o)
     \end{itemize}
     
-    \item \textbf{Open-weights models show mixed results:} Llama 3.3 (Meta) shows weak bias (1.0mo), while Mistral shows none. This suggests open-weights training alone does not determine bias susceptibility---fine-tuning methodology matters.
+    \item \textbf{Open-weights models resist anchoring:} Both Llama 3.3 (Meta) and Mistral show 0.0mo effect. This suggests open-weights training may correlate with anchoring resistance, though our sample of two models cannot establish causation.
     
     \item \textbf{Cross-generational difference confirmed:} Sonnet 4.5 shows 3.0mo effect while Sonnet 4 (legacy) shows 0.0mo on identical prompts. These are different model generations with qualitatively different anchoring behavior.
     
@@ -545,16 +544,16 @@ GPT-4o & OpenAI & 6.00 mo & 6.00 mo & 6.00 mo & \textbf{HARD} \\
 GPT-4.1 & OpenAI & 3.10 mo & 3.20 mo & 3.20 mo & \textbf{HARD} \\
 Opus 4.5 & Anthropic & 5.00 mo & 5.00 mo & 5.00 mo & \textbf{HARD} \\
 Sonnet 4.5 & Anthropic & 3.00 mo & --- & \textbf{0 mo} & \textbf{SOFT} \\
-Llama 3.3 & Meta & 0.50 mo & --- & --- & \textbf{SOFT} \\
+Llama 3.3 & Meta & 0.00 mo & --- & --- & \textbf{SOFT} \\
 \bottomrule
 \end{tabular}
-\caption{Temperature sensitivity across 5 models ($n=20$ per temperature). HARD models show constant bias regardless of temperature. SOFT models show low or decreasing bias. Llama 3.3 baseline from existing data ($n=49$, 50\% valid responses due to OpenRouter reliability issues).}
+\caption{Temperature sensitivity across 5 models ($n=20$ per temperature). HARD models show constant bias regardless of temperature. SOFT models show low or decreasing bias. Llama 3.3 baseline from paid OpenRouter tier ($n=60$).}
 \label{tab:soft-hard}
 \end{table}
 
 \textbf{``Hard bias'' pattern} (observed in GPT-4o, GPT-4.1, Opus 4.5): Bias magnitude remains constant regardless of temperature (0→0.5→1.0). Three models across two providers (OpenAI, Anthropic) show this pattern. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
 
-\textbf{``Soft bias'' pattern} (observed in Sonnet 4.5, Llama 3.3): Bias is low at baseline or decreases with temperature. Sonnet 4.5 shows 100\% reduction at temp=1.0. Llama 3.3 shows only 0.5mo baseline effect. Two models across two providers (Anthropic, Meta) show this pattern.
+\textbf{``Soft bias'' pattern} (observed in Sonnet 4.5, Llama 3.3): Bias is low at baseline or decreases with temperature. Sonnet 4.5 shows 100\% reduction at temp=1.0. Llama 3.3 shows 0.0mo baseline effect. Two models across two providers (Anthropic, Meta) show this pattern.
 
 \textbf{Observed values:} Each model produced consistent outputs across all trials:
 \begin{itemize}
@@ -721,7 +720,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
     \item \textbf{No human/random baseline for debiasing:} Debiasing effectiveness was measured against no-intervention LLM baseline, not against human debiasing rates or random response distributions. We cannot claim debiasing brings LLM performance to ``human level'' without human data on our specific debiasing prompts
     \item \textbf{SACD task-framing trade-off:} In preliminary testing, SACD's iterative context rewriting occasionally stripped essential task framing along with the anchoring cue. For judicial scenarios, aggressive debiasing sometimes triggered safety refusals---models refused to roleplay as judges after SACD removed the roleplay context. This suggests a fundamental tension in debiasing interventions: too weak leaves bias intact; too aggressive causes task failure. Future work should explore targeted debiasing that preserves task-essential framing while removing bias-inducing elements
     \item \textbf{Novel scenarios without human baseline:} Our novel scenario experiments lack human participant data for comparison---we cannot verify whether these scenarios produce the same bias magnitudes in humans as the original Englich et al. paradigm
-    \item \textbf{Retry fraction not tracked:} Our parsing logic allowed up to 3 retries for malformed responses, but we did not record the fraction of trials requiring retries. Exclusion counts are reported in Table~\ref{tab:sample-sizes}. Models with high exclusion rates (Llama: 35/95 = 37\%; Mistral: 68/120 = 57\%) had difficulty following JSON output format. We assume exclusions are scenario-independent (formatting failures, not content-dependent), but cannot verify this without retry logs. Future work should log retry counts per condition.
+    \item \textbf{Retry fraction not tracked:} Our parsing logic allowed up to 3 retries for malformed responses, but we did not record the fraction of trials requiring retries. Exclusion counts are reported in Table~\ref{tab:sample-sizes}. Mistral had high exclusion rate (68/120 = 57\%) due to difficulty following JSON output format. We assume exclusions are scenario-independent (formatting failures, not content-dependent), but cannot verify this without retry logs. Future work should log retry counts per condition.
 \end{itemize}
 
 \textbf{Generalizability:}

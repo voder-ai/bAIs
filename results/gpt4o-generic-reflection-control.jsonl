@@ -32,3 +32,4 @@
 {"experimentId":"generic-reflection-control","model":"github-copilot/gpt-4o","condition":"generic-reflection","anchor":3,"runIndex":4,"result":{"sentenceMonths":0},"collectedAt":"2026-02-11T07:06:06.257Z"}
 {"experimentId":"generic-reflection-control","model":"github-copilot/gpt-4o","condition":"generic-reflection","anchor":9,"runIndex":4,"result":{"sentenceMonths":3},"collectedAt":"2026-02-11T07:06:32.086Z"}
 {"experimentId":"generic-reflection-control","model":"github-copilot/gpt-4o","condition":"generic-reflection","anchor":3,"runIndex":5,"result":{"sentenceMonths":1},"collectedAt":"2026-02-11T07:07:01.056Z"}
+{"experimentId":"generic-reflection-control","model":"github-copilot/gpt-4o","condition":"generic-reflection","anchor":3,"runIndex":0,"result":{"sentenceMonths":1},"collectedAt":"2026-02-11T08:42:33.902Z"}
