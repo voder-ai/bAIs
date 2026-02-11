@@ -28,12 +28,14 @@
 \citation{arkes1985}
 \citation{binz2023}
 \citation{lou2024}
+\citation{chen2025cognitive}
+\citation{maynard2025trojan}
 \citation{sibony2019}
-\citation{lyu2025}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Cognitive Biases in LLMs}{2}{subsection.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Human Debiasing Research}{2}{subsection.2.2}\protected@file@percent }
+\citation{lyu2025}
 \citation{englich2006}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}LLM Debiasing Attempts}{3}{subsection.2.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{3}{section.3}\protected@file@percent }
@@ -49,13 +51,13 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Temperature and Sampling Protocol}{5}{subsection.3.5}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Verification of deterministic output. Same prompt (high anchor, 9mo) queried 5 times on GPT-4o at temp=0. All outputs identical (SD=0). Variance reported in other tables arises from \emph  {scenario variation}, not model stochasticity.}}{5}{table.3}\protected@file@percent }
 \newlabel{tab:determinism-demo}{{3}{5}{Verification of deterministic output. Same prompt (high anchor, 9mo) queried 5 times on GPT-4o at temp=0. All outputs identical (SD=0). Variance reported in other tables arises from \emph {scenario variation}, not model stochasticity}{table.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Scenario Design and Selection}{5}{subsection.3.6}\protected@file@percent }
-\newlabel{sec:scenario-design}{{3.6}{5}{Scenario Design and Selection}{subsection.3.6}{}}
 \citation{englich2006}
-\citation{englich2006}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Scenario Design and Selection}{6}{subsection.3.6}\protected@file@percent }
+\newlabel{sec:scenario-design}{{3.6}{6}{Scenario Design and Selection}{subsection.3.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Analysis}{6}{subsection.3.7}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.1}Variance Source Clarification}{6}{subsubsection.3.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.2}Descriptive Statistics Details}{6}{subsubsection.3.7.2}\protected@file@percent }
+\citation{englich2006}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.2}Descriptive Statistics Details}{7}{subsubsection.3.7.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.3}Why We Do Not Report Inferential Statistics}{7}{subsubsection.3.7.3}\protected@file@percent }
 \newlabel{sec:no-inferential-stats}{{3.7.3}{7}{Why We Do Not Report Inferential Statistics}{subsubsection.3.7.3}{}}
 \citation{englich2006}
@@ -67,8 +69,8 @@
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). Observed ranges reflect scenario variation. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention.}}{8}{table.5}\protected@file@percent }
 \newlabel{tab:sibony}{{5}{8}{Effect of Sibony debiasing techniques on anchoring bias ($n=30$ per condition). Observed ranges reflect scenario variation. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention}{table.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}SACD Results}{8}{subsection.4.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm $ SD. Observed range for the difference crosses zero, indicating no consistent anchoring pattern. Effect size is negligible ($|d| < 0.2$).}}{8}{table.6}\protected@file@percent }
-\newlabel{tab:sacd}{{6}{8}{SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm $ SD. Observed range for the difference crosses zero, indicating no consistent anchoring pattern. Effect size is negligible ($|d| < 0.2$)}{table.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm $ SD. Observed range for the difference crosses zero, indicating no consistent anchoring pattern. Effect size is negligible ($|d| < 0.2$).}}{9}{table.6}\protected@file@percent }
+\newlabel{tab:sacd}{{6}{9}{SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm $ SD. Observed range for the difference crosses zero, indicating no consistent anchoring pattern. Effect size is negligible ($|d| < 0.2$)}{table.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}GPT-4o Debiasing: SACD as the Only Effective Technique}{9}{subsection.4.4}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication). Only SACD achieved measurable reduction. All other techniques showed exactly 0\% reduction---GPT-4o perfectly followed anchors with or without Sibony interventions.}}{9}{table.7}\protected@file@percent }
 \newlabel{tab:gpt4o-debiasing}{{7}{9}{Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication). Only SACD achieved measurable reduction. All other techniques showed exactly 0\% reduction---GPT-4o perfectly followed anchors with or without Sibony interventions}{table.7}{}}
@@ -111,18 +113,20 @@
 \bibdata{references}
 \bibcite{arkes1985}{{1}{1985}{{Arkes and Blumer}}{{}}}
 \bibcite{binz2023}{{2}{2023}{{Binz and Schulz}}{{}}}
-\bibcite{englich2006}{{3}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
-\bibcite{jones2022}{{4}{2022}{{Jones and Steinhardt}}{{}}}
-\bibcite{kahneman1979}{{5}{1979}{{Kahneman and Tversky}}{{}}}
-\bibcite{lim2026}{{6}{2026}{{Lim et~al.}}{{}}}
-\bibcite{lou2024}{{7}{2024}{{Lou and Sun}}{{}}}
-\bibcite{lyu2025}{{8}{2025}{{Lyu et~al.}}{{}}}
-\bibcite{sibony2019}{{9}{2019}{{Sibony}}{{}}}
-\bibcite{tversky1974}{{10}{1974}{{Tversky and Kahneman}}{{}}}
-\bibcite{tversky1981}{{11}{1981}{{Tversky and Kahneman}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Reproducibility Details}{21}{appendix.A}\protected@file@percent }
-\newlabel{app:reproducibility}{{A}{21}{Reproducibility Details}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Experiment Provenance}{21}{subsection.A.1}\protected@file@percent }
+\bibcite{chen2025cognitive}{{3}{2025}{{Chen et~al.}}{{}}}
+\bibcite{englich2006}{{4}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
+\bibcite{jones2022}{{5}{2022}{{Jones and Steinhardt}}{{}}}
+\bibcite{kahneman1979}{{6}{1979}{{Kahneman and Tversky}}{{}}}
+\bibcite{lim2026}{{7}{2026}{{Lim et~al.}}{{}}}
+\bibcite{lou2024}{{8}{2024}{{Lou and Sun}}{{}}}
+\bibcite{lyu2025}{{9}{2025}{{Lyu et~al.}}{{}}}
+\bibcite{maynard2025trojan}{{10}{2025}{{Maynard}}{{}}}
+\bibcite{sibony2019}{{11}{2019}{{Sibony}}{{}}}
+\bibcite{tversky1974}{{12}{1974}{{Tversky and Kahneman}}{{}}}
+\bibcite{tversky1981}{{13}{1981}{{Tversky and Kahneman}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Reproducibility Details}{22}{appendix.A}\protected@file@percent }
+\newlabel{app:reproducibility}{{A}{22}{Reproducibility Details}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Experiment Provenance}{22}{subsection.A.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version.}}{22}{table.15}\protected@file@percent }
 \newlabel{tab:provenance}{{15}{22}{Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version}{table.15}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Sampling Settings}{22}{subsection.A.2}\protected@file@percent }
