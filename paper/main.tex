@@ -65,7 +65,7 @@ We use anchoring bias as our test case because: (a) it is well-documented in bot
 
 The study of cognitive biases has its foundations in the seminal work of Tversky and Kahneman, who documented systematic deviations from rational judgment including anchoring and adjustment heuristics \citep{tversky1974}, prospect theory and loss aversion \citep{kahneman1979}, and framing effects \citep{tversky1981}. Sunk cost effects were later characterized by \citet{arkes1985}.
 
-\citet{binz2023} demonstrated that GPT-3 exhibits many of these same cognitive biases, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models. These findings have important implications for any domain where LLMs assist human decision-making, as biased model outputs can propagate through the human-AI interaction loop. Recent work confirms this concern empirically: \citet{chen2025cognitive} found that 48.8\% of programmer actions in LLM-assisted development showed cognitive bias, with 56.4\% of those biases stemming from LLM interactions. \citet{maynard2025trojan} argues that LLM fluency creates ``honest non-signals''---cues that in humans would indicate competence but in LLMs are costless to produce, potentially bypassing users' epistemic vigilance.
+\citet{binz2023} demonstrated that GPT-3 exhibits many of these same cognitive biases, including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found anchoring bias at $1.7\times$ human levels across multiple models. These findings have important implications for any domain where LLMs assist human decision-making, as biased model outputs can propagate through the human-AI interaction loop. Recent work confirms this concern empirically: \citet{chen2025cognitive} found that 48.8\% of programmer actions in LLM-assisted development showed cognitive bias, with 56.4\% of those biases stemming from LLM interactions. \citet{maynard2025trojan} argues that LLM fluency creates ``honest non-signals''---cues that in humans would indicate competence but in LLMs are costless to produce, potentially bypassing users' epistemic vigilance. Complementary work by \citet{alessa2025} measures bias \emph{induced in humans} by LLM-generated content, finding users 32\% more likely to purchase products after reading LLM summaries vs.\ original reviews---suggesting bias compounds through the human-AI loop.
 
 \subsection{Human Debiasing Research}
 
@@ -340,7 +340,7 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 \textbf{SACD} & 29 & 3.13 mo & 6.43 mo & \textbf{3.30 mo} & \textbf{45\%} \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication). Only SACD achieved measurable reduction. All other techniques showed exactly 0\% reduction---GPT-4o perfectly followed anchors with or without Sibony interventions.}
+\caption{Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication\footnote{Deduplication removed duplicate API responses from retry logic. Sample sizes vary (n=25--29 per condition) because some scenarios required retries that produced duplicates, which were removed to ensure each scenario appears once per condition.}). Only SACD achieved measurable reduction. All other techniques showed exactly 0\% reduction---GPT-4o perfectly followed anchors with or without Sibony interventions.}
 \label{tab:gpt4o-debiasing}
 \end{table}
 
