@@ -31,7 +31,7 @@
 \begin{abstract}
 \textbf{Study design:} Descriptive study using deterministic sampling (temperature=0) across 30 scenario variants per condition. All findings are observational patterns in our specific prompt set.
 
-\textbf{Main finding:} Debiasing effectiveness is \textbf{model-specific}. On GPT-4o (baseline: 6.0 months anchoring effect), generic reflection (``think step by step'') achieved 66\% bias reduction, outperforming SACD's 45\%. But on Sonnet 4 (baseline: 0.0 months---no bias), generic reflection \emph{introduced} 3.07 months of anchoring bias where none existed. SACD was ``safe''---it did not induce bias on unbiased models. This suggests: (1) ``more thinking'' helps biased models but harms unbiased ones; (2) debiasing strategy should be tailored to model-specific bias profiles; (3) blanket ``think step by step'' advice is not universally beneficial.
+\textbf{Main finding:} Debiasing effectiveness is \textbf{model-specific}. On GPT-4o (baseline: 6.0 months anchoring effect), generic reflection (``think step by step'') achieved 66\% bias reduction, outperforming SACD's 45\%. But on \textbf{both} unbiased models tested (Sonnet 4 dated and Llama 3.3, baseline: 0.0 months), generic reflection \emph{introduced} substantial anchoring bias (3.07--6.10 months) where none existed. SACD was ``safe''---it did not induce bias on unbiased models. This suggests: (1) ``more thinking'' helps biased models but harms unbiased ones; (2) debiasing strategy should be tailored to model-specific bias profiles; (3) blanket ``think step by step'' advice is not universally beneficial.
 
 \textbf{Replication:} LLMs exhibit anchoring bias in the judicial sentencing paradigm. GPT-4o showed 6.0 months effect, Claude Opus 4 showed 2.0 months, Sonnet 4 showed 0.0 months (no bias). For context, \citet{englich2006} observed 2.05 months in humans, but our prompts differ from theirs---direct comparison is not valid.
 
@@ -48,7 +48,7 @@
 
 Recent research has demonstrated that LLMs exhibit cognitive biases analogous to those documented in human psychology \citep{binz2023,jones2022}. A natural question follows: can techniques developed to reduce human cognitive biases be adapted for LLMs?
 
-\textbf{Our central finding is nuanced:} Debiasing effectiveness is model-specific. On GPT-4o, generic reflection (``think step by step'') outperformed SACD (66\% vs 45\% bias reduction)---suggesting ``more thinking'' is the active ingredient. But cross-model replication revealed a critical caveat: on Sonnet 4, which has no baseline anchoring bias, generic reflection \emph{introduced} 3.07 months of bias where none existed. SACD did not cause this harm. This suggests: (1) extended reasoning can introduce bias on unbiased models; (2) SACD's psychology-specific framing may be protective; (3) debiasing interventions should be tailored to model-specific bias profiles.
+\textbf{Our central finding is nuanced:} Debiasing effectiveness is model-specific. On GPT-4o, generic reflection (``think step by step'') outperformed SACD (66\% vs 45\% bias reduction)---suggesting ``more thinking'' is the active ingredient. But cross-model replication revealed a critical caveat: on \textbf{both} unbiased models tested (Sonnet 4 dated, Llama 3.3), generic reflection \emph{introduced} 3.07--6.10 months of bias where none existed. SACD did not cause this harm. This suggests: (1) extended reasoning can introduce bias on unbiased models; (2) SACD's psychology-specific framing may be protective; (3) debiasing interventions should be tailored to model-specific bias profiles.
 
 We tested two categories of interventions:
 
@@ -384,7 +384,7 @@ SACD (bias-specific) & 3.13 mo & 6.43 mo & 3.30 mo & 45\% \\
 
 \subsubsection{Cross-Model Replication: Generic Reflection is Model-Specific}
 
-To test whether the GPT-4o finding generalizes, we ran the same generic reflection experiment on four models with varying baseline bias:
+To test whether the GPT-4o finding generalizes, we ran the same generic reflection experiment on five models with varying baseline bias:
 
 \begin{table}[H]
 \centering
@@ -396,16 +396,17 @@ GPT-4o & 6.0 mo & 2.03 mo & 66\% $\downarrow$ & Helps \\
 Opus 4.5 & 5.0 mo & 1.24 mo & 75\% $\downarrow$ & Helps \\
 Sonnet 4.5 & 3.0 mo & 0.10 mo & 97\% $\downarrow$ & Helps \\
 Sonnet 4 (dated) & 0.0 mo & \textbf{3.07 mo} & $\uparrow$ & \textbf{Hurts} \\
+Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
 \bottomrule
 \end{tabular}
-\caption{Generic reflection across 4 models. On biased models, generic reflection reduces bias (66--97\%). On Sonnet 4 (no baseline bias), it \emph{introduces} 3.07mo bias.}
+\caption{Generic reflection across 5 models ($n=30$ per condition). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} unbiased models (Sonnet 4 dated, Llama 3.3), it \emph{introduces} substantial bias (3--6 months).}
 \label{tab:generic-reflection-crossmodel}
 \end{table}
 
 \textbf{Key finding:} Generic reflection is a double-edged sword:
 \begin{itemize}
     \item On \textbf{biased models} (GPT-4o, Opus 4.5, Sonnet 4.5): Generic reflection reduces anchoring (66--97\% improvement)
-    \item On \textbf{unbiased models} (Sonnet 4 dated): Generic reflection \emph{introduces} anchoring (3.07mo effect where baseline was 0.0mo)
+    \item On \textbf{unbiased models} (Sonnet 4 dated, Llama 3.3): Generic reflection \emph{introduces} anchoring (3.07--6.10mo effect where baseline was 0.0mo)
 \end{itemize}
 
 \textbf{Implication:} Blanket ``think step by step'' advice is not universally beneficial. On models that already exhibit no bias, extended reasoning can introduce bias that wasn't present. SACD's psychology-specific framing appears protective---it does not induce bias on unbiased models. This suggests debiasing strategy should be tailored to model-specific bias profiles.
@@ -718,7 +719,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
     \item \textbf{Automated extraction:} Response extraction used deterministic JSON schema validation---models were prompted with explicit schemas and responses were parsed programmatically. For models with zero variance (e.g., Anthropic at temp=0), every trial produced identical JSON; no interpretation was required. Exclusions represent API failures or schema violations (malformed JSON, empty responses), not ambiguous cases requiring human judgment. Inter-rater reliability is not applicable to deterministic parsing
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls per decision)
-    \item \textbf{Generic reflection control:} Our generic reflection experiment (Section~\ref{sec:generic-reflection}) demonstrated that generic prompts debias GPT-4o more effectively than SACD (66\% vs 45\%). Cross-model replication on Sonnet 4 revealed a critical caveat: generic reflection \emph{introduces} 3.07mo bias on unbiased models. This suggests debiasing strategy must be tailored to model-specific bias profiles
+    \item \textbf{Generic reflection control:} Our generic reflection experiment (Section~\ref{sec:generic-reflection}) demonstrated that generic prompts debias GPT-4o more effectively than SACD (66\% vs 45\%). Cross-model replication on two unbiased models (Sonnet 4 dated, Llama 3.3) revealed that generic reflection \emph{introduces} 3--6mo bias where none existed. This suggests debiasing strategy must be tailored to model-specific bias profiles
     \item \textbf{No human/random baseline for debiasing:} Debiasing effectiveness was measured against no-intervention LLM baseline, not against human debiasing rates or random response distributions. We cannot claim debiasing brings LLM performance to ``human level'' without human data on our specific debiasing prompts
     \item \textbf{SACD task-framing trade-off:} In preliminary testing, SACD's iterative context rewriting occasionally stripped essential task framing along with the anchoring cue. For judicial scenarios, aggressive debiasing sometimes triggered safety refusals---models refused to roleplay as judges after SACD removed the roleplay context. This suggests a fundamental tension in debiasing interventions: too weak leaves bias intact; too aggressive causes task failure. Future work should explore targeted debiasing that preserves task-essential framing while removing bias-inducing elements
     \item \textbf{Novel scenarios without human baseline:} Our novel scenario experiments lack human participant data for comparison---we cannot verify whether these scenarios produce the same bias magnitudes in humans as the original Englich et al. paradigm
@@ -797,7 +798,7 @@ Several directions warrant investigation:
 
 \textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on four models, single prompt template for cross-model comparisons.
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, single prompt template for cross-model comparisons.
 
 \section*{Ethics Statement}
 
