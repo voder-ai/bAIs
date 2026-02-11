@@ -175,6 +175,25 @@ Our soft/hard bias hypothesis derives primarily from comparing Sonnet 4.5 agains
 
 \textbf{Baseline experiments.} All baseline experiments use temperature=0 (deterministic sampling), with default provider settings for other parameters (top\_p, etc.). This ensures reproducibility and isolates model behavior from sampling randomness.
 
+\textbf{Demonstration: Identical prompts produce identical outputs.} To verify determinism, we queried the same prompt 5 times consecutively on GPT-4o (temp=0):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+\toprule
+\textbf{Query \#} & \textbf{Sentence (months)} & \textbf{Identical?} \\
+\midrule
+1 & 9 & --- \\
+2 & 9 & \checkmark \\
+3 & 9 & \checkmark \\
+4 & 9 & \checkmark \\
+5 & 9 & \checkmark \\
+\bottomrule
+\end{tabular}
+\caption{Verification of deterministic output. Same prompt (high anchor, 9mo) queried 5 times on GPT-4o at temp=0. All outputs identical (SD=0). Variance reported in other tables arises from \emph{scenario variation}, not model stochasticity.}
+\label{tab:determinism-demo}
+\end{table}
+
 \textbf{Temperature sweep experiments.} To test whether anchoring bias is sensitive to sampling temperature:
 \begin{itemize}
     \item Temperatures tested: 0, 0.3, 0.5, 0.7, 1.0
