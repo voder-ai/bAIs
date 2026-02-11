@@ -4,7 +4,7 @@
  * Token-length control experiment for SACD
  * Tests whether debiasing effect is due to specific intervention content
  * or just more tokens/reasoning time.
- * 
+ *
  * Conditions:
  * 1. Baseline (no intervention)
  * 2. SACD (actual debiasing)
@@ -16,10 +16,10 @@ import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 import { anchoringProsecutorSentencingExperiment } from '../src/experiments/anchoringProsecutorSentencing.js';
 import { renderPrompt } from '../src/experiments/renderPrompt.js';
 
-const MODEL = 'anthropic/claude-sonnet-4-5';  // Sonnet alias (has baseline bias)
+const MODEL = 'anthropic/claude-sonnet-4-5'; // Sonnet alias (has baseline bias)
 const OUTPUT = 'results/token-control-30.jsonl';
 const DELAY_MS = 2000;
-const N_PER_CONDITION = 15;  // 15 low + 15 high per condition = 30 per condition
+const N_PER_CONDITION = 15; // 15 low + 15 high per condition = 30 per condition
 
 // Conditions
 const CONDITIONS = ['baseline', 'sacd', 'think-carefully'] as const;
@@ -50,14 +50,14 @@ Now proceed with your sentencing decision.
 const resultSchema = {
   prosecutorRecommendationMonths: 'integer 1..12',
   prosecutorEvaluation: '"too low"|"too high"|"just right"',
-  defenseAttorneyEvaluation: '"too low"|"too high"|"just right"', 
+  defenseAttorneyEvaluation: '"too low"|"too high"|"just right"',
   sentenceMonths: 'integer 0..12',
 };
 
-function buildPrompt(anchor: number, condition: typeof CONDITIONS[number]): string {
+function buildPrompt(anchor: number, condition: (typeof CONDITIONS)[number]): string {
   const conditionVars = { prosecutorRecommendationMonths: anchor };
   const experimentDef = anchoringProsecutorSentencingExperiment;
-  
+
   const parts = experimentDef.steps.map((step) => {
     return step.prompts
       .map((p) => {
@@ -86,16 +86,16 @@ function buildPrompt(anchor: number, condition: typeof CONDITIONS[number]): stri
 async function runTrial(
   provider: Awaited<ReturnType<typeof createProvider>>,
   anchor: number,
-  condition: typeof CONDITIONS[number],
-  index: number
+  condition: (typeof CONDITIONS)[number],
+  index: number,
 ): Promise<void> {
   const prompt = buildPrompt(anchor, condition);
-  
+
   try {
     const response = await provider.sendText({ prompt });
     const match = response.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('No JSON found in response');
-    
+
     const result = JSON.parse(match[0]);
     const record = {
       experimentId: 'token-control',
@@ -128,38 +128,41 @@ async function main() {
   console.log(`Token Control Experiment`);
   console.log(`Model: ${MODEL}`);
   console.log(`Output: ${OUTPUT}`);
-  console.log(`N per condition: ${N_PER_CONDITION * 2} (${N_PER_CONDITION} low + ${N_PER_CONDITION} high)`);
+  console.log(
+    `N per condition: ${N_PER_CONDITION * 2} (${N_PER_CONDITION} low + ${N_PER_CONDITION} high)`,
+  );
   console.log('');
-  
+
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec, 0);
-  
+
   // Interleave conditions to avoid ordering effects
-  const trials: Array<{condition: typeof CONDITIONS[number], anchor: number, index: number}> = [];
-  
+  const trials: Array<{ condition: (typeof CONDITIONS)[number]; anchor: number; index: number }> =
+    [];
+
   for (let i = 0; i < N_PER_CONDITION; i++) {
     for (const condition of CONDITIONS) {
-      trials.push({ condition, anchor: 3, index: i });  // low anchor
-      trials.push({ condition, anchor: 9, index: i });  // high anchor
+      trials.push({ condition, anchor: 3, index: i }); // low anchor
+      trials.push({ condition, anchor: 9, index: i }); // high anchor
     }
   }
-  
+
   // Shuffle trials
   for (let i = trials.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [trials[i], trials[j]] = [trials[j], trials[i]];
   }
-  
+
   for (let i = 0; i < trials.length; i++) {
     const { condition, anchor, index } = trials[i];
     console.log(`Trial ${i + 1}/${trials.length}:`);
     await runTrial(provider, anchor, condition, index);
-    
+
     if (i < trials.length - 1) {
-      await new Promise(r => setTimeout(r, DELAY_MS));
+      await new Promise((r) => setTimeout(r, DELAY_MS));
     }
   }
-  
+
   console.log('\nDone!');
 }
 

@@ -3,7 +3,7 @@
 /**
  * GPT-4o Debiasing Experiment
  * Tests debiasing techniques on a model with actual bias (6.0mo baseline)
- * 
+ *
  * Conditions:
  * 1. Baseline (no intervention) - should show 6.0mo
  * 2. Context Hygiene (Sibony)
@@ -17,12 +17,18 @@ import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 import { anchoringProsecutorSentencingExperiment } from '../src/experiments/anchoringProsecutorSentencing.js';
 import { renderPrompt } from '../src/experiments/renderPrompt.js';
 
-const MODEL = 'github-copilot/gpt-4o';  // Dated via Copilot
+const MODEL = 'github-copilot/gpt-4o'; // Dated via Copilot
 const OUTPUT = 'results/gpt4o-debiasing-30.jsonl';
 const DELAY_MS = 2000;
-const N_PER_ANCHOR = 15;  // 15 low + 15 high = 30 per condition
+const N_PER_ANCHOR = 15; // 15 low + 15 high = 30 per condition
 
-const CONDITIONS = ['baseline', 'context-hygiene', 'premortem', 'sacd', 'simple-instruction'] as const;
+const CONDITIONS = [
+  'baseline',
+  'context-hygiene',
+  'premortem',
+  'sacd',
+  'simple-instruction',
+] as const;
 
 const CONTEXT_HYGIENE = `
 DECISION HYGIENE PROTOCOL:
@@ -59,24 +65,29 @@ It has no bearing on the appropriate sentence. Ignore it entirely when making yo
 const resultSchema = {
   prosecutorRecommendationMonths: 'integer 1..12',
   prosecutorEvaluation: '"too low"|"too high"|"just right"',
-  defenseAttorneyEvaluation: '"too low"|"too high"|"just right"', 
+  defenseAttorneyEvaluation: '"too low"|"too high"|"just right"',
   sentenceMonths: 'integer 0..12',
 };
 
-function getAddition(condition: typeof CONDITIONS[number]): string {
+function getAddition(condition: (typeof CONDITIONS)[number]): string {
   switch (condition) {
-    case 'context-hygiene': return CONTEXT_HYGIENE;
-    case 'premortem': return PREMORTEM;
-    case 'sacd': return SACD;
-    case 'simple-instruction': return SIMPLE_INSTRUCTION;
-    default: return '';
+    case 'context-hygiene':
+      return CONTEXT_HYGIENE;
+    case 'premortem':
+      return PREMORTEM;
+    case 'sacd':
+      return SACD;
+    case 'simple-instruction':
+      return SIMPLE_INSTRUCTION;
+    default:
+      return '';
   }
 }
 
-function buildPrompt(anchor: number, condition: typeof CONDITIONS[number]): string {
+function buildPrompt(anchor: number, condition: (typeof CONDITIONS)[number]): string {
   const conditionVars = { prosecutorRecommendationMonths: anchor };
   const experimentDef = anchoringProsecutorSentencingExperiment;
-  
+
   const parts = experimentDef.steps.map((step) => {
     return step.prompts
       .map((p) => {
@@ -103,16 +114,16 @@ function buildPrompt(anchor: number, condition: typeof CONDITIONS[number]): stri
 async function runTrial(
   provider: Awaited<ReturnType<typeof createProvider>>,
   anchor: number,
-  condition: typeof CONDITIONS[number],
-  index: number
+  condition: (typeof CONDITIONS)[number],
+  index: number,
 ): Promise<void> {
   const prompt = buildPrompt(anchor, condition);
-  
+
   try {
     const response = await provider.sendText({ prompt });
     const match = response.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('No JSON found in response');
-    
+
     const result = JSON.parse(match[0]);
     const record = {
       experimentId: 'gpt4o-debiasing',
@@ -148,39 +159,40 @@ async function main() {
   console.log(`Conditions: ${CONDITIONS.join(', ')}`);
   console.log(`N per condition: ${N_PER_ANCHOR * 2} (${N_PER_ANCHOR} low + ${N_PER_ANCHOR} high)`);
   console.log('');
-  
+
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec, 0);
-  
+
   // Build trial list
-  const trials: Array<{condition: typeof CONDITIONS[number], anchor: number, index: number}> = [];
-  
+  const trials: Array<{ condition: (typeof CONDITIONS)[number]; anchor: number; index: number }> =
+    [];
+
   for (let i = 0; i < N_PER_ANCHOR; i++) {
     for (const condition of CONDITIONS) {
       trials.push({ condition, anchor: 3, index: i });
       trials.push({ condition, anchor: 9, index: i });
     }
   }
-  
+
   // Shuffle
   for (let i = trials.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [trials[i], trials[j]] = [trials[j], trials[i]];
   }
-  
+
   console.log(`Total trials: ${trials.length}`);
   console.log('');
-  
+
   for (let i = 0; i < trials.length; i++) {
     const { condition, anchor, index } = trials[i];
     console.log(`Trial ${i + 1}/${trials.length}:`);
     await runTrial(provider, anchor, condition, index);
-    
+
     if (i < trials.length - 1) {
-      await new Promise(r => setTimeout(r, DELAY_MS));
+      await new Promise((r) => setTimeout(r, DELAY_MS));
     }
   }
-  
+
   console.log('\nDone!');
 }
 

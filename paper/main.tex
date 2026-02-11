@@ -110,8 +110,28 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
     \item \textbf{Sonnet 4.5} (current): \texttt{claude-sonnet-4-5-20250929} --- used in initial development, showed 3.0mo bias
     \item \textbf{Secondary model:} GPT-4o (\texttt{github-copilot/gpt-4o})
     \item \textbf{Cross-model validation:} 8 models across 5 provider families (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
-    \item \textbf{Sample sizes:} $n=30$ per condition for all experiments
+    \item \textbf{Sample sizes:} Target $n=30$ per condition (15 low anchor + 15 high anchor). Actual valid trials per model shown in Table~\ref{tab:sample-sizes}.
 \end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccl}
+\toprule
+\textbf{Model} & \textbf{Total Trials} & \textbf{Valid} & \textbf{Excluded} & \textbf{Notes} \\
+\midrule
+Sonnet 4 & 60 & 60 & 0 & Date-pinned \\
+Sonnet 4.5 & 60 & 60 & 0 & Primary model \\
+GPT-4o & 60 & 60 & 0 & Via GitHub Copilot \\
+Opus 4 & 60 & 60 & 0 & --- \\
+Nemotron 30B & 85 & 75 & 10 & Base + topup runs \\
+Hermes 405B & 70 & 60 & 10 & Base + topup runs \\
+Llama 3.3 70B & 95 & 60 & 35 & High parse failure rate \\
+Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
+\bottomrule
+\end{tabular}
+\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Models with high exclusion rates (Llama, Mistral) had difficulty following JSON output format; exclusions are scenario-independent.}
+\label{tab:sample-sizes}
+\end{table}
 
 \textbf{Important:} Throughout this paper, we distinguish between ``Sonnet 4.5'' (\texttt{claude-sonnet-4-5-20250929}) and ``Sonnet 4'' (\texttt{claude-sonnet-4-20250514}) because they exhibited different bias patterns (see Section~\ref{sec:model-id-variance}). These are different model generations, not just different identifiers for the same model. When we report debiasing effectiveness, we specify which model was used.
 
