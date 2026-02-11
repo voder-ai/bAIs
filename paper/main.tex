@@ -15,7 +15,7 @@
 \usepackage{xcolor}
 
 % Title
-\title{Replicating Human Cognitive Bias Experiments on LLMs:\\Anchoring Effects and Debiasing Interventions}
+\title{Cognitive Bias Patterns in LLMs:\\Anchoring Effects and Debiasing Interventions}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -39,7 +39,7 @@
 
 \textbf{Intervention null results:} On GPT-4o, Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{0\% reduction}---identical to baseline. Simple instructions (``ignore the anchor'') also showed 0\% effect. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none.
 
-\textbf{Cross-model variation:} Testing 5 provider families in our prompt set, we observed varying susceptibility: OpenAI (6.0mo), NVIDIA (3.0mo), Meta (1.1mo), Anthropic/Mistral (0mo). \textbf{Caution:} Pattern observed in one prompt set with 1--2 models per family; not a validated taxonomy.
+\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Nemotron (3.0mo), Llama 3.3 (0mo), Sonnet 4 (0mo). \textbf{Caution:} Pattern observed in one prompt template; individual model results, not provider-level generalizations.
 
 \textbf{Practical note:} API identifier routing affects behavior; use date-pinned model IDs for reproducibility.
 \end{abstract}
@@ -85,7 +85,7 @@ Prior work has explored chain-of-thought prompting, explicit bias warnings, and 
 
 \subsection{Experimental Paradigm}
 
-We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLMs) act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. Following anchoring bias methodology, the anchor is explicitly marked as irrelevant: \textit{``For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.''} The anchor values (3 months vs. 9 months) match the original study.
+We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. Following anchoring bias methodology, the anchor is explicitly marked as irrelevant: \textit{``For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.''} The anchor values (3 months vs. 9 months) match the original study.
 
 \subsection{Conditions}
 
@@ -111,7 +111,7 @@ We replicate Study 2 from \citet{englich2006}: participants (or in our case, LLM
     \item \textbf{Sonnet 4} (legacy): \texttt{claude-sonnet-4-20250514} --- used for reproducibility, showed 0.0mo bias
     \item \textbf{Sonnet 4.5} (current): \texttt{claude-sonnet-4-5-20250929} --- used in initial development, showed 3.0mo bias
     \item \textbf{Secondary model:} GPT-4o (\texttt{github-copilot/gpt-4o})
-    \item \textbf{Cross-model validation:} 8 models across 5 provider families (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
+    \item \textbf{Cross-model validation:} 8 models from various providers (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
     \item \textbf{Sample sizes:} Target $n=30$ per condition (15 low anchor + 15 high anchor). Actual valid trials per model shown in Table~\ref{tab:sample-sizes}.
 \end{itemize}
 
@@ -414,39 +414,39 @@ Cross-model comparison reveals varying anchoring susceptibility across our teste
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccc}
 \toprule
-Model & Family & n (valid) & Anchoring Effect & Behavior \\
+Model & n (valid) & Anchoring Effect & Behavior \\
 \midrule
-Sonnet 4 & Anthropic & 60 & 0.00 mo & No bias \\
-Claude Opus 4 & Anthropic & 60 & 2.00 mo & Moderate bias \\
-Mistral (7B) & Mistral AI & 52 & 0.00 mo & No bias \\
-Hermes 3 (405B) & Nous/Meta & 60 & $-0.33$ mo & No bias \\
-Llama 3.3 (70B) & Meta & 60 & 0.00 mo & No bias \\
-Nemotron (30B) & NVIDIA & 75 & 3.00 mo & Moderate bias \\
-Sonnet 4.5 & Anthropic & 60 & 3.00 mo & Moderate bias \\
-GPT-4o & OpenAI & 60 & 6.00 mo & Strong bias \\
+Sonnet 4 & 60 & 0.00 mo & No bias \\
+Claude Opus 4 & 60 & 2.00 mo & Moderate bias \\
+Mistral (7B) & 52 & 0.00 mo & No bias \\
+Hermes 3 (405B) & 60 & $-0.33$ mo & No bias \\
+Llama 3.3 (70B) & 60 & 0.00 mo & No bias \\
+Nemotron (30B) & 75 & 3.00 mo & Moderate bias \\
+Sonnet 4.5 & 60 & 3.00 mo & Moderate bias \\
+GPT-4o & 60 & 6.00 mo & Strong bias \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias, sorted by effect magnitude. \textbf{Five provider families tested} with 1--2 models each. Observed pattern in our prompts: OpenAI (strong) $\to$ NVIDIA (moderate) $\to$ Meta (weak) $\to$ Anthropic/Mistral (none). \textbf{Caution:} Unequal sample sizes and single prompt template limit generalizability.}
+\caption{Cross-model anchoring bias, sorted by effect magnitude. Eight models tested. \textbf{Caution:} Single prompt template; results are model-specific observations, not provider-level generalizations.}
 \label{tab:crossmodel}
 \end{table}
 
 \textbf{Observation: Anchoring susceptibility varies across tested models.}
 
 \begin{enumerate}
-    \item \textbf{Observed pattern (not validated):} Across 5 provider families with 1--2 models each, we observe varying susceptibility:
+    \item \textbf{Observed pattern (not validated):} Across 8 models, we observe varying susceptibility:
     \begin{itemize}
-        \item \textbf{No bias:} Anthropic Sonnet 4, Mistral AI (Mistral 7B), Meta (Llama 3.3, Hermes 405B)
-        \item \textbf{Moderate bias ($2$--$3$ months):} Anthropic (Opus 4), NVIDIA (Nemotron)
-        \item \textbf{Strong bias ($>5$ months):} OpenAI (GPT-4o)
+        \item \textbf{No bias:} Sonnet 4, Mistral 7B, Llama 3.3, Hermes 405B
+        \item \textbf{Moderate bias ($2$--$3$ months):} Opus 4, Nemotron
+        \item \textbf{Strong bias ($>5$ months):} GPT-4o
     \end{itemize}
     
     \item \textbf{Open-weights models resist anchoring:} Both Llama 3.3 (Meta) and Mistral show 0.0mo effect. This suggests open-weights training may correlate with anchoring resistance, though our sample of two models cannot establish causation.
     
     \item \textbf{Cross-generational difference confirmed:} Sonnet 4.5 shows 3.0mo effect while Sonnet 4 (legacy) shows 0.0mo on identical prompts. These are different model generations with qualitatively different anchoring behavior.
     
-    \item \textbf{Within-family variation (Anthropic):} Sonnet 4 shows 0.0mo effect while Opus 4 shows 2.0mo (human-level), suggesting bias resistance varies even within the same provider family. Model scale or fine-tuning differences may affect anchoring susceptibility.
+    \item \textbf{Within-provider variation:} Sonnet 4 shows 0.0mo effect while Opus 4 shows 2.0mo (both Anthropic), suggesting bias resistance varies even within the same provider. Model scale or fine-tuning differences may affect anchoring susceptibility.
 \end{enumerate}
 
 \subsection{Knowledge of Bias $\neq$ Resistance to Bias}
@@ -532,28 +532,28 @@ Pollution & Loss & 40\% certain & \textbf{93\% certain} & [79\%, 98\%] \\
 \subsection{Preliminary Hypothesis: Soft vs Hard Bias Patterns}
 \label{sec:soft-hard}
 
-Our observations suggest that debiasing interventions effective on one model may have no effect on another. We tested temperature sensitivity across \textbf{five models from three provider families} and observed two distinct patterns:
+Our observations suggest that debiasing interventions effective on one model may have no effect on another. We tested temperature sensitivity across \textbf{five models} and observed two distinct patterns:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccc}
 \toprule
-Model & Family & Baseline & temp=0.5 & temp=1.0 & Pattern \\
+Model & Baseline & temp=0.5 & temp=1.0 & Pattern \\
 \midrule
-GPT-4o & OpenAI & 6.00 mo & 6.00 mo & 6.00 mo & \textbf{HARD} \\
-GPT-4.1 & OpenAI & 3.10 mo & 3.20 mo & 3.20 mo & \textbf{HARD} \\
-Opus 4.5 & Anthropic & 5.00 mo & 5.00 mo & 5.00 mo & \textbf{HARD} \\
-Sonnet 4.5 & Anthropic & 3.00 mo & --- & \textbf{0 mo} & \textbf{SOFT} \\
-Llama 3.3 & Meta & 0.00 mo & --- & --- & \textbf{SOFT} \\
+GPT-4o & 6.00 mo & 6.00 mo & 6.00 mo & \textbf{HARD} \\
+GPT-4.1 & 3.10 mo & 3.20 mo & 3.20 mo & \textbf{HARD} \\
+Opus 4.5 & 5.00 mo & 5.00 mo & 5.00 mo & \textbf{HARD} \\
+Sonnet 4.5 & 3.00 mo & --- & \textbf{0 mo} & \textbf{SOFT} \\
+Llama 3.3 & 0.00 mo & --- & --- & \textbf{SOFT} \\
 \bottomrule
 \end{tabular}
 \caption{Temperature sensitivity across 5 models ($n=20$ per temperature). HARD models show constant bias regardless of temperature. SOFT models show low or decreasing bias. Llama 3.3 baseline from paid OpenRouter tier ($n=60$).}
 \label{tab:soft-hard}
 \end{table}
 
-\textbf{``Hard bias'' pattern} (observed in GPT-4o, GPT-4.1, Opus 4.5): Bias magnitude remains constant regardless of temperature (0→0.5→1.0). Three models across two providers (OpenAI, Anthropic) show this pattern. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
+\textbf{``Hard bias'' pattern} (observed in GPT-4o, GPT-4.1, Opus 4.5): Bias magnitude remains constant regardless of temperature (0→0.5→1.0). Three models show this pattern. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
 
-\textbf{``Soft bias'' pattern} (observed in Sonnet 4.5, Llama 3.3): Bias is low at baseline or decreases with temperature. Sonnet 4.5 shows 100\% reduction at temp=1.0. Llama 3.3 shows 0.0mo baseline effect. Two models across two providers (Anthropic, Meta) show this pattern.
+\textbf{``Soft bias'' pattern} (observed in Sonnet 4.5, Llama 3.3): Bias is low at baseline or decreases with temperature. Sonnet 4.5 shows 100\% reduction at temp=1.0. Llama 3.3 shows 0.0mo baseline effect. Two models show this pattern.
 
 \textbf{Observed values:} Each model produced consistent outputs across all trials:
 \begin{itemize}
@@ -566,7 +566,7 @@ Notably, both Sonnet variants exhibit \textbf{zero variance} within conditions (
 
 \textbf{Important caveats:}
 \begin{itemize}
-    \item This distinction is based on five models across three providers---more robust than our initial two-model observation, but still limited
+    \item This distinction is based on five models---more robust than our initial two-model observation, but still limited
     \item The majority pattern is HARD (3/5 models); SOFT may be the exception rather than the rule
     \item We cannot rule out that observed differences reflect API routing, checkpoint differences, or other confounds rather than fundamental architectural properties
     \item Temperature sweeps used $n=20$ per condition; larger samples may reveal more nuanced patterns
@@ -688,7 +688,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 
 \textbf{Practical implications (with appropriate caution):} (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) intervention-resistant biases may require more sophisticated approaches than prompt engineering.
 
-\textbf{Critical limitations of this hypothesis:} This soft/hard distinction derives from temperature sweep experiments on \textbf{five models} across three provider families (OpenAI, Anthropic, Meta). While more robust than our initial two-model observation, it remains preliminary: (1) tested on \textbf{one bias type} (anchoring) only; (2) HARD is the majority pattern (3/5 models), suggesting SOFT may be exceptional; (3) the alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) complicates interpretation. We present this as a \textbf{preliminary taxonomy}, not an established framework.
+\textbf{Critical limitations of this hypothesis:} This soft/hard distinction derives from temperature sweep experiments on \textbf{five models}. While more robust than our initial two-model observation, it remains preliminary: (1) tested on \textbf{one bias type} (anchoring) only; (2) HARD is the majority pattern (3/5 models), suggesting SOFT may be exceptional; (3) the alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) complicates interpretation. We present this as a \textbf{preliminary taxonomy}, not an established framework.
 
 \subsection{Limitations}
 
@@ -713,7 +713,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 \textbf{Methodological Constraints:}
 \begin{itemize}
     \item Sample sizes: $n=30$ scenarios per condition for primary experiments---adequate for detecting large patterns but limited by scenario diversity
-    \item \textbf{Single-coder extraction:} Response extraction was performed by a single coder (the first author) without inter-rater reliability assessment. For numeric outputs (sentence months, A/B choices), extraction was straightforward (direct JSON parsing). For edge cases (malformed outputs requiring interpretation), a second coder check would strengthen reliability. We note that most responses were unambiguous integers requiring no interpretation
+    \item \textbf{Automated extraction:} Response extraction used deterministic JSON schema validation---models were prompted with explicit schemas and responses were parsed programmatically. For models with zero variance (e.g., Anthropic at temp=0), every trial produced identical JSON; no interpretation was required. Exclusions represent API failures or schema violations (malformed JSON, empty responses), not ambiguous cases requiring human judgment. Inter-rater reliability is not applicable to deterministic parsing
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls per decision)
     \item \textbf{Generic reflection control:} Our generic reflection experiment (Section~\ref{sec:generic-reflection}) demonstrated that generic prompts debias GPT-4o more effectively than SACD (66\% vs 45\%). Cross-model replication on Sonnet 4 revealed a critical caveat: generic reflection \emph{introduces} 3.07mo bias on unbiased models. This suggests debiasing strategy must be tailored to model-specific bias profiles
@@ -725,7 +725,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 
 \textbf{Generalizability:}
 \begin{itemize}
-    \item Cross-model validation spans multiple provider families (Anthropic, OpenAI, Meta, Nvidia, others) but may not generalize to all architectures
+    \item Cross-model validation spans 8 models from various providers but may not generalize to all architectures
     \item Ecological validity: Stylized sentencing scenarios may not reflect real-world deployment contexts where LLMs make consequential decisions
     \item Training contamination: Our contamination probe found both GPT-4o and Sonnet 4 demonstrated familiarity with the Englich et al. study, yet exhibited opposite behaviors. This is \emph{consistent with} contamination not being the sole explanation, but does not rule out other confounds
     \item This study focused on natural-language judgment tasks; code-domain experiments (e.g., anchoring in line count or complexity estimates) are left for future work
