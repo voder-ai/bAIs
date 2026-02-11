@@ -29,35 +29,35 @@
 \maketitle
 
 \begin{abstract}
-\textbf{Study design:} This is a descriptive study using deterministic sampling (temperature=0) across 30 scenario variants per condition. All findings are observational patterns in our specific prompt set, not inferences about broader populations.
+\textbf{Study design:} Descriptive study using deterministic sampling (temperature=0) across 30 scenario variants per condition. All findings are observational patterns in our specific prompt set.
 
-We replicate the Englich et al.\ (2006) judicial anchoring paradigm on LLMs and test whether decision architecture techniques from organizational psychology \citep{sibony2019} can reduce bias.
+\textbf{Main finding:} Psychology-inspired debiasing techniques offer no advantage over generic reflection. On GPT-4o (baseline: 6.0 months anchoring effect), Self-Adaptive Cognitive Debiasing (SACD)---an iterative bias-detection loop---achieved 45\% reduction. But a structure-matched control using generic prompts (``think step by step,'' ``review your answer'') achieved \textbf{66\% reduction}. The control outperformed the intervention. This suggests debiasing effects stem from increased reasoning tokens, not psychology-specific content. Future debiasing research must include length-matched controls.
 
-\textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels in similar paradigms. In our primary tested models, GPT-4o showed 6.0 months anchoring effect (2.93$\times$ the Englich et al. baseline\footnote{Human baseline (2.05 months) from \citet{englich2006}. Our prompts differ from original materials; this ratio is approximate, not a matched comparison.}), Claude Opus 4 showed 2.0 months (0.98$\times$), while Claude Sonnet 4 showed 0.0 months (no bias).
+\textbf{Replication:} LLMs exhibit anchoring bias comparable to or exceeding human levels. GPT-4o showed 6.0 months effect (2.93$\times$ Englich et al.\footnote{Human baseline from \citet{englich2006}. Our prompts differ; ratio is approximate.}), Claude Opus 4 showed 2.0 months (0.98$\times$), Sonnet 4 showed 0.0 months (no bias).
 
-\textbf{Novel observation:} LLM bias at temp=0 is \emph{deterministic}, not stochastic (SD=0 across 30 trials per condition). Unlike human bias, which shows variance, LLM bias is a fixed function of model weights and prompt---every trial produces the exact same biased output. This has significant implications: deployed systems using temp=0 will exhibit 100\% consistent bias, making it both more predictable to audit and more consequential when present.
+\textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). Unlike human bias with variance, LLM bias is a fixed function of weights and prompt---100\% consistent, more predictable to audit but more consequential when present.
 
-\textbf{Debiasing:} We tested multiple intervention approaches. On Codex (baseline 3.67mo), Sibony's decision architecture techniques---``context hygiene'' (27\% reduction) and ``premortem'' (24\% reduction)---showed moderate effectiveness. Self-Adaptive Cognitive Debiasing (SACD), an iterative self-correction loop, achieved 45\% bias reduction on GPT-4o (6.0mo $\rightarrow$ 3.30mo). \textbf{However, a length-matched control using generic reflection (``think step by step'') achieved 66\% reduction---stronger than SACD.} This suggests debiasing effects stem from increased reasoning tokens, not bias-specific intervention content. On Sonnet 4.5, a simple one-line prompt instruction (``the recommendation is arbitrary, ignore it'') achieved 96\% reduction.
+\textbf{Intervention null results:} On GPT-4o, Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{0\% reduction}---identical to baseline. Simple instructions (``ignore the anchor'') also showed 0\% effect. Only multi-turn reflection helped, and generic reflection worked better than targeted debiasing.
 
-\textbf{Key finding:} GPT-4o, Sonnet, and Opus all correctly describe anchoring bias when queried, yet exhibit different susceptibility. GPT-4o shows strong bias (2.93$\times$ human), Opus 4 shows human-level bias (0.98$\times$), while Sonnet 4 resists entirely. This parallels Sibony's observation about human decision-making: \emph{knowing about a bias does not guarantee immunity}. The difference appears to lie in whether models \emph{apply} meta-cognitive knowledge, not merely possess it.
+\textbf{Cross-model variation:} Testing 5 provider families reveals varying susceptibility: OpenAI strong ($2.93\times$), NVIDIA moderate ($1.46\times$), Meta weak ($0.49\times$), Anthropic/Mistral none. \textbf{Caution:} Pattern observed in one prompt set; not a validated taxonomy.
 
-\textbf{Cross-model observations:} Testing across 5 provider families (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI) reveals varying anchoring susceptibility: OpenAI exhibits strong bias ($2.93\times$ human), NVIDIA moderate ($1.46\times$), Meta weak ($0.49\times$), while Anthropic and Mistral AI show no measurable bias in our prompts. \textbf{Caution:} This pattern is observed in our specific prompt set with unequal sample sizes per model; it should not be interpreted as a validated provider-level taxonomy.
-
-\textbf{Practical note:} API identifier routing can affect behavior; researchers should use date-pinned model IDs for reproducibility.
+\textbf{Practical note:} API identifier routing affects behavior; use date-pinned model IDs for reproducibility.
 \end{abstract}
 
 \section{Introduction}
 
-Recent research has demonstrated that some LLMs exhibit cognitive biases analogous to those documented in human psychology \citep{binz2023,jones2022}. However, less is known about whether techniques developed to reduce human cognitive biases can be adapted for LLMs, and whether their effectiveness varies across models.
+Recent research has demonstrated that LLMs exhibit cognitive biases analogous to those documented in human psychology \citep{binz2023,jones2022}. A natural question follows: can techniques developed to reduce human cognitive biases be adapted for LLMs?
 
-We address this gap by testing two categories of debiasing interventions:
+\textbf{Our central finding is negative:} Psychology-inspired debiasing interventions offer no advantage over generic reflection. When we tested Self-Adaptive Cognitive Debiasing (SACD)---an iterative loop designed to detect and correct specific biases---against a structure-matched control using generic prompts (``think step by step''), the generic control performed \emph{better} (66\% vs 45\% bias reduction on GPT-4o). This suggests the active ingredient in multi-turn debiasing is simply ``more thinking,'' not the psychology-specific content.
+
+We tested two categories of interventions:
 
 \begin{enumerate}
-    \item \textbf{Decision architecture techniques} from organizational psychology \citep{sibony2019}---specifically ``context hygiene'' (identifying and disregarding irrelevant information) and ``premortem'' (imagining future failure before deciding)
-    \item \textbf{Self-Adaptive Cognitive Debiasing (SACD)}---an iterative loop where the model detects, analyzes, and corrects its own biases \citep{lyu2025}
+    \item \textbf{Decision architecture techniques} from organizational psychology \citep{sibony2019}---specifically ``context hygiene'' and ``premortem''
+    \item \textbf{Self-Adaptive Cognitive Debiasing (SACD)}---an iterative bias-detection loop \citep{lyu2025}
 \end{enumerate}
 
-We use anchoring bias as our primary test case because: (a) it is well-documented in both humans and LLMs, (b) the \citet{englich2006} paradigm provides clear quantitative baselines, and (c) anchoring is practically relevant to AI decision-support systems.
+We use anchoring bias as our test case because: (a) it is well-documented in both humans and LLMs, (b) the \citet{englich2006} paradigm provides quantitative baselines, and (c) anchoring is relevant to AI decision-support systems.
 
 \section{Related Work}
 
@@ -762,26 +762,22 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-Our exploratory study contributes three primary findings:
+\textbf{Main finding: Generic reflection outperforms targeted debiasing.} Our most important result is a null finding: psychology-inspired debiasing techniques offer no advantage over generic reflection. On GPT-4o, Self-Adaptive Cognitive Debiasing (SACD) achieved 45\% bias reduction, but a structure-matched control using generic prompts (``think step by step,'' ``review your answer'') achieved 66\% reduction. The control outperformed the intervention. This suggests the mechanism is simply ``more thinking''---increased reasoning tokens and iterative reflection---not the psychology-specific content of bias detection and correction.
 
-\textbf{Novel observation: Deterministic bias behavior.} At temperature=0, LLM bias is deterministic, not stochastic (SD=0 across all trials). Unlike human cognitive bias, which shows variance across individuals and occasions, LLM bias is a fixed function of model weights and prompt---every trial produces the \emph{exact same} biased output. This distinguishes LLM bias as architectural rather than probabilistic, with significant deployment implications: systems using temp=0 will exhibit 100\% consistent bias, making it both easier to audit and more consequential when present.
+\textbf{Implication for debiasing research:} Future work claiming intervention-specific effects \emph{must} include length-matched and structure-matched controls. Without such controls, apparent debiasing effects may simply reflect the benefits of multi-turn reasoning.
 
-\textbf{Methodological contribution: Model identifier routing affects reproducibility.} Claude Sonnet 4.5 accessed via alias (\texttt{claude-sonnet-4-5}, routing to \texttt{20250929}) showed 3-month anchoring effect, while the legacy Sonnet 4 via date-pinned identifier (\texttt{claude-sonnet-4-20250514}) showed 0-month effect on identical prompts. This variance---occurring within a single experimental session---highlights a reproducibility confound relevant to all LLM research using model aliases. This finding is solid and reproducible.
+\textbf{Additional findings:}
 
-\textbf{Preliminary hypothesis for future work: Soft vs hard bias patterns.} Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, $n=60$ each), we observe different responses to debiasing interventions. We tentatively propose this as a ``soft'' vs ``hard'' pattern distinction, but emphasize this is a hypothesis based on just two models, not an established taxonomy. Broader validation is required.
-
-Key observations from our tested models:
 \begin{enumerate}
-    \item \textbf{Deterministic bias (SD=0)}: At temp=0, LLM bias is not noise---it is embedded, reproducible behavior. This fundamentally distinguishes LLM bias from human bias.
-    \item \textbf{Model identifier variance}: Alias vs date-pinned identifiers produced qualitatively different results (3.0mo vs 0.0mo). This is a potential confound for all LLM bias research.
-    \item \textbf{Different bias patterns observed}: In our tests, Sonnet 4.5 showed debiasing-responsive anchoring; GPT-4o showed intervention-resistant anchoring. Sonnet 4 showed minimal baseline bias.
+    \item \textbf{Deterministic bias (SD=0)}: At temp=0, LLM bias is not noise---it is a fixed function of weights and prompt. Every trial produces the exact same output, making bias both auditable and consequential.
+    \item \textbf{Model identifier variance}: Alias vs date-pinned identifiers produced qualitatively different results (Sonnet 4.5 via alias: 3.0mo; Sonnet 4 via dated ID: 0.0mo). Use date-pinned identifiers for reproducibility.
+    \item \textbf{Sibony techniques do not transfer}: Context hygiene and premortem, effective in human decision-making, showed exactly 0\% effect on GPT-4o.
     \item \textbf{Prompt sensitivity}: Paraphrasing reduced anchoring by 92\% in Sonnet 4.5, suggesting single-prompt experiments may overstate bias magnitude.
-    \item \textbf{Debiasing techniques showed different effectiveness}: Interventions effective on Sonnet 4.5 did not reduce bias in GPT-4o in our tests.
 \end{enumerate}
 
-\textbf{Recommendations:} (1) Use date-pinned model identifiers for reproducible research. (2) Validate debiasing interventions on your specific deployment model. (3) Treat our soft/hard distinction as a preliminary hypothesis requiring validation across more models and architectures.
+\textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} This study is based on moderate sample sizes ($n=30$ per condition for primary experiments, $n=60$ total for cross-model comparison), and observational cross-model comparisons. The proposed soft/hard distinction is a preliminary observation that may not generalize beyond the specific models and conditions we tested.
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection control only tested on GPT-4o, single prompt template for cross-model comparisons.
 
 \section*{Ethics Statement}
 
