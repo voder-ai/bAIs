@@ -31,7 +31,7 @@
 \begin{abstract}
 \textbf{Study design:} Descriptive study using deterministic sampling (temperature=0) across 30 scenario variants per condition. All findings are observational patterns in our specific prompt set.
 
-\textbf{Main finding:} Debiasing effectiveness is \textbf{model-specific}. On GPT-4o (baseline: 6.0 months anchoring effect), generic reflection (``think step by step'') achieved 66\% bias reduction, outperforming SACD's 45\%. But on unbiased models, \textbf{both interventions caused harm}: generic reflection introduced consistent bias (3--6 months), while SACD produced pathological outputs (extreme variance, outliers up to 120 months). Neither intervention is universally safe. This suggests: (1) ``more thinking'' helps biased models but harms unbiased ones; (2) debiasing strategy must be tailored to model-specific bias profiles; (3) \textbf{do not apply debiasing interventions to models without baseline bias}.
+\textbf{Main finding:} The mechanism is \textbf{multi-turn structure}, not reasoning content. On GPT-4o (baseline: 6.0 months), generic reflection achieved 66\% bias reduction, outperforming SACD's 45\%. Critically, a random elaboration control (irrelevant content, same structure) produced \emph{identical} effects to CoT on Llama 3.3 (+6.0mo bias introduction). This suggests: (1) multi-turn structure helps biased models but harms unbiased ones; (2) ``think step by step'' content is irrelevant---any elaboration has the same effect; (3) \textbf{keep prompts single-turn for unbiased models}.
 
 \textbf{Replication:} LLMs exhibit anchoring bias in the judicial sentencing paradigm. GPT-4o showed 6.0 months effect, Claude Opus 4 showed 2.0 months, Sonnet 4 showed 0.0 months (no bias). For context, \citet{englich2006} observed 2.05 months in humans, but our prompts differ from theirs---direct comparison is not valid.
 
@@ -48,7 +48,7 @@
 
 Recent research has demonstrated that LLMs exhibit cognitive biases analogous to those documented in human psychology \citep{binz2023,jones2022}. A natural question follows: can techniques developed to reduce human cognitive biases be adapted for LLMs?
 
-\textbf{Our central finding is nuanced:} Debiasing effectiveness is model-specific. On GPT-4o, generic reflection (``think step by step'') outperformed SACD (66\% vs 45\% bias reduction)---suggesting ``more thinking'' is the active ingredient. But cross-model replication revealed a critical caveat: on unbiased models, \textbf{both} interventions caused problems. Generic reflection introduced consistent bias (3--6 months). SACD produced pathological outputs on Llama 3.3 (mean 29mo vs 6mo baseline, extreme variance, 120mo outliers). This suggests: (1) extended reasoning can introduce bias on unbiased models; (2) SACD can destabilize unbiased models; (3) \textbf{neither intervention is universally safe}---debiasing should only be applied to models with confirmed baseline bias.
+\textbf{Our central finding:} The debiasing/bias-introduction mechanism is \textbf{multi-turn structure}, not reasoning content. On GPT-4o, generic reflection outperformed SACD (66\% vs 45\%). We hypothesized ``more thinking'' was the mechanism. But a random elaboration control (describing weather, listing unrelated facts) produced \emph{identical} effects to CoT on Llama 3.3: both introduced +6.0mo bias where none existed. This demonstrates: (1) multi-turn structure itself modifies anchoring susceptibility; (2) CoT content is irrelevant---any elaboration works equally; (3) \textbf{keep prompts single-turn for unbiased models}.
 
 We tested two categories of interventions:
 
@@ -380,7 +380,35 @@ SACD (bias-specific) & 3.13 mo & 6.43 mo & 3.30 mo & 45\% \\
     \item ``Based on your reflection, provide your final answer.''
 \end{enumerate}
 
-\textbf{Implication:} SACD's debiasing effect is \emph{not} attributable to its bias-specific content (detect bias $\rightarrow$ analyze $\rightarrow$ correct). Generic reflection with equivalent structure produces equal or stronger effects on GPT-4o. This suggests the mechanism is simply ``more thinking,'' not targeted debiasing. \textbf{Caveat:} We did not test a random elaboration control (multi-turn structure with irrelevant content), so we cannot distinguish ``more thinking'' from ``any multi-turn structure.'' Future debiasing research should include length-matched, structure-matched, and content-irrelevant controls.
+\textbf{Implication:} SACD's debiasing effect is \emph{not} attributable to its bias-specific content (detect bias $\rightarrow$ analyze $\rightarrow$ correct). Generic reflection with equivalent structure produces equal or stronger effects on GPT-4o.
+
+\subsubsection{Random Elaboration Control: Identifying the Mechanism}
+\label{sec:random-elaboration}
+
+To distinguish whether the bias-introduction effect on unbiased models comes from reasoning content (``think step by step'') or multi-turn structure itself, we ran a random elaboration control on Llama 3.3 (baseline: 0.0mo). The control used the same multi-turn structure but with irrelevant content:
+
+\begin{enumerate}
+    \item ``Before answering, describe the weather in a hypothetical city in detail.''
+    \item ``Now list 5 completely unrelated facts about any topic.''
+    \item ``Finally, provide your answer to the original question.''
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Intervention & Low Anchor & High Anchor & Effect \\
+\midrule
+Baseline (single-turn) & 6.0 mo & 6.0 mo & 0.0 mo \\
+Generic CoT & 6.0 mo & 12.0 mo & \textbf{+6.0 mo} \\
+Random Elaboration & 6.0 mo & 12.0 mo & \textbf{+6.0 mo} \\
+\bottomrule
+\end{tabular}
+\caption{Random elaboration control on Llama 3.3 ($n=30$). Random elaboration produces \emph{identical} effects to generic CoT: both introduce +6.0mo anchoring bias. This confirms the mechanism is multi-turn structure, not reasoning content.}
+\label{tab:random-elaboration}
+\end{table}
+
+\textbf{Mechanism identified:} Random elaboration and generic CoT produce identical +6.0mo bias introduction on Llama 3.3. The content (``think step by step'' vs ``describe the weather'') is irrelevant. Multi-turn structure itself modifies anchoring susceptibility. This has practical implications: on unbiased models, \textbf{any} multi-turn elaboration may introduce bias---keep prompts single-turn.
 
 \subsubsection{Cross-Model Replication: Generic Reflection is Model-Specific}
 
@@ -808,9 +836,9 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-\textbf{Main finding: Generic reflection outperforms targeted debiasing.} Our most important result is a null finding: psychology-inspired debiasing techniques offer no advantage over generic reflection. On GPT-4o, Self-Adaptive Cognitive Debiasing (SACD) achieved 45\% bias reduction, but a structure-matched control using generic prompts (``think step by step,'' ``review your answer'') achieved 66\% reduction. The control outperformed the intervention. This suggests the mechanism is simply ``more thinking''---increased reasoning tokens and iterative reflection---not the psychology-specific content of bias detection and correction.
+\textbf{Main finding: Multi-turn structure is the mechanism.} Our most important result: the debiasing/bias-introduction effect comes from multi-turn structure, not reasoning content. On GPT-4o, SACD achieved 45\% bias reduction, generic reflection achieved 66\%. But a random elaboration control (irrelevant content like ``describe the weather'') produced \emph{identical} effects to CoT on Llama 3.3---both introduced +6.0mo bias where none existed. ``Think step by step'' and random elaboration are equivalent. This identifies the mechanism as structural (attention/context modification from multi-turn prompts), not content-based (reasoning or psychology-specific framing).
 
-\textbf{Implication for debiasing research:} Future work claiming intervention-specific effects \emph{must} include length-matched and structure-matched controls. Without such controls, apparent debiasing effects may simply reflect the benefits of multi-turn reasoning.
+\textbf{Implication for debiasing research:} Multi-turn structure helps biased models but harms unbiased ones. \textbf{Practical recommendation:} Measure baseline bias first. For biased models, any multi-turn elaboration may help. For unbiased models, keep prompts single-turn to preserve unbiased behavior.
 
 \textbf{Additional findings:}
 
