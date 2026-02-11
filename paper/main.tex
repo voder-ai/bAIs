@@ -353,10 +353,10 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
     \item \textbf{SACD reduces bias:} SACD achieved 45\% reduction on GPT-4o (strong bias). However, see the control experiment below.
 \end{itemize}
 
-\subsection{Generic Reflection Control: SACD's Effect is Not Bias-Specific}
+\subsection{Structure-Matched Control: SACD's Effect is Not Bias-Specific}
 \label{sec:generic-reflection}
 
-To test whether SACD's effectiveness stems from its psychology-inspired debiasing content or simply from increased reasoning tokens, we ran a length-matched control experiment on GPT-4o:
+To test whether SACD's effectiveness stems from its psychology-inspired debiasing content or simply from the multi-turn structure, we ran a \textbf{structure-matched control} on GPT-4o. Both conditions use identical 3-turn structure; only the content differs:
 
 \begin{table}[H]
 \centering
@@ -369,18 +369,23 @@ SACD (bias-specific) & 3.13 mo & 6.43 mo & 3.30 mo & 45\% \\
 \textbf{Generic Reflection} & 0.82 mo & 2.85 mo & \textbf{2.03 mo} & \textbf{66\%} \\
 \bottomrule
 \end{tabular}
-\caption{Generic reflection control ($n=30$ valid trials). Generic prompts (``Review your answer carefully,'' ``Think step by step'') with the same multi-turn structure as SACD produced \emph{stronger} debiasing than SACD's psychology-specific content.}
+\caption{Structure-matched control ($n=30$ valid trials). Both conditions use identical 3-turn multi-turn structure. Generic prompts (``Review your answer carefully,'' ``Think step by step'') produced \emph{stronger} debiasing than SACD's psychology-specific content, demonstrating that structure---not content---drives the effect.}
 \label{tab:generic-reflection}
 \end{table}
 
-\textbf{The generic reflection condition used:}
-\begin{enumerate}
-    \item ``Review your initial answer carefully. Consider all aspects of the case.''
-    \item ``Think step by step about whether your reasoning is sound.''
-    \item ``Based on your reflection, provide your final answer.''
-\end{enumerate}
+\textbf{Structure comparison:}
 
-\textbf{Implication:} SACD's debiasing effect is \emph{not} attributable to its bias-specific content (detect bias $\rightarrow$ analyze $\rightarrow$ correct). Generic reflection with equivalent structure produces equal or stronger effects on GPT-4o.
+\begin{tabular}{lll}
+\toprule
+Turn & SACD (psychology-specific) & Generic Reflection \\
+\midrule
+1 & ``Detect potential bias'' & ``Review your answer carefully'' \\
+2 & ``Analyze and correct bias'' & ``Think step by step'' \\
+3 & ``Provide final answer'' & ``Provide final answer'' \\
+\bottomrule
+\end{tabular}
+
+\textbf{Implication:} SACD's debiasing effect is \emph{not} attributable to its bias-specific content. The structure-matched generic control achieved \emph{stronger} debiasing (66\% vs 45\%), demonstrating that multi-turn structure---not psychology-specific framing---drives the effect.
 
 \subsubsection{Random Elaboration Control: Identifying the Mechanism}
 \label{sec:random-elaboration}
