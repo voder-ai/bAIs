@@ -551,6 +551,8 @@ The bias we observe is not sampling noise that averages out over many queries---
 
 \textbf{Theoretical significance.} The zero-variance finding suggests that anchoring bias in LLMs is not an emergent property of stochastic token sampling, but rather a \emph{structural feature} of how certain prompts are processed. The anchor value appears to directly influence the model's internal computation in a fixed, deterministic way---not merely shift a probability distribution.
 
+\textbf{Clarification on ``deterministic'':} We use ``deterministic'' to mean that at temp=0, the same input produces the same output across runs. This does not claim that the internal token-by-token generation process is non-probabilistic---LLMs still sample from probability distributions, but temp=0 selects the argmax at each step, making the sequence deterministic. Our point is about \emph{output consistency}, not claims about internal mechanisms.
+
 This observation strengthens the case for treating LLM bias as fundamentally different from human bias, requiring different measurement and mitigation approaches. It also explains why simple interventions (temperature increase, prompt modification) can produce such dramatic effects in ``soft bias'' models like Sonnet 4.5---they are not reducing variance, but flipping the model's deterministic behavior from one pattern to another.
 
 \subsection{Anchoring Bias is Prompt-Sensitive (Sonnet 4 Alias)}
