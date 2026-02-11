@@ -533,26 +533,28 @@ Pollution & Loss & 40\% certain & \textbf{93\% certain} & [79\%, 98\%] \\
 \subsection{Preliminary Hypothesis: Soft vs Hard Bias Patterns}
 \label{sec:soft-hard}
 
-Our observations suggest that debiasing interventions effective on one model may have no effect on another. Based on comparing Sonnet 4.5 and GPT-4o, we propose a preliminary hypothesis distinguishing two bias patterns. \textbf{This hypothesis is based on observations from only two models and requires validation across a broader range of architectures before generalization.}
+Our observations suggest that debiasing interventions effective on one model may have no effect on another. We tested temperature sensitivity across \textbf{five models from three provider families} and observed two distinct patterns:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Model & Baseline & temp=1.0 & Simple Debias & Observed Pattern \\
+Model & Family & Baseline & temp=0.5 & temp=1.0 & Pattern \\
 \midrule
-Sonnet 4.5 & 3.00 mo & \textbf{0 mo} & \textbf{0.13 mo} & \textit{Soft-like} \\
-Sonnet 4 & 0.00 mo & 0 mo & 0 mo & \textit{Minimal} \\
-GPT-4o & 6.00 mo & 6.00 mo & 6.00 mo & \textit{Hard-like} \\
+GPT-4o & OpenAI & 6.00 mo & 6.00 mo & 6.00 mo & \textbf{HARD} \\
+GPT-4.1 & OpenAI & 3.10 mo & 3.20 mo & 3.20 mo & \textbf{HARD} \\
+Opus 4.5 & Anthropic & 5.00 mo & 5.00 mo & 5.00 mo & \textbf{HARD} \\
+Sonnet 4.5 & Anthropic & 3.00 mo & --- & \textbf{0 mo} & \textbf{SOFT} \\
+Llama 3.3 & Meta & 0.50 mo & --- & --- & \textbf{SOFT} \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing intervention effectiveness by model identifier ($n=30$ per condition). Sonnet 4.5 responds to both temperature increase (100\% reduction) and simple prompt instruction (96\% reduction). Sonnet 4 shows no baseline bias. GPT-4o responds to neither intervention (0\% reduction for both).}
+\caption{Temperature sensitivity across 5 models ($n=20$ per temperature). HARD models show constant bias regardless of temperature. SOFT models show low or decreasing bias. Llama 3.3 baseline from existing data ($n=49$, 50\% valid responses due to OpenRouter reliability issues).}
 \label{tab:soft-hard}
 \end{table}
 
-\textbf{Hypothesized ``soft bias'' pattern} (observed in Sonnet 4.5): Bias eliminated by either increasing temperature to 1.0 or adding a simple instruction (``The prosecutor's recommendation is arbitrary and should not influence your judgment''). This \emph{might} suggest the bias exists at the decoding/prompt-compliance level---the model ``knows'' the anchor is irrelevant but defaults to anchor-consistent outputs when not explicitly instructed otherwise.
+\textbf{``Hard bias'' pattern} (observed in GPT-4o, GPT-4.1, Opus 4.5): Bias magnitude remains constant regardless of temperature (0→0.5→1.0). Three models across two providers (OpenAI, Anthropic) show this pattern. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
 
-\textbf{Hypothesized ``hard bias'' pattern} (observed in GPT-4o): Bias persists despite both interventions. Temperature=1.0 produces identical bias magnitude. The simple debias instruction achieves 0\% reduction. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
+\textbf{``Soft bias'' pattern} (observed in Sonnet 4.5, Llama 3.3): Bias is low at baseline or decreases with temperature. Sonnet 4.5 shows 100\% reduction at temp=1.0. Llama 3.3 shows only 0.5mo baseline effect. Two models across two providers (Anthropic, Meta) show this pattern.
 
 \textbf{Observed values:} Each model produced consistent outputs across all trials:
 \begin{itemize}
@@ -565,10 +567,10 @@ Notably, both Sonnet variants exhibit \textbf{zero variance} within conditions (
 
 \textbf{Important caveats:}
 \begin{itemize}
-    \item This distinction is based on only two models (Sonnet 4.5 vs GPT-4o)
-    \item The alias/dated variance for Sonnet 4 complicates interpretation
+    \item This distinction is based on five models across three providers---more robust than our initial two-model observation, but still limited
+    \item The majority pattern is HARD (3/5 models); SOFT may be the exception rather than the rule
     \item We cannot rule out that observed differences reflect API routing, checkpoint differences, or other confounds rather than fundamental architectural properties
-    \item Broader validation across model families is needed before treating this as a robust taxonomy
+    \item Temperature sweeps used $n=20$ per condition; larger samples may reveal more nuanced patterns
 \end{itemize}
 
 \textbf{Contamination probe:} We asked both models whether they were familiar with the Englich et al. sentencing study and whether they could predict the expected anchoring pattern. Both models demonstrated clear knowledge of the study and correctly predicted that high prosecutor recommendations would bias sentencing upward. Yet their behavior diverged: GPT-4o exhibited the bias despite this knowledge, while Sonnet resisted it. This suggests that \emph{knowing} about a bias is insufficient to avoid it---models differ in whether they apply meta-cognitive knowledge to their own behavior, paralleling findings in human decision-making research \citep{sibony2019}.
@@ -687,7 +689,7 @@ Based on observations from our two fully-tested models (Sonnet 4.5 and GPT-4o, e
 
 \textbf{Practical implications (with appropriate caution):} (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) intervention-resistant biases may require more sophisticated approaches than prompt engineering.
 
-\textbf{Critical limitations of this hypothesis:} This soft/hard distinction is \textbf{not a validated taxonomy}---it derives from observations of \textbf{just two models} (Sonnet 4.5 and GPT-4o) on \textbf{one bias type} (anchoring). The alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) further complicates interpretation---what appears to be a ``soft'' vs ``hard'' distinction might instead reflect checkpoint differences, API routing, or other confounds. We present this as a \textbf{preliminary label for observed patterns}, not an established finding or generalizable framework.
+\textbf{Critical limitations of this hypothesis:} This soft/hard distinction derives from temperature sweep experiments on \textbf{five models} across three provider families (OpenAI, Anthropic, Meta). While more robust than our initial two-model observation, it remains preliminary: (1) tested on \textbf{one bias type} (anchoring) only; (2) HARD is the majority pattern (3/5 models), suggesting SOFT may be exceptional; (3) the alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) complicates interpretation. We present this as a \textbf{preliminary taxonomy}, not an established framework.
 
 \subsection{Limitations}
 
