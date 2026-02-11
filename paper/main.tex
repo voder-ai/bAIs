@@ -272,7 +272,7 @@ Context hygiene closes approximately 62\% of the gap between LLM and human perfo
 
 \subsection{SACD Results}
 
-SACD essentially eliminates anchoring bias when tested on Anthropic models (Sonnet 4, baseline: 3.67mo):
+SACD essentially eliminates anchoring bias when tested on Codex (baseline: 3.67mo). Note: This experiment used Codex, not Sonnet 4 (which has 0.0mo baseline and would not demonstrate debiasing):
 
 \begin{table}[H]
 \centering
@@ -380,7 +380,7 @@ To assess whether model knowledge of anchoring bias explains the observed differ
 \toprule
 Model & Knows Study? & Predicts Pattern? & Exhibits Bias? \\
 \midrule
-GPT-4o & \checkmark Yes & \checkmark Correctly & $\times$ \textbf{5.0mo (2.42$\times$ human)} \\
+GPT-4o & \checkmark Yes & \checkmark Correctly & $\times$ \textbf{6.0mo (2.93$\times$ human)} \\
 Sonnet 4 & \checkmark Yes & \checkmark Correctly & \checkmark \textbf{0.0mo (immune)} \\
 \bottomrule
 \end{tabular}
@@ -454,16 +454,16 @@ Model & Baseline & temp=1.0 & Simple Debias & Observed Pattern \\
 \midrule
 Sonnet 4.5 & 3.00 mo & \textbf{0 mo} & \textbf{0.13 mo} & \textit{Soft-like} \\
 Sonnet 4 & 0.00 mo & 0 mo & 0 mo & \textit{Minimal} \\
-GPT-4o & 4.97 mo & 4.97 mo & 4.67 mo & \textit{Hard-like} \\
+GPT-4o & 6.00 mo & 6.00 mo & 6.00 mo & \textit{Hard-like} \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing intervention effectiveness by model identifier ($n=30$ per condition). Sonnet 4.5 responds to both temperature increase (100\% reduction) and simple prompt instruction (96\% reduction). Sonnet 4 shows no baseline bias. GPT-4o responds to neither intervention (0\% and 6\% reduction respectively).}
+\caption{Debiasing intervention effectiveness by model identifier ($n=30$ per condition). Sonnet 4.5 responds to both temperature increase (100\% reduction) and simple prompt instruction (96\% reduction). Sonnet 4 shows no baseline bias. GPT-4o responds to neither intervention (0\% reduction for both).}
 \label{tab:soft-hard}
 \end{table}
 
 \textbf{Hypothesized ``soft bias'' pattern} (observed in Sonnet 4 alias): Bias eliminated by either increasing temperature to 1.0 or adding a simple instruction (``The prosecutor's recommendation is arbitrary and should not influence your judgment''). This \emph{might} suggest the bias exists at the decoding/prompt-compliance level---the model ``knows'' the anchor is irrelevant but defaults to anchor-consistent outputs when not explicitly instructed otherwise.
 
-\textbf{Hypothesized ``hard bias'' pattern} (observed in GPT-4o): Bias persists despite both interventions. Temperature=1.0 produces identical bias magnitude. The simple debias instruction achieves only 6\% reduction. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
+\textbf{Hypothesized ``hard bias'' pattern} (observed in GPT-4o): Bias persists despite both interventions. Temperature=1.0 produces identical bias magnitude. The simple debias instruction achieves 0\% reduction. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
 
 \textbf{Observed values:} Each model produced consistent outputs across all trials:
 \begin{itemize}
