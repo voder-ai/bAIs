@@ -37,7 +37,7 @@ We replicate the Englich et al.\ (2006) judicial anchoring paradigm on LLMs and 
 
 \textbf{Novel observation:} LLM bias at temp=0 is \emph{deterministic}, not stochastic (SD=0 across 30 trials per condition). Unlike human bias, which shows variance, LLM bias is a fixed function of model weights and prompt---every trial produces the exact same biased output. This has significant implications: deployed systems using temp=0 will exhibit 100\% consistent bias, making it both more predictable to audit and more consequential when present.
 
-\textbf{Debiasing:} We tested multiple intervention approaches. On Codex (baseline 3.67mo), Sibony's decision architecture techniques---``context hygiene'' (27\% reduction) and ``premortem'' (24\% reduction)---showed moderate effectiveness. Self-Adaptive Cognitive Debiasing (SACD), an iterative self-correction loop, achieved 50\% bias reduction on GPT-4o (6.0mo $\rightarrow$ 3.02mo). Notably, SACD was the \emph{only} technique that worked on GPT-4o---Sibony techniques and simple instructions showed 0\% reduction. On Sonnet 4.5, a simple one-line prompt instruction (``the recommendation is arbitrary, ignore it'') achieved 96\% reduction.
+\textbf{Debiasing:} We tested multiple intervention approaches. On Codex (baseline 3.67mo), Sibony's decision architecture techniques---``context hygiene'' (27\% reduction) and ``premortem'' (24\% reduction)---showed moderate effectiveness. Self-Adaptive Cognitive Debiasing (SACD), an iterative self-correction loop, achieved 45\% bias reduction on GPT-4o (6.0mo $\rightarrow$ 3.30mo). Notably, SACD was the \emph{only} technique that worked on GPT-4o---Sibony techniques and simple instructions showed 0\% reduction. On Sonnet 4.5, a simple one-line prompt instruction (``the recommendation is arbitrary, ignore it'') achieved 96\% reduction.
 
 \textbf{Key finding:} GPT-4o, Sonnet, and Opus all correctly describe anchoring bias when queried, yet exhibit different susceptibility. GPT-4o shows strong bias (2.93$\times$ human), Opus 4 shows human-level bias (0.98$\times$), while Sonnet 4 resists entirely. This parallels Sibony's observation about human decision-making: \emph{knowing about a bias does not guarantee immunity}. The difference appears to lie in whether models \emph{apply} meta-cognitive knowledge, not merely possess it.
 
@@ -299,14 +299,14 @@ To test whether debiasing techniques transfer to models with strong baseline bia
 \toprule
 Technique & n & Low Anchor & High Anchor & Effect & Reduction \\
 \midrule
-Baseline & 47 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
-Context Hygiene (Sibony) & 42 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
-Premortem (Sibony) & 45 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
-Simple Instruction & 49 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
-\textbf{SACD} & 44 & 3.24 mo & 6.26 mo & \textbf{3.02 mo} & \textbf{50\%} \\
+Baseline & 25 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
+Context Hygiene (Sibony) & 26 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
+Premortem (Sibony) & 28 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
+Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
+\textbf{SACD} & 29 & 3.13 mo & 6.43 mo & \textbf{3.30 mo} & \textbf{45\%} \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing effectiveness on GPT-4o ($n = 233$ total trials). Only SACD achieved measurable reduction. All other techniques showed exactly 0\% reduction---GPT-4o perfectly followed anchors with or without Sibony interventions.}
+\caption{Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication). Only SACD achieved measurable reduction. All other techniques showed exactly 0\% reduction---GPT-4o perfectly followed anchors with or without Sibony interventions.}
 \label{tab:gpt4o-debiasing}
 \end{table}
 
