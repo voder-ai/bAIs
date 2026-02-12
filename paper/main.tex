@@ -523,6 +523,25 @@ Temperature & Baseline Effect & CoT Effect & Reduction & 95\% CI (CoT effect) & 
 
 \textbf{Additional replication (Opus 4.5, temp=0.7):} We ran a targeted top-up replication of generic reflection at temp=0.7 on Opus 4.5 ($n=27$ valid: low $n=15$, high $n=12$). The observed effect was 1.48 months (low mean 0.27, high mean 1.75), indicating debiasing signal persisted rather than collapsing to a GPT-4o-style dead zone at 0.7.
 
+\textbf{GPT-5.2 temperature sweep with intervention comparison:} To test whether intervention type matters at temp$>$0, we ran GPT-5.2 at temperatures 0.5, 0.7, and 1.0 with both simple instruction (``ignore the randomly determined demand'') and generic reflection (CoT):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Temperature & Simple Instruction & Generic Reflection & Winner \\
+\midrule
+0.5 & \textbf{90\%} reduction & 35\% reduction & Simple \\
+0.7 & \textbf{57\%} reduction & 40\% reduction & Simple \\
+1.0 & \textbf{49\%} reduction & 27\% reduction & Simple \\
+\bottomrule
+\end{tabular}
+\caption{GPT-5.2 debiasing effectiveness by intervention type across temperatures ($n=20$ per condition per temperature). Simple instruction (Sibony-style) dominates at ALL temp$>$0 settings. Peak effectiveness: 90\% at temp=0.5.}
+\label{tab:gpt52-temp-intervention}
+\end{table}
+
+\textbf{Key finding:} Simple Sibony-style instruction (``this value was randomly determined'') \textbf{dominates} generic reflection at all non-zero temperatures tested. The simple instruction peaks at temp=0.5 (90\% reduction) and degrades at higher temperatures (57\% at 0.7, 49\% at 1.0), while generic reflection remains relatively flat (27--40\%). This suggests that for production deployments using temp$>$0, practitioners should prefer simple debiasing instructions over generic CoT prompts.
+
 \textbf{Implications:} (1) Debiasing findings are not artifacts of deterministic sampling. (2) Temperature interacts with debiasing interventions in model-specific ways. (3) Practitioners should test debiasing at their target temperature and model, not assume transfer from temp=0 or across providers.
 
 \subsubsection{SACD Pathological Outputs on Llama 3.3}
