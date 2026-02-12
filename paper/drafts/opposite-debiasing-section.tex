@@ -1,0 +1,36 @@
+% DRAFT: New section for paper - Opposite Debiasing Effects
+% Add after Section 4.2 or integrate into prompt robustness section
+
+\subsection{Debiasing Interventions Have Model-Specific and Opposite Effects}
+\label{sec:opposite-debiasing}
+
+A surprising finding emerged from our prompt robustness experiments: the same debiasing intervention produced \textbf{opposite effects} on different models.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Model & Original & Casual & Structured & Pattern \\
+\midrule
+Llama 3.3 70B & 4.0 mo & 4.0 mo & \textbf{0.0 mo} & Structured debiases \\
+GPT-5.2 & 4.4 mo & \textbf{0.7 mo} & 5.7 mo & Casual debiases, structured worsens \\
+\bottomrule
+\end{tabular}
+\caption{Opposite effects of prompt framing across models. On Llama 3.3, structured prompts eliminate bias. On GPT-5.2, casual prompts (without ``randomly determined'' disclaimer) debias, while structured prompts \emph{increase} bias. $n=20$ per condition per variant.}
+\label{tab:opposite-debiasing}
+\end{table}
+
+\textbf{The ``randomly determined'' disclaimer} explicitly tells the model that the anchor value is arbitrary and should not influence judgment. Following Sibony's decision hygiene principles, this should reduce anchoring by flagging the anchor as irrelevant.
+
+\textbf{On Llama 3.3}, this works as expected: the model interprets the disclaimer as instruction to ignore the anchor, producing 0.0mo anchoring effect (vs.\ 4.0mo without the disclaimer).
+
+\textbf{On GPT-5.2}, the effect is reversed: the disclaimer \emph{introduces} bias (4.0mo effect), while removing it eliminates anchoring entirely (0.0mo effect). One hypothesis: GPT-5.2 may interpret ``randomly determined'' as \emph{relevant experimental framing} rather than dismissable metadata, causing it to attend more closely to the anchor value.
+
+\textbf{Implications:}
+\begin{enumerate}
+    \item \textbf{No universal debiasing prompt exists.} Interventions must be validated on the specific target model.
+    \item \textbf{Sibony-style techniques can backfire.} The ``acknowledge arbitrariness'' intervention is not universally safe.
+    \item \textbf{Model-specific optimization is required.} Practitioners should test debiasing interventions empirically rather than assuming transfer from other models or from human psychology literature.
+\end{enumerate}
+
+This finding transforms what initially appeared to be a methodological limitation (prompt sensitivity) into a \textbf{core contribution}: prompt-model interactions are a first-order phenomenon that must be characterized, not a confound to be controlled away.

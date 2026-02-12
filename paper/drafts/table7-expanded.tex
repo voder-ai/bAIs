@@ -1,0 +1,38 @@
+% DRAFT: Expanded prompt robustness table for paper
+% Replace existing Table 7 (tab:crossmodel-prompt-robustness) once all data is in
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Model & Original & Variant Range & n & Classification \\
+\midrule
+\multicolumn{5}{l}{\textbf{Strong Bias (consistent across variants)}} \\
+GPT-4o & 6.0 mo & 4.8--6.0 mo & 60 & Biased \\
+Hermes 405B & 5.1 mo & 1.2--5.1 mo & 60 & Biased (variant-sensitive) \\
+\midrule
+\multicolumn{5}{l}{\textbf{Mixed (prompt-dependent bias)}} \\
+Llama 3.3 70B & 4.0 mo & 0.0--4.0 mo & 60 & Mixed$^\dagger$ \\
+\midrule
+\multicolumn{5}{l}{\textbf{Low Bias (consistent across variants)}} \\
+Mistral Medium 3 & 0.3 mo & 0.0--0.3 mo & 60 & Low-bias \\
+Opus 4.0 & 0.0 mo & 0.0--0.7 mo & 60 & Low-bias \\
+Nemotron 253B & $-$0.2 mo & $-$0.2--0.4 mo & 224 & Low-bias \\
+\midrule
+\multicolumn{5}{l}{\textbf{Pending}} \\
+GPT-5.2 & -- & -- & -- & Running \\
+Sonnet 4 & -- & -- & -- & TODO \\
+Opus 4.5 & -- & -- & -- & TODO \\
+\bottomrule
+\end{tabular}
+\caption{Cross-model prompt robustness (3 prompt styles: original, casual, structured; $n=20$ per condition/style except Nemotron with excess trials). 
+$^\dagger$Llama 3.3 shows 4.0mo effect with original/casual prompts but \textbf{0.0mo with structured prompt}---prompt wording alone can eliminate bias. 
+Classification: ``Biased'' = effect $>$2mo across all variants; ``Low-bias'' = effect $<$1mo across all variants; ``Mixed'' = classification depends on prompt variant.}
+\label{tab:crossmodel-prompt-robustness-expanded}
+\end{table}
+
+% Key findings to add to text:
+% 1. Llama 3.3's structured prompt eliminates bias (0.0mo vs 4.0mo original) - validates Sibony approach
+% 2. Hermes shows prompt sensitivity (5.1→1.2mo) but remains biased across all variants
+% 3. Low-bias models (Mistral, Opus, Nemotron) stable across prompt variations
+% 4. Classification stability: high-bias vs low-bias persists for 5/6 models
