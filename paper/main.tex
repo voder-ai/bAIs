@@ -111,11 +111,20 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 
 \subsection{Models and Sample Size}
 
+\textbf{Model chronology and experiment mapping:} This paper reports experiments conducted using three generations of models. To avoid confusion about result applicability:
+
+\begin{itemize}
+    \item \textbf{Historical baseline (deprecated):} OpenAI Codex (GPT-3.5-based code completion model, circa 2023, accessed via legacy Codex API endpoint). Used in: baseline anchoring (Section~\ref{sec:baseline-anchoring}), Sibony techniques (Section~\ref{sec:sibony-debiasing}), initial SACD experiments. \emph{These results demonstrate technique efficacy on a historical model but may not transfer to current models.}
+    \item \textbf{Frontier model validation:} GPT-4o (accessed via GitHub Copilot's model routing). Used in: debiasing replication (Section~\ref{sec:gpt4o-debiasing}), random elaboration control, temperature experiments. \emph{Provides validation on more recent architecture.}
+    \item \textbf{Primary research models:} Sonnet 4 (date-pinned \texttt{claude-sonnet-4-20250514}), Sonnet 4.5 (alias \texttt{claude-sonnet-4-5-20250929}), and 6 additional models for cross-model validation. \emph{These constitute the main research contribution.}
+\end{itemize}
+
+\textbf{Key models used throughout:}
 \begin{itemize}
     \item \textbf{Sonnet 4} (legacy): \texttt{claude-sonnet-4-20250514} --- used for reproducibility, showed 0.0mo bias
     \item \textbf{Sonnet 4.5} (current): \texttt{claude-sonnet-4-5-20250929} --- used in initial development, showed 3.0mo bias
-    \item \textbf{Secondary model:} GPT-4o (\texttt{github-copilot/gpt-4o})
-    \item \textbf{Cross-model validation:} 8 models from various providers (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
+    \item \textbf{GPT-4o:} \texttt{github-copilot/gpt-4o} --- frontier model validation
+    \item \textbf{Cross-model validation:} 7 models from various providers (Anthropic, OpenAI, Meta, Mistral AI)
     \item \textbf{Sample sizes:} Target $n=30$ per condition (15 low anchor + 15 high anchor). Actual valid trials per model shown in Table~\ref{tab:sample-sizes}.
 \end{itemize}
 
