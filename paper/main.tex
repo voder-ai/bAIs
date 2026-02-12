@@ -41,7 +41,7 @@
 
 \textbf{Intervention null results:} On GPT-4o, Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{0\% reduction}---identical to baseline. Simple instructions (``ignore the anchor'') also showed 0\% effect. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none.
 
-\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Nemotron (3.0mo), Llama 3.3 (0mo), Sonnet 4 (0mo). \textbf{Caution:} Pattern observed in one prompt template; individual model results, not provider-level generalizations.
+\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Hermes 405B (4.8mo), Llama 3.3 (0mo baseline, but \textbf{prompt-unstable}), Opus 4 (0mo). \textbf{Caution:} Pattern observed in one prompt template; individual model results, not provider-level generalizations.
 
 \textbf{Practical note:} API identifier routing affects behavior; use date-pinned model IDs for reproducibility.
 \end{abstract}
@@ -129,10 +129,11 @@ Sonnet 4 & 60 & 60 & 0 & Date-pinned \\
 Sonnet 4.5 & 60 & 60 & 0 & Primary model \\
 GPT-4o & 60 & 60 & 0 & Via GitHub Copilot \\
 Opus 4 & 60 & 60 & 0 & --- \\
-Nemotron 30B & 85 & 75 & 10 & Base + topup runs \\
 Hermes 405B & 70 & 60 & 10 & Base + topup runs \\
 Llama 3.3 70B & 60 & 60 & 0 & Paid OpenRouter tier \\
 Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
+\midrule
+\multicolumn{5}{l}{\textit{Excluded: Nemotron 30B (224 attempts, 19 valid, 91\% failure)}} \\
 \bottomrule
 \end{tabular}
 \caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent.}
@@ -525,26 +526,25 @@ Cross-model comparison reveals varying anchoring susceptibility across our teste
 Model & n (valid) & Anchoring Effect & Behavior \\
 \midrule
 Sonnet 4 & 60 & 0.00 mo & No bias \\
-Claude Opus 4 & 60 & 2.00 mo & Moderate bias \\
 Mistral (7B) & 52 & 0.00 mo & No bias \\
-Hermes 3 (405B) & 60 & $-0.33$ mo & No bias \\
 Llama 3.3 (70B) & 60 & 0.00 mo & No bias \\
-Nemotron (30B) & 75 & 3.00 mo & Moderate bias \\
+Claude Opus 4 & 60 & 2.00 mo & Moderate bias \\
 Sonnet 4.5 & 60 & 3.00 mo & Moderate bias \\
+Hermes 3 (405B) & 60 & 4.80 mo & Moderate bias \\
 GPT-4o & 60 & 6.00 mo & Strong bias \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias, sorted by effect magnitude. Eight models tested. \textbf{Caution:} Single prompt template; results are model-specific observations, not provider-level generalizations.}
+\caption{Cross-model anchoring bias, sorted by effect magnitude. Seven models tested (Nemotron excluded due to 91\% parse failure rate). \textbf{Caution:} Single prompt template; results are model-specific observations, not provider-level generalizations.}
 \label{tab:crossmodel}
 \end{table}
 
 \textbf{Observation: Anchoring susceptibility varies across tested models.}
 
 \begin{enumerate}
-    \item \textbf{Observed pattern (not validated):} Across 8 models, we observe varying susceptibility:
+    \item \textbf{Observed pattern (not validated):} Across 7 models, we observe varying susceptibility:
     \begin{itemize}
-        \item \textbf{No bias:} Sonnet 4, Mistral 7B, Llama 3.3, Hermes 405B
-        \item \textbf{Moderate bias ($2$--$3$ months):} Opus 4, Nemotron
+        \item \textbf{No bias ($<1$ month):} Sonnet 4, Mistral 7B, Llama 3.3
+        \item \textbf{Moderate bias ($2$--$5$ months):} Opus 4, Sonnet 4.5, Hermes 405B
         \item \textbf{Strong bias ($>5$ months):} GPT-4o
     \end{itemize}
     
@@ -727,16 +727,18 @@ To address prompt-template concerns in cross-model comparisons, we ran style var
 \toprule
 Model & Original Effect & Variant Range & Stability \\
 \midrule
-GPT-4o & 6.0 mo & 4.8--5.1 mo & Biased across all variants \\
-Nemotron 30B & 3.2 mo & 2.3--3.2 mo & Biased across all variants \\
+GPT-4o & 6.0 mo & 4.8--6.0 mo & Biased across all variants \\
+Hermes 405B & 4.8 mo & 1.2--4.8 mo & Biased (magnitude prompt-sensitive) \\
+Llama 3.3 & 4.0 mo & 0.0--4.0 mo & \textbf{UNSTABLE} (structured=0, others=4mo) \\
+Mistral Medium 3 & 0.3 mo & -1.2--0.3 mo & Low-bias/unstable near zero \\
 Opus 4 & 0.0 mo & 0.0--0.7 mo & Low-bias across all variants \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model prompt robustness check (3 prompt styles, $n=10$ per condition/style). GPT-4o and Nemotron remain anchored across prompt styles, while Opus 4 remains near anchor-invariant. This supports stability of high-bias vs low-bias classification under prompt paraphrase for these models in our setting.}
+\caption{Cross-model prompt robustness check (3 prompt styles, $n=10$ per condition/style). GPT-4o and Hermes 405B remain anchored across prompt styles. Llama 3.3 shows prompt-driven classification flip: biased with original/casual prompts, unbiased with structured prompt. Opus 4 remains near anchor-invariant. This validates the adversarial concern about prompt sensitivity as empirically significant.}
 \label{tab:crossmodel-prompt-robustness}
 \end{table}
 
-These runs do not eliminate all prompt-template risk, but they reduce a key confound: for GPT-4o, Nemotron, and Opus 4, high-bias versus low-bias classification persists under prompt style variation rather than depending on one exact wording. We still treat full 8-model ranking claims as provisional pending broader template coverage.
+These runs reveal an important confound: for Llama 3.3, bias classification depends critically on prompt style (biased→unbiased). For GPT-4o, Hermes 405B, and Opus 4, high-bias versus low-bias classification persists under prompt variation. Mistral Medium 3 shows low bias but inconsistent direction. We treat full 8-model ranking claims as provisional pending broader template coverage.
 
 \subsection{Novel Anchoring Scenarios Show Consistent Bias}
 
@@ -907,7 +909,7 @@ Several directions warrant investigation:
 
 \textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o/Nemotron/Opus 4, but not all models).
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o, Hermes 405B, Llama 3.3, Mistral Medium 3, and Opus 4, covering most but not all tested models).
 
 \section*{Ethics Statement}
 
