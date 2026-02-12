@@ -39,7 +39,7 @@
 
 \textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). LLM bias is a fixed function of weights and prompt---100\% consistent, predictable to audit but consequential when present.
 
-\textbf{Intervention null results:} On GPT-4o, Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{0\% reduction}---identical to baseline. Simple instructions (``ignore the anchor'') also showed 0\% effect. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none.
+\textbf{Intervention model-specificity:} Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{model-specific effects}: 27\% and 24\% reduction on Codex (deprecated model), but 0\% on GPT-4o (frontier model). Simple instructions (``ignore the anchor'') showed 0\% effect on GPT-4o. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none. \textbf{Key implication:} Debiasing techniques do not reliably transfer across models---practitioners must validate on their deployment model.
 
 \textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Hermes 405B (4.8mo), Llama 3.3 (0mo baseline, but \textbf{prompt-unstable}), Opus 4 (0mo). \textbf{Caution:} Pattern observed in one prompt template; individual model results, not provider-level generalizations.
 
@@ -353,10 +353,12 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 
 \textbf{Key findings:}
 \begin{itemize}
-    \item \textbf{Sibony techniques do not work on LLMs:} Context hygiene and premortem showed \emph{zero} effect on GPT-4o. The model's responses were identical with or without these interventions.
+    \item \textbf{Sibony techniques show model-specific effects:} Context hygiene and premortem showed \emph{zero} effect on GPT-4o (Table~\ref{tab:gpt4o-debiasing}), but showed 27\% and 24\% reduction on Codex (Table~\ref{tab:sibony-debiasing}). This model-specific pattern suggests these techniques do not universally transfer from human decision-making to LLMs, and when they do work, effects are partial (substantial residual anchoring remains).
     \item \textbf{Simple instructions fail:} Telling the model ``the recommendation is arbitrary, ignore it'' had no effect. GPT-4o acknowledged the instruction but still anchored.
     \item \textbf{SACD reduces bias:} SACD achieved 45\% reduction on GPT-4o (strong bias). However, see the control experiment below.
 \end{itemize}
+
+\textbf{Reconciling Codex vs GPT-4o Sibony results:} The contradiction between Codex (partial effectiveness) and GPT-4o (no effect) has three plausible explanations: (1) \emph{Model architecture differences}---Codex (GPT-3.5-based) and GPT-4o have different training objectives and RLHF tuning that may affect intervention susceptibility. (2) \emph{Baseline bias level}---Codex showed moderate bias (3.67mo), GPT-4o showed strong bias (6.0mo); techniques may only work on moderate-bias models. (3) \emph{Prompt or scenario differences}---though paradigms were similar, exact wording differed. Our data cannot definitively isolate the mechanism, but the pattern suggests \textbf{Sibony techniques are not reliably effective across current frontier models}. Practitioners should validate on their deployment model rather than assume transfer.
 
 \subsection{Structure-Matched Control: SACD's Effect is Not Bias-Specific}
 \label{sec:generic-reflection}
@@ -905,7 +907,7 @@ Several directions warrant investigation:
 \begin{enumerate}
     \item \textbf{Deterministic bias (SD=0)}: At temp=0, LLM bias is not noise---it is a fixed function of weights and prompt. Every trial produces the exact same output, making bias both auditable and consequential.
     \item \textbf{Model identifier variance}: Alias vs date-pinned identifiers produced qualitatively different results (Sonnet 4.5 via alias: 3.0mo; Sonnet 4 via dated ID: 0.0mo). Use date-pinned identifiers for reproducibility.
-    \item \textbf{Sibony techniques do not transfer}: Context hygiene and premortem, effective in human decision-making, showed exactly 0\% effect on GPT-4o.
+    \item \textbf{Sibony techniques show inconsistent transfer}: Context hygiene and premortem, effective in human decision-making, showed model-specific effects---27\% and 24\% reduction on Codex but 0\% on GPT-4o. Transfer from human decision-making to LLMs is unreliable and model-dependent.
     \item \textbf{Prompt sensitivity}: Paraphrasing reduced anchoring by 92\% in Sonnet 4.5, suggesting single-prompt experiments may overstate bias magnitude.
 \end{enumerate}
 
