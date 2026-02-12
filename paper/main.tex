@@ -39,9 +39,9 @@
 
 \textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). LLM bias is a fixed function of weights and prompt---100\% consistent, predictable to audit but consequential when present.
 
-\textbf{Intervention null results:} On GPT-4o, Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{0\% reduction}---identical to baseline. Simple instructions (``ignore the anchor'') also showed 0\% effect. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none.
+\textbf{Intervention model-specificity:} On GPT-4o, Sibony's decision architecture techniques showed \textbf{0\% reduction}. But on GPT-5.2, the same techniques showed \textbf{55--67\% reduction}---a complete reversal. Simple instructions also worked on GPT-5.2 (67\%) but not GPT-4o (0\%). \textbf{Good news for practitioners:} newer frontier models appear more responsive to simple debiasing. \textbf{Caution:} generic reflection can introduce bias on models that have none.
 
-\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Mistral Medium 3 (\~0mo), Llama 3.3 (0mo), Sonnet 4 (0mo). \textbf{Caution:} Pattern observed in one prompt template; individual model results, not provider-level generalizations.
+\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Llama 3.3 (6--9mo without disclaimer, 0mo with ``randomly determined'' disclaimer), Mistral Medium 3 (\~0mo), Sonnet 4 (0mo). \textbf{Critical:} Llama 3.3's 0.0mo on our original prompt was due to built-in debiasing language (``randomly determined''), not inherent resistance---when this disclaimer was removed, strong bias (6--9mo) emerged. This is consistent with GPT-5.2 responding to Sibony-style debiasing.
 
 \textbf{Practical note:} API identifier routing affects behavior; use date-pinned model IDs for reproducibility.
 \end{abstract}
@@ -357,6 +357,38 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
     \item \textbf{SACD reduces bias:} SACD achieved 45\% reduction on GPT-4o (strong bias). However, see the control experiment below.
 \end{itemize}
 
+\subsection{GPT-5.2: Model-Specific Debiasing Reversal}
+\label{sec:gpt52-debiasing}
+
+To test whether GPT-4o's null results for Sibony techniques generalize to newer models, we ran a comprehensive debiasing experiment on GPT-5.2 (baseline: 5.97mo effect, same strong-bias tier as GPT-4o):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Condition & n & Low Anchor & High Anchor & Effect & Reduction \\
+\midrule
+Baseline & 60 & 3.03 mo & 9.00 mo & 5.97 mo & --- \\
+Simple instruction & 30 & 6.00 mo & 8.00 mo & 2.00 mo & 67\% \\
+Context hygiene & 30 & 5.50 mo & 8.20 mo & 2.70 mo & 55\% \\
+Premortem & 30 & 4.00 mo & 6.10 mo & 2.10 mo & 65\% \\
+Generic reflection & 30 & 6.00 mo & 9.00 mo & 3.00 mo & 50\% \\
+Random elaboration & 30 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
+\bottomrule
+\end{tabular}
+\caption{GPT-5.2 debiasing results ($n=30$ per condition except baseline). Sibony techniques show 55--67\% reduction on GPT-5.2 vs 0\% on GPT-4o---a complete reversal. Random elaboration (irrelevant content, same structure) shows 0\% reduction, confirming CONTENT matters.}
+\label{tab:gpt52-debiasing}
+\end{table}
+
+\textbf{Key findings:}
+\begin{itemize}
+    \item \textbf{Sibony techniques transfer to GPT-5.2:} Context hygiene (55\%), premortem (65\%), and simple instructions (67\%) all substantially reduce bias---in stark contrast to 0\% effect on GPT-4o.
+    \item \textbf{Random elaboration control:} Irrelevant content with same multi-turn structure shows 0\% reduction, confirming the CONTENT of debiasing interventions matters on biased models.
+    \item \textbf{Model-specific effects:} Practitioners cannot assume debiasing failure on one model (GPT-4o) predicts failure on related models (GPT-5.2). Validate on deployment model.
+\end{itemize}
+
+\textbf{3-turn random control (turn count isolation):} To further isolate whether multi-turn structure alone affects bias, we ran a 3-turn conversation with irrelevant topics (weather, unrelated facts) on GPT-5.2 ($n=30$). Result: 5.6mo effect vs 5.97mo baseline---only 6\% reduction. This confirms SACD's 55\% reduction comes from its CONTENT (structured self-critique), not merely from being multi-turn.
+
 \subsection{Structure-Matched Control: SACD's Effect is Not Bias-Specific}
 \label{sec:generic-reflection}
 
@@ -528,13 +560,13 @@ Sonnet 4 & 60 & 0.00 mo & No bias \\
 Claude Opus 4 & 60 & 2.00 mo & Moderate bias \\
 Mistral (7B) & 52 & 0.00 mo & No bias \\
 Hermes 3 (405B) & 60 & $-0.33$ mo & No bias \\
-Llama 3.3 (70B) & 60 & 0.00 mo & No bias \\
+Llama 3.3 (70B) & 60 & 6.00--9.00 mo & Strong bias$^\dagger$ \\
 % Nemotron excluded from main table due reliability constraints
 Sonnet 4.5 & 60 & 3.00 mo & Moderate bias \\
 GPT-4o & 60 & 6.00 mo & Strong bias \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias, sorted by effect magnitude. Seven stable models shown (Nemotron attempted but excluded for reliability constraints). \textbf{Caution:} Single prompt template; results are model-specific observations, not provider-level generalizations.}
+\caption{Cross-model anchoring bias, sorted by effect magnitude. Seven stable models shown (Nemotron attempted but excluded for reliability constraints). $^\dagger$Llama 3.3 showed 0.0mo with our original prompt (which includes ``randomly determined'' disclaimer) but 6.0--9.0mo on variants without this disclaimer---the original prompt contains implicit debiasing. This is consistent with GPT-5.2 where Sibony-style interventions also showed strong effect. \textbf{Caution:} Results are model-specific observations, not provider-level generalizations.}
 \label{tab:crossmodel}
 \end{table}
 
@@ -543,12 +575,12 @@ GPT-4o & 60 & 6.00 mo & Strong bias \\
 \begin{enumerate}
     \item \textbf{Observed pattern (not validated):} Across 7 stable models, we observe varying susceptibility:
     \begin{itemize}
-        \item \textbf{No bias:} Sonnet 4, Mistral 7B, Llama 3.3, Hermes 405B
+        \item \textbf{No bias:} Sonnet 4, Mistral 7B, Hermes 405B
         \item \textbf{Moderate bias ($2$--$3$ months):} Opus 4, Sonnet 4.5
-        \item \textbf{Strong bias ($>5$ months):} GPT-4o
+        \item \textbf{Strong bias ($>5$ months):} GPT-4o, Llama 3.3$^\dagger$
     \end{itemize}
     
-    \item \textbf{Open-weights models resist anchoring:} Both Llama 3.3 (Meta) and Mistral show 0.0mo effect. This suggests open-weights training may correlate with anchoring resistance, though our sample of two models cannot establish causation.
+    \item \textbf{Open-weights models show mixed results:} Mistral (7B) shows 0.0mo effect, but Llama 3.3 shows 6.0--9.0mo across prompt variants. Open-weights training does not guarantee anchoring resistance.
     
     \item \textbf{Cross-generational difference confirmed:} Sonnet 4.5 shows 3.0mo effect while Sonnet 4 (legacy) shows 0.0mo on identical prompts. These are different model generations with qualitatively different anchoring behavior.
     
