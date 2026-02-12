@@ -52,7 +52,7 @@ Recent research has demonstrated that LLMs exhibit cognitive biases such as anch
 
 \textbf{Scope:} This is an \textbf{LLM-only study}. We characterize how LLMs respond to anchoring manipulations and debiasing interventions. We do not compare LLM performance to human performance---our prompts differ from those used in human studies, making direct comparison methodologically unsound. Human studies are cited for context and to motivate debiasing techniques, not as baselines.
 
-\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ low-bias baseline models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{low-bias baseline} Llama 3.3 (0.0mo in our original prompt template), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone is harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on low-bias baseline models, content is irrelevant---any structure harms equally; (3) on biased models, reasoning content matters---CoT outperforms random elaboration. \textbf{Caveat:} Llama 3.3's baseline classification is prompt-sensitive (Section~\ref{sec:prompt-robustness-crossmodel}); generalizations should be treated as conditional on the specific prompt template.
+\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ low-bias baseline models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{low-bias baseline} Llama 3.3 (0.0mo in our original prompt template), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone is harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%. \textbf{Interpretation caveat:} This 46\% difference \emph{could} reflect reasoning content effects, but turn-count and output-length confounds exist (see Section~\ref{sec:generic-reflection}). We interpret this as: CoT outperforms random elaboration under our protocol conditions, but cannot definitively attribute the difference to content alone.
 
 We tested two categories of interventions:
 
@@ -111,22 +111,38 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 
 \subsection{Models and Sample Size}
 
-\textbf{Model chronology and experiment mapping:} This paper reports experiments conducted using three generations of models. To avoid confusion about result applicability:
+\textbf{Model Nomenclature:} To avoid confusion from different naming conventions, Table~\ref{tab:nomenclature} provides a reference for all models discussed in this paper.
 
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Short Name} & \textbf{Full API Identifier} & \textbf{Provider} & \textbf{Notes} \\
+\midrule
+Sonnet 4 & \texttt{claude-sonnet-4-20250514} & Anthropic & Date-pinned, 0.0mo bias \\
+Sonnet 4.5 & \texttt{claude-sonnet-4-5-20250929} & Anthropic & Alias, 3.0mo bias \\
+Opus 4 & \texttt{claude-opus-4} & Anthropic & 2.0mo bias \\
+GPT-4o & \texttt{github-copilot/gpt-4o} & OpenAI & 6.0mo bias \\
+GPT-5.2 & \texttt{github-copilot/gpt-5.2} & OpenAI & 5.97mo bias \\
+Codex & (deprecated) & OpenAI & Historical baseline \\
+Llama 3.3 & \texttt{meta-llama/llama-3.3-70b} & Meta & Prompt-unstable \\
+Hermes 405B & \texttt{nousresearch/hermes-3-llama-3.1-405b} & NousResearch & 4.8mo bias \\
+Mistral 7B & \texttt{mistralai/mistral-7b-instruct} & Mistral AI & High parse failures \\
+\bottomrule
+\end{tabular}
+\caption{Model nomenclature reference. ``Short Name'' is used throughout the paper. ``Prompt-unstable'' indicates bias classification varies with prompt style (see Section~\ref{sec:prompt-robustness-crossmodel}).}
+\label{tab:nomenclature}
+\end{table}
+
+\textbf{Experiment-to-model mapping:}
 \begin{itemize}
-    \item \textbf{Historical baseline (deprecated):} OpenAI Codex (GPT-3.5-based code completion model, circa 2023, accessed via legacy Codex API endpoint). Used in: baseline anchoring (Section~\ref{sec:baseline-anchoring}), Sibony techniques (Section~\ref{sec:sibony-debiasing}), initial SACD experiments. \emph{These results demonstrate technique efficacy on a historical model but may not transfer to current models.}
-    \item \textbf{Frontier model validation:} GPT-4o (accessed via GitHub Copilot's model routing). Used in: debiasing replication (Section~\ref{sec:gpt4o-debiasing}), random elaboration control, temperature experiments. \emph{Provides validation on more recent architecture.}
-    \item \textbf{Primary research models:} Sonnet 4 (date-pinned \texttt{claude-sonnet-4-20250514}), Sonnet 4.5 (alias \texttt{claude-sonnet-4-5-20250929}), and 6 additional models for cross-model validation. \emph{These constitute the main research contribution.}
+    \item \textbf{Historical baseline (Codex):} Baseline anchoring, Sibony techniques, initial SACD (Section~\ref{sec:baseline-anchoring}, \ref{sec:sibony-debiasing})
+    \item \textbf{Frontier validation (GPT-4o, GPT-5.2):} Debiasing replication, random elaboration, temperature experiments (Section~\ref{sec:gpt4o-debiasing}, \ref{sec:gpt52-debiasing})
+    \item \textbf{Cross-model validation (8 models):} Baseline comparison, prompt robustness (Section~\ref{sec:cross-model})
 \end{itemize}
 
-\textbf{Key models used throughout:}
-\begin{itemize}
-    \item \textbf{Sonnet 4} (legacy): \texttt{claude-sonnet-4-20250514} --- used for reproducibility, showed 0.0mo bias
-    \item \textbf{Sonnet 4.5} (current): \texttt{claude-sonnet-4-5-20250929} --- used in initial development, showed 3.0mo bias
-    \item \textbf{GPT-4o:} \texttt{github-copilot/gpt-4o} --- frontier model validation
-    \item \textbf{Cross-model validation:} 7 models from various providers (Anthropic, OpenAI, Meta, Mistral AI)
-    \item \textbf{Sample sizes:} Target $n=30$ per condition (15 low anchor + 15 high anchor). Actual valid trials per model shown in Table~\ref{tab:sample-sizes}.
-\end{itemize}
+\textbf{Sample sizes:} Target $n=30$ per condition (15 low anchor + 15 high anchor). See Table~\ref{tab:sample-sizes} for actual valid trials per model.
 
 \begin{table}[H]
 \centering
@@ -137,19 +153,18 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 Sonnet 4 & 60 & 60 & 0 & Date-pinned \\
 Sonnet 4.5 & 60 & 60 & 0 & Primary model \\
 GPT-4o & 60 & 60 & 0 & Via GitHub Copilot \\
+GPT-5.2 & 60 & 60 & 0 & Latest frontier \\
 Opus 4 & 60 & 60 & 0 & --- \\
 Hermes 405B & 70 & 60 & 10 & Base + topup runs \\
-Llama 3.3 70B & 60 & 60 & 0 & Paid OpenRouter tier \\
+Llama 3.3 70B & 60 & 60 & 0 & Prompt-unstable \\
 Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
 \midrule
 \multicolumn{5}{l}{\textit{Excluded: Nemotron 30B (224 attempts, 19 valid, 91\% failure)}} \\
 \bottomrule
 \end{tabular}
-\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent. \textbf{Note:} ``Via GitHub Copilot'' means GPT-4o accessed through GitHub Copilot's model routing, which provides free API access to OpenAI models for authenticated GitHub users---this is \emph{not} the deprecated Codex model referenced in Section~\ref{sec:baseline-anchoring}.}
+\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries.}
 \label{tab:sample-sizes}
 \end{table}
-
-\textbf{Important:} Throughout this paper, we distinguish between ``Sonnet 4.5'' (\texttt{claude-sonnet-4-5-20250929}) and ``Sonnet 4'' (\texttt{claude-sonnet-4-20250514}) because they exhibited different bias patterns (see Section~\ref{sec:model-id-variance}). These are different model generations, not just different identifiers for the same model. When we report debiasing effectiveness, we specify which model was used.
 
 \subsection{Model Identifier Variance: A Methodological Contribution}
 \label{sec:model-id-variance}
@@ -516,7 +531,7 @@ Sonnet 4 (dated) & 0.0 mo & \textbf{3.07 mo} & $\uparrow$ & \textbf{Hurts} \\
 Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
 \bottomrule
 \end{tabular}
-\caption{Generic reflection across 5 models ($n=30$ per condition). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} low-bias baseline models (Sonnet 4 dated, Llama 3.3\footnote{Llama 3.3 classification is prompt-sensitive; experiments used original template where baseline was 0.0mo. See Section~\ref{sec:prompt-robustness-crossmodel}.}), it \emph{introduces} substantial bias (3--6 months).}
+\caption{Generic reflection across 5 models ($n=30$ per condition). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} low-bias baseline models (Sonnet 4 dated, Llama 3.3), it \emph{introduces} substantial bias (3--6 months). Note: Llama 3.3 baseline is prompt-sensitive (Table~\ref{tab:nomenclature}).}
 \label{tab:generic-reflection-crossmodel}
 \end{table}
 
@@ -526,7 +541,7 @@ Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
     \item On \textbf{low-bias baseline models} (Sonnet 4 dated, Llama 3.3): Generic reflection \emph{introduces} anchoring (3.07--6.10mo effect where baseline was 0.0mo in tested prompt template)
 \end{itemize}
 
-\textbf{Implication:} Neither generic reflection nor SACD is universally safe. Generic reflection introduces consistent bias on low-bias baseline models. SACD produces pathological outputs (extreme variance, 120mo outliers on Llama 3.3). \textbf{Practical recommendation:} Do not apply debiasing interventions to models without confirmed baseline bias in your specific prompt template. Measure baseline first, then intervene only if needed. \textbf{Caveat:} Llama 3.3's baseline classification is prompt-sensitive (Section~\ref{sec:prompt-robustness-crossmodel}); results should be interpreted as conditional on the original template used in these experiments.
+\textbf{Implication:} Neither generic reflection nor SACD is universally safe. Generic reflection introduces consistent bias on low-bias baseline models. SACD produces pathological outputs (extreme variance, 120mo outliers on Llama 3.3). \textbf{Practical recommendation:} Do not apply debiasing interventions to models without confirmed baseline bias in your specific prompt template. Measure baseline first, then intervene only if needed.
 
 \subsubsection{Temperature Sensitivity of Debiasing}
 \label{sec:debiasing-temp}
@@ -961,7 +976,7 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On \textbf{low-bias baseline} Llama 3.3 (0.0mo in original template; note: prompt-sensitive baseline, Section~\ref{sec:prompt-robustness-crossmodel}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms low-bias models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
+\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On \textbf{low-bias baseline} Llama 3.3 (0.0mo in original template; note: prompt-sensitive baseline, Table~\ref{tab:nomenclature}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms low-bias models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%. \textbf{Interpretation caveat:} This 46\% difference is observed under our protocol conditions, but turn-count and output-length confounds exist---we cannot definitively isolate content effects from process differences.
 
 \textbf{Implication for debiasing research:} (1) For unbiased models: avoid multi-turn prompts entirely---any structure introduces bias. (2) For biased models: use multi-turn with reasoning content for optimal debiasing. (3) Always measure baseline bias first to determine strategy.
 
