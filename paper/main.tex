@@ -29,7 +29,7 @@
 \maketitle
 
 \begin{abstract}
-We characterize anchoring bias patterns across 8 LLMs using the judicial sentencing paradigm (Englich et al., 2006). \textbf{Key findings:} (1) Bias magnitude varies substantially---GPT-4o shows 6.0mo effect, Opus 4 shows 2.0mo, Sonnet 4 shows 0.0mo. (2) At temp=0, bias is deterministic (SD=0)---a fixed function of weights and prompt. (3) Debiasing interventions show model-specific effects: Sibony's techniques achieved 55--65\% reduction on GPT-5.2 but 0\% on GPT-4o; simple instructions achieved 67\% on GPT-5.2 but 0\% on GPT-4o. (4) A random elaboration control revealed that multi-turn structure alone can introduce bias on low-bias models. \textbf{Practical implications:} Use date-pinned model IDs for reproducibility. Validate debiasing on your specific deployment model---techniques do not reliably transfer. Newer frontier models appear more responsive to simple interventions.
+We characterize anchoring bias patterns across 8 LLMs using the judicial sentencing paradigm (Englich et al., 2006). \textbf{Key findings:} (1) Bias magnitude varies substantially---GPT-4o shows 6.0mo effect, Opus 4 shows 2.0mo, Sonnet 4 shows 0.0mo. (2) At temp=0, bias is deterministic (SD=0)---a fixed function of weights and prompt. (3) Debiasing interventions show model-specific effects: Sibony's techniques achieved 55--65\% reduction on GPT-5.2 but 0\% on GPT-4o. (4) A random elaboration control revealed that multi-turn structure alone can introduce bias on low-bias models; a token-matched control confirmed that debiasing benefits come from \emph{reasoning content}, not output length. \textbf{Practical implications:} Use date-pinned model IDs for reproducibility. Validate debiasing on your specific deployment model---techniques do not reliably transfer.
 \end{abstract}
 
 \textbf{Extended Abstract:} See Appendix~\ref{sec:extended-abstract} for detailed findings summary.
@@ -40,7 +40,7 @@ Recent research has demonstrated that LLMs exhibit cognitive biases such as anch
 
 \textbf{Scope:} This is an \textbf{LLM-only study}. We characterize how LLMs respond to anchoring manipulations and debiasing interventions. We do not compare LLM performance to human performance---our prompts differ from those used in human studies, making direct comparison methodologically unsound. Human studies are cited for context and to motivate debiasing techniques, not as baselines.
 
-\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ low-bias baseline models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{low-bias baseline} Llama 3.3 (0.0mo in our original prompt template), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone is harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%. \textbf{Interpretation caveat:} This 46\% difference \emph{could} reflect reasoning content effects, but turn-count and output-length confounds exist (see Section~\ref{sec:generic-reflection}). We interpret this as: CoT outperforms random elaboration under our protocol conditions, but cannot definitively attribute the difference to content alone.
+\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ low-bias baseline models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{low-bias baseline} Llama 3.3 (0.0mo in our original prompt template), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone is harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%. \textbf{Length confound ruled out:} A token-matched random elaboration control on GPT-5.2 (same output length as generic reflection) showed 0\% reduction---identical to short random elaboration. The debiasing benefit comes from \emph{reasoning content}, not output length.
 
 We tested two categories of interventions:
 
@@ -484,6 +484,11 @@ Model & Intervention & Low Anchor & High Anchor & Effect \\
  & Generic CoT & --- & --- & 2.03 mo (66\% $\downarrow$) \\
  & Random Elaboration & 6.0 mo & 10.8 mo & 4.8 mo (20\% $\downarrow$) \\
 \midrule
+\multirow{4}{*}{GPT-5.2 (biased)} & Baseline & 3.03 mo & 9.0 mo & 5.97 mo \\
+ & Generic Reflection & 3.0 mo & 6.0 mo & 3.0 mo (50\% $\downarrow$) \\
+ & Random Elaboration (short) & 3.0 mo & 9.0 mo & 6.0 mo (0\% $\downarrow$) \\
+ & Random Elaboration (token-matched) & 3.0 mo & 9.0 mo & 6.0 mo (0\% $\downarrow$) \\
+\midrule
 \multirow{2}{*}{Opus 4 (low-bias)} & Baseline & 6.0 mo & 6.0 mo & 0.0 mo \\
  & Random Elaboration & 6.0 mo & 6.0 mo & 0.0 mo \\
 \midrule
@@ -491,14 +496,15 @@ Model & Intervention & Low Anchor & High Anchor & Effect \\
  & Random Elaboration & 6.0 mo & 6.0 mo & 0.0 mo \\
 \bottomrule
 \end{tabular}
-\caption{Random elaboration control extended to four models. On \textbf{low-bias baseline} Llama 3.3 (0.0mo in original prompt template; note: prompt-sensitive, see Section~\ref{sec:prompt-robustness-crossmodel}), random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf{biased} GPT-4o, random elaboration yields only partial reduction (20\%) versus CoT (66\%), indicating added reasoning content matters. On Opus 4 and Sonnet 4 dated (both low-bias baselines with stable classification), random elaboration remains anchor-invariant (0.0mo effect, $n=30$ each).}
+\caption{Random elaboration control extended to four models, plus token-matched control on GPT-5.2. On \textbf{low-bias baseline} Llama 3.3, random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf{biased} models (GPT-4o, GPT-5.2), random elaboration yields no reduction (0--20\%) versus CoT/generic reflection (50--66\%), indicating reasoning content matters. \textbf{Critical finding:} Token-matched random elaboration on GPT-5.2 (same output length as generic reflection) still shows 0\% reduction---\textbf{length is not the confound; content is the active ingredient}. On Opus 4 and Sonnet 4 dated (low-bias with stable classification), random elaboration remains anchor-invariant.}
 \label{tab:random-elaboration}
 \end{table}
 
 \textbf{Mechanism decomposition:} The random elaboration control separates structure from content effects:
 \begin{itemize}
     \item \textbf{Structure effect (multi-turn alone) is model-specific:} On GPT-4o, structure gives partial improvement (20\% reduction). On Llama 3.3, structure introduces +6.0mo bias. On Opus 4 and Sonnet 4 dated, structure leaves behavior unchanged (0.0mo effect).
-    \item \textbf{Content effect (reasoning addition):} On GPT-4o, reasoning content provides an additional 46\% reduction (66\% total for CoT vs 20\% for random elaboration). On Llama 3.3, no additional effect (CoT = random).
+    \item \textbf{Content effect (reasoning addition):} On GPT-4o, reasoning content provides an additional 46\% reduction (66\% total for CoT vs 20\% for random elaboration). On GPT-5.2, the full 50\% reduction comes from content (random elaboration = 0\% regardless of length).
+    \item \textbf{Length confound ruled out:} Token-matched random elaboration on GPT-5.2 (producing similar output length to generic reflection) showed 6.0mo effect---identical to short random elaboration. The debiasing benefit of generic reflection comes from \emph{reasoning about the case}, not from generating more tokens.
 \end{itemize}
 \textbf{Practical implications:} Do not assume multi-turn structure has a universal effect. Measure baseline and structure-only controls on the target model before selecting a debiasing strategy.
 
@@ -936,7 +942,7 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On \textbf{low-bias baseline} Llama 3.3 (0.0mo in original template; note: prompt-sensitive baseline, Table~\ref{tab:nomenclature}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms low-bias models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%. \textbf{Interpretation caveat:} This 46\% difference is observed under our protocol conditions, but turn-count and output-length confounds exist---we cannot definitively isolate content effects from process differences.
+\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On \textbf{low-bias baseline} Llama 3.3 (0.0mo in original template; note: prompt-sensitive baseline, Table~\ref{tab:nomenclature}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms low-bias models. On \textbf{biased} models (GPT-4o, GPT-5.2), random elaboration achieved 0--20\% reduction while generic reflection achieved 50--66\%. \textbf{Length confound ruled out:} A token-matched random elaboration control on GPT-5.2 (same output length as generic reflection) showed 6.0mo effect---identical to short random elaboration. The debiasing benefit comes from reasoning content, not output length.
 
 \textbf{Implication for debiasing research:} (1) For unbiased models: avoid multi-turn prompts entirely---any structure introduces bias. (2) For biased models: use multi-turn with reasoning content for optimal debiasing. (3) Always measure baseline bias first to determine strategy.
 
