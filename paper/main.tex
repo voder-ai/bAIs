@@ -136,7 +136,7 @@ Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
 \multicolumn{5}{l}{\textit{Excluded: Nemotron 30B (224 attempts, 19 valid, 91\% failure)}} \\
 \bottomrule
 \end{tabular}
-\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent.}
+\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent. \textbf{Note:} ``Via GitHub Copilot'' means GPT-4o accessed through GitHub Copilot's model routing, which provides free API access to OpenAI models for authenticated GitHub users---this is \emph{not} the deprecated Codex model referenced in Section~\ref{sec:baseline-anchoring}.}
 \label{tab:sample-sizes}
 \end{table}
 
@@ -276,7 +276,7 @@ Variance in our measurements arises from prompt and scenario variation across 30
 
 \subsection{Baseline Anchoring Bias}
 
-\textbf{Note on Codex:} Early experiments (baseline anchoring, Sibony techniques, SACD on moderate bias) used OpenAI Codex, which has since been deprecated. These results demonstrate technique efficacy on a historical model but may not transfer to current models. Our GPT-4o experiments (Section~\ref{sec:gpt4o-debiasing}) provide more current validation.
+\textbf{Note on model naming:} Early experiments (baseline anchoring, Sibony techniques, SACD on moderate bias) used \textbf{OpenAI Codex} (the deprecated GPT-3.5-based code completion model, circa 2023), accessed via OpenAI's legacy Codex API endpoint. This is \emph{not} the same as our GPT-4o experiments, which accessed GPT-4o through GitHub Copilot's model routing (see Table~\ref{tab:sample-sizes} notes). Codex results demonstrate technique efficacy on a historical model but may not transfer to current models. Our GPT-4o experiments (Section~\ref{sec:gpt4o-debiasing}) provide current-model validation.
 
 Without debiasing interventions, our baseline model (Codex) showed substantial anchoring bias (3.67mo effect):
 
@@ -517,7 +517,7 @@ Mean & 29.33 mo & 28.07 mo \\
 
 \subsection{Cross-Model Validation}
 
-Cross-model comparison reveals varying anchoring susceptibility across our tested models. \textbf{Critical limitation:} most models in Table~\ref{tab:crossmodel} still rely on a single prompt template. Prompt sensitivity testing on Sonnet 4.5 showed \textbf{92\% effect reduction from paraphrasing alone}, demonstrating this risk. To partially address this, we added prompt-style robustness checks for GPT-4o and Opus 4 (Section~\ref{sec:prompt-robustness-crossmodel}), where their relative ordering remained stable across variants. \textbf{Still, broader multi-template coverage is needed before claiming fully robust global rankings.} Additional limitations: (1) sample sizes differ across models; (2) we tested only 1--2 models per provider:
+Cross-model comparison reveals varying anchoring susceptibility across our tested models. \textbf{Critical limitation:} most models in Table~\ref{tab:crossmodel} still rely on a single prompt template. Prompt sensitivity testing on Sonnet 4.5 showed \textbf{92\% effect reduction from paraphrasing alone}, demonstrating this risk. To partially address this, we added prompt-style robustness checks for five models (GPT-4o, Hermes 405B, Llama 3.3, Mistral Medium 3, Opus 4) in Section~\ref{sec:prompt-robustness-crossmodel}. \textbf{Key finding:} Llama 3.3 showed \emph{classification instability}---biased (4.0mo) with original/casual prompts, unbiased (0.0mo) with structured prompts. This demonstrates that prompt sensitivity can flip bias classification, not just magnitude. GPT-4o, Hermes, and Opus 4 showed stable classifications across prompt styles (though magnitude varied). \textbf{Still, broader multi-template coverage is needed before claiming fully robust global rankings.} Additional limitations: (1) sample sizes differ across models; (2) we tested only 1--2 models per provider:
 
 \begin{table}[H]
 \centering
@@ -548,7 +548,9 @@ GPT-4o & 60 & 6.00 mo & Strong bias \\
         \item \textbf{Strong bias ($>5$ months):} GPT-4o
     \end{itemize}
     
-    \item \textbf{Open-weights models resist anchoring:} Both Llama 3.3 (Meta) and Mistral show 0.0mo effect. This suggests open-weights training may correlate with anchoring resistance, though our sample of two models cannot establish causation.
+    \textbf{Caveat:} This pattern is based on a single prompt template (the Englich prosecutor sentencing paradigm). Prompt robustness checks (Section~\ref{sec:prompt-robustness}) reveal that \emph{some models' classifications are unstable}: Llama 3.3 flips from biased (4.0mo) to unbiased (0.0mo) depending on prompt style. Rankings should be treated as provisional until validated across multiple paradigms.
+    
+    \item \textbf{Open-weights models resist anchoring (with caveats):} Both Llama 3.3 (Meta) and Mistral show 0.0mo effect \emph{in our baseline template}, though Llama 3.3's prompt instability (Section~\ref{sec:prompt-robustness}) suggests this classification may not generalize. Mistral shows more consistent low-bias across prompt styles. Our sample of two models cannot establish causation between open-weights training and anchoring resistance.
     
     \item \textbf{Cross-generational difference confirmed:} Sonnet 4.5 shows 3.0mo effect while Sonnet 4 (legacy) shows 0.0mo on identical prompts. These are different model generations with qualitatively different anchoring behavior.
     
@@ -909,7 +911,7 @@ Several directions warrant investigation:
 
 \textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o, Hermes 405B, Llama 3.3, Mistral Medium 3, and Opus 4, covering most but not all tested models).
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons. While we added style-variant robustness checks for five models (GPT-4o, Hermes 405B, Llama 3.3, Mistral Medium 3, Opus 4), Llama 3.3 demonstrated \emph{classification instability}---flipping from biased to unbiased based on prompt style. This demonstrates that prompt sensitivity can undermine cross-model rankings. Full validation across multiple paradigms is needed before claiming robust model-level generalizations.
 
 \section*{Ethics Statement}
 

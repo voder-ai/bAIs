@@ -1,11 +1,11 @@
 /**
  * Multi-model Prompt Robustness Experiment
- * 
+ *
  * Tests whether cross-model anchoring rankings hold across prompt formulations.
  * Uses 3 prompt variants (original, casual, structured) on multiple models.
- * 
+ *
  * Usage: npx tsx scripts/run-prompt-robustness-multimodel.ts <model-spec> [n-per-condition]
- * 
+ *
  * Example:
  *   npx tsx scripts/run-prompt-robustness-multimodel.ts anthropic/claude-opus-4-20250929 10
  */
@@ -189,15 +189,16 @@ function assertValidResult(
   if (typeof r.prosecutorRecommendationMonths !== 'number')
     throw new Error('prosecutorRecommendationMonths must be number');
   if (r.prosecutorRecommendationMonths !== expectedAnchor)
-    throw new Error(`anchor mismatch: got ${r.prosecutorRecommendationMonths}, expected ${expectedAnchor}`);
+    throw new Error(
+      `anchor mismatch: got ${r.prosecutorRecommendationMonths}, expected ${expectedAnchor}`,
+    );
 
   if (!['too low', 'too high', 'just right'].includes(r.prosecutorEvaluation as string))
     throw new Error('invalid prosecutorEvaluation');
   if (!['too low', 'too high', 'just right'].includes(r.defenseAttorneyEvaluation as string))
     throw new Error('invalid defenseAttorneyEvaluation');
 
-  if (typeof r.sentenceMonths !== 'number')
-    throw new Error('sentenceMonths must be number');
+  if (typeof r.sentenceMonths !== 'number') throw new Error('sentenceMonths must be number');
 }
 
 async function runTrial(
@@ -220,7 +221,9 @@ async function runTrial(
         return null;
       }
       // Retry with error context
-      prompt = buildPrompt(variant, anchorMonths) + `\n\nPrevious attempt failed: ${message}. Return ONLY valid JSON.`;
+      prompt =
+        buildPrompt(variant, anchorMonths) +
+        `\n\nPrevious attempt failed: ${message}. Return ONLY valid JSON.`;
       await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
     }
   }
@@ -237,11 +240,16 @@ async function main() {
 
   if (!modelSpec) {
     console.error('Usage: npx tsx scripts/run-prompt-robustness-multimodel.ts <model-spec> [n]');
-    console.error('Example: npx tsx scripts/run-prompt-robustness-multimodel.ts anthropic/claude-opus-4-20250929 10');
+    console.error(
+      'Example: npx tsx scripts/run-prompt-robustness-multimodel.ts anthropic/claude-opus-4-20250929 10',
+    );
     process.exit(1);
   }
 
-  const modelName = modelSpec.split('/').pop()!.replace(/[^a-zA-Z0-9-]/g, '-');
+  const modelName = modelSpec
+    .split('/')
+    .pop()!
+    .replace(/[^a-zA-Z0-9-]/g, '-');
   const outFile = `results/${modelName}-prompt-robustness.jsonl`;
   const analysisFile = `results/${modelName}-prompt-robustness.analysis.json`;
 
@@ -286,7 +294,10 @@ async function main() {
           process.stdout.write(`     [${i + 1}/${nPerCondition}] ${result.sentenceMonths}mo\r`);
         } else {
           errors++;
-          await appendFile(outFile, JSON.stringify({ model: modelSpec, variant, anchor, error: true }) + '\n');
+          await appendFile(
+            outFile,
+            JSON.stringify({ model: modelSpec, variant, anchor, error: true }) + '\n',
+          );
         }
       }
       console.log();
@@ -313,7 +324,9 @@ async function main() {
     const meanDiff = highStats.mean - lowStats.mean;
     const dText = Number.isFinite(effect) ? effect.toFixed(2) : 'n/a';
 
-    console.log(`   ${variant.padEnd(12)} | low: ${lowStats.mean.toFixed(1)}mo | high: ${highStats.mean.toFixed(1)}mo | effect: ${meanDiff.toFixed(1)}mo | d=${dText}`);
+    console.log(
+      `   ${variant.padEnd(12)} | low: ${lowStats.mean.toFixed(1)}mo | high: ${highStats.mean.toFixed(1)}mo | effect: ${meanDiff.toFixed(1)}mo | d=${dText}`,
+    );
 
     analysis.push({
       variant,

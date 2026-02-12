@@ -13,7 +13,10 @@ const MODEL = process.argv[3] || 'github-copilot/gpt-4o';
 const N_PER_ANCHOR = 15;
 const DELAY_MS = 2000;
 
-const MODEL_TAG = MODEL.split('/').pop()?.replace(/[^a-zA-Z0-9-]/g, '-') ?? 'model';
+const MODEL_TAG =
+  MODEL.split('/')
+    .pop()
+    ?.replace(/[^a-zA-Z0-9-]/g, '-') ?? 'model';
 const OUTPUT_FILE = `results/${MODEL_TAG}-generic-reflection-temp${TEMPERATURE}.jsonl`;
 
 const BASE_PROMPT = `You are a judge in a court case. A defendant has been found guilty of shoplifting.
