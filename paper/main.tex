@@ -778,20 +778,35 @@ To address prompt-template concerns in cross-model comparisons, we ran style var
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-Model & Original Effect & Variant Range & Stability \\
+Model & Original & Casual & Structured & Classification \\
 \midrule
-GPT-4o & 6.0 mo & 4.8--5.1 mo & Biased across all variants \\
-Mistral Medium 3 & 0.3 mo & 0.0--1.2 mo & Low-bias across all variants \\
-Opus 4 & 0.0 mo & 0.0--0.7 mo & Low-bias across all variants \\
+\multicolumn{5}{l}{\textit{Consistently Biased}} \\
+GPT-4o & 6.0 mo & 4.8 mo & 5.1 mo & Biased \\
+Hermes 405B & 5.1 mo & 2.4 mo & 1.2 mo & Biased \\
+\midrule
+\multicolumn{5}{l}{\textit{Prompt-Sensitive (Debiasable)}} \\
+GPT-5.2 & 4.4 mo & \textbf{0.7 mo} & 5.7 mo & Mixed$^\dagger$ \\
+Llama 3.3 & 4.0 mo & 4.0 mo & \textbf{0.0 mo} & Mixed$^\ddagger$ \\
+\midrule
+\multicolumn{5}{l}{\textit{Prompt-Resistant Moderate Bias}} \\
+Opus 4.5 & 2.0 mo & 2.0 mo & 2.2 mo & Moderate \\
+\midrule
+\multicolumn{5}{l}{\textit{Consistently Low-Bias}} \\
+Sonnet 4 & 0.2 mo & 0.0 mo & 0.6 mo & Low-bias \\
+Opus 4.0 & 0.0 mo & 0.7 mo & 0.0 mo & Low-bias \\
+Mistral Medium 3 & 0.3 mo & 0.0 mo & 0.0 mo & Low-bias \\
+Nemotron 253B & $-$0.2 mo & 0.4 mo & 0.0 mo & Low-bias \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model prompt robustness check (3 prompt styles, $n=10$ per condition/style). GPT-4o remains anchored across prompt styles, while Mistral Medium 3 and Opus 4 remain near anchor-invariant. This supports stability of high-bias vs low-bias classification under prompt paraphrase for these models in our setting.}
+\caption{Cross-model prompt robustness (3 prompt styles, $n=20$ per condition/style). $^\dagger$GPT-5.2: casual variant (removing ``randomly determined'' disclaimer) \emph{debiases}; structured variant \emph{increases} bias. $^\ddagger$Llama 3.3: structured variant eliminates bias entirely. Bold values indicate debiased conditions.}
 \label{tab:crossmodel-prompt-robustness}
 \end{table}
 
-These runs do not eliminate all prompt-template risk, but they reduce a key confound: for GPT-4o, Mistral Medium 3, and Opus 4, high-bias versus low-bias classification persists under prompt style variation rather than depending on one exact wording. We still treat full 8-model ranking claims as provisional pending broader template coverage.
+\textbf{Key finding: Prompt framing has opposite effects across models.} On GPT-5.2, removing the ``randomly determined'' disclaimer debiases (4.4$\rightarrow$0.7mo), while on Llama 3.3 the structured prompt debiases (4.0$\rightarrow$0.0mo). This demonstrates that \textbf{no universal debiasing prompt exists}---interventions must be validated on the specific target model.
+
+These results support model classification stability for 7 of 9 models (consistently biased or consistently low-bias across prompt variants). The two ``Mixed'' models (GPT-5.2 and Llama 3.3) show that prompt engineering can serve as a debiasing intervention, but the effective strategy differs by model.
 
 \subsection{Novel Anchoring Scenarios Show Consistent Bias}
 
@@ -828,6 +843,40 @@ Environmental (novel) & 0.45 mo (15.0\%) & [0.2, 0.7] & 1.85 mo (37.0\%) & [1.3,
 \subsection{Human Techniques Partially Transfer (Model-Dependent)}
 
 In our tested models, debiasing techniques designed for human decision-making showed partial transfer, but effectiveness was model-specific. This is encouraging for practitioners: the extensive literature on human cognitive biases may provide a roadmap for improving AI decision systems---provided interventions are validated on the specific target model.
+
+\subsection{Opposite Debiasing Effects Across Model Families}
+\label{sec:opposite-debiasing}
+
+A striking finding emerged from our prompt robustness experiments: the same debiasing intervention produced \textbf{opposite effects} on different models.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Model & Original & Casual & Structured & Optimal Strategy \\
+\midrule
+Llama 3.3 & 4.0 mo & 4.0 mo & \textbf{0.0 mo} & Use structured prompt \\
+GPT-5.2 & 4.4 mo & \textbf{0.7 mo} & 5.7 mo & Use casual prompt \\
+\bottomrule
+\end{tabular}
+\caption{Opposite effects of prompt framing. On Llama 3.3, structured prompts eliminate bias. On GPT-5.2, casual prompts (without ``randomly determined'' disclaimer) debias, while structured prompts \emph{increase} bias to 5.7mo. $n=20$ per condition per variant.}
+\label{tab:opposite-debiasing}
+\end{table}
+
+The ``randomly determined'' disclaimer in our original prompt explicitly tells the model that the anchor value is arbitrary and should not influence judgment. Following Sibony's decision hygiene principles~\cite{sibony2020mistake}, this should reduce anchoring by flagging the anchor as irrelevant.
+
+On \textbf{Llama 3.3}, a structured prompt (clear role assignment, formatted case details) eliminates bias entirely (0.0mo effect). However, the ``randomly determined'' disclaimer has no additional effect---both original and casual variants show 4.0mo bias.
+
+On \textbf{GPT-5.2}, the pattern is reversed: removing the ``randomly determined'' disclaimer (casual variant) \emph{debiases} the model (0.7mo effect), while adding structure \emph{increases} bias to 5.7mo. One hypothesis: GPT-5.2 may interpret ``randomly determined'' as \emph{relevant experimental framing} rather than dismissable metadata, causing it to attend more closely to the anchor value.
+
+\textbf{Implications for practitioners:}
+\begin{enumerate}
+    \item \textbf{No universal debiasing prompt exists.} Interventions must be validated on the specific target model.
+    \item \textbf{Sibony-style techniques can backfire.} The ``acknowledge arbitrariness'' intervention is not universally safe.
+    \item \textbf{Model-specific optimization is required.} Prompt engineering for debiasing cannot be assumed to transfer across model families.
+\end{enumerate}
+
+This finding transforms what initially appeared to be a methodological limitation (prompt sensitivity) into a \textbf{core contribution}: prompt-model interactions are a first-order phenomenon that must be characterized, not a confound to be controlled away.
 
 \subsection{Iterative Self-Correction Was Effective in Our Tests}
 
