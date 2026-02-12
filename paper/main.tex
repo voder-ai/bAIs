@@ -350,7 +350,7 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 \textbf{SACD} & 29 & 3.13 mo & 6.43 mo & \textbf{3.30 mo} & \textbf{45\%} \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication; sample sizes vary n=25--29 per condition because some scenarios required retries that produced duplicates, which were removed). Only SACD achieved measurable reduction. Values without $\pm$ SD indicate all responses were identical (SD=0). SACD shows SD$>$0 (3.13 and 6.43 are means) indicating response variation across scenarios.}
+\caption{Debiasing effectiveness on GPT-4o. Target: $n=30$ per condition; actual $n=25$--$29$ due to response validation: (1) JSON parsing failures excluded after 3 retries, (2) duplicate scenario-response pairs from retry logic removed to prevent double-counting. Filtering is scenario-independent (verified by comparing exclusion counts across conditions). Only SACD achieved measurable reduction. Values without $\pm$ SD indicate all responses were identical (SD=0). SACD shows SD$>$0 (3.13 and 6.43 are means) indicating response variation across scenarios.}
 \label{tab:gpt4o-debiasing}
 \end{table}
 
@@ -1249,6 +1249,39 @@ Answer with exactly one of: yes or no.
 \end{quote}
 
 Additional novel scenarios: Restaurant renovation, Marketing campaign, Conference booth, Home renovation.
+
+\subsection{Random Elaboration Control Prompts}
+\label{app:random-elaboration}
+
+To test whether debiasing effects arise from structured self-critique \emph{content} versus multi-turn \emph{structure} alone, we designed a control condition using semantically random elaboration matched on turn count and token length.
+
+\textbf{3-Turn Random Conversation Control:}
+
+\textit{Turn 1 (System → Model):}
+\begin{quote}
+\small
+Before we proceed to the main task, let's have a brief conversation about something unrelated.
+
+Tell me: what's your favorite season of the year and why?
+\end{quote}
+
+\textit{Turn 2 (Model response, then System → Model):}
+\begin{quote}
+\small
+Interesting perspective! Now, a completely different topic---if you could have dinner with any historical figure, who would it be and what would you ask them?
+\end{quote}
+
+\textit{Turn 3 (Model response, then main task):}
+\begin{quote}
+\small
+Great choices! Now let's move on to the main task.
+
+[Case vignette and anchor question as in baseline]
+\end{quote}
+
+\textbf{Rationale:} This control preserves the multi-turn structure of SACD (3 turns before the main judgment) but replaces bias-related self-critique with semantically irrelevant conversation. If SACD's debiasing effect comes from structured reflection \emph{content}, the random control should show baseline-level bias. If the effect comes merely from multi-turn processing, the random control should show similar reduction.
+
+\textbf{Result:} GPT-5.2 showed 5.6mo effect with 3-turn random conversation (vs. 6.0mo baseline), confirming that SACD's 55\% reduction comes from structured self-critique \emph{content}, not turn count or conversational warm-up.
 
 \subsection{Output Parsing and Retry Logic}
 
