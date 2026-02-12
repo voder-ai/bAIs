@@ -39,9 +39,9 @@
 
 \textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). LLM bias is a fixed function of weights and prompt---100\% consistent, predictable to audit but consequential when present.
 
-\textbf{Intervention model-specificity:} Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{model-specific effects}: 27\% and 24\% reduction on Codex (deprecated model), but 0\% on GPT-4o (frontier model). Simple instructions (``ignore the anchor'') showed 0\% effect on GPT-4o. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none. \textbf{Key implication:} Debiasing techniques do not reliably transfer across models---practitioners must validate on their deployment model.
+\textbf{Intervention model-specificity:} Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{model-specific effects}: 27\% and 24\% reduction on Codex (deprecated model), 0\% on GPT-4o, but 55--65\% on GPT-5.2. Simple instructions (``ignore the anchor'') showed 0\% effect on GPT-4o but 67\% on GPT-5.2. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none. \textbf{Key implication:} Debiasing techniques do not reliably transfer across models---practitioners must validate on their deployment model. \textbf{Good news:} Newer frontier models (GPT-5.2) appear more responsive to simple debiasing interventions.
 
-\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Hermes 405B (4.8mo), Llama 3.3 (0mo baseline, but \textbf{prompt-unstable}), Opus 4 (0mo). \textbf{Caution:} Pattern observed in one prompt template; individual model results, not provider-level generalizations.
+\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), GPT-5.2 (5.97mo), Hermes 405B (4.8mo), Llama 3.3 (0mo baseline, but \textbf{prompt-unstable}), Opus 4 (2.0mo). \textbf{Caution:} Pattern observed in one prompt template; individual model results, not provider-level generalizations.
 
 \textbf{Practical note:} API identifier routing affects behavior; use date-pinned model IDs for reproducibility.
 \end{abstract}
@@ -367,7 +367,58 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
     \item \textbf{SACD reduces bias:} SACD achieved 45\% reduction on GPT-4o (strong bias). However, see the control experiment below.
 \end{itemize}
 
-\textbf{Reconciling Codex vs GPT-4o Sibony results:} The contradiction between Codex (partial effectiveness) and GPT-4o (no effect) has three plausible explanations: (1) \emph{Model architecture differences}---Codex (GPT-3.5-based) and GPT-4o have different training objectives and RLHF tuning that may affect intervention susceptibility. (2) \emph{Baseline bias level}---Codex showed moderate bias (3.67mo), GPT-4o showed strong bias (6.0mo); techniques may only work on moderate-bias models. (3) \emph{Prompt or scenario differences}---though paradigms were similar, exact wording differed. Our data cannot definitively isolate the mechanism, but the pattern suggests \textbf{Sibony techniques are not reliably effective across current frontier models}. Practitioners should validate on their deployment model rather than assume transfer.
+\textbf{Reconciling Codex vs GPT-4o vs GPT-5.2 Sibony results:} The pattern across models is: Codex (partial effectiveness, 24--27\%), GPT-4o (no effect, 0\%), GPT-5.2 (strong effectiveness, 55--65\%). Three plausible explanations: (1) \emph{Model architecture differences}---Codex (GPT-3.5-based), GPT-4o, and GPT-5.2 have different training objectives and RLHF tuning that may affect intervention susceptibility. (2) \emph{Instruction-following improvements}---GPT-5.2 may have improved instruction-following that makes explicit debiasing more effective. (3) \emph{Prompt or scenario differences}---though paradigms were similar, exact wording differed. Our data cannot definitively isolate the mechanism. \textbf{Key finding:} Sibony techniques can be highly effective on newer frontier models (GPT-5.2) even when they failed on predecessors (GPT-4o). Practitioners should validate on their deployment model rather than assume failure based on prior model testing.
+
+\subsection{GPT-5.2: Model-Specific Debiasing Reversal}
+\label{sec:gpt52-debiasing}
+
+To test whether the GPT-4o debiasing pattern generalizes to newer OpenAI models, we ran a comprehensive debiasing experiment on GPT-5.2 (baseline: 5.97mo effect, same strong-bias tier as GPT-4o):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Technique & n & Low Anchor & High Anchor & Effect & Reduction \\
+\midrule
+Baseline & 60 & 3.03 mo & 9.00 mo & 5.97 mo & 0\% \\
+Simple Instruction & 30 & 6.00 mo & 8.00 mo & 2.00 mo & 67\% \\
+Context Hygiene (Sibony) & 30 & 5.50 mo & 8.20 mo & 2.70 mo & 55\% \\
+Premortem (Sibony) & 30 & 4.00 mo & 6.10 mo & 2.10 mo & 65\% \\
+Generic Reflection & 30 & 6.00 mo & 9.00 mo & 3.00 mo & 50\% \\
+Random Elaboration & 30 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
+\bottomrule
+\end{tabular}
+\caption{Debiasing effectiveness on GPT-5.2 ($n = 210$ total trials, 150 debiasing + 60 baseline). \textbf{Major reversal:} Sibony techniques (context hygiene, premortem) achieve 55--65\% reduction on GPT-5.2, but showed 0\% on GPT-4o. Simple instruction also effective (67\%), unlike GPT-4o (0\%).}
+\label{tab:gpt52-debiasing}
+\end{table}
+
+\textbf{Key findings:}
+\begin{itemize}
+    \item \textbf{Sibony techniques work on GPT-5.2:} Context hygiene (55\% reduction) and premortem (65\% reduction) are effective, \emph{reversing} the GPT-4o pattern where both showed 0\% effect.
+    \item \textbf{Simple instruction works on GPT-5.2:} Telling the model ``ignore the recommendation'' achieved 67\% reduction, the most effective single intervention. On GPT-4o, this showed 0\% effect.
+    \item \textbf{Random elaboration confirms mechanism:} 0\% reduction confirms that multi-turn structure alone does not help. The content of debiasing prompts matters on GPT-5.2.
+    \item \textbf{Generic reflection less effective than Sibony:} 50\% reduction vs 55--65\% for Sibony techniques, suggesting domain-specific framing helps.
+\end{itemize}
+
+\textbf{Model-specific debiasing pattern:} The GPT-4o vs GPT-5.2 comparison reveals that debiasing effectiveness is highly model-specific, even within the same provider family:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Technique & GPT-4o Reduction & GPT-5.2 Reduction & Difference \\
+\midrule
+Simple Instruction & 0\% & 67\% & +67\% \\
+Context Hygiene & 0\% & 55\% & +55\% \\
+Premortem & 0\% & 65\% & +65\% \\
+Generic Reflection & 66\% & 50\% & $-$16\% \\
+\bottomrule
+\end{tabular}
+\caption{Debiasing effectiveness comparison: GPT-4o vs GPT-5.2. Sibony techniques and simple instructions dramatically improve on GPT-5.2 relative to GPT-4o, while generic reflection is slightly less effective.}
+\label{tab:gpt4o-vs-gpt52}
+\end{table}
+
+\textbf{Implication:} Do not assume debiasing techniques that fail on one model will fail on successor models (or vice versa). GPT-5.2 appears more responsive to explicit debiasing instructions than GPT-4o, possibly due to improved instruction-following capabilities. This is \emph{good news} for practitioners: simple, cheap interventions (``ignore the recommendation'') can be highly effective on recent frontier models.
 
 \subsection{Structure-Matched Control: SACD's Effect is Not Bias-Specific}
 \label{sec:generic-reflection}
@@ -545,20 +596,21 @@ Claude Opus 4 & 60 & 2.00 mo & Moderate bias \\
 Sonnet 4.5 & 60 & 3.00 mo & Moderate bias \\
 Hermes 3 (405B) & 60 & 4.80 mo & Moderate bias \\
 GPT-4o & 60 & 6.00 mo & Strong bias \\
+GPT-5.2 & 60 & 5.97 mo & Strong bias \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias, sorted by effect magnitude. Seven models tested (Nemotron excluded due to 91\% parse failure rate). \textbf{Caution:} Single prompt template; results are model-specific observations, not provider-level generalizations.}
+\caption{Cross-model anchoring bias, sorted by effect magnitude. Eight models tested (Nemotron excluded due to 91\% parse failure rate). \textbf{Caution:} Single prompt template; results are model-specific observations, not provider-level generalizations.}
 \label{tab:crossmodel}
 \end{table}
 
 \textbf{Observation: Anchoring susceptibility varies across tested models.}
 
 \begin{enumerate}
-    \item \textbf{Observed pattern (not validated):} Across 7 models, we observe varying susceptibility:
+    \item \textbf{Observed pattern (not validated):} Across 8 models, we observe varying susceptibility:
     \begin{itemize}
         \item \textbf{No bias ($<1$ month):} Sonnet 4, Mistral 7B, Llama 3.3
         \item \textbf{Moderate bias ($2$--$5$ months):} Opus 4, Sonnet 4.5, Hermes 405B
-        \item \textbf{Strong bias ($>5$ months):} GPT-4o
+        \item \textbf{Strong bias ($>5$ months):} GPT-4o, GPT-5.2
     \end{itemize}
     
     \textbf{Caveat:} This pattern is based on a single prompt template (the Englich prosecutor sentencing paradigm). Prompt robustness checks (Section~\ref{sec:prompt-robustness}) reveal that \emph{some models' classifications are unstable}: Llama 3.3 flips from biased (4.0mo) to unbiased (0.0mo) depending on prompt style. Rankings should be treated as provisional until validated across multiple paradigms.
@@ -854,7 +906,7 @@ Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, So
 
 \textbf{Generalizability:}
 \begin{itemize}
-    \item Cross-model validation spans 8 models from various providers but may not generalize to all architectures
+    \item Cross-model validation spans 8 models from various providers (including GPT-5.2, the latest frontier model at time of writing) but may not generalize to all architectures
     \item Ecological validity: Stylized sentencing scenarios may not reflect real-world deployment contexts where LLMs make consequential decisions
     \item Training contamination: Our contamination probe found both GPT-4o and Sonnet 4 demonstrated familiarity with the Englich et al. study, yet exhibited opposite behaviors. This is \emph{consistent with} contamination not being the sole explanation, but does not rule out other confounds
     \item This study focused on natural-language judgment tasks; code-domain experiments (e.g., anchoring in line count or complexity estimates) are left for future work
@@ -878,7 +930,7 @@ Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, So
 
 \textbf{Soft/Hard Bias Hypothesis Limitations:}
 \begin{itemize}
-    \item Our soft/hard bias distinction is a \textbf{preliminary hypothesis based on observations from five models} (GPT-4o, GPT-4.1, Opus 4.5, Sonnet 4.5, Llama 3.3) on one bias type
+    \item Our soft/hard bias distinction is a \textbf{preliminary hypothesis based on observations from six models} (GPT-4o, GPT-5.2, GPT-4.1, Opus 4.5, Sonnet 4.5, Llama 3.3) on one bias type
     \item The alias/dated variance complicates interpretation---differences attributed to ``soft'' vs ``hard'' patterns might instead reflect checkpoint differences or API routing
     \item We explicitly \textbf{do not claim this as an established taxonomy}; it requires validation across many more models and architectures
     \item The observed patterns may not generalize beyond the specific model versions and prompts we tested
