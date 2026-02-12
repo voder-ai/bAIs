@@ -572,11 +572,11 @@ GPT-4o & 60 & 6.00 mo & Strong bias \\
 
 \subsection{Knowledge of Bias $\neq$ Resistance to Bias}
 
-To assess whether model knowledge of anchoring bias explains the observed differences, we directly probed both GPT-4o and Sonnet 4 about familiarity with the Englich et al. study.
+To assess whether model knowledge of anchoring bias explains the observed differences, we directly probed both GPT-4o and Sonnet 4 about familiarity with the Englich et al. study. See Appendix~\ref{app:knowledge-probing} for exact prompts and full model responses.
 
 \textbf{Both models demonstrated clear knowledge:}
 \begin{itemize}
-    \item Correctly described the Englich, Mussweiler, and Strack (2006) study design
+    \item Correctly described the Englich, Mussweiler, and Strack (2006) study design, including the critical detail that anchors were labeled as random
     \item Accurately predicted the expected anchoring pattern (low anchor $\to$ lower sentence, high anchor $\to$ higher sentence)
     \item Explained the psychological mechanism of anchoring and adjustment
 \end{itemize}
@@ -975,6 +975,40 @@ All experiments used:
     \item System prompt: None (user prompt only)
     \item Single-turn generation per step
 \end{itemize}
+
+\subsection{Knowledge Probing Methodology}
+\label{app:knowledge-probing}
+
+To test whether models possess explicit knowledge of the Englich et al. (2006) anchoring bias study (Section~\ref{sec:knowledge-behavior}), we used the following probe:
+
+\begin{quote}
+\small
+\textbf{Prompt:} ``Are you familiar with the research by Englich, Mussweiler, and Strack (2006) on anchoring bias in judicial sentencing? If so, can you describe the study design and the expected pattern of results?''
+\end{quote}
+
+\textbf{Representative responses:}
+
+\textbf{GPT-4o response (summary):}
+\begin{quote}
+\small
+Yes, I'm familiar with the study. Englich, Mussweiler, and Strack (2006) investigated anchoring effects in legal decision-making. Experienced judges were presented with a hypothetical shoplifting case. Before sentencing, they were exposed to either a high or low sentencing demand from a prosecutor. The key manipulation was that these demands were explicitly labeled as random/arbitrary. Despite this, judges' sentences were significantly influenced by the anchor---those exposed to a high anchor (9 months) gave higher sentences on average than those exposed to a low anchor (3 months). This demonstrates that even experienced professionals with domain expertise exhibit anchoring bias when the anchor is explicitly identified as irrelevant.
+\end{quote}
+
+\textbf{Sonnet 4 response (summary):}
+\begin{quote}
+\small
+Yes, I'm familiar with that seminal work on judicial anchoring. In their Study 2, Englich and colleagues gave experienced German legal professionals a shoplifting case with a randomly determined prosecutor's sentencing recommendation (either 3 or 9 months). Critically, participants were explicitly told the recommendation was randomly determined and did not reflect any judicial expertise. Despite this, the judges showed robust anchoring effects---those who saw the 9-month recommendation gave significantly higher sentences than those who saw the 3-month one. The study demonstrated that anchoring can influence even highly trained professionals making judgments in their domain of expertise, even when the anchor is clearly marked as uninformative.
+\end{quote}
+
+\textbf{Key observations:}
+\begin{enumerate}
+    \item Both models accurately described the study design, including the critical detail that anchors were labeled as random/arbitrary
+    \item Both correctly predicted the directional effect (high anchor $\to$ higher sentences)
+    \item Both demonstrated understanding of the psychological mechanism
+    \item Yet when tested on the actual task (Table~\ref{tab:knowledge-behavior}), GPT-4o exhibited the bias (6.0mo effect) while Sonnet 4 resisted it (0.0mo effect)
+\end{enumerate}
+
+This dissociation between explicit knowledge and behavioral resistance supports the interpretation that mere awareness of cognitive biases is insufficient to prevent them---application of meta-cognitive monitoring during task execution appears necessary.
 
 \subsection{Anchoring Experiment Prompt}
 
