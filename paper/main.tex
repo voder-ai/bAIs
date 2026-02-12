@@ -265,10 +265,12 @@ Variance in our measurements arises from prompt and scenario variation across 30
 \textbf{What we report instead:} We present purely descriptive statistics:
 \begin{itemize}
     \item \textbf{Exact outputs} for deterministic conditions (the model produced \emph{exactly} this value)
-    \item \textbf{Observed ranges} across our 30 scenario variants (heterogeneity of prompts, not sampling uncertainty)
-    \item \textbf{Means and SDs} where applicable (describing variation across scenarios)
+    \item \textbf{Observed ranges} [min, max] across our 30 scenario variants---this captures heterogeneity of prompt responses, not sampling uncertainty
+    \item \textbf{Means and SDs} where applicable (describing variation across scenarios); when SD=0, all responses were identical
     \item \textbf{Cohen's $d$} as standardized effect size, interpreted as magnitude of observed difference, not an inferential statistic
 \end{itemize}
+
+\textbf{Table format:} Tables reporting bias effects use the format: \texttt{mean ± SD} for condition responses, with $n$ stated in caption. When SD is omitted, all responses in that condition were identical (SD=0). ``Obs.\ Range'' columns show [min, max] of the \emph{difference} between conditions across scenario variants.
 
 \textbf{Cross-model difference:} GPT-4o produced a 6.0-month anchoring effect; Sonnet (dated) produced 0.0 months. This 6.0-month difference is \emph{observed fact}, not an estimate---every trial of each model produced exactly these values. The difference is not ``statistically significant'' in the frequentist sense; it is \emph{deterministically exact}.
 
@@ -348,7 +350,7 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 \textbf{SACD} & 29 & 3.13 mo & 6.43 mo & \textbf{3.30 mo} & \textbf{45\%} \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication; sample sizes vary n=25--29 per condition because some scenarios required retries that produced duplicates, which were removed). Only SACD achieved measurable reduction. All other techniques showed exactly 0\% reduction---GPT-4o perfectly followed anchors with or without Sibony interventions.}
+\caption{Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication; sample sizes vary n=25--29 per condition because some scenarios required retries that produced duplicates, which were removed). Only SACD achieved measurable reduction. Values without $\pm$ SD indicate all responses were identical (SD=0). SACD shows SD$>$0 (3.13 and 6.43 are means) indicating response variation across scenarios.}
 \label{tab:gpt4o-debiasing}
 \end{table}
 
@@ -378,7 +380,7 @@ Generic reflection & 30 & 6.00 mo & 9.00 mo & 3.00 mo & 50\% \\
 Random elaboration & 30 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 \bottomrule
 \end{tabular}
-\caption{GPT-5.2 debiasing results ($n=30$ per condition except baseline). Sibony techniques show 55--67\% reduction on GPT-5.2 vs 0\% on GPT-4o---a complete reversal. Random elaboration (irrelevant content, same structure) shows 0\% reduction, confirming CONTENT matters.}
+\caption{GPT-5.2 debiasing results ($n=30$ per condition except baseline $n=60$). Values without $\pm$ SD indicate all responses were identical (SD=0); variation in means across conditions reflects different response patterns. Sibony techniques show 55--67\% reduction on GPT-5.2 vs 0\% on GPT-4o---a complete reversal. Random elaboration (irrelevant content, same structure) shows 0\% reduction, confirming CONTENT matters.}
 \label{tab:gpt52-debiasing}
 \end{table}
 
@@ -485,7 +487,7 @@ Sonnet 4 (dated) & 0.0 mo & \textbf{3.07 mo} & $\uparrow$ & \textbf{Hurts} \\
 Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
 \bottomrule
 \end{tabular}
-\caption{Generic reflection across 5 models ($n=30$ per condition). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} unbiased models (Sonnet 4 dated, Llama 3.3), it \emph{introduces} substantial bias (3--6 months).}
+\caption{Generic reflection across 5 models ($n=30$ per anchor condition, 60 total per model; all at temp=0). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} unbiased models (Sonnet 4 dated, Llama 3.3), it \emph{introduces} substantial bias (3--6 months). Values without $\pm$ SD indicate all responses were identical (SD=0).}
 \label{tab:generic-reflection-crossmodel}
 \end{table}
 
@@ -568,7 +570,7 @@ Sonnet 4.5 & 60 & 3.00 mo & Moderate bias \\
 GPT-4o & 60 & 6.00 mo & Strong bias \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias, sorted by effect magnitude. Seven stable models shown (Nemotron attempted but excluded for reliability constraints). $^\dagger$Llama 3.3 showed 0.0mo with our original prompt (which includes ``randomly determined'' disclaimer) but 6.0--9.0mo on variants without this disclaimer---the original prompt contains implicit debiasing. This is consistent with GPT-5.2 where Sibony-style interventions also showed strong effect. \textbf{Caution:} Results are model-specific observations, not provider-level generalizations.}
+\caption{Cross-model anchoring bias, sorted by effect magnitude. All tests at temp=0 with $n=30$ per anchor condition (60 total valid per model) except Mistral ($n=26$ per condition due to parse failures). Seven stable models shown (Nemotron attempted but excluded for reliability constraints). $^\dagger$Llama 3.3 showed 0.0mo with our original prompt (which includes ``randomly determined'' disclaimer) but 6.0--9.0mo on variants without this disclaimer---the original prompt contains implicit debiasing. This is consistent with GPT-5.2 where Sibony-style interventions also showed strong effect. \textbf{Caution:} Results are model-specific observations, not provider-level generalizations.}
 \label{tab:crossmodel}
 \end{table}
 
