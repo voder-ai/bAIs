@@ -308,17 +308,19 @@ async function main() {
 
     const lowStats = computeDescriptiveStats(low);
     const highStats = computeDescriptiveStats(high);
-    const effect = effectSizeTwoSample(low, high);
+    const effectRaw = effectSizeTwoSample(low, high) as unknown;
+    const effect = typeof effectRaw === 'number' ? effectRaw : Number.NaN;
     const meanDiff = highStats.mean - lowStats.mean;
+    const dText = Number.isFinite(effect) ? effect.toFixed(2) : 'n/a';
 
-    console.log(`   ${variant.padEnd(12)} | low: ${lowStats.mean.toFixed(1)}mo | high: ${highStats.mean.toFixed(1)}mo | effect: ${meanDiff.toFixed(1)}mo | d=${effect.toFixed(2)}`);
+    console.log(`   ${variant.padEnd(12)} | low: ${lowStats.mean.toFixed(1)}mo | high: ${highStats.mean.toFixed(1)}mo | effect: ${meanDiff.toFixed(1)}mo | d=${dText}`);
 
     analysis.push({
       variant,
       lowMean: lowStats.mean,
       highMean: highStats.mean,
       meanDiff,
-      effectSize: effect,
+      effectSize: Number.isFinite(effect) ? effect : null,
       lowN: low.length,
       highN: high.length,
     });

@@ -470,7 +470,7 @@ All primary debiasing experiments used temperature=0. To test whether debiasing 
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
 Temperature & Baseline Effect & CoT Effect & Reduction & 95\% CI (CoT effect) & Pattern \\
 \midrule
@@ -479,11 +479,11 @@ Temperature & Baseline Effect & CoT Effect & Reduction & 95\% CI (CoT effect) & 
 1.0 & 5.93 mo & 1.67 mo & \textbf{72\%} & [1.01, 2.30] & CoT helps more \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), works \emph{best} at temp=1.0 (72\%).}
+\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), and recovers at temp=1.0 (72\%).}
 \label{tab:debiasing-temp}
 \end{table}
 
-\textbf{Key finding:} CoT debiasing effectiveness is \textbf{non-monotonic with temperature}. There is a ``dead zone'' at temp=0.7 where CoT provides no benefit over baseline. At temp=1.0, CoT achieves stronger debiasing (72\%) than at temp=0 (66\%). Critically, baseline anchoring remains stable across temperatures ($\sim$6mo), confirming that CoT---not temperature alone---is the debiasing mechanism at temp=1.0.
+\textbf{Key finding:} CoT debiasing effectiveness is \textbf{non-monotonic with temperature}. There is a ``dead zone'' at temp=0.7 where CoT provides no benefit over baseline. At temp=1.0, CoT achieves stronger debiasing (72\%) than at temp=0 (66\%), with stochastic-run uncertainty still clearly separated from baseline-scale effects. Critically, baseline anchoring remains stable across temperatures ($\sim$6mo), confirming that CoT---not temperature alone---is the debiasing mechanism at temp=1.0.
 
 \textbf{Additional replication (Opus 4.5, temp=0.7):} We ran a targeted top-up replication of generic reflection at temp=0.7 on Opus 4.5 ($n=27$ valid: low $n=15$, high $n=12$). The observed effect was 1.48 months (low mean 0.27, high mean 1.75), indicating debiasing signal persisted rather than collapsing to a GPT-4o-style dead zone at 0.7.
 
@@ -728,14 +728,15 @@ To address prompt-template concerns in cross-model comparisons, we ran style var
 Model & Original Effect & Variant Range & Stability \\
 \midrule
 GPT-4o & 6.0 mo & 4.8--5.1 mo & Biased across all variants \\
+Nemotron 30B & 3.2 mo & 2.3--3.2 mo & Biased across all variants \\
 Opus 4 & 0.0 mo & 0.0--0.7 mo & Low-bias across all variants \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model prompt robustness check (3 prompt styles, $n=10$ per condition/style). GPT-4o remains substantially anchored across prompt styles, while Opus 4 remains near anchor-invariant. This supports stability of the GPT-4o $>$ Opus susceptibility ordering under prompt paraphrase in our setting.}
+\caption{Cross-model prompt robustness check (3 prompt styles, $n=10$ per condition/style). GPT-4o and Nemotron remain anchored across prompt styles, while Opus 4 remains near anchor-invariant. This supports stability of high-bias vs low-bias classification under prompt paraphrase for these models in our setting.}
 \label{tab:crossmodel-prompt-robustness}
 \end{table}
 
-These runs do not eliminate all prompt-template risk, but they reduce a key confound: at least for GPT-4o and Opus 4, the cross-model ranking persists under prompt style variation rather than depending on a single exact wording.
+These runs do not eliminate all prompt-template risk, but they reduce a key confound: for GPT-4o, Nemotron, and Opus 4, high-bias versus low-bias classification persists under prompt style variation rather than depending on one exact wording. We still treat full 8-model ranking claims as provisional pending broader template coverage.
 
 \subsection{Novel Anchoring Scenarios Show Consistent Bias}
 
@@ -906,7 +907,7 @@ Several directions warrant investigation:
 
 \textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o/Opus 4, but not all models).
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o/Nemotron/Opus 4, but not all models).
 
 \section*{Ethics Statement}
 
