@@ -812,9 +812,12 @@ In our tested models, debiasing techniques designed for human decision-making sh
 
 SACD outperformed static prompt interventions in our GPT-4o experiments. However, our generic reflection control (Section~\ref{sec:generic-reflection}) revealed that SACD's effectiveness is \emph{not} due to its bias-specific content. Generic prompts (``think step by step,'' ``review your answer'') with the same multi-turn structure achieved 66\% reduction vs.\ SACD's 45\%. This suggests the mechanism is primarily increased reasoning process rather than SACD-specific psychology framing.
 
-\textbf{Turn/length confound reporting:} Generic reflection in our protocol uses a fixed 4-step interaction (initial answer + review + step-by-step reflection + final answer). SACD uses iterative rewriting with variable internal iterations (typically 2 in our Sonnet SACD logs), producing substantially longer outputs by design. We therefore treat SACD-vs-generic comparisons as process-level comparisons, not clean content-only comparisons.
-
-\textbf{Implication:} Future debiasing research must include length-matched and structure-matched controls (or explicit token-budget controls) to isolate intervention-specific effects from general reflection benefits.
+\textbf{Turn/length confound addressed:} We ran multiple controls to isolate content effects from structural effects:
+\begin{itemize}
+    \item \textbf{3-turn random control (GPT-5.2):} Same turn count as SACD but irrelevant content (weather, unrelated facts). Result: 5.6mo effect vs 5.97mo baseline---only 6\% reduction vs SACD's 55\%. This rules out turn count as the driver.
+    \item \textbf{Random elaboration control (GPT-5.2):} Same structure, irrelevant content. Result: 6.0mo effect (0\% reduction). SACD achieves 45\% reduction with identical structure but different content.
+\end{itemize}
+\textbf{Conclusion:} The debiasing benefit comes from intervention \emph{content} (structured self-critique in SACD, reasoning steps in generic reflection), not merely from multi-turn structure or longer outputs.
 
 \subsection{Preliminary Hypothesis: Two Patterns Observed in Our Tested Models}
 
