@@ -472,14 +472,14 @@ All primary debiasing experiments used temperature=0. To test whether debiasing 
 \centering
 \begin{tabular}{lccccc}
 \toprule
-Temperature & Baseline Effect & CoT Effect & Reduction & Pattern \\
+Temperature & Baseline Effect & CoT Effect & Reduction & 95\% CI (CoT effect) & Pattern \\
 \midrule
-0 & 6.0 mo & 2.03 mo & 66\% & CoT helps \\
-0.7 & 6.0 mo & 6.0 mo & \textbf{0\%} & \textbf{CoT fails} \\
-1.0 & 5.9 mo & 1.67 mo & \textbf{72\%} & CoT helps more \\
+0 & 6.0 mo & 2.03 mo & 66\% & deterministic (temp=0) & CoT helps \\
+0.7 & 6.0 mo & 6.0 mo & \textbf{0\%} & [6.00, 6.00] & \textbf{CoT fails} \\
+1.0 & 5.93 mo & 1.67 mo & \textbf{72\%} & [1.01, 2.30] & CoT helps more \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), works \emph{best} at temp=1.0 (72\%).}
+\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), works \emph{best} at temp=1.0 (72\%).}
 \label{tab:debiasing-temp}
 \end{table}
 
