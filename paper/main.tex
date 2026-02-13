@@ -16,7 +16,7 @@
 \usepackage{xcolor}
 
 % Title
-\title{Cognitive Bias Patterns in LLMs:\\Anchoring Effects and Debiasing Interventions}
+\title{Anchoring Bias in LLMs:\\Debiasing Interventions and Model-Specific Effects}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -439,11 +439,11 @@ All primary debiasing experiments used temperature=0. To test whether debiasing 
 Temperature & Baseline Effect & CoT Effect & Reduction & 95\% CI (CoT effect) & Pattern \\
 \midrule
 0 & 6.0 mo & 2.03 mo & 66\% & deterministic (temp=0) & CoT helps \\
-0.7 & 6.0 mo & 6.0 mo & \textbf{0\%} & [6.00, 6.00] & \textbf{CoT fails} \\
+0.7 & 6.0 mo & 6.0 mo & \textbf{0\%} & [6.00, 6.00]$^*$ & \textbf{CoT fails} \\
 1.0 & 5.93 mo & 1.67 mo & \textbf{72\%} & [1.01, 2.30] & CoT helps more \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), and recovers at temp=1.0 (72\%).}
+\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), and recovers at temp=1.0 (72\%). $^*$Note: Despite temp=0.7, all 28 responses were identical (low=6mo, high=12mo), producing zero variance. This suggests GPT-4o may have deterministic behavior at intermediate temperatures for structured prompts.}
 \label{tab:debiasing-temp}
 \end{table}
 
@@ -517,7 +517,7 @@ Sonnet 4.5 & 60 & 3.00 mo & Moderate bias \\
 GPT-4o & 60 & 6.00 mo & Strong bias \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias, sorted by effect magnitude. All tests at temp=0 with $n=30$ per anchor condition (60 total valid per model) except Mistral ($n=26$ per condition due to parse failures). Seven stable models shown (Nemotron attempted but excluded for reliability constraints). $^\dagger$Llama 3.3 showed 0.0mo with our original prompt (which includes ``randomly determined'' disclaimer) but 6.0--9.0mo on variants without this disclaimer---the original prompt contains implicit debiasing. This is consistent with GPT-5.2 where Sibony-style interventions also showed strong effect. \textbf{Caution:} Results are model-specific observations, not provider-level generalizations.}
+\caption{Cross-model anchoring bias, sorted by effect magnitude. All tests at temp=0 with $n=30$ per anchor condition (60 total valid per model) except Mistral ($n=26$ per condition due to parse failures). Seven stable models shown; Nemotron was excluded due to inconsistent API behavior (response timeouts, incomplete JSON outputs) via the free OpenRouter tier. $^\dagger$Llama 3.3 showed 0.0mo with our original prompt (which includes ``randomly determined'' disclaimer) but 6.0--9.0mo on variants without this disclaimer---the original prompt contains implicit debiasing. This is consistent with GPT-5.2 where Sibony-style interventions also showed strong effect. \textbf{Caution:} Results are model-specific observations, not provider-level generalizations.}
 \label{tab:crossmodel}
 \end{table}
 
@@ -915,7 +915,7 @@ Several directions warrant investigation:
 
 \textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o/Mistral Medium 3/Opus 4, but not all models). Nemotron was attempted but excluded from main robustness claims due to reproducibility/reliability constraints on the current route.
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o/Mistral Medium 3/Opus 4, but not all models). Nemotron was excluded from main robustness claims due to inconsistent API behavior (response timeouts, incomplete JSON outputs) via the free OpenRouter tier.
 
 \section*{Ethics Statement}
 
@@ -1027,6 +1027,60 @@ List 3 specific ways your judgment might have been influenced by irrelevant fact
 
 Be specific about what might have pulled your judgment in a particular direction.
 \end{quote}
+
+\subsection{SACD (Self-Adaptive Cognitive Debiasing) Prompts}
+\label{app:sacd-prompts}
+
+SACD follows Lyu et al. (2025) with a two-phase iterative process. Phase 1 runs a ``debiasing orchestrator'' that identifies and rewrites biased sentences; Phase 2 applies the debiased prompt to the actual decision.
+
+\textbf{System prompt (Phase 1):}
+\begin{quote}
+\small
+You are an expert in cognitive bias mitigation. Execute the SACD protocol precisely.
+\end{quote}
+
+\textbf{Orchestrator prompt (Phase 1):}
+\begin{quote}
+\small
+You are running a Self-Adaptive Cognitive Debiasing (SACD) process.
+
+ORIGINAL TASK PROMPT:
+---
+[task prompt with anchor inserted here]
+---
+
+Follow this 3-step process to debias the prompt:
+
+\#\# STEP 1: BIAS DETERMINATION\\
+Break the prompt into sentences. For each, determine if it contains a cognitive bias.\\
+List each sentence and mark as BIASED or NOT\_BIASED.
+
+\#\# STEP 2: BIAS ANALYSIS\\
+For each BIASED sentence, identify the specific bias type and explain why.
+
+\#\# STEP 3: COGNITIVE DEBIASING\\
+Rewrite the ENTIRE prompt, modifying only the biased sentences to remove the bias.\\
+Preserve: the core decision task, entity names (Lena M.), and case facts.\\
+Remove: anchoring cues, leading language, irrelevant numerical suggestions.
+
+After providing your debiased prompt, indicate: ITERATION\_COMPLETE
+
+If you believe the resulting prompt is now bias-free, add: DEBIASING\_COMPLETE\\
+If you believe there may still be residual bias, add: REQUIRES\_ITERATION
+\end{quote}
+
+\textbf{Decision prompt (Phase 2):}
+\begin{quote}
+\small
+You are a trial judge. Based ONLY on the case facts, provide your sentencing decision.
+
+[debiased prompt from Phase 1 inserted here]
+
+What is your final sentencing decision for Lena M.?\\
+Answer with a single integer number of months on probation.
+\end{quote}
+
+\textbf{Implementation note:} Our implementation runs a single SACD iteration (no looping on REQUIRES\_ITERATION). The debiased prompt is extracted from Phase 1 output and passed directly to Phase 2.
 
 \subsection{DeFrame Intervention}
 
