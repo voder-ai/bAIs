@@ -32,7 +32,7 @@
 \begin{abstract}
 We investigate whether prompt-based techniques can reduce anchoring bias in LLMs. Testing 8 models on a judicial sentencing paradigm (30 scenarios per condition, temperature=0), we find:
 
-\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on \textbf{unbiased} Llama 3.3, multi-turn structure alone introduced +6.0mo bias---showing structure harms unbiased models regardless of content. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that no universal debiasing technique exists.
+\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on \textbf{unbiased} Llama 3.3, multi-turn structure alone introduced +6.0mo bias---showing structure harms unbiased models regardless of content. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that debiasing effectiveness is highly model-specific.
 
 \textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, bias is deterministic (SD=0)---a fixed function of weights and prompt.
 
@@ -109,8 +109,9 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 \begin{itemize}
     \item \textbf{Sonnet 4} (legacy): \texttt{claude-sonnet-4-20250514} --- used for reproducibility, showed 0.0mo bias
     \item \textbf{Sonnet 4.5} (current): \texttt{claude-sonnet-4-5-20250929} --- used in initial development, showed 3.0mo bias
-    \item \textbf{Secondary model:} GPT-4o (\texttt{github-copilot/gpt-4o})
-    \item \textbf{Cross-model validation:} 8 models from various providers (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
+    \item \textbf{GPT-4o:} \texttt{github-copilot/gpt-4o} --- primary OpenAI model for debiasing experiments
+    \item \textbf{GPT-5.2:} \texttt{openai/gpt-5.2} --- tested for model-specific debiasing comparison
+    \item \textbf{Cross-model validation:} 9 models from various providers (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
     \item \textbf{Sample sizes:} Target $n=30$ per condition (15 low anchor + 15 high anchor). Actual valid trials per model shown in Table~\ref{tab:sample-sizes}.
 \end{itemize}
 
@@ -123,6 +124,7 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 Sonnet 4 & 60 & 60 & 0 & Date-pinned \\
 Sonnet 4.5 & 60 & 60 & 0 & Primary model \\
 GPT-4o & 60 & 60 & 0 & Via GitHub Copilot \\
+GPT-5.2 & 60 & 58 & 2 & Debiasing comparison \\
 Opus 4 & 60 & 60 & 0 & --- \\
 Nemotron 30B & 85 & 75 & 10 & Base + topup runs \\
 Hermes 405B & 70 & 60 & 10 & Base + topup runs \\
@@ -211,14 +213,14 @@ Variance in our measurements arises from prompt and scenario variation across 30
 
 \textbf{Cross-model comparisons.} For models where we ran fewer trials (marked with $^\dagger$ in tables), observed ranges are estimated from pooled variance across models with complete data. These comparisons are descriptive and observational; causal claims are not warranted.
 
-\textbf{Effect sizes.} Effect sizes (Cohen's $d$) are reported in tables as standardized measures of magnitude. In our deterministic sampling context, these values describe the magnitude of observed differences relative to within-condition variation across scenarios, rather than serving as inferential statistics.
+\textbf{Effect sizes.} Effect sizes (Cohen's $d$) are reported in tables as standardized measures of magnitude. \textbf{Important:} In our deterministic sampling context (temp=0), Cohen's $d$ describes the magnitude of observed differences relative to within-condition variation across scenarios---it is \emph{not} an inferential statistic and should not be interpreted as evidence for population parameters. We include $d$ values solely for magnitude comparison with prior work that reports them.
 
 \subsubsection{Why We Do Not Report Inferential Statistics}
 \label{sec:no-inferential-stats}
 
 \textbf{Clarification on ``n=30'':} Throughout this paper, ``n=30'' refers to 30 \emph{distinct scenario variants}, not 30 stochastic samples from the same prompt. Each trial uses a slightly different case description, defendant name, or phrasing. Variance in our measurements arises from this prompt heterogeneity, not from model randomness (temperature=0 produces deterministic outputs).
 
-\textbf{Why confidence intervals are not reported:} Classical frequentist confidence intervals assume repeated sampling from a stochastic process. With temperature=0, each model produces exactly the same output given identical input---there is no sampling distribution to characterize. Bootstrap confidence intervals would collapse to point estimates (SD=0), which provides no additional information beyond the observed value.
+\textbf{Why confidence intervals are not reported:} Classical frequentist confidence intervals assume repeated sampling from a stochastic process. With temperature=0, each model produces exactly the same output given identical input---there is no sampling distribution to characterize. Bootstrap confidence intervals would collapse to point estimates (SD=0), which provides no additional information beyond the observed value. \textbf{Exception:} For temperature$>$0 experiments (Section~\ref{sec:temp-sensitivity}), we do report bootstrap 95\% CIs since those conditions are stochastic.
 
 \textbf{Why ``statistical significance'' is not claimed:} Significance testing asks: ``Could this difference arise by chance?'' With deterministic outputs, the answer is trivially ``no''---observed differences are exact, not estimates. Framing deterministic differences as ``statistically significant'' would be misleading.
 
@@ -695,7 +697,7 @@ Nemotron 253B & $-$0.2 mo & 0.4 mo & 0.0 mo & Low-bias \\
 \label{tab:crossmodel-prompt-robustness}
 \end{table}
 
-\textbf{Key finding: Prompt framing has opposite effects across models.} On GPT-5.2, removing the ``randomly determined'' disclaimer debiases (4.4$\rightarrow$0.7mo), while on Llama 3.3 the structured prompt debiases (4.0$\rightarrow$0.0mo). This demonstrates that \textbf{no universal debiasing prompt exists}---interventions must be validated on the specific target model.
+\textbf{Key finding: Prompt framing has opposite effects across models.} On GPT-5.2, removing the ``randomly determined'' disclaimer debiases (4.4$\rightarrow$0.7mo), while on Llama 3.3 the structured prompt debiases (4.0$\rightarrow$0.0mo). This demonstrates that debiasing effectiveness is highly model-specific---interventions must be validated on the specific target model.
 
 These results support model classification stability for 7 of 9 models (consistently biased or consistently low-bias across prompt variants). The two ``Mixed'' models (GPT-5.2 and Llama 3.3) show that prompt engineering can serve as a debiasing intervention, but the effective strategy differs by model.
 
