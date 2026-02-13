@@ -25,10 +25,12 @@ These are all legitimate recent papers. Do not flag them as unverifiable.
 const MODEL_CONTEXT = `
 CURRENT MODEL CONTEXT (as of ${TODAY}):
 - GPT-5.2 is a REAL model accessible via github-copilot/gpt-5.2 and openai/gpt-5.2
+- GPT-5.3-Codex was released Feb 5, 2026 — it is OpenAI's CURRENT flagship coding model
+- The @openai/codex CLI (v0.88+) uses GPT-5.3-Codex by default — this is NOT the deprecated 2023 Codex API
+- "Codex" in 2026 refers to the Codex app/CLI ecosystem, NOT the deprecated code-davinci model
 - Claude Sonnet 4 (claude-sonnet-4-20250514) and Sonnet 4.5 (claude-sonnet-4-5-20250929) are REAL distinct model versions
 - Claude Opus 4 and Opus 4.5 are REAL current Anthropic models
-- OpenAI Codex IS deprecated (paper acknowledges this correctly)
-Do not flag these models as hypothetical or unverifiable.
+Do not flag Codex as deprecated — it is OpenAI's active flagship product line.
 `;
 
 const REVIEW_SYSTEM_PROMPT = `You are a critical academic reviewer with expertise in AI/ML research. Your job is to assess whether this paper is ready for submission to a **top-tier AI/ML conference main track** (e.g., NeurIPS, ICML, ACL).

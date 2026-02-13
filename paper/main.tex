@@ -259,7 +259,7 @@ This prompt sensitivity is itself a key finding (Section~\ref{sec:opposite-effec
 
 \subsection{Baseline Anchoring Bias}
 
-\textbf{Note on Codex:} Early experiments (baseline anchoring, Sibony techniques, SACD on moderate bias) used OpenAI Codex, which has since been deprecated. These results demonstrate technique efficacy on a historical model but may not transfer to current models. Our GPT-4o experiments (Section~\ref{sec:gpt4o-debiasing}) provide more current validation.
+\textbf{Note on Codex:} Experiments labeled ``Codex'' used the OpenAI Codex CLI (v0.88.0, @openai/codex) with the default model (GPT-5.3-Codex as of Feb 2026). This is OpenAI's current flagship coding model, not the deprecated 2023 code-davinci API. Data collected February 5, 2026.
 
 Without debiasing interventions, our baseline model (Codex) showed substantial anchoring bias (3.67mo effect):
 
@@ -296,7 +296,7 @@ Premortem & 2.80 mo & [2.17, 3.43] & 2.88 & $-24\%$ \\
 
 \subsection{SACD Results}
 
-SACD substantially reduced anchoring bias when tested on Codex (baseline: 3.67mo, reduced to near-zero). Note: (1) This experiment used Codex, a deprecated model---results may not transfer to current models. (2) Generic reflection later achieved higher reduction (66\%) than SACD (45\%) on GPT-4o, suggesting the mechanism is multi-turn structure rather than SACD-specific content.
+SACD substantially reduced anchoring bias when tested on Codex (baseline: 3.67mo, reduced to near-zero). Note: Generic reflection later achieved higher reduction (66\%) than SACD (45\%) on GPT-4o, suggesting the mechanism is multi-turn structure rather than SACD-specific content.
 
 \begin{table}[H]
 \centering
