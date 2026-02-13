@@ -32,7 +32,7 @@
 \begin{abstract}
 We investigate whether prompt-based techniques can reduce anchoring bias in LLMs. Testing 8 models on a judicial sentencing paradigm (30 scenarios per condition, temperature=0), we find:
 
-\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on \textbf{unbiased} Llama 3.3, multi-turn structure alone introduced +6.0mo bias---showing structure harms unbiased models regardless of content. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that debiasing effectiveness is highly model-specific.
+\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on \textbf{unbiased} Llama 3.3, multi-turn structure alone introduced +6.0mo bias---showing structure can harm some unbiased models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that debiasing effectiveness is highly model-specific.
 
 \textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, bias is deterministic (SD=0)---a fixed function of weights and prompt.
 
@@ -47,7 +47,7 @@ Recent research has demonstrated that LLMs exhibit cognitive biases such as anch
 
 \textbf{Scope:} This is an \textbf{LLM-only study}. We characterize how LLMs respond to anchoring manipulations and debiasing interventions. We do not compare LLM performance to human performance---our prompts differ from those used in human studies, making direct comparison methodologically unsound. Human studies are cited for context and to motivate debiasing techniques, not as baselines.
 
-\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ unbiased models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone is harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on unbiased models, content is irrelevant---any structure harms equally; (3) on biased models, reasoning content matters---CoT outperforms random elaboration.
+\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ unbiased models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can be harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on some unbiased models, content is irrelevant---structure alone introduces bias; (3) on biased models, reasoning content matters---CoT outperforms random elaboration.
 
 We tested two categories of interventions:
 
@@ -237,6 +237,14 @@ Variance in our measurements arises from prompt and scenario variation across 30
 \textbf{Cross-model difference:} GPT-4o produced a 6.0-month anchoring effect; Sonnet (dated) produced 0.0 months. This 6.0-month difference is \emph{observed fact}, not an estimate---every trial of each model produced exactly these values. The difference is not ``statistically significant'' in the frequentist sense; it is \emph{deterministically exact}.
 
 \section{Results}
+
+\textbf{Note on Llama 3.3 baseline values:} Throughout this paper, Llama 3.3 appears with different baseline values in different tables. This reflects \emph{different prompt conditions}, not inconsistent data:
+\begin{itemize}
+    \item \textbf{0.0mo} (Tables 8, 10): Original prompt including ``randomly determined'' disclaimer
+    \item \textbf{4.0mo} (Table 11): Modified prompt without disclaimer but with structure
+    \item \textbf{6.0--9.0mo} (Table 7): Variants with disclaimer fully removed
+\end{itemize}
+This prompt sensitivity is itself a key finding (Section~\ref{sec:opposite-effects}).
 
 \subsection{Baseline Anchoring Bias}
 
@@ -892,7 +900,7 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms unbiased models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
+\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can harm some unbiased models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
 
 \textbf{Implication for debiasing research:} (1) For unbiased models: avoid multi-turn prompts entirely---any structure introduces bias. (2) For biased models: use multi-turn with reasoning content for optimal debiasing. (3) Always measure baseline bias first to determine strategy.
 
