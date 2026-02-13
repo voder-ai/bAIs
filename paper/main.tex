@@ -30,13 +30,13 @@
 \maketitle
 
 \begin{abstract}
-We investigate whether prompt-based techniques can reduce anchoring bias in LLMs. Testing 8 models on a judicial sentencing paradigm (30 scenarios per condition, temperature=0), we find:
+We investigate whether prompt-based techniques can reduce anchoring bias in LLMs. Testing 9 models on a judicial sentencing paradigm (30 scenarios per condition, temperature=0), we find:
 
-\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on Llama 3.3 (\textbf{low-bias on baseline prompt}), multi-turn structure alone introduced +6.0mo bias---showing structure can harm models that show no baseline bias. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that debiasing effectiveness is highly model-specific.
+\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A cross-model debiasing sweep on 5 open-weights models revealed: Sibony's context hygiene achieved 100\% reduction on 4/5 models (Llama 3.3, Mistral 7B, Qwen 72B, Gemma 9B), but 0\% on Hermes 405B. Conversely, SACD achieved 86\% reduction on Hermes but \emph{doubled} bias on Qwen (3.0mo$\rightarrow$6.0mo). No universal debiasing solution exists.
 
 \textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, bias is deterministic (SD=0)---a fixed function of weights and prompt.
 
-\textbf{Practical implications:} (1) Test debiasing on your specific deployment model. (2) For models showing no baseline bias, avoid multi-turn prompts. (3) For biased models, multi-turn with reasoning content is optimal. (4) Use date-pinned model IDs for reproducibility.
+\textbf{Practical implications:} (1) Test debiasing on your specific deployment model---interventions can backfire. (2) For models showing no baseline bias, avoid multi-turn prompts. (3) For biased models, multi-turn with reasoning content is optimal. (4) Use date-pinned model IDs for reproducibility.
 
 \textbf{Scope:} LLM-only study; no comparison to human performance.
 \end{abstract}
@@ -130,6 +130,8 @@ Nemotron 30B & 85 & 75 & 10 & Base + topup runs \\
 Hermes 405B & 70 & 60 & 10 & Base + topup runs \\
 Llama 3.3 70B & 60 & 60 & 0 & Paid OpenRouter tier \\
 Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
+Qwen 2.5 72B & 80 & 80 & 0 & Debiasing sweep \\
+Gemma 2 9B & 80 & 80 & 0 & Debiasing sweep \\
 \bottomrule
 \end{tabular}
 \caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent.}
@@ -789,6 +791,48 @@ On \textbf{GPT-5.2}, the pattern is reversed: removing the ``randomly determined
 \end{enumerate}
 
 This finding transforms what initially appeared to be a methodological limitation (prompt sensitivity) into a \textbf{core contribution}: prompt-model interactions are a first-order phenomenon that must be characterized, not a confound to be controlled away.
+
+\subsection{Cross-Model Debiasing Sweep: Context Hygiene vs SACD}
+\label{sec:crossmodel-debiasing-sweep}
+
+To systematically test debiasing intervention effectiveness across model families, we ran a comprehensive sweep testing four conditions (baseline, context hygiene, premortem, SACD) on five open-weights and instruction-tuned models via OpenRouter (paid tier, $n=10$ per anchor per condition, temperature=0).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Model & Baseline & Context Hygiene & Premortem & SACD & Best Intervention \\
+\midrule
+Llama 3.3 (70B) & 6.0 mo & \textbf{0.0 mo} & 1.2 mo & 1.2 mo & Context Hygiene (100\%) \\
+Mistral 7B & 6.0 mo & \textbf{0.0 mo} & 6.0 mo & (errors)$^\dagger$ & Context Hygiene (100\%) \\
+Hermes 405B & 5.7 mo & 6.0 mo & 6.0 mo & \textbf{0.8 mo} & SACD (86\%) \\
+Qwen 2.5 (72B) & 3.0 mo & \textbf{0.0 mo} & \textbf{0.0 mo} & 6.0 mo$^\ddagger$ & Context Hygiene (100\%) \\
+Gemma 2 (9B) & 6.0 mo & \textbf{0.0 mo} & 6.0 mo & \textbf{0.0 mo} & Either (100\%) \\
+\bottomrule
+\end{tabular}
+\caption{Cross-model debiasing sweep ($n=20$ per condition, 10 per anchor). Context Hygiene = Sibony's ``context hygiene'' technique (explicitly flagging anchor as irrelevant). Premortem = imagining decision failure before deciding. SACD = iterative self-correction. Bold values indicate successful debiasing ($\leq$1.0mo effect). $^\dagger$Mistral produced malformed JSON on SACD prompts (all 20 trials failed parsing). $^\ddagger$\textbf{SACD doubles bias on Qwen}---increased effect from 3.0mo baseline to 6.0mo.}
+\label{tab:crossmodel-debiasing-sweep}
+\end{table}
+
+\textbf{Key findings:}
+\begin{enumerate}
+    \item \textbf{Context hygiene works on 4/5 models.} Llama 3.3, Mistral 7B, Qwen 72B, and Gemma 9B all show complete elimination of anchoring bias (0.0mo effect) with Sibony's context hygiene intervention.
+    \item \textbf{Hermes 405B is resistant to Sibony techniques but responds to SACD.} Context hygiene and premortem showed no effect (6.0mo), but SACD achieved 86\% reduction (0.8mo effect). This is the opposite pattern from most models tested.
+    \item \textbf{SACD can \emph{increase} bias.} On Qwen 2.5, SACD doubled the anchoring effect from 3.0mo to 6.0mo. This demonstrates that debiasing interventions are not universally safe---they must be validated on the specific target model.
+    \item \textbf{Premortem showed mixed effectiveness.} Strong on Llama 3.3 (80\% reduction) and Qwen (100\%), but zero effect on Mistral, Hermes, and Gemma.
+    \item \textbf{No universal solution exists.} The optimal debiasing strategy is model-specific: Context Hygiene for most models, SACD for Hermes, either for Gemma.
+\end{enumerate}
+
+\textbf{Intervention-Model Compatibility Matrix:}
+\begin{itemize}
+    \item \textbf{Sibony-responsive:} Llama 3.3, Mistral 7B, Qwen 72B, Gemma 9B (4/5 models)
+    \item \textbf{SACD-responsive:} Hermes 405B, Gemma 9B (2/5 models)
+    \item \textbf{Both effective:} Gemma 9B, Llama 3.3
+    \item \textbf{SACD harmful:} Qwen 72B (doubles bias)
+    \item \textbf{Sibony ineffective:} Hermes 405B (no reduction)
+\end{itemize}
+
+This sweep reinforces our central finding: \textbf{debiasing effectiveness is model-specific}. Practitioners cannot assume that techniques validated on one model will transfer to another---even within the same model family (Hermes is a Llama derivative but shows opposite response patterns).
 
 \subsection{Iterative Self-Correction Was Effective in Our Tests}
 

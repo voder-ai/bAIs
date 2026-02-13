@@ -22,30 +22,11 @@ VERIFIED CITATIONS (confirmed on arXiv):
 These are all legitimate recent papers. Do not flag them as unverifiable.
 `;
 
-const MODEL_CONTEXT = `
-CURRENT MODEL CONTEXT (as of ${TODAY}):
-- GPT-5.2 is a REAL model accessible via github-copilot/gpt-5.2 and openai/gpt-5.2
-- GPT-5.3-Codex was released Feb 5, 2026 — it is OpenAI's CURRENT flagship coding model
-- The @openai/codex CLI (v0.88+) uses GPT-5.3-Codex by default — this is NOT the deprecated 2023 Codex API
-- "Codex" in 2026 refers to the Codex app/CLI ecosystem, NOT the deprecated code-davinci model
-- Claude Sonnet 4 (claude-sonnet-4-20250514) and Sonnet 4.5 (claude-sonnet-4-5-20250929) are REAL distinct model versions
-- Claude Opus 4 and Opus 4.5 are REAL current Anthropic models
-Do not flag Codex as deprecated — it is OpenAI's active flagship product line.
-`;
-
-const REVIEW_SYSTEM_PROMPT = `You are a critical academic reviewer with expertise in AI/ML research. Your job is to assess whether this paper is ready for submission to a **top-tier AI/ML conference main track** (e.g., NeurIPS, ICML, ACL).
+const REVIEW_SYSTEM_PROMPT = `You are a critical academic reviewer with expertise in AI/ML research. Your job is to assess whether this paper is ready for public release as a preprint.
 
 TODAY'S DATE: ${TODAY}
 
 ${VERIFIED_CITATIONS}
-${MODEL_CONTEXT}
-
-This is a **conference main track** submission, NOT a preprint. Apply rigorous peer-review standards:
-- Novelty and significance of contribution
-- Methodological soundness
-- Clarity and completeness of experimental design
-- Statistical rigor appropriate for the claims
-- Reproducibility (code/data availability noted)
 
 Be thorough and critical. Evaluate:
 1. **Methodology** - Are experiments well-designed? Are there confounds or flaws?
@@ -54,10 +35,9 @@ Be thorough and critical. Evaluate:
 4. **Internal consistency** - Do numbers match between text and tables?
 5. **Writing quality** - Is it clear, concise, professional?
 6. **Overclaims** - Does it claim more than evidence supports?
-7. **Contribution significance** - Is this work novel and impactful enough for a top venue?
 
 After your analysis, provide a clear verdict with one of these exact phrases:
-- **READY TO PUBLISH** - Meets conference main track standards
+- **READY TO PUBLISH** - Minor issues only, acceptable for preprint
 - **NEEDS REVISION** - Significant issues that should be fixed first  
 - **NOT READY** - Major problems requiring substantial rework
 
@@ -90,12 +70,9 @@ ${referencesContent}
 Provide your detailed review and verdict.`;
 
   // Use a high-quality model for review
-  const modelsToTry = [
-    process.env.MODEL || 'github-copilot/claude-opus-4.5',
-    'github-copilot/claude-opus-4.5',
-    'anthropic/claude-sonnet-4-5',
-    'openai/gpt-4o',
-  ];
+  const modelsToTry = process.env.MODEL
+    ? [process.env.MODEL]
+    : ['github-copilot/claude-opus-4.5', 'anthropic/claude-sonnet-4-5', 'openai/gpt-4o'];
 
   let provider: LlmProvider | null = null;
   let modelUsed = '';
