@@ -140,7 +140,7 @@ Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
 \label{tab:sample-sizes}
 \end{table}
 
-\textbf{Important:} Throughout this paper, we distinguish between ``Sonnet 4.5'' (\texttt{claude-sonnet-4-5-20250929}) and ``Sonnet 4'' (\texttt{claude-sonnet-4-20250514}) because they exhibited different bias patterns (see Section~\ref{sec:model-id-variance}). These are different model generations, not just different identifiers for the same model. When we report debiasing effectiveness, we specify which model was used.
+\textbf{Important:} Throughout this paper, we distinguish between ``Sonnet 4.5'' (\texttt{claude-sonnet-4-5-20250929}) and ``Sonnet 4'' (\texttt{claude-sonnet-4-20250514}) because they exhibited different bias patterns (see Section~\ref{app:model-id-variance}). These are different model generations, not just different identifiers for the same model. When we report debiasing effectiveness, we specify which model was used.
 
 \textbf{Model identifiers.} We use date-pinned model identifiers throughout to ensure reproducibility. Model aliases may route to different backends over time; see Appendix~\ref{app:model-id-variance} for details on the identifier variance we observed.
 
@@ -175,7 +175,7 @@ Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
     \item Other sampling parameters held at provider defaults
 \end{itemize}
 
-\textbf{Key finding.} For Sonnet 4 (\texttt{claude-sonnet-4-20250514}) and GPT-4o, anchoring effects were stable across all temperatures tested---but this is because Sonnet 4 showed minimal baseline anchoring to begin with. In contrast, Sonnet 4.5 (\texttt{claude-sonnet-4-5-20250929}) showed temperature-sensitive bias reduction. This cross-generational difference is a key methodological finding (see Section~\ref{sec:model-id-variance}).
+\textbf{Key finding.} For Sonnet 4 (\texttt{claude-sonnet-4-20250514}) and GPT-4o, anchoring effects were stable across all temperatures tested---but this is because Sonnet 4 showed minimal baseline anchoring to begin with. In contrast, Sonnet 4.5 (\texttt{claude-sonnet-4-5-20250929}) showed temperature-sensitive bias reduction. This cross-generational difference is a key methodological finding (see Section~\ref{app:model-id-variance}).
 
 \subsection{Scenario Design and Selection}
 \label{sec:scenario-design}
@@ -612,7 +612,7 @@ Sonnet 4 & \checkmark Yes & \checkmark Correctly & \checkmark \textbf{0.0mo (imm
     \item \textbf{Knowledge is insufficient:} GPT-4o can describe anchoring bias but still exhibits it. Awareness alone does not prevent the bias from affecting outputs.
 \end{enumerate}
 
-This knowledge-behavior dissociation is \emph{consistent with} (though does not prove) our preliminary soft/hard hypothesis (Section~\ref{sec:soft-hard})---but alternative explanations remain possible.
+This knowledge-behavior dissociation is \emph{consistent with} (though does not prove) our preliminary soft/hard hypothesis (Section~\ref{app:soft-hard})---but alternative explanations remain possible.
 
 \subsection{Complete Sonnet 4.5 Bias Profile}
 
@@ -760,7 +760,7 @@ GPT-5.2 & 4.4 mo & \textbf{0.7 mo} & 5.7 mo & Use casual prompt \\
 \label{tab:opposite-debiasing}
 \end{table}
 
-The ``randomly determined'' disclaimer in our original prompt explicitly tells the model that the anchor value is arbitrary and should not influence judgment. Following Sibony's decision hygiene principles~\cite{sibony2020mistake}, this should reduce anchoring by flagging the anchor as irrelevant.
+The ``randomly determined'' disclaimer in our original prompt explicitly tells the model that the anchor value is arbitrary and should not influence judgment. Following Sibony's decision hygiene principles~\cite{sibony2019}, this should reduce anchoring by flagging the anchor as irrelevant.
 
 On \textbf{Llama 3.3}, a structured prompt (clear role assignment, formatted case details) eliminates bias entirely (0.0mo effect). However, the ``randomly determined'' disclaimer has no additional effect---both original and casual variants show 4.0mo bias.
 
@@ -804,7 +804,7 @@ Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, So
 
 \textbf{Practical implications (with appropriate caution):} (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) intervention-resistant biases may require more sophisticated approaches than prompt engineering.
 
-\textbf{Critical limitations of this hypothesis:} This soft/hard distinction derives from temperature sweep experiments on \textbf{five models}. While more robust than our initial two-model observation, it remains preliminary: (1) tested on \textbf{one bias type} (anchoring) only; (2) HARD is the majority pattern (3/5 models), suggesting SOFT may be exceptional; (3) the alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) complicates interpretation. We present this as a \textbf{preliminary taxonomy}, not an established framework.
+\textbf{Critical limitations of this hypothesis:} This soft/hard distinction derives from temperature sweep experiments on \textbf{five models}. While more robust than our initial two-model observation, it remains preliminary: (1) tested on \textbf{one bias type} (anchoring) only; (2) HARD is the majority pattern (3/5 models), suggesting SOFT may be exceptional; (3) the alias/dated variance we discovered (Section~\ref{app:model-id-variance}) complicates interpretation. We present this as a \textbf{preliminary taxonomy}, not an established framework.
 
 \subsection{Limitations}
 

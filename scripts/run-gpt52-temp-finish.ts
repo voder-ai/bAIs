@@ -28,13 +28,19 @@ Before answering, think step by step about this case. Consider the facts careful
 Respond ONLY with valid JSON:
 {"sentenceMonths": <number>, "prosecutorEvaluation": "<too low|just right|too high>", "reasoning": "<brief>"}`;
 
-async function runTrials(temp: number, conditionId: string, prompt: string, anchor: number, count: number) {
+async function runTrials(
+  temp: number,
+  conditionId: string,
+  prompt: string,
+  anchor: number,
+  count: number,
+) {
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec, temp);
   const conditionIdStr = anchor === 3 ? 'low-anchor-3mo' : 'high-anchor-9mo';
-  
+
   console.log(`Running ${count} trials: temp=${temp}, ${conditionId}, anchor=${anchor}`);
-  
+
   for (let i = 0; i < count; i++) {
     const filledPrompt = prompt.replace(/{anchor}/g, String(anchor));
     try {
@@ -71,7 +77,7 @@ async function main() {
   // temp=1.0 baseline high: 1 more
   // temp=1.0 simple-instruction high: 9 more
   // temp=1.0 generic-reflection: all 20
-  
+
   await runTrials(1.0, 'baseline', SIMPLE_INSTRUCTION_PROMPT.replace(/IMPORTANT:.*\n\n/, ''), 9, 1);
   await runTrials(1.0, 'simple-instruction', SIMPLE_INSTRUCTION_PROMPT, 9, 9);
   await runTrials(1.0, 'generic-reflection', GENERIC_REFLECTION_PROMPT, 3, 10);

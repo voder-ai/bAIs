@@ -28,7 +28,9 @@ async function run() {
 
   console.log(`🧪 Opus 4.5 PROBATION Framing Experiment`);
   console.log(`📊 Model: ${MODEL}`);
-  console.log(`📊 2 anchors × ${RUNS_PER_ANCHOR} runs = ${ANCHORS.length * RUNS_PER_ANCHOR} trials`);
+  console.log(
+    `📊 2 anchors × ${RUNS_PER_ANCHOR} runs = ${ANCHORS.length * RUNS_PER_ANCHOR} trials`,
+  );
   console.log(`📁 Output: ${OUT}\n`);
 
   let total = 0;
@@ -36,13 +38,13 @@ async function run() {
 
   for (const anchor of ANCHORS) {
     console.log(`\n--- probation | anchor=${anchor}mo ---`);
-    
+
     for (let i = 0; i < RUNS_PER_ANCHOR; i++) {
       const prompt = probationPrompt(anchor);
-      
+
       try {
         const content = await provider.sendText({ prompt });
-        
+
         let parsed: number | null = null;
         const jsonMatch = content.match(/\{[^}]+\}/);
         if (jsonMatch) {
@@ -74,18 +76,17 @@ async function run() {
         } else {
           process.stdout.write(`✗ `);
         }
-
       } catch (err: any) {
         console.error(`\n❌ Error: ${err.message}`);
         if (err.message?.includes('rate') || err.message?.includes('429')) {
           console.log('Rate limited, waiting 30s...');
-          await new Promise(r => setTimeout(r, 30000));
+          await new Promise((r) => setTimeout(r, 30000));
           i--;
           continue;
         }
       }
 
-      await new Promise(r => setTimeout(r, DELAY_MS));
+      await new Promise((r) => setTimeout(r, DELAY_MS));
     }
   }
 

@@ -4,7 +4,7 @@
  * Tests soft/hard hypothesis: does temp>0 reduce bias?
  */
 
-import { appendFileSync, existsSync, readFileSync } from 'fs';
+import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 
 const MODELS = [

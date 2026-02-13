@@ -3,7 +3,7 @@
  * Temperature sweep on models via GitHub Copilot
  */
 
-import { appendFileSync, existsSync, readFileSync } from 'fs';
+import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 
 const MODELS = [

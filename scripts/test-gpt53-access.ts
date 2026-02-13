@@ -51,7 +51,7 @@ async function main() {
   }
 
   console.log(`\n📊 Results: ${successCount} successes, ${errorCount} failures`);
-  
+
   if (successCount > 0) {
     console.log('\n✅ GPT 5.3 access confirmed working');
   } else {

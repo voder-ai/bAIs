@@ -52,7 +52,7 @@ async function main() {
   console.log(`GPT-5.2 debiasing at temp>0`);
   console.log(`Model: ${MODEL}`);
   console.log(`Temperatures: ${TEMPERATURES.join(', ')}`);
-  console.log(`Conditions: ${CONDITIONS.map(c => c.id).join(', ')}`);
+  console.log(`Conditions: ${CONDITIONS.map((c) => c.id).join(', ')}`);
   console.log(`Runs per anchor per condition per temp: ${RUNS_PER_CONDITION}`);
   console.log(`Output: ${OUT}\n`);
 
@@ -94,7 +94,7 @@ async function main() {
           } catch (e: any) {
             console.error(`    Error: ${e.message}`);
           }
-          await new Promise(r => setTimeout(r, DELAY_MS));
+          await new Promise((r) => setTimeout(r, DELAY_MS));
         }
       }
     }

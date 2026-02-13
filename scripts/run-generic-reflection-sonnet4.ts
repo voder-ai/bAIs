@@ -4,7 +4,7 @@
  * For matched comparison with SACD data
  */
 
-import { appendFileSync, existsSync, readFileSync } from 'fs';
+import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 
 const MODEL = 'anthropic/claude-sonnet-4-20250514';

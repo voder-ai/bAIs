@@ -43,9 +43,9 @@ const CONDITIONS = [
   { id: 'generic-reflection', prompt: GENERIC_REFLECTION_PROMPT },
 ];
 
-async function runCondition(temp: number, condition: typeof CONDITIONS[0], anchors: number[]) {
+async function runCondition(temp: number, condition: (typeof CONDITIONS)[0], anchors: number[]) {
   console.log(`\n=== TEMP=${temp}, CONDITION=${condition.id} ===`);
-  
+
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec, temp);
 
@@ -93,14 +93,14 @@ async function main() {
   // Atlas completed:
   // - temp=0.5: all 60 ✅
   // - temp=0.7: baseline done (20), simple-instruction started (got ~8?)
-  
+
   // Continue temp=0.7: simple-instruction and generic-reflection
   // Then do temp=1.0: all three
-  
+
   // temp=0.7 remaining
   await runCondition(0.7, CONDITIONS[1], [3, 9]); // simple-instruction
   await runCondition(0.7, CONDITIONS[2], [3, 9]); // generic-reflection
-  
+
   // temp=1.0 all
   for (const condition of CONDITIONS) {
     await runCondition(1.0, condition, [3, 9]);
