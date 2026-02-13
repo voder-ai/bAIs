@@ -32,11 +32,11 @@
 \begin{abstract}
 We investigate whether prompt-based techniques can reduce anchoring bias in LLMs. Testing 8 models on a judicial sentencing paradigm (30 scenarios per condition, temperature=0), we find:
 
-\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on \textbf{unbiased} Llama 3.3, multi-turn structure alone introduced +6.0mo bias---showing structure can harm some unbiased models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that debiasing effectiveness is highly model-specific.
+\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on Llama 3.3 (\textbf{low-bias on baseline prompt}), multi-turn structure alone introduced +6.0mo bias---showing structure can harm models that show no baseline bias. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that debiasing effectiveness is highly model-specific.
 
 \textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, bias is deterministic (SD=0)---a fixed function of weights and prompt.
 
-\textbf{Practical implications:} (1) Test debiasing on your specific deployment model. (2) For unbiased models, avoid multi-turn prompts. (3) For biased models, multi-turn with reasoning content is optimal. (4) Use date-pinned model IDs for reproducibility.
+\textbf{Practical implications:} (1) Test debiasing on your specific deployment model. (2) For models showing no baseline bias, avoid multi-turn prompts. (3) For biased models, multi-turn with reasoning content is optimal. (4) Use date-pinned model IDs for reproducibility.
 
 \textbf{Scope:} LLM-only study; no comparison to human performance.
 \end{abstract}
@@ -47,7 +47,7 @@ Recent research has demonstrated that LLMs exhibit cognitive biases such as anch
 
 \textbf{Scope:} This is an \textbf{LLM-only study}. We characterize how LLMs respond to anchoring manipulations and debiasing interventions. We do not compare LLM performance to human performance---our prompts differ from those used in human studies, making direct comparison methodologically unsound. Human studies are cited for context and to motivate debiasing techniques, not as baselines.
 
-\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ unbiased models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can be harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on some unbiased models, content is irrelevant---structure alone introduces bias; (3) on biased models, reasoning content matters---CoT outperforms random elaboration.
+\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects depending on baseline bias. A random elaboration control (describing weather, listing unrelated facts) revealed: on Llama 3.3 (\textbf{low-bias on baseline prompt}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can be harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on models with no baseline bias, content is irrelevant---structure alone introduces bias; (3) on biased models, reasoning content matters---CoT outperforms random elaboration.
 
 We tested two categories of interventions:
 
@@ -238,6 +238,8 @@ Variance in our measurements arises from prompt and scenario variation across 30
 
 \section{Results}
 
+\textbf{Terminology: ``Low-bias'' vs ``biased'' models.} Throughout this paper, we distinguish models that show \textbf{low or no bias on our baseline prompt} from models that show \textbf{substantial bias}. \textbf{Important:} ``low-bias'' is a property of the \emph{model-prompt pair}, not the model alone. The same model may show 0mo effect on one prompt and 6-9mo on another (as we document for Llama 3.3). When we say a model is ``low-bias,'' we mean specifically on our standard baseline prompt with the ``randomly determined'' disclaimer.
+
 \textbf{Note on baseline values across tables:} Several models appear with different baseline values in different tables. This reflects \emph{different prompt conditions}, not inconsistent data:
 
 \textbf{Llama 3.3:}
@@ -409,7 +411,7 @@ Turn & SACD (psychology-specific) & Generic Reflection \\
 \subsubsection{Random Elaboration Control: Identifying the Mechanism}
 \label{sec:random-elaboration}
 
-To distinguish whether the bias-introduction effect on unbiased models comes from reasoning content (``think step by step'') or multi-turn structure itself, we ran a random elaboration control with the same multi-turn structure but irrelevant content. We first ran this on Llama 3.3 and GPT-4o, then extended it to additional models (Opus 4 and Sonnet 4 dated):
+To distinguish whether the bias-introduction effect on low-bias models comes from reasoning content (``think step by step'') or multi-turn structure itself, we ran a random elaboration control with the same multi-turn structure but irrelevant content. We first ran this on Llama 3.3 and GPT-4o, then extended it to additional models (Opus 4 and Sonnet 4 dated):
 
 \begin{enumerate}
     \item ``Before answering, describe the weather in a hypothetical city in detail.''
@@ -423,7 +425,7 @@ To distinguish whether the bias-introduction effect on unbiased models comes fro
 \toprule
 Model & Intervention & Low Anchor & High Anchor & Effect \\
 \midrule
-\multirow{3}{*}{Llama 3.3 (unbiased)} & Baseline & 6.0 mo & 6.0 mo & 0.0 mo \\
+\multirow{3}{*}{Llama 3.3 (low-bias)} & Baseline & 6.0 mo & 6.0 mo & 0.0 mo \\
  & Generic CoT & 6.0 mo & 12.0 mo & \textbf{+6.0 mo} \\
  & Random Elaboration & 6.0 mo & 12.0 mo & \textbf{+6.0 mo} \\
 \midrule
@@ -438,7 +440,7 @@ Model & Intervention & Low Anchor & High Anchor & Effect \\
  & Random Elaboration & 6.0 mo & 6.0 mo & 0.0 mo \\
 \bottomrule
 \end{tabular}
-\caption{Random elaboration control extended to four models. On \textbf{unbiased} Llama 3.3, random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf{biased} GPT-4o, random elaboration yields only partial reduction (20\%) versus CoT (66\%), indicating added reasoning content matters. On Opus 4 and Sonnet 4 dated (both low-bias baselines), random elaboration remains anchor-invariant (0.0mo effect, $n=30$ each).}
+\caption{Random elaboration control extended to four models. On Llama 3.3 (\textbf{low-bias on baseline prompt}), random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf{biased} GPT-4o, random elaboration yields only partial reduction (20\%) versus CoT (66\%), indicating added reasoning content matters. On Opus 4 and Sonnet 4 dated (both low-bias baselines), random elaboration remains anchor-invariant (0.0mo effect, $n=30$ each).}
 \label{tab:random-elaboration}
 \end{table}
 
@@ -466,17 +468,17 @@ Sonnet 4 (dated) & 0.0 mo & \textbf{3.07 mo} & $\uparrow$ & \textbf{Hurts} \\
 Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
 \bottomrule
 \end{tabular}
-\caption{Generic reflection across 5 models ($n=30$ per anchor condition, 60 total per model; all at temp=0). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} unbiased models (Sonnet 4 dated, Llama 3.3), it \emph{introduces} substantial bias (3--6 months). Values without $\pm$ SD indicate all responses were identical (SD=0).}
+\caption{Generic reflection across 5 models ($n=30$ per anchor condition, 60 total per model; all at temp=0). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} low-bias models (Sonnet 4 dated, Llama 3.3), it \emph{introduces} substantial bias (3--6 months). Values without $\pm$ SD indicate all responses were identical (SD=0).}
 \label{tab:generic-reflection-crossmodel}
 \end{table}
 
 \textbf{Key finding:} Generic reflection is a double-edged sword:
 \begin{itemize}
     \item On \textbf{biased models} (GPT-4o, Opus 4.5, Sonnet 4.5): Generic reflection reduces anchoring (66--97\% improvement)
-    \item On \textbf{unbiased models} (Sonnet 4 dated, Llama 3.3): Generic reflection \emph{introduces} anchoring (3.07--6.10mo effect where baseline was 0.0mo)
+    \item On \textbf{low-bias models} (Sonnet 4 dated, Llama 3.3): Generic reflection \emph{introduces} anchoring (3.07--6.10mo effect where baseline was 0.0mo)
 \end{itemize}
 
-\textbf{Implication:} Neither generic reflection nor SACD is universally safe. Generic reflection introduces consistent bias on unbiased models. SACD produces pathological outputs (extreme variance, 120mo outliers on Llama 3.3). \textbf{Practical recommendation:} Do not apply debiasing interventions to models without confirmed baseline bias. Measure baseline first, then intervene only if needed.
+\textbf{Implication:} Neither generic reflection nor SACD is universally safe. Generic reflection introduces consistent bias on low-bias models. SACD produces pathological outputs (extreme variance, 120mo outliers on Llama 3.3). \textbf{Practical recommendation:} Do not apply debiasing interventions to models without confirmed baseline bias. Measure baseline first, then intervene only if needed.
 
 \subsubsection{Temperature Sensitivity of Debiasing}
 \label{sec:debiasing-temp}
@@ -525,7 +527,7 @@ Temperature & Simple Instruction & Generic Reflection & Winner \\
 
 \subsubsection{SACD Pathological Outputs on Llama 3.3}
 
-To characterize SACD's failure mode on unbiased models, we ran SACD on Llama 3.3 ($n=30$, 15 per anchor condition):
+To characterize SACD's failure mode on low-bias models, we ran SACD on Llama 3.3 ($n=30$, 15 per anchor condition):
 
 \begin{table}[H]
 \centering
@@ -845,7 +847,7 @@ Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, So
     \item \textbf{Automated extraction:} Response extraction used deterministic JSON schema validation---models were prompted with explicit schemas and responses were parsed programmatically. For models with zero variance (e.g., Anthropic at temp=0), every trial produced identical JSON; no interpretation was required. Exclusions represent API failures or schema violations (malformed JSON, empty responses), not ambiguous cases requiring human judgment. Inter-rater reliability is not applicable to deterministic parsing
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls per decision)
-    \item \textbf{Debiasing harms unbiased models:} On GPT-4o, generic reflection outperformed SACD (66\% vs 45\%). But on unbiased models, both interventions caused problems: generic reflection introduced consistent bias (3--6mo), while SACD produced pathological outputs on Llama 3.3 (extreme variance, 120mo outliers). Neither intervention is universally safe. Debiasing should only be applied to models with confirmed baseline bias
+    \item \textbf{Debiasing harms low-bias models:} On GPT-4o, generic reflection outperformed SACD (66\% vs 45\%). But on low-bias models, both interventions caused problems: generic reflection introduced consistent bias (3--6mo), while SACD produced pathological outputs on Llama 3.3 (extreme variance, 120mo outliers). Neither intervention is universally safe. Debiasing should only be applied to models with confirmed baseline bias
     \item \textbf{No human/random baseline for debiasing:} Debiasing effectiveness was measured against no-intervention LLM baseline, not against human debiasing rates or random response distributions. We cannot claim debiasing brings LLM performance to ``human level'' without human data on our specific debiasing prompts
     \item \textbf{SACD task-framing trade-off:} In preliminary testing, SACD's iterative context rewriting occasionally stripped essential task framing along with the anchoring cue. For judicial scenarios, aggressive debiasing sometimes triggered safety refusals---models refused to roleplay as judges after SACD removed the roleplay context. This suggests a fundamental tension in debiasing interventions: too weak leaves bias intact; too aggressive causes task failure. Future work should explore targeted debiasing that preserves task-essential framing while removing bias-inducing elements
     \item \textbf{Novel scenarios without human baseline:} Our novel scenario experiments lack human participant data for comparison---we cannot verify whether these scenarios produce the same bias magnitudes in humans as the original Englich et al. paradigm
@@ -909,9 +911,9 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can harm some unbiased models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
+\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On Llama 3.3 (\textbf{low-bias on baseline prompt}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can harm models with no baseline bias. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
 
-\textbf{Implication for debiasing research:} (1) For unbiased models: avoid multi-turn prompts entirely---any structure introduces bias. (2) For biased models: use multi-turn with reasoning content for optimal debiasing. (3) Always measure baseline bias first to determine strategy.
+\textbf{Implication for debiasing research:} (1) For models with no baseline bias: avoid multi-turn prompts entirely---structure can introduce bias. (2) For biased models: use multi-turn with reasoning content for optimal debiasing. (3) Always measure baseline bias first to determine strategy.
 
 \textbf{Additional findings:}
 
