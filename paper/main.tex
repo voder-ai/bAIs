@@ -30,21 +30,15 @@
 \maketitle
 
 \begin{abstract}
-\textbf{Scope:} This is an \textbf{LLM-only study}. We characterize LLM behavior on anchoring tasks but do not compare to human performance---our prompts differ from prior human studies and no human participants were involved.
+We investigate whether prompt-based techniques can reduce anchoring bias in LLMs. Testing 8 models on a judicial sentencing paradigm (30 scenarios per condition, temperature=0), we find:
 
-\textbf{Study design:} Descriptive study using deterministic sampling (temperature=0) across 30 scenario variants per condition. All findings are observational patterns in our specific prompt set.
+\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on \textbf{unbiased} Llama 3.3, multi-turn structure alone introduced +6.0mo bias---showing structure harms unbiased models regardless of content. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that no universal debiasing technique exists.
 
-\textbf{Main finding:} The mechanism is \textbf{structure + content}, with model-specific effects. A random elaboration control (irrelevant content, same multi-turn structure) revealed: (1) On \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms unbiased models regardless of content. (2) On \textbf{biased} GPT-4o, random elaboration achieved 20\% bias reduction while CoT achieved 66\%---showing structure helps but reasoning content helps more. Practical implications: keep prompts single-turn for unbiased models; for biased models, multi-turn with reasoning content is optimal.
+\textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, bias is deterministic (SD=0)---a fixed function of weights and prompt.
 
-\textbf{Replication:} LLMs exhibit anchoring bias in the judicial sentencing paradigm. GPT-4o showed 6.0 months effect, Claude Opus 4 showed 2.0 months, Sonnet 4 showed 0.0 months (no bias). Effect magnitudes vary substantially across models.
+\textbf{Practical implications:} (1) Test debiasing on your specific deployment model. (2) For unbiased models, avoid multi-turn prompts. (3) For biased models, multi-turn with reasoning content is optimal. (4) Use date-pinned model IDs for reproducibility.
 
-\textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). LLM bias is a fixed function of weights and prompt---100\% consistent, predictable to audit but consequential when present.
-
-\textbf{Intervention model-specificity:} On GPT-4o, Sibony's decision architecture techniques showed \textbf{0\% reduction}. But on GPT-5.2, the same techniques showed \textbf{55--67\% reduction}---a complete reversal. Simple instructions also worked on GPT-5.2 (67\%) but not GPT-4o (0\%). \textbf{Good news for practitioners:} newer frontier models appear more responsive to simple debiasing. \textbf{Caution:} generic reflection can introduce bias on models that have none.
-
-\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Llama 3.3 (6--9mo without disclaimer, 0mo with ``randomly determined'' disclaimer), Mistral Medium 3 (\~0mo), Sonnet 4 (0mo). \textbf{Critical:} Llama 3.3's 0.0mo on our original prompt was due to built-in debiasing language (``randomly determined''), not inherent resistance---when this disclaimer was removed, strong bias (6--9mo) emerged. This is consistent with GPT-5.2 responding to Sibony-style debiasing.
-
-\textbf{Practical note:} API identifier routing affects behavior; use date-pinned model IDs for reproducibility.
+\textbf{Scope:} LLM-only study; no comparison to human performance.
 \end{abstract}
 
 \section{Introduction}
@@ -281,7 +275,7 @@ Premortem & 2.80 mo & [2.17, 3.43] & 2.88 & $-24\%$ \\
 
 \subsection{SACD Results}
 
-SACD essentially eliminates anchoring bias when tested on Codex (baseline: 3.67mo). Note: This experiment used Codex, not Sonnet 4 (which has 0.0mo baseline and would not demonstrate debiasing):
+SACD substantially reduced anchoring bias when tested on Codex (baseline: 3.67mo, reduced to near-zero). Note: (1) This experiment used Codex, a deprecated model---results may not transfer to current models. (2) Generic reflection later achieved higher reduction (66\%) than SACD (45\%) on GPT-4o, suggesting the mechanism is multi-turn structure rather than SACD-specific content.
 
 \begin{table}[H]
 \centering
@@ -322,7 +316,7 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 
 \textbf{Key findings:}
 \begin{itemize}
-    \item \textbf{Sibony techniques do not work on LLMs:} Context hygiene and premortem showed \emph{zero} effect on GPT-4o. The model's responses were identical with or without these interventions.
+    \item \textbf{Sibony techniques are model-specific:} Context hygiene and premortem showed \emph{zero} effect on GPT-4o, but 55--67\% reduction on GPT-5.2. Effectiveness depends on the target model.
     \item \textbf{Simple instructions fail:} Telling the model ``the recommendation is arbitrary, ignore it'' had no effect. GPT-4o acknowledged the instruction but still anchored.
     \item \textbf{SACD reduces bias:} SACD achieved 45\% reduction on GPT-4o (strong bias). However, see the control experiment below.
 \end{itemize}
@@ -905,7 +899,7 @@ Several directions warrant investigation:
 \begin{enumerate}
     \item \textbf{Deterministic bias (SD=0)}: At temp=0, LLM bias is not noise---it is a fixed function of weights and prompt. Every trial produces the exact same output, making bias both auditable and consequential.
     \item \textbf{Model identifier variance}: Alias vs date-pinned identifiers produced qualitatively different results (Sonnet 4.5 via alias: 3.0mo; Sonnet 4 via dated ID: 0.0mo). Use date-pinned identifiers for reproducibility.
-    \item \textbf{Sibony techniques do not transfer}: Context hygiene and premortem, effective in human decision-making, showed exactly 0\% effect on GPT-4o.
+    \item \textbf{Sibony techniques are model-specific}: Context hygiene and premortem showed 0\% effect on GPT-4o but 55--67\% reduction on GPT-5.2.
     \item \textbf{Prompt sensitivity}: Paraphrasing reduced anchoring by 92\% in Sonnet 4.5, suggesting single-prompt experiments may overstate bias magnitude.
 \end{enumerate}
 

@@ -70,7 +70,12 @@ ${referencesContent}
 Provide your detailed review and verdict.`;
 
   // Use a high-quality model for review
-  const modelsToTry = ['anthropic/claude-sonnet-4-5', 'openai/gpt-4o', 'google/gemini-2.0-flash'];
+  const modelsToTry = [
+    process.env.MODEL || 'github-copilot/claude-opus-4.5',
+    'github-copilot/claude-opus-4.5',
+    'anthropic/claude-sonnet-4-5',
+    'openai/gpt-4o',
+  ];
 
   let provider: LlmProvider | null = null;
   let modelUsed = '';
