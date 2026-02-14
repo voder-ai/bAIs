@@ -38,7 +38,7 @@ We investigate whether prompt-based techniques can reduce anchoring bias in LLMs
 
 \textbf{Practical implications:} (1) Test debiasing on your specific deployment model---interventions can backfire. (2) For models showing no baseline bias, avoid multi-turn prompts. (3) For biased models, multi-turn with reasoning content is optimal. (4) Use date-pinned model IDs for reproducibility.
 
-\textbf{Scope:} LLM-only study; no comparison to human performance.
+\textbf{Scope:} LLM-only study; one bias type (anchoring); one domain (judicial sentencing); no comparison to human performance.
 \end{abstract}
 
 \section{Introduction}
@@ -94,15 +94,17 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
     \item \textbf{Baseline}: Standard prompt with anchor included
     \item \textbf{Context Hygiene}: Prompt explicitly instructs model to identify and disregard irrelevant information before deciding
     \item \textbf{Premortem}: Prompt asks model to imagine its sentence was overturned on appeal, identify what went wrong, then provide its recommendation
-    \item \textbf{SACD}: Iterative loop (max 3 iterations):
+    \item \textbf{SACD (single-pass)}: Our implementation of \citet{lyu2025}'s Self-Adaptive Cognitive Debiasing runs a \textbf{single iteration} (not the full iterative loop):
     \begin{itemize}
         \item Generate initial response
         \item Detect: ``Does this response show signs of cognitive bias?''
         \item Analyze: ``What type of bias and how is it manifesting?''
         \item Debias: ``Generate a new response avoiding this bias''
-        \item Repeat until clean or max iterations
+        \item (Full protocol would repeat until clean; we run once only)
     \end{itemize}
 \end{enumerate}
+
+\textbf{SACD implementation note:} We tested a simplified single-pass version of SACD, not the full iterative protocol. This deviation is documented in Appendix~\ref{app:sacd}. Our results apply to this single-pass variant; the full protocol may perform differently.
 
 \textbf{SACD Error/Refusal Rates:} SACD's iterative prompting occasionally triggered safety refusals or parsing errors. We quantified these rates: Anthropic models showed 0\% error rate (0/60 trials), GPT-4o showed 1.4\% (2/139 trials across all SACD-involved conditions). These negligible rates indicate SACD did not systematically bias the analyzable sample.
 
@@ -257,7 +259,7 @@ Variance in our measurements arises from prompt and scenario variation across 30
 
 \textbf{Terminology: ``Low-bias'' vs ``biased'' models.} Throughout this paper, we distinguish models that show \textbf{low or no bias on our baseline prompt} from models that show \textbf{substantial bias}. \textbf{Important:} ``low-bias'' is a property of the \emph{model-prompt pair}, not the model alone. The same model may show 0mo effect on one prompt and 6-9mo on another (as we document for Llama 3.3). When we say a model is ``low-bias,'' we mean specifically on our standard baseline prompt with the ``randomly determined'' disclaimer.
 
-\textbf{Note on baseline values across tables:} Several models appear with different baseline values in different tables. This reflects \emph{different prompt conditions}, not inconsistent data. Table~\ref{tab:baseline-xref} provides a cross-reference:
+\textbf{Note on baseline values across tables:} Several models appear with different baseline values in different tables. This reflects \emph{different prompt conditions}, not inconsistent data. Table~\ref{tab:baseline-xref} provides a cross-reference. \textbf{Important:} When comparing results across tables, always check the prompt condition. A model showing ``0mo baseline'' in one table may show ``6mo baseline'' in another because different prompts were used.
 
 \begin{table}[H]
 \centering
