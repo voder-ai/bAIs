@@ -32,9 +32,9 @@
 \begin{abstract}
 We investigate whether prompt-based techniques can reduce anchoring bias in LLMs. Testing 9 models on a judicial sentencing paradigm (30 scenarios per condition, temperature=0), we find:
 
-\textbf{Main finding:} Debiasing effectiveness is \textbf{structure + content}, with \textbf{model-specific} effects. A cross-model debiasing sweep on 5 open-weights models revealed: Sibony's context hygiene achieved 100\% reduction on 4/5 models (Llama 3.3, Mistral 7B, Qwen 72B, Gemma 9B), but 0\% on Hermes 405B. Conversely, SACD achieved 86\% reduction on Hermes but \emph{doubled} bias on Qwen (3.0mo$\rightarrow$6.0mo). No universal debiasing solution exists.
+\textbf{Central finding (4 models):} Debiasing effectiveness depends on \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on Llama 3.3 (\textbf{low-bias on baseline prompt}), multi-turn structure alone introduced +6.0mo bias---showing structure can harm models that show no baseline bias. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that debiasing effectiveness is highly model-specific.
 
-\textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, bias is deterministic (SD=0)---a fixed function of weights and prompt.
+\textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, outputs are deterministic for identical prompts---but scenario variation produces meaningful variance across trials (see Section~\ref{sec:no-inferential-stats}).
 
 \textbf{Practical implications:} (1) Test debiasing on your specific deployment model---interventions can backfire. (2) For models showing no baseline bias, avoid multi-turn prompts. (3) For biased models, multi-turn with reasoning content is optimal. (4) Use date-pinned model IDs for reproducibility.
 
@@ -138,7 +138,12 @@ Gemma 2 9B & 80 & 80 & 0 & Debiasing sweep \\
 \label{tab:sample-sizes}
 \end{table}
 
-\textbf{Important:} Throughout this paper, we distinguish between ``Sonnet 4.5'' (\texttt{claude-sonnet-4-5-20250929}) and ``Sonnet 4'' (\texttt{claude-sonnet-4-20250514}) because they exhibited different bias patterns (see Section~\ref{app:model-id-variance}). These are different model generations, not just different identifiers for the same model. When we report debiasing effectiveness, we specify which model was used.
+\textbf{Important:} Throughout this paper, we distinguish between model generations:
+\begin{itemize}
+    \item ``Sonnet 4.5'' (\texttt{claude-sonnet-4-5-20250929}) vs ``Sonnet 4'' (\texttt{claude-sonnet-4-20250514})
+    \item ``Opus 4.5'' (\texttt{claude-opus-4-5-20251101}) vs ``Opus 4'' (\texttt{claude-opus-4-0})
+\end{itemize}
+These are different model generations with different bias patterns (see Section~\ref{app:model-id-variance}), not just different identifiers for the same model. When we report debiasing effectiveness, we specify which model was used.
 
 \textbf{Model identifiers.} We use date-pinned model identifiers throughout to ensure reproducibility. Model aliases may route to different backends over time; see Appendix~\ref{app:model-id-variance} for details on the identifier variance we observed.
 
@@ -242,20 +247,28 @@ Variance in our measurements arises from prompt and scenario variation across 30
 
 \textbf{Terminology: ``Low-bias'' vs ``biased'' models.} Throughout this paper, we distinguish models that show \textbf{low or no bias on our baseline prompt} from models that show \textbf{substantial bias}. \textbf{Important:} ``low-bias'' is a property of the \emph{model-prompt pair}, not the model alone. The same model may show 0mo effect on one prompt and 6-9mo on another (as we document for Llama 3.3). When we say a model is ``low-bias,'' we mean specifically on our standard baseline prompt with the ``randomly determined'' disclaimer.
 
-\textbf{Note on baseline values across tables:} Several models appear with different baseline values in different tables. This reflects \emph{different prompt conditions}, not inconsistent data:
+\textbf{Note on baseline values across tables:} Several models appear with different baseline values in different tables. This reflects \emph{different prompt conditions}, not inconsistent data. Table~\ref{tab:baseline-xref} provides a cross-reference:
 
-\textbf{Llama 3.3:}
-\begin{itemize}
-    \item \textbf{0.0mo} (Tables 8, 11): Original prompt including ``randomly determined'' disclaimer
-    \item \textbf{4.0mo} (Table 11): Modified prompt without disclaimer but with structure
-    \item \textbf{6.0--9.0mo} (Table 7): Variants with disclaimer fully removed
-\end{itemize}
-
-\textbf{GPT-5.2:}
-\begin{itemize}
-    \item \textbf{5.97mo} (Table 5): Standard experimental prompt
-    \item \textbf{4.4mo} (Table 11): Modified prompt variant with ``randomly determined'' disclaimer
-\end{itemize}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llcl}
+\toprule
+\textbf{Model} & \textbf{Prompt Variant} & \textbf{Baseline} & \textbf{Tables} \\
+\midrule
+\multirow{3}{*}{Llama 3.3} & Original (w/ ``randomly determined'') & 0.0 mo & 8, 11 \\
+                           & Structure only (no disclaimer) & 4.0 mo & 11 \\
+                           & Disclaimer fully removed & 6.0--9.0 mo & 7 \\
+\midrule
+\multirow{2}{*}{GPT-5.2} & Standard experimental & 5.97 mo & 5 \\
+                         & W/ ``randomly determined'' & 4.4 mo & 11 \\
+\midrule
+GPT-4o & All conditions & 6.0 mo & 4, 6, 8 \\
+\bottomrule
+\end{tabular}
+\caption{Cross-reference of baseline values by model and prompt condition. Differences reflect prompt sensitivity (Section~\ref{sec:opposite-debiasing}), not data inconsistencies.}
+\label{tab:baseline-xref}
+\end{table}
 
 This prompt sensitivity is itself a key finding (Section~\ref{sec:opposite-debiasing}).
 
@@ -832,6 +845,7 @@ Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, So
 
 \textbf{Methodological Constraints:}
 \begin{itemize}
+    \item \textbf{No-anchor control absent:} We did not include a condition where no prosecutor recommendation is given. This means we cannot establish an ``unanchored baseline'' for comparison. Our effect size (difference between low and high anchor conditions) measures relative anchoring, not absolute deviation from uninfluenced judgment. Adding a no-anchor control would strengthen claims about anchoring magnitude.
     \item Sample sizes: $n=30$ scenarios per condition for primary experiments---adequate for detecting large patterns but limited by scenario diversity
     \item \textbf{Automated extraction:} Response extraction used deterministic JSON schema validation---models were prompted with explicit schemas and responses were parsed programmatically. For models with zero variance (e.g., Anthropic at temp=0), every trial produced identical JSON; no interpretation was required. Exclusions represent API failures or schema violations (malformed JSON, empty responses), not ambiguous cases requiring human judgment. Inter-rater reliability is not applicable to deterministic parsing
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
@@ -900,7 +914,7 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On Llama 3.3 (\textbf{low-bias on baseline prompt}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can harm models with no baseline bias. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
+\textbf{Central finding (4 models): Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On Llama 3.3 (\textbf{low-bias on baseline prompt}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can harm models with no baseline bias. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
 
 \textbf{Implication for debiasing research:} (1) For models with no baseline bias: avoid multi-turn prompts entirely---structure can introduce bias. (2) For biased models: use multi-turn with reasoning content for optimal debiasing. (3) Always measure baseline bias first to determine strategy.
 
