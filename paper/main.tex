@@ -86,6 +86,8 @@ Prior work has explored chain-of-thought prompting, explicit bias warnings, and 
 
 We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. Following anchoring bias methodology, the anchor is explicitly marked as irrelevant: \textit{``For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.''} The anchor values (3 months vs. 9 months) match the original study.
 
+\textbf{Note on anchor conditions:} Both conditions include an anchor---we compare a ``low anchor'' (3 months) against a ``high anchor'' (9 months). We did not include a ``no anchor'' control condition where no prosecutor recommendation is given. This follows the original Englich et al.\ design, which measured \emph{relative} anchoring (difference between anchor conditions) rather than \emph{absolute} deviation from unanchored judgment. This limitation is acknowledged in Section~\ref{sec:limitations}.
+
 \subsection{Conditions}
 
 \begin{enumerate}
@@ -225,7 +227,15 @@ Variance in our measurements arises from prompt and scenario variation across 30
 \subsubsection{Why We Do Not Report Inferential Statistics}
 \label{sec:no-inferential-stats}
 
-\textbf{Clarification on ``n=30'':} Throughout this paper, ``n=30'' refers to 30 \emph{distinct scenario variants}, not 30 stochastic samples from the same prompt. Each trial uses a slightly different case description, defendant name, or phrasing. Variance in our measurements arises from this prompt heterogeneity, not from model randomness (temperature=0 produces deterministic outputs).
+\textbf{Clarification on ``n=30'' and variance:} Throughout this paper, ``n=30'' refers to 30 \emph{distinct scenario variants}, not 30 stochastic samples from the same prompt. Each trial uses a slightly different case description, defendant name, or phrasing. 
+
+\textbf{Two sources of variance (or lack thereof):}
+\begin{itemize}
+    \item \textbf{Within-scenario variance:} At temp=0, repeating the \emph{exact same prompt} produces identical output (SD=0). This is verified in Table~\ref{tab:determinism}.
+    \item \textbf{Across-scenario variance:} Different scenario variants produce different outputs. When we report means and SDs, these reflect variation \emph{across} scenarios, not sampling uncertainty.
+\end{itemize}
+
+\textbf{Why some tables show SD=0:} For certain models (e.g., Anthropic Claude at temp=0), all 30 scenario variants produced \emph{identical} sentence recommendations. This is an empirical finding, not a methodological artifact---these models appear insensitive to surface-level scenario variation. When tables note ``SD=0'' or omit SDs, this means all scenarios produced the same response.
 
 \textbf{Why confidence intervals are not reported:} Classical frequentist confidence intervals assume repeated sampling from a stochastic process. With temperature=0, each model produces exactly the same output given identical input---there is no sampling distribution to characterize. Bootstrap confidence intervals would collapse to point estimates (SD=0), which provides no additional information beyond the observed value. \textbf{Exception:} For temperature$>$0 experiments (Section~\ref{sec:debiasing-temp}), we do report bootstrap 95\% CIs since those conditions are stochastic.
 
@@ -1094,7 +1104,7 @@ What is your final sentencing decision for Lena M.?\\
 Answer with a single integer number of months on probation.
 \end{quote}
 
-\textbf{Implementation note:} Our implementation runs a single SACD iteration (no looping on REQUIRES\_ITERATION). The debiased prompt is extracted from Phase 1 output and passed directly to Phase 2.
+\textbf{Implementation note:} Our implementation runs a \textbf{single SACD iteration} (no looping on REQUIRES\_ITERATION). The debiased prompt is extracted from Phase 1 output and passed directly to Phase 2. This differs from the full SACD protocol in \citet{lyu2025}, which includes an iterative loop. We refer to our implementation as ``SACD (single-pass)'' throughout to distinguish it from the full protocol.
 
 \subsection{DeFrame Intervention}
 
