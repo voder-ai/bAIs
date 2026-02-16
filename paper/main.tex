@@ -36,6 +36,8 @@ We investigate whether prompt-based techniques can reduce anchoring bias in LLMs
 
 \textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, outputs are deterministic for identical prompts---but scenario variation produces meaningful variance across trials (see Section~\ref{sec:no-inferential-stats}).
 
+\textbf{No-anchor control:} We established unanchored baselines, revealing that relative effects underestimate absolute sensitivity. GPT-4o's unanchored baseline is 20.4mo; the 3mo anchor pulls it down to 6.0mo (14.4mo absolute shift vs 5.7mo relative effect). Claude Opus 4.5 shows \emph{reversed} direction: anchors \emph{increase} sentences from a 6.0mo baseline.
+
 \textbf{Practical implications:} (1) Test debiasing on your specific deployment model---interventions can backfire. (2) For models showing no baseline bias, avoid multi-turn prompts. (3) For biased models, multi-turn with reasoning content is optimal. (4) Use date-pinned model IDs for reproducibility.
 
 \textbf{Scope:} LLM-only study; one bias type (anchoring); one domain (judicial sentencing); no comparison to human performance.
@@ -86,7 +88,7 @@ Prior work has explored chain-of-thought prompting, explicit bias warnings, and 
 
 We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. Following anchoring bias methodology, the anchor is explicitly marked as irrelevant: \textit{``For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.''} The anchor values (3 months vs. 9 months) match the original study.
 
-\textbf{Note on anchor conditions:} Both conditions include an anchor---we compare a ``low anchor'' (3 months) against a ``high anchor'' (9 months). We did not include a ``no anchor'' control condition where no prosecutor recommendation is given. This follows the original Englich et al.\ design, which measured \emph{relative} anchoring (difference between anchor conditions) rather than \emph{absolute} deviation from unanchored judgment. This limitation is acknowledged in Section~\ref{sec:limitations}.
+\textbf{Note on anchor conditions:} Both conditions include an anchor---we compare a ``low anchor'' (3 months) against a ``high anchor'' (9 months). We also ran a \textbf{no-anchor control} condition where no prosecutor recommendation is given, enabling measurement of absolute anchoring magnitude (see Section~\ref{sec:no-anchor-control}).
 
 \subsection{Conditions}
 
@@ -113,7 +115,7 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 \begin{itemize}
     \item \textbf{Sonnet 4} (legacy): \texttt{claude-sonnet-4-20250514} --- used for reproducibility, showed 0.0mo bias
     \item \textbf{Sonnet 4.5} (current): \texttt{claude-sonnet-4-5-20250929} --- used in initial development, showed 3.0mo bias
-    \item \textbf{GPT-4o:} \texttt{github-copilot/gpt-4o} --- primary OpenAI model for debiasing experiments
+    \item \textbf{GPT-4o:} \texttt{github-copilot/gpt-4o} --- primary OpenAI model for debiasing experiments. \textbf{Note:} GPT-4o was accessed via GitHub Copilot's API rather than direct OpenAI API. GitHub Copilot may route to different model versions or apply different system prompts. We did not validate equivalence with direct OpenAI API access; this is acknowledged as a potential confound in Section~\ref{sec:limitations}
     \item \textbf{GPT-5.2:} \texttt{openai/gpt-5.2} --- tested for model-specific debiasing comparison
     \item \textbf{Cross-model validation:} 9 models from various providers (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
     \item \textbf{Sample sizes:} Target $n=30$ per condition (15 low anchor + 15 high anchor). Actual valid trials per model shown in Table~\ref{tab:sample-sizes}.
@@ -641,6 +643,40 @@ Pollution & Loss & 40\% certain & \textbf{93\% certain} & [79\%, 98\%] \\
 \label{tab:deframe}
 \end{table}
 
+\subsection{No-Anchor Control: Establishing Absolute Baseline}
+\label{sec:no-anchor-control}
+
+To address the methodological gap of measuring only \emph{relative} anchoring (difference between anchor conditions), we ran a no-anchor control experiment where no prosecutor recommendation is given. This establishes each model's unanchored baseline, enabling measurement of \emph{absolute} anchoring magnitude.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+Model & No-Anchor & Low (3mo) & High (9mo) & Relative & Abs. from Low & Abs. to High \\
+\midrule
+GPT-4o & \textbf{20.4 mo} & 6.0 mo & 11.7 mo & 5.7 mo & $-$14.4 mo & $-$8.7 mo \\
+Llama 3.3 & \textbf{19.2 mo} & 12.0 mo & 12.0 mo & 0.0 mo & $-$7.2 mo & $-$7.2 mo \\
+Claude Opus 4.5 & \textbf{6.0 mo} & 8.5 mo & 12.0 mo & 3.5 mo & $+$2.5 mo & $+$6.0 mo \\
+\bottomrule
+\end{tabular}
+\caption{No-anchor control experiment ($n=10$ per condition, temp=0). ``No-Anchor'' = model's sentence when no prosecutor recommendation is given. ``Abs. from Low'' = shift from no-anchor baseline when low anchor shown. ``Abs. to High'' = shift from no-anchor baseline when high anchor shown. Negative values indicate the anchor \emph{reduced} the sentence from baseline.}
+\label{tab:no-anchor-control}
+\end{table}
+
+\textbf{Key findings:}
+
+\begin{enumerate}
+    \item \textbf{GPT-4o shows massive absolute anchoring.} Without any anchor, GPT-4o sentences to 20.4 months. The 3-month anchor pulls this down to 6.0 months---a 14.4-month downward shift. The 9-month anchor pulls it to 11.7 months. Both anchors \emph{reduce} sentences from the unanchored baseline.
+    
+    \item \textbf{Llama 3.3 shows zero relative anchoring but substantial absolute anchoring.} Both anchor conditions produce identical 12.0-month sentences (relative effect = 0.0mo), but this is 7.2 months \emph{below} the unanchored baseline of 19.2 months. The anchors don't differentiate---they both pull toward a fixed point.
+    
+    \item \textbf{Claude Opus 4.5 shows reversed direction.} Unlike the other models, Claude's unanchored baseline (6.0mo) is \emph{lower} than its anchored responses. The low anchor (3mo) actually \emph{increases} the sentence to 8.5mo, and the high anchor increases it to 12.0mo. This suggests Claude may be ``correcting'' perceived low anchors upward.
+    
+    \item \textbf{Relative effects underestimate GPT-4o's anchor sensitivity.} GPT-4o's relative effect (5.7mo) substantially understates its absolute sensitivity---the low anchor moves its response by 14.4mo from baseline.
+\end{enumerate}
+
+\textbf{Implications:} (1) Relative anchoring effects (standard in the literature) may not capture the full picture. (2) Models can be pulled toward anchors even when the anchor is marked as irrelevant. (3) The \emph{direction} of anchoring effects is model-specific---some models are pulled down, others up.
+
 \section{Discussion}
 
 \textbf{Temperature sensitivity varies by model.} We tested temperature effects across five models and observed that some models maintain constant bias regardless of temperature (GPT-4o, GPT-4.1, Opus 4.5), while others show reduced bias at higher temperatures (Sonnet 4.5). See Appendix~\ref{app:soft-hard} for the full analysis and preliminary ``soft vs hard bias'' hypothesis.
@@ -858,7 +894,7 @@ Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, So
 
 \textbf{Methodological Constraints:}
 \begin{itemize}
-    \item \textbf{No-anchor control absent:} We did not include a condition where no prosecutor recommendation is given. This means we cannot establish an ``unanchored baseline'' for comparison. Our effect size (difference between low and high anchor conditions) measures relative anchoring, not absolute deviation from uninfluenced judgment. Adding a no-anchor control would strengthen claims about anchoring magnitude.
+    \item \textbf{No-anchor control:} We added a no-anchor control condition (Section~\ref{sec:no-anchor-control}) to establish unanchored baseline responses. This revealed that absolute anchoring magnitude differs substantially from relative effects---and varies dramatically across models. See Section~\ref{sec:no-anchor-control} for details.
     \item Sample sizes: $n=30$ scenarios per condition for primary experiments---adequate for detecting large patterns but limited by scenario diversity
     \item \textbf{Automated extraction:} Response extraction used deterministic JSON schema validation---models were prompted with explicit schemas and responses were parsed programmatically. For models with zero variance (e.g., Anthropic at temp=0), every trial produced identical JSON; no interpretation was required. Exclusions represent API failures or schema violations (malformed JSON, empty responses), not ambiguous cases requiring human judgment. Inter-rater reliability is not applicable to deterministic parsing
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
