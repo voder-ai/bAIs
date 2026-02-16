@@ -29,10 +29,10 @@
 \citation{maynard2025trojan}
 \citation{arcuschin2026blindspot}
 \citation{sibony2019}
-\citation{lyu2025}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Cognitive Biases in LLMs}{2}{subsection.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Human Debiasing Research}{2}{subsection.2.2}\protected@file@percent }
+\citation{lyu2025}
 \citation{englich2006}
 \citation{lyu2025}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}LLM Debiasing Attempts}{3}{subsection.2.3}\protected@file@percent }
@@ -120,14 +120,18 @@
 \newlabel{sec:crossmodel-debiasing-sweep}{{5.6}{20}{Cross-Model Debiasing Sweep: Context Hygiene vs SACD}{subsection.5.6}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {20}{\ignorespaces Cross-model debiasing sweep ($n=20$ per condition, 10 per anchor). Context Hygiene = Sibony's ``context hygiene'' technique (explicitly flagging anchor as irrelevant). Premortem = imagining decision failure before deciding. SACD = iterative self-correction. Bold values indicate successful debiasing ($\leq $1.0mo effect). $^\dagger $Mistral produced malformed JSON on SACD prompts (all 20 trials failed parsing). $^\ddagger $\textbf  {SACD increases bias on Qwen and Opus 4.5}---Qwen increased from 3.0mo to 6.0mo, Opus increased from 6.0mo to 8.1mo.}}{20}{table.20}\protected@file@percent }
 \newlabel{tab:crossmodel-debiasing-sweep}{{20}{20}{Cross-model debiasing sweep ($n=20$ per condition, 10 per anchor). Context Hygiene = Sibony's ``context hygiene'' technique (explicitly flagging anchor as irrelevant). Premortem = imagining decision failure before deciding. SACD = iterative self-correction. Bold values indicate successful debiasing ($\leq $1.0mo effect). $^\dagger $Mistral produced malformed JSON on SACD prompts (all 20 trials failed parsing). $^\ddagger $\textbf {SACD increases bias on Qwen and Opus 4.5}---Qwen increased from 3.0mo to 6.0mo, Opus increased from 6.0mo to 8.1mo}{table.20}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Iterative Self-Correction Was Effective in Our Tests}{21}{subsection.5.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Preliminary Hypothesis: Two Patterns Observed in Our Tested Models}{22}{subsection.5.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Limitations}{22}{subsection.5.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Future Work}{25}{subsection.5.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{26}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Full Iterative SACD vs Single-Pass: Critical Difference}{21}{subsection.5.7}\protected@file@percent }
+\newlabel{sec:full-sacd}{{5.7}{21}{Full Iterative SACD vs Single-Pass: Critical Difference}{subsection.5.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {21}{\ignorespaces Full iterative SACD vs single-pass SACD ($n=30$ per anchor condition, temp=0). $^\dagger $Single-pass SACD on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely.}}{22}{table.21}\protected@file@percent }
+\newlabel{tab:full-sacd}{{21}{22}{Full iterative SACD vs single-pass SACD ($n=30$ per anchor condition, temp=0). $^\dagger $Single-pass SACD on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely}{table.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Single-Pass SACD Analysis (Historical)}{22}{subsection.5.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Preliminary Hypothesis: Two Patterns Observed in Our Tested Models}{23}{subsection.5.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Limitations}{23}{subsection.5.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.11}Future Work}{26}{subsection.5.11}\protected@file@percent }
 \bibstyle{plainnat}
 \bibdata{references}
 \bibcite{arkes1985}{{1}{1985}{{Arkes and Blumer}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{27}{section.6}\protected@file@percent }
 \bibcite{binz2023}{{2}{2023}{{Binz and Schulz}}{{}}}
 \bibcite{englich2006}{{3}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
 \bibcite{jones2022}{{4}{2022}{{Jones and Steinhardt}}{{}}}
@@ -142,31 +146,31 @@
 \@writefile{toc}{\contentsline {section}{\numberline {A}Reproducibility Details}{28}{appendix.A}\protected@file@percent }
 \newlabel{app:reproducibility}{{A}{28}{Reproducibility Details}{appendix.A}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Experiment Provenance}{28}{subsection.A.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {21}{\ignorespaces Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version.}}{28}{table.21}\protected@file@percent }
-\newlabel{tab:provenance}{{21}{28}{Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version}{table.21}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Sampling Settings}{28}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Anchoring Experiment Prompt}{28}{subsection.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Context Hygiene Prompt Addition}{29}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Premortem Prompt Addition}{29}{subsection.A.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}SACD (Self-Adaptive Cognitive Debiasing) Prompts}{29}{subsection.A.6}\protected@file@percent }
-\newlabel{app:sacd-prompts}{{A.6}{29}{SACD (Self-Adaptive Cognitive Debiasing) Prompts}{subsection.A.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {22}{\ignorespaces Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version.}}{28}{table.22}\protected@file@percent }
+\newlabel{tab:provenance}{{22}{28}{Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version}{table.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Sampling Settings}{29}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Anchoring Experiment Prompt}{29}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Context Hygiene Prompt Addition}{30}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Premortem Prompt Addition}{30}{subsection.A.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}SACD (Self-Adaptive Cognitive Debiasing) Prompts}{30}{subsection.A.6}\protected@file@percent }
+\newlabel{app:sacd-prompts}{{A.6}{30}{SACD (Self-Adaptive Cognitive Debiasing) Prompts}{subsection.A.6}{}}
 \citation{lyu2025}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}DeFrame Intervention}{30}{subsection.A.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.8}Framing Effect Prompts}{30}{subsection.A.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.9}Conjunction Fallacy Prompts}{31}{subsection.A.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.10}Sunk Cost Fallacy Prompts}{32}{subsection.A.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.11}Random Elaboration Control Prompts}{33}{subsection.A.11}\protected@file@percent }
-\newlabel{app:random-elaboration}{{A.11}{33}{Random Elaboration Control Prompts}{subsection.A.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.12}Output Parsing and Retry Logic}{33}{subsection.A.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}DeFrame Intervention}{31}{subsection.A.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.8}Framing Effect Prompts}{31}{subsection.A.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.9}Conjunction Fallacy Prompts}{32}{subsection.A.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.10}Sunk Cost Fallacy Prompts}{33}{subsection.A.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.11}Random Elaboration Control Prompts}{34}{subsection.A.11}\protected@file@percent }
+\newlabel{app:random-elaboration}{{A.11}{34}{Random Elaboration Control Prompts}{subsection.A.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.12}Output Parsing and Retry Logic}{34}{subsection.A.12}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.13}Model Identifier Variance}{34}{subsection.A.13}\protected@file@percent }
 \newlabel{app:model-id-variance}{{A.13}{34}{Model Identifier Variance}{subsection.A.13}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {22}{\ignorespaces Cross-generational difference in anchoring bias. Sonnet 4.5 (\texttt  {claude-sonnet-4-5-20250929}) shows 3-month anchoring effect, while Sonnet 4 (\texttt  {claude-sonnet-4-20250514}) shows zero anchoring on identical prompts.}}{34}{table.22}\protected@file@percent }
-\newlabel{tab:model-id-variance}{{22}{34}{Cross-generational difference in anchoring bias. Sonnet 4.5 (\texttt {claude-sonnet-4-5-20250929}) shows 3-month anchoring effect, while Sonnet 4 (\texttt {claude-sonnet-4-20250514}) shows zero anchoring on identical prompts}{table.22}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.14}Code Availability}{34}{subsection.A.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.15}Soft vs Hard Bias Patterns: Extended Analysis}{34}{subsection.A.15}\protected@file@percent }
-\newlabel{app:soft-hard}{{A.15}{34}{Soft vs Hard Bias Patterns: Extended Analysis}{subsection.A.15}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {23}{\ignorespaces Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures.}}{34}{table.23}\protected@file@percent }
-\newlabel{tab:soft-hard}{{23}{34}{Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures}{table.23}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.16}Deterministic Bias: Extended Discussion}{35}{subsection.A.16}\protected@file@percent }
-\newlabel{app:deterministic-bias}{{A.16}{35}{Deterministic Bias: Extended Discussion}{subsection.A.16}{}}
-\gdef \@abspage@last{36}
+\@writefile{lot}{\contentsline {table}{\numberline {23}{\ignorespaces Cross-generational difference in anchoring bias. Sonnet 4.5 (\texttt  {claude-sonnet-4-5-20250929}) shows 3-month anchoring effect, while Sonnet 4 (\texttt  {claude-sonnet-4-20250514}) shows zero anchoring on identical prompts.}}{35}{table.23}\protected@file@percent }
+\newlabel{tab:model-id-variance}{{23}{35}{Cross-generational difference in anchoring bias. Sonnet 4.5 (\texttt {claude-sonnet-4-5-20250929}) shows 3-month anchoring effect, while Sonnet 4 (\texttt {claude-sonnet-4-20250514}) shows zero anchoring on identical prompts}{table.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.14}Code Availability}{35}{subsection.A.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.15}Soft vs Hard Bias Patterns: Extended Analysis}{35}{subsection.A.15}\protected@file@percent }
+\newlabel{app:soft-hard}{{A.15}{35}{Soft vs Hard Bias Patterns: Extended Analysis}{subsection.A.15}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {24}{\ignorespaces Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures.}}{35}{table.24}\protected@file@percent }
+\newlabel{tab:soft-hard}{{24}{35}{Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures}{table.24}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.16}Deterministic Bias: Extended Discussion}{36}{subsection.A.16}\protected@file@percent }
+\newlabel{app:deterministic-bias}{{A.16}{36}{Deterministic Bias: Extended Discussion}{subsection.A.16}{}}
+\gdef \@abspage@last{37}

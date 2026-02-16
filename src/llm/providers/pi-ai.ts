@@ -124,10 +124,28 @@ export class PiAiProvider implements LlmProvider {
     this.apiKey = key;
 
     // Get model from pi-ai
-    try {
-      // @ts-expect-error - dynamic provider/model lookup
-      this.model = getModel(this.providerName, modelId);
-    } catch {
+    // @ts-expect-error - dynamic provider/model lookup
+    const registeredModel = getModel(this.providerName, modelId);
+    
+    if (registeredModel) {
+      this.model = registeredModel;
+    } else if (this.providerName === 'openrouter') {
+      // For OpenRouter, create a fallback model object for models not in registry
+      // This allows using paid versions of models that only have :free in registry
+      console.warn(`Model "${modelId}" not in registry, using fallback for OpenRouter`);
+      this.model = {
+        id: modelId,
+        name: modelId,
+        api: 'openai-completions', // OpenRouter uses OpenAI-compatible API
+        provider: 'openrouter',
+        baseUrl: 'https://openrouter.ai/api/v1',
+        reasoning: false,
+        input: ['text'],
+        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+        contextWindow: 128000,
+        maxTokens: 4096,
+      } as Model<Api>;
+    } else {
       // List available models for this provider
       const available = listModels(this.providerName);
       throw new Error(
