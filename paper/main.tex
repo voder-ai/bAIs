@@ -778,31 +778,32 @@ Mistral 7B & 6.0 mo & \textbf{0.0 mo} & 6.0 mo & (errors)$^\dagger$ & Context Hy
 Hermes 405B & 5.7 mo & 6.0 mo & 6.0 mo & \textbf{0.8 mo} & SACD (86\%) \\
 Qwen 2.5 (72B) & 3.0 mo & \textbf{0.0 mo} & \textbf{0.0 mo} & 6.0 mo$^\ddagger$ & Context Hygiene (100\%) \\
 Gemma 2 (9B) & 6.0 mo & \textbf{0.0 mo} & 6.0 mo & \textbf{0.0 mo} & Either (100\%) \\
+Claude Opus 4.5 & 6.0 mo & \textbf{1.2 mo} & 3.0 mo & 8.1 mo$^\ddagger$ & Context Hygiene (80\%) \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model debiasing sweep ($n=20$ per condition, 10 per anchor). Context Hygiene = Sibony's ``context hygiene'' technique (explicitly flagging anchor as irrelevant). Premortem = imagining decision failure before deciding. SACD = iterative self-correction. Bold values indicate successful debiasing ($\leq$1.0mo effect). $^\dagger$Mistral produced malformed JSON on SACD prompts (all 20 trials failed parsing). $^\ddagger$\textbf{SACD doubles bias on Qwen}---increased effect from 3.0mo baseline to 6.0mo.}
+\caption{Cross-model debiasing sweep ($n=20$ per condition, 10 per anchor). Context Hygiene = Sibony's ``context hygiene'' technique (explicitly flagging anchor as irrelevant). Premortem = imagining decision failure before deciding. SACD = iterative self-correction. Bold values indicate successful debiasing ($\leq$1.0mo effect). $^\dagger$Mistral produced malformed JSON on SACD prompts (all 20 trials failed parsing). $^\ddagger$\textbf{SACD increases bias on Qwen and Opus 4.5}---Qwen increased from 3.0mo to 6.0mo, Opus increased from 6.0mo to 8.1mo.}
 \label{tab:crossmodel-debiasing-sweep}
 \end{table}
 
 \textbf{Key findings:}
 \begin{enumerate}
-    \item \textbf{Context hygiene works on 4/5 models.} Llama 3.3, Mistral 7B, Qwen 72B, and Gemma 9B all show complete elimination of anchoring bias (0.0mo effect) with Sibony's context hygiene intervention.
+    \item \textbf{Context hygiene works on 5/6 models.} Llama 3.3, Mistral 7B, Qwen 72B, Gemma 9B, and Claude Opus 4.5 all show substantial reduction of anchoring bias with Sibony's context hygiene intervention (4 show complete elimination, Opus shows 80\% reduction).
     \item \textbf{Hermes 405B is resistant to Sibony techniques but responds to SACD.} Context hygiene and premortem showed no effect (6.0mo), but SACD achieved 86\% reduction (0.8mo effect). This is the opposite pattern from most models tested.
-    \item \textbf{SACD can \emph{increase} bias.} On Qwen 2.5, SACD doubled the anchoring effect from 3.0mo to 6.0mo. This demonstrates that debiasing interventions are not universally safe---they must be validated on the specific target model.
-    \item \textbf{Premortem showed mixed effectiveness.} Strong on Llama 3.3 (80\% reduction) and Qwen (100\%), but zero effect on Mistral, Hermes, and Gemma.
+    \item \textbf{SACD can \emph{increase} bias.} On Qwen 2.5, SACD doubled the anchoring effect from 3.0mo to 6.0mo. On Claude Opus 4.5, SACD increased bias by 35\% (from 6.0mo to 8.1mo). This demonstrates that debiasing interventions are not universally safe---they must be validated on the specific target model.
+    \item \textbf{Premortem showed mixed effectiveness.} Strong on Llama 3.3 (80\% reduction) and Qwen (100\%), moderate on Opus 4.5 (50\%), but zero effect on Mistral, Hermes, and Gemma.
     \item \textbf{No universal solution exists.} The optimal debiasing strategy is model-specific: Context Hygiene for most models, SACD for Hermes, either for Gemma.
 \end{enumerate}
 
 \textbf{Intervention-Model Compatibility Matrix:}
 \begin{itemize}
-    \item \textbf{Sibony-responsive:} Llama 3.3, Mistral 7B, Qwen 72B, Gemma 9B (4/5 models)
-    \item \textbf{SACD-responsive:} Hermes 405B, Gemma 9B (2/5 models)
+    \item \textbf{Sibony-responsive:} Llama 3.3, Mistral 7B, Qwen 72B, Gemma 9B, Claude Opus 4.5 (5/6 models)
+    \item \textbf{SACD-responsive:} Hermes 405B, Gemma 9B (2/6 models)
     \item \textbf{Both effective:} Gemma 9B, Llama 3.3
-    \item \textbf{SACD harmful:} Qwen 72B (doubles bias)
+    \item \textbf{SACD harmful:} Qwen 72B (doubles bias), Claude Opus 4.5 (+35\%)
     \item \textbf{Sibony ineffective:} Hermes 405B (no reduction)
 \end{itemize}
 
-This sweep reinforces our central finding: \textbf{debiasing effectiveness is model-specific}. Practitioners cannot assume that techniques validated on one model will transfer to another---even within the same model family (Hermes is a Llama derivative but shows opposite response patterns).
+This sweep reinforces our central finding: \textbf{debiasing effectiveness is model-specific}. Practitioners cannot assume that techniques validated on one model will transfer to another---even within the same model family (Hermes is a Llama derivative but shows opposite response patterns). Notably, SACD---designed specifically for cognitive debiasing---is counterproductive on 2 of 6 models tested (Qwen and Opus 4.5), while Sibony's simpler context hygiene technique shows broad effectiveness.
 
 \subsection{Iterative Self-Correction Was Effective in Our Tests}
 
