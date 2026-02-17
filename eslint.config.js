@@ -10,7 +10,7 @@ const typeCheckedTsOnly = tseslint.configs.recommendedTypeChecked.map((config) =
 
 export default [
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**'],
+    ignores: ['dist/**', 'coverage/**', 'node_modules/**', 'scripts/**'],
   },
   js.configs.recommended,
   ...typeCheckedTsOnly,
