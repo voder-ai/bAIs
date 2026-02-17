@@ -31,6 +31,9 @@ export default [
       'unicorn/prefer-module': 'off',
       'unicorn/no-null': 'off',
       'jsdoc/require-jsdoc': 'off',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      'no-empty': 'warn',
+      'no-useless-escape': 'warn',
     },
   },
   {
