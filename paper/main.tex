@@ -30,15 +30,15 @@
 \maketitle
 
 \begin{abstract}
-How do large language models (LLMs) respond to numeric context in judgment tasks? Prior work assumes LLMs exhibit anchoring bias similar to humans---adjusting estimates toward arbitrary reference points. We find the reality is more complex.
+How do large language models (LLMs) respond to numeric context in judgment tasks? Prior work assumes LLMs exhibit a single anchoring phenomenon---adjusting estimates toward arbitrary reference points. We find the reality is more complex.
 
-Testing 15 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct mechanisms} by which LLMs respond to numeric context:
+Testing 14 model deployments across 4 providers on judicial sentencing scenarios (n=1,700+ trials), we identify \textbf{three distinct mechanisms} by which LLMs respond to numeric context:
 
-\textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (10--14 months); with ANY anchor---high or low---responses compress to 3--11 months. Both anchors shift responses DOWN from baseline. (Opus 4.5, Llama 3.3, Haiku 4.5, o3-mini, MiniMax)
+\textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (10--14 months); with ANY anchor---high or low---responses compress to 3--11 months. Both anchors shift responses DOWN from baseline. (Opus 4.5, Llama 3.3, o3-mini, MiniMax)
 
 \textbf{2. Compliance}: Models copy the anchor value exactly, treating numeric context as instruction rather than reference. A 3-month anchor produces 3-month output; 9-month produces 9-month. This resembles ``perfect anchoring'' but reflects instruction-following, not cognitive bias. (GPT-4o via residential IP)
 
-\textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with Tversky-Kahneman anchoring-and-adjustment. Only this mechanism resembles human cognitive bias. (GPT-4o via datacenter, o1)
+\textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with classical anchoring-and-adjustment. (GPT-4o via datacenter, o1)
 
 This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognitive Debiasing) achieves up to 89\% reduction on true anchoring models but 0\% on compliance models. SACD targets true anchoring; it cannot address compliance (nothing to debias) or compression (may amplify severity).
 
@@ -53,7 +53,7 @@ This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognit
 \section{Introduction}
 %==============================================================================
 
-When humans encounter numeric values in decision-making contexts, these values can systematically bias subsequent judgments---the anchoring effect \citep{tversky1974}. Recent work has demonstrated that large language models (LLMs) also exhibit anchoring effects in various decision tasks \citep{binz2023,jones2022}. This has raised concerns about deploying LLMs in high-stakes domains like judicial sentencing, medical diagnosis, and financial forecasting.
+When numeric values appear in decision-making contexts, they can systematically bias subsequent judgments---the anchoring effect \citep{tversky1974}. Recent work has demonstrated that large language models (LLMs) exhibit anchoring effects in various decision tasks \citep{binz2023,jones2022}. This has raised concerns about deploying LLMs in high-stakes domains like judicial sentencing, medical diagnosis, and financial forecasting.
 
 But what if ``LLM anchoring'' is not a single phenomenon?
 
@@ -65,7 +65,7 @@ In this paper, we report a discovery: what researchers measure as ``anchoring bi
 
 \textbf{Compliance.} Some models treat the anchor as an instruction and copy it exactly. A 3-month anchor produces a 3-month response; a 9-month anchor produces 9 months. This appears as ``perfect anchoring'' in effect-size calculations but reflects instruction-following rather than cognitive bias.
 
-\textbf{True Anchoring.} Only a subset of models show classical Tversky-Kahneman anchoring: responses shift asymmetrically toward the anchor value, with the anchor serving as a starting point for insufficient adjustment.
+\textbf{True Anchoring.} Only a subset of models show classical anchoring-and-adjustment: responses shift asymmetrically toward the anchor value, with the anchor serving as a starting point for insufficient adjustment.
 
 This taxonomy has immediate practical implications:
 
@@ -117,7 +117,7 @@ Model & Provider & Access Path \\
 GPT-5.2, GPT-5.3 & OpenAI (Codex CLI) & Direct API \\
 GPT-4o & OpenRouter & Residential IP (Mac) \\
 GPT-4o & OpenRouter & Datacenter IP (Vultr) \\
-Opus 4.5, Opus 4.6, Haiku 4.5 & Anthropic & Direct API \\
+Opus 4.5, Opus 4.6 & Anthropic & Direct API \\
 Llama 3.3, Hermes 405B & OpenRouter & Datacenter \\
 MiniMax M2.5, o1, o3-mini & OpenRouter & Datacenter \\
 \bottomrule
@@ -160,7 +160,6 @@ GPT-4o (Copilot) & $12.7 \pm 7.4$ & $3.0 \pm 0.0$ & $9.0 \pm 0.0$ & 6.0mo & det.
 MiniMax M2.5 & $10.4 \pm 3.8$ & $5.1\ [4.8, 5.4]$ & $8.1\ [7.7, 8.4]$ & 3.0mo & $t(118)=10.2^{***}$ & 1.87 & Compression \\
 o3-mini & $12.0 \pm 0.0$ & $6.0 \pm 0.0$ & $10.9 \pm 1.2$ & 4.9mo & $t(29)=19.8^{***}$ & 6.10 & Compression \\
 GPT-4o (Vultr) & $20.4 \pm 3.2$ & $3.8\ [3.5, 4.0]$ & $8.7\ [8.4, 9.0]$ & 5.0mo & $t(143)=26.2^{***}$ & 4.22 & True Anchoring \\
-Haiku 4.5 & $12.0 \pm 0.0$ & $3.3\ [3.0, 3.8]$ & $7.1\ [6.6, 7.5]$ & 3.8mo & $t(37)=12.5^{***}$ & 3.96 & Compression \\
 o1 & $11.9 \pm 0.5$ & $6.1\ [5.3, 7.0]$ & $10.6\ [10.1, 11.1]$ & 4.5mo & $t(48)=8.4^{***}$ & 2.17 & True Anchoring \\
 Hermes 405B & $12.3 \pm 4.5$ & $5.3\ [4.7, 5.7]$ & $5.1\ [4.4, 5.8]$ & $-0.2$mo & $t(19)=-0.4$ & $-0.11$ & Reversal \\
 \bottomrule
@@ -180,7 +179,7 @@ Hermes 405B & $12.3 \pm 4.5$ & $5.3\ [4.7, 5.7]$ & $5.1\ [4.4, 5.8]$ & $-0.2$mo 
     \item Direction: Both anchors shift DOWN from baseline
 \end{itemize}
 
-Models exhibiting compression: Opus 4.5, Llama 3.3, Haiku 4.5, o3-mini, MiniMax M2.5
+Models exhibiting compression: Opus 4.5, Llama 3.3, o3-mini, MiniMax M2.5
 
 \textbf{Interpretation}: These models appear to treat the prosecutor's recommendation as a signal that ``something moderate is expected'' rather than as a reference point for adjustment.
 
@@ -201,7 +200,7 @@ Models exhibiting compliance: GPT-4o (Mac deployment)
 
 \subsection{Mechanism 3: True Anchoring}
 
-\textbf{Definition}: Responses shift asymmetrically toward the anchor value, consistent with Tversky-Kahneman anchoring-and-adjustment.
+\textbf{Definition}: Responses shift asymmetrically toward the anchor value, consistent with classical anchoring-and-adjustment.
 
 \textbf{Behavioral signature}:
 \begin{itemize}
@@ -220,14 +219,13 @@ Models exhibiting true anchoring: GPT-4o (Vultr deployment), o1
 \toprule
 Mechanism & Models & \% of Deployments \\
 \midrule
-Compression & 5 & 56\% \\
-Compliance & 1 & 11\% \\
-True Anchoring & 2 & 22\% \\
-Reversal & 1 & 7\% \\
-Zero Effect & 1 & 7\% \\
+Compression & 4 & 50\% \\
+Compliance & 1 & 12\% \\
+True Anchoring & 2 & 25\% \\
+Reversal & 1 & 12\% \\
 \bottomrule
 \end{tabular}
-\caption{Only 33\% show classical anchoring-and-adjustment}
+\caption{Only 25\% show classical anchoring-and-adjustment}
 \end{table}
 
 \subsection{Extended Range: High Anchor (24mo) Testing}
@@ -245,6 +243,7 @@ GPT-5.2 & 12.0 & 6.1 & 9.2 & \textbf{28.2} & Strong amplification \\
 Opus 4.5 & 13.2 & 6.0 & 8.0 & \textbf{18.0} & Partial susceptibility \\
 o1 & 11.9 & 6.1 & 10.6 & \textbf{17.4} & Partial susceptibility \\
 Llama 3.3 & 14.4 & 5.0 & 6.0 & \textbf{15.0} & Weak effect \\
+GPT-4o (Vultr) & 20.4 & 3.8 & 8.7 & \textbf{12.0} & Compression \\
 Opus 4.6 & 12.0 & 6.0 & 8.0 & \textbf{12.0} & Immune \\
 Hermes 405B & 12.3 & 5.3 & 5.1 & \textbf{12.0} & Immune \\
 \bottomrule
@@ -320,7 +319,6 @@ Model & Mechanism & Baseline Effect & SACD Effect & Change \\
 \midrule
 GPT-5.2 & True Anchoring & 4.4mo & 0.5mo & $-89\%$ $\checkmark$ \\
 Opus 4.5 & Compression & 2.0mo & 0.0mo & $-100\%$ $\checkmark$ \\
-Haiku 4.5 & Compression & 2.2mo & $-0.7$mo & $-132\%$ $\checkmark$ \\
 MiniMax & True Anchoring & 3.0mo & --- & --- \\
 o3-mini & True Anchoring & 5.1mo & --- & --- \\
 \bottomrule
