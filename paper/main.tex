@@ -848,7 +848,7 @@ This sweep reinforces our central finding: \textbf{debiasing effectiveness is mo
 \subsection{Full Iterative SACD vs Single-Pass: Critical Difference}
 \label{sec:full-sacd}
 
-Our initial experiments used a \textbf{single-pass} SACD variant. To address reviewer concerns about comparability to Lyu et al.'s full protocol, we ran the \textbf{complete iterative SACD} (up to 3 iterations until debiasing converges) on four models:
+Our initial experiments used a \textbf{single-pass} SACD variant. To address reviewer concerns about comparability to Lyu et al.'s full protocol, we ran the \textbf{complete iterative SACD} (up to 3 iterations until debiasing converges) on five models:
 
 \begin{table}[H]
 \centering
@@ -858,11 +858,12 @@ Model & Single-Pass Effect & Full SACD Effect & Improvement \\
 \midrule
 GPT-4o (Copilot) & 3.30 mo (45\% $\downarrow$) & \textbf{-0.25 mo} (96\% $\downarrow$) & 2.1$\times$ better \\
 Claude Opus 4.5 & 8.1 mo (+35\% $\uparrow$) & \textbf{0.03 mo} (99\% $\downarrow$) & Fixed \\
+Claude Opus 4.6 & ---$^\ddagger$ & \textbf{-1.13 mo} (>100\% $\downarrow$) & Reversed \\
 Hermes 405B & 0.8 mo (86\% $\downarrow$) & \textbf{-1.0 mo} (>100\% $\downarrow$) & Even better \\
 Llama 3.3 & Pathological$^\dagger$ & \textbf{1.03 mo} (83\% $\downarrow$) & Fixed \\
 \bottomrule
 \end{tabular}
-\caption{Full iterative SACD vs single-pass SACD ($n=30$ per anchor condition, temp=0). $^\dagger$Single-pass SACD on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely.}
+\caption{Full iterative SACD vs single-pass SACD ($n=30$ per anchor condition, temp=0). $^\dagger$Single-pass SACD on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely. $^\ddagger$Single-pass not run; Opus 4.6 baseline effect was only 1.27mo, so full SACD achieved over-correction (reversed anchoring direction).}
 \label{tab:full-sacd}
 \end{table}
 
