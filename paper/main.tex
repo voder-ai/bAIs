@@ -70,7 +70,7 @@ In this paper, we report a discovery: what researchers measure as ``anchoring bi
 This taxonomy has immediate practical implications:
 
 \begin{itemize}
-    \item \textbf{SACD works on true anchoring (up to 89\%)} but fails on compliance (0\%) and may backfire on compression (+66\% severity).
+    \item \textbf{SACD works on true anchoring (up to 89\%)} but fails on compliance (0\%) and shows mixed results on compression models.
     \item \textbf{The same model shows different mechanisms depending on deployment.} GPT-4o via residential IP shows compliance; GPT-4o via datacenter shows true anchoring.
     \item \textbf{``Model name'' is insufficient for reproducibility.} Researchers must specify deployment path, provider, and access method.
 \end{itemize}
@@ -304,7 +304,7 @@ Mechanism & SACD Effect & Change & Explanation \\
 \midrule
 True Anchoring & up to 89\% $\downarrow$ & Success & SACD targets the right mechanism \\
 Compliance & 0\% & No effect & Nothing to debias---model copies anchor \\
-Compression & +66\% severity & Backfire & SACD amplifies compression effect \\
+Compression & varies & Mixed & SACD may reduce or amplify compression \\
 \bottomrule
 \end{tabular}
 \caption{SACD effectiveness depends on mechanism}
@@ -320,7 +320,7 @@ Model & Mechanism & Baseline Effect & SACD Effect & Change \\
 \midrule
 GPT-5.2 & True Anchoring & 4.4mo & 0.5mo & $-89\%$ $\checkmark$ \\
 Opus 4.5 & Compression & 2.0mo & 0.0mo & $-100\%$ $\checkmark$ \\
-Haiku 4.5 & Compression & 2.2mo & --- & $+66\%$ severity $\times$ \\
+Haiku 4.5 & Compression & 2.2mo & $-0.7$mo & $-132\%$ $\checkmark$ \\
 MiniMax & True Anchoring & 3.0mo & --- & --- \\
 o3-mini & True Anchoring & 5.1mo & --- & --- \\
 \bottomrule
