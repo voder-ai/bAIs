@@ -50,3 +50,11 @@
 {"model":"openai/o1","conditionType":"baseline","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"timestamp":"2026-02-17T04:07:22.394Z"}
 {"model":"openai/o1","conditionType":"baseline","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"timestamp":"2026-02-17T04:07:37.012Z"}
 {"model":"openai/o1","conditionType":"baseline","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":12,"timestamp":"2026-02-17T04:08:04.774Z"}
+{"conditionType":"baseline","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"model":"openai/o1","timestamp":"2026-02-17T08:59:07.928Z","topup":true}
+{"conditionType":"baseline","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"model":"openai/o1","timestamp":"2026-02-17T08:59:14.251Z","topup":true}
+{"conditionType":"baseline","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"model":"openai/o1","timestamp":"2026-02-17T08:59:29.404Z","topup":true}
+{"conditionType":"baseline","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"model":"openai/o1","timestamp":"2026-02-17T08:59:36.508Z","topup":true}
+{"conditionType":"baseline","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"model":"openai/o1","timestamp":"2026-02-17T08:59:43.555Z","topup":true}
+{"conditionType":"baseline","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"model":"openai/o1","timestamp":"2026-02-17T08:59:52.932Z","topup":true}
+{"conditionType":"baseline","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"model":"openai/o1","timestamp":"2026-02-17T09:00:01.352Z","topup":true}
+{"conditionType":"baseline","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"model":"openai/o1","timestamp":"2026-02-17T09:00:08.164Z","topup":true}

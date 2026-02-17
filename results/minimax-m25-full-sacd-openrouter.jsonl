@@ -53,3 +53,8 @@
 {"model":"minimax/minimax-m2.5","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"iterations":1,"timestamp":"2026-02-17T07:06:54.623Z"}
 {"model":"minimax/minimax-m2.5","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"iterations":1,"timestamp":"2026-02-17T07:08:13.758Z"}
 {"model":"minimax/minimax-m2.5","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"iterations":1,"timestamp":"2026-02-17T07:08:30.378Z"}
+{"conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"model":"minimax/minimax-m2.5","timestamp":"2026-02-17T08:58:00.976Z","topup":true}
+{"conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"model":"minimax/minimax-m2.5","timestamp":"2026-02-17T08:58:08.678Z","topup":true}
+{"conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"model":"minimax/minimax-m2.5","timestamp":"2026-02-17T08:58:16.807Z","topup":true}
+{"conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"model":"minimax/minimax-m2.5","timestamp":"2026-02-17T08:58:31.373Z","topup":true}
+{"conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"model":"minimax/minimax-m2.5","timestamp":"2026-02-17T08:58:38.219Z","topup":true}

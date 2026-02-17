@@ -55,3 +55,6 @@
 {"model":"openai/o3-mini","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"iterations":1,"timestamp":"2026-02-17T06:28:52.761Z"}
 {"model":"openai/o3-mini","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"iterations":1,"timestamp":"2026-02-17T06:29:01.839Z"}
 {"model":"openai/o3-mini","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"iterations":1,"timestamp":"2026-02-17T06:29:21.638Z"}
+{"conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"model":"openai/o3-mini","timestamp":"2026-02-17T08:58:43.722Z","topup":true}
+{"conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"model":"openai/o3-mini","timestamp":"2026-02-17T08:58:52.308Z","topup":true}
+{"conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"model":"openai/o3-mini","timestamp":"2026-02-17T08:58:59.880Z","topup":true}
