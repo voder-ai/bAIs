@@ -148,22 +148,22 @@ The critical test for distinguishing mechanisms is the \textbf{no-anchor control
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccccccc}
 \toprule
-Model & Low (3mo) & High (9mo) & Effect & $t$-test & $d$ & Pattern \\
+Model & No-Anchor & Low (3mo) & High (9mo) & Effect & $t$-test & $d$ & Pattern \\
 \midrule
-Opus 4.5 & $6.0 \pm 0.0$ & $8.0 \pm 0.0$ & 2.0mo & det. & $\infty$ & Compression \\
-Llama 3.3 & $5.0\ [4.2, 5.7]$ & $6.0\ [6.0, 6.0]$ & 1.0mo & --- & --- & Compression \\
-GPT-4o (Copilot) & $3.0 \pm 0.0$ & $9.0 \pm 0.0$ & 6.0mo & det. & $\infty$ & Compliance \\
-MiniMax M2.5 & $5.9\ [5.3, 6.9]$ & --- & --- & --- & --- & Compliance$^\dagger$ \\
-o3-mini & $6.0 \pm 0.0$ & --- & --- & det. & --- & Compliance$^\dagger$ \\
-GPT-4o (Vultr) & $3.8\ [3.5, 4.0]$ & $8.7\ [8.4, 9.0]$ & 5.0mo & $t(143)=26.2^{***}$ & 4.22 & True Anchoring \\
-Haiku 4.5 & $3.3\ [3.0, 3.8]$ & $7.1\ [6.6, 7.5]$ & 3.8mo & $t(37)=12.5^{***}$ & 3.96 & True Anchoring \\
-o1 & $6.1\ [5.3, 7.0]$ & $10.6\ [10.1, 11.1]$ & 4.5mo & $t(48)=8.4^{***}$ & 2.17 & True Anchoring \\
-Hermes 405B & $5.3\ [4.7, 5.7]$ & $5.1\ [4.4, 5.8]$ & $-0.2$mo & $t(19)=-0.4$ & $-0.11$ & Reversal \\
+Opus 4.5 & $13.2 \pm 0.0$ & $6.0 \pm 0.0$ & $8.0 \pm 0.0$ & 2.0mo & det. & $\infty$ & Compression \\
+Llama 3.3 & $14.4 \pm 2.1$ & $5.0\ [4.2, 5.7]$ & $6.0\ [6.0, 6.0]$ & 1.0mo & --- & --- & Compression \\
+GPT-4o (Copilot) & $12.7 \pm 1.8$ & $3.0 \pm 0.0$ & $9.0 \pm 0.0$ & 6.0mo & det. & $\infty$ & Compliance \\
+MiniMax M2.5 & --- & $5.9\ [5.3, 6.9]$ & --- & --- & --- & --- & Compliance$^\dagger$ \\
+o3-mini & --- & $6.0 \pm 0.0$ & --- & --- & det. & --- & Compliance$^\dagger$ \\
+GPT-4o (Vultr) & $20.4 \pm 3.2$ & $3.8\ [3.5, 4.0]$ & $8.7\ [8.4, 9.0]$ & 5.0mo & $t(143)=26.2^{***}$ & 4.22 & True Anchoring \\
+Haiku 4.5 & --- & $3.3\ [3.0, 3.8]$ & $7.1\ [6.6, 7.5]$ & 3.8mo & $t(37)=12.5^{***}$ & 3.96 & True Anchoring \\
+o1 & --- & $6.1\ [5.3, 7.0]$ & $10.6\ [10.1, 11.1]$ & 4.5mo & $t(48)=8.4^{***}$ & 2.17 & True Anchoring \\
+Hermes 405B & $12.3 \pm 4.5$ & $5.3\ [4.7, 5.7]$ & $5.1\ [4.4, 5.8]$ & $-0.2$mo & $t(19)=-0.4$ & $-0.11$ & Reversal \\
 \bottomrule
 \end{tabular}
-\caption{Mechanism classification with statistical tests. Values: mean $\pm$ SD or mean [95\% CI]. Effect = High $-$ Low. Significance: $^{***}p < 0.001$. ``det.''\ = deterministic (SD=0 at temperature=0). $^\dagger$Classification provisional---high anchor data incomplete.}
+\caption{Mechanism classification with no-anchor baseline and statistical tests. Values: mean $\pm$ SD or mean [95\% CI]. Effect = High $-$ Low. Significance: $^{***}p < 0.001$. ``det.''\ = deterministic (SD=0 at temperature=0). $^\dagger$Classification provisional---high anchor data incomplete. --- = data not collected.}
 \label{tab:mechanisms}
 \end{table}
 
