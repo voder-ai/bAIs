@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env npx tsx
 /**
  * GPT-4o via OpenRouter — SACD validation

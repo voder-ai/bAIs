@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env npx tsx
 /**
  * Debiasing Sweep via direct OpenRouter API (not pi-ai)

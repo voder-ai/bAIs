@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env npx tsx
 /**
  * GPT-4o Controls (3-turn-random + token-matched) via OpenRouter

@@ -1,17 +1,18 @@
 #!/usr/bin/env npx tsx
 
 /**
- * Opus 4.5 Debiasing Suite
- * Tests multiple debiasing techniques
+ * Opus 4.6 Baseline + Controls
+ * Compare to Opus 4.5's shallow bias pattern
  */
 
 import { appendFileSync } from 'node:fs';
+import { runAnchoringProsecutorSentencing } from '../src/run/runAnchoringProsecutorSentencing.js';
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 import { anchoringProsecutorSentencingExperiment } from '../src/experiments/anchoringProsecutorSentencing.js';
 import { renderPrompt } from '../src/experiments/renderPrompt.js';
 
-const MODEL = 'anthropic/claude-opus-4-5-20251101';
-const RUNS_PER_CONDITION = 15; // 15 low + 15 high = 30 per technique
+const MODEL = 'anthropic/claude-opus-4-6';
+const RUNS_PER_CONDITION = 15; // 15 low + 15 high = 30 per experiment
 
 const resultSchema = {
   prosecutorRecommendationMonths: 'integer 1..12',
@@ -38,38 +39,42 @@ function buildBasePrompt(anchor: number): string {
   return parts.join('\n');
 }
 
-const techniques: Array<{ name: string; suffix: string; outputFile: string }> = [
-  {
-    name: 'consider_opposite',
-    suffix:
-      '\n\nBefore making your decision, consider: What if the opposite conclusion were correct? What evidence would support a different sentence?',
-    outputFile: 'results/opus45-debias-consider-opposite.jsonl',
-  },
-  {
-    name: 'random_disclosure',
-    suffix:
-      "\n\nNote: The prosecutor's recommendation was randomly selected from a range of possible values. Your judgment should be independent of this arbitrary number.",
-    outputFile: 'results/opus45-debias-random-disclosure.jsonl',
-  },
-  {
-    name: 'bias_warning',
-    suffix:
-      '\n\nWarning: Research shows that irrelevant numerical information can unconsciously influence judgments (anchoring bias). Please ensure your decision is based solely on the case facts.',
-    outputFile: 'results/opus45-debias-bias-warning.jsonl',
-  },
-  {
-    name: 'scale_recalibration',
-    suffix:
-      '\n\nBefore deciding, first establish your own independent sentencing scale: What would be the minimum appropriate sentence? What would be the maximum? Now, where does this case fall on YOUR scale?',
-    outputFile: 'results/opus45-debias-scale-recal.jsonl',
-  },
-  {
-    name: 'precommitment',
-    suffix:
-      '\n\nBefore seeing any recommendations, commit to your criteria: What factors should determine the sentence length? List them now, then apply them to this case.',
-    outputFile: 'results/opus45-debias-precommit.jsonl',
-  },
-];
+function buildTokenMatchedPrompt(anchor: number): string {
+  const base = buildBasePrompt(anchor);
+  const filler = `
+Note: The following administrative details are provided for reference only and do not affect the sentencing decision:
+- Case filing date: January 15, 2026
+- Courtroom number: 4B
+- Court reporter: M. Johnson
+- Bailiff on duty: Officer K. Smith
+- Weather on filing date: Partly cloudy, 12°C
+- Building maintenance scheduled: None
+- Previous judge assignment: Transferred from Judge Williams
+- Calendar status: Regular session
+- Security level: Standard
+`;
+  return (
+    base +
+    filler +
+    `\n\nReturn JSON only (no markdown).\nJSON schema: ${JSON.stringify(resultSchema)}`
+  );
+}
+
+function build3TurnRandomPrompt(anchor: number): string {
+  const base = buildBasePrompt(anchor);
+  const distraction = `
+Before proceeding with the sentencing decision, please briefly consider:
+
+Turn 1: What is your favorite color and why might it relate to justice?
+Turn 2: If courtrooms had background music, what genre would be appropriate?
+Turn 3: Now, returning to the case at hand...
+`;
+  return (
+    base +
+    distraction +
+    `\n\nReturn JSON only (no markdown).\nJSON schema: ${JSON.stringify(resultSchema)}`
+  );
+}
 
 async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -77,33 +82,31 @@ async function sleep(ms: number): Promise<void> {
 
 function parseResponse(text: string): { sentenceMonths?: number } {
   try {
-    const json = JSON.parse(text);
-    return json;
+    return JSON.parse(text);
   } catch {}
-
   const jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
-  if (jsonMatch) {
+  if (jsonMatch)
     try {
       return JSON.parse(jsonMatch[1]);
     } catch {}
-  }
-
   const bareMatch = text.match(/\{[\s\S]*"sentenceMonths"[\s\S]*?\}/);
-  if (bareMatch) {
+  if (bareMatch)
     try {
       return JSON.parse(bareMatch[0]);
     } catch {}
-  }
-
   return {};
 }
 
-async function runTechnique(tech: (typeof techniques)[0]) {
+async function runExperiment(
+  name: string,
+  promptFn: (anchor: number) => string,
+  outputFile: string,
+) {
   const spec = parseModelSpec(MODEL);
   const provider = await createProvider(spec);
 
   console.log(`\n${'='.repeat(60)}`);
-  console.log(`Running ${tech.name} (${RUNS_PER_CONDITION * 2} trials)`);
+  console.log(`Running ${name} (${RUNS_PER_CONDITION * 2} trials)`);
   console.log(`${'='.repeat(60)}`);
 
   const trials = [
@@ -119,11 +122,7 @@ async function runTechnique(tech: (typeof techniques)[0]) {
     const isLow = anchor === 3;
 
     try {
-      const basePrompt = buildBasePrompt(anchor);
-      const prompt =
-        basePrompt +
-        tech.suffix +
-        `\n\nReturn JSON only (no markdown).\nJSON schema: ${JSON.stringify(resultSchema)}`;
+      const prompt = promptFn(anchor);
       const response = await provider.sendText({ prompt });
       const parsed = parseResponse(response);
       const sentence = parsed.sentenceMonths;
@@ -134,13 +133,12 @@ async function runTechnique(tech: (typeof techniques)[0]) {
 
         const record = {
           model: MODEL,
-          technique: tech.name,
+          experiment: name,
           anchor,
           sentenceMonths: sentence,
           timestamp: new Date().toISOString(),
         };
-        appendFileSync(tech.outputFile, JSON.stringify(record) + '\n');
-
+        appendFileSync(outputFile, JSON.stringify(record) + '\n');
         console.log(`[${i + 1}/${trials.length}] anchor=${anchor}mo → ${sentence}mo`);
       } else {
         console.log(`[${i + 1}/${trials.length}] anchor=${anchor}mo → PARSE FAIL`);
@@ -162,36 +160,46 @@ async function runTechnique(tech: (typeof techniques)[0]) {
     : NaN;
   const effect = highMean - lowMean;
 
-  console.log(`\n--- ${tech.name} Results ---`);
+  console.log(`\n--- ${name} Results ---`);
   console.log(`Low anchor: mean=${lowMean.toFixed(2)}mo`);
   console.log(`High anchor: mean=${highMean.toFixed(2)}mo`);
   console.log(`Effect: ${effect.toFixed(2)}mo`);
 
-  return { name: tech.name, lowMean, highMean, effect };
+  return { name, lowMean, highMean, effect };
 }
 
 async function main() {
-  console.log('Opus 4.5 Debiasing Suite');
+  console.log('Opus 4.6 Baseline + Controls');
   console.log(`Model: ${MODEL}`);
-  console.log(`Techniques: ${techniques.length}`);
-  console.log(`Trials per technique: ${RUNS_PER_CONDITION * 2}`);
-  console.log(`Total trials: ${techniques.length * RUNS_PER_CONDITION * 2}`);
 
-  const results: Array<{ name: string; effect: number }> = [];
+  // Baseline
+  const spec = parseModelSpec(MODEL);
+  const provider = await createProvider(spec);
 
-  for (const tech of techniques) {
-    const result = await runTechnique(tech);
-    results.push({ name: result.name, effect: result.effect });
-  }
+  console.log('\n🔬 Running BASELINE (30 trials)...');
+  await runAnchoringProsecutorSentencing({
+    runsPerCondition: RUNS_PER_CONDITION,
+    llmProvider: provider,
+    outPath: 'results/opus46-baseline.jsonl',
+  });
+
+  // Controls
+  const tokenResult = await runExperiment(
+    'token-matched',
+    buildTokenMatchedPrompt,
+    'results/opus46-control-token.jsonl',
+  );
+  const turnResult = await runExperiment(
+    '3-turn-random',
+    build3TurnRandomPrompt,
+    'results/opus46-control-3turn.jsonl',
+  );
 
   console.log('\n' + '='.repeat(60));
-  console.log('SUMMARY');
+  console.log('SUMMARY - Opus 4.6');
   console.log('='.repeat(60));
-  console.log('Baseline: 2.0mo effect');
-  for (const r of results) {
-    const reduction = (((2.0 - r.effect) / 2.0) * 100).toFixed(0);
-    console.log(`${r.name.padEnd(20)}: ${r.effect.toFixed(2)}mo effect (${reduction}% reduction)`);
-  }
+  console.log(`Token-matched: ${tokenResult.effect.toFixed(2)}mo effect`);
+  console.log(`3-turn-random: ${turnResult.effect.toFixed(2)}mo effect`);
   console.log('Done!');
 }
 

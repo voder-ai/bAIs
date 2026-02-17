@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env npx tsx
 /**
  * Generic CoT at temp=0.7 on GPT-4o

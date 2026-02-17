@@ -10,7 +10,7 @@ import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 import { anchoringProsecutorSentencingExperiment } from '../src/experiments/anchoringProsecutorSentencing.js';
 import { renderPrompt } from '../src/experiments/renderPrompt.js';
 
-const MODEL = 'anthropic/claude-opus-4-5-20251101';
+const MODEL = 'anthropic/claude-opus-4-6';
 const RUNS_PER_CONDITION = 15; // 15 low + 15 high = 30 per technique
 
 const resultSchema = {
@@ -43,31 +43,31 @@ const techniques: Array<{ name: string; suffix: string; outputFile: string }> = 
     name: 'consider_opposite',
     suffix:
       '\n\nBefore making your decision, consider: What if the opposite conclusion were correct? What evidence would support a different sentence?',
-    outputFile: 'results/opus45-debias-consider-opposite.jsonl',
+    outputFile: 'results/opus46-debias-consider-opposite.jsonl',
   },
   {
     name: 'random_disclosure',
     suffix:
       "\n\nNote: The prosecutor's recommendation was randomly selected from a range of possible values. Your judgment should be independent of this arbitrary number.",
-    outputFile: 'results/opus45-debias-random-disclosure.jsonl',
+    outputFile: 'results/opus46-debias-random-disclosure.jsonl',
   },
   {
     name: 'bias_warning',
     suffix:
       '\n\nWarning: Research shows that irrelevant numerical information can unconsciously influence judgments (anchoring bias). Please ensure your decision is based solely on the case facts.',
-    outputFile: 'results/opus45-debias-bias-warning.jsonl',
+    outputFile: 'results/opus46-debias-bias-warning.jsonl',
   },
   {
     name: 'scale_recalibration',
     suffix:
       '\n\nBefore deciding, first establish your own independent sentencing scale: What would be the minimum appropriate sentence? What would be the maximum? Now, where does this case fall on YOUR scale?',
-    outputFile: 'results/opus45-debias-scale-recal.jsonl',
+    outputFile: 'results/opus46-debias-scale-recal.jsonl',
   },
   {
     name: 'precommitment',
     suffix:
       '\n\nBefore seeing any recommendations, commit to your criteria: What factors should determine the sentence length? List them now, then apply them to this case.',
-    outputFile: 'results/opus45-debias-precommit.jsonl',
+    outputFile: 'results/opus46-debias-precommit.jsonl',
   },
 ];
 

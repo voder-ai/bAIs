@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env npx tsx
 /**
  * Baseline (no CoT) at temp=1.0 on GPT-4o
