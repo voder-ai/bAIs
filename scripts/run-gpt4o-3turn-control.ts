@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * 3-turn CoT control on GPT-4o
  * Replicates the reasoning structure without case-relevant content

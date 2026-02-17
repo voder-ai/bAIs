@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Generic CoT at temp=0.7 on GPT-4o
  * Purpose: Test if debiasing holds at non-zero temperature

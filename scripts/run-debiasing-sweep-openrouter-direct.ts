@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Debiasing Sweep via direct OpenRouter API (not pi-ai)
  * Models: Llama 3.3, Mistral, Hermes 405B, Qwen, Gemma

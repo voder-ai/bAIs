@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * GPT-4o Full SACD (iterative) via OpenRouter
  */

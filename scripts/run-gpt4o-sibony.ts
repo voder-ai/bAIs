@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * GPT-4o Sibony Debiasing Experiments
  * Run context hygiene + premortem on GPT-4o for comparison with GPT-5.2

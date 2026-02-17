@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Random elaboration control on GPT-4o (biased model)
  * Purpose: Test if multi-turn structure alone debiases, confirming mechanism

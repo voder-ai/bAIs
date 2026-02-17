@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * GPT-4o baseline via OpenRouter (not GitHub Copilot)
  * To eliminate the API confound concern

@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Structure-matched control for SACD
  * Same 3-iteration multi-turn structure, but irrelevant content (grammar/style analysis)

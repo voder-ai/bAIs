@@ -1,5 +1,5 @@
-// @ts-nocheck
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Token-matched random elaboration control on GPT-4o
  * Two-turn approach (consistent with Haiku methodology)
