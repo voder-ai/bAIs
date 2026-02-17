@@ -1020,6 +1020,66 @@ List 3 specific ways your judgment might have been influenced by irrelevant fact
 Be specific about what might have pulled your judgment in a particular direction.
 \end{quote}
 
+\subsection{SACD Iterative Prompts}
+
+SACD (Self-Adaptive Cognitive Debiasing) uses a three-step iterative loop. Each step uses a specific prompt:
+
+\textbf{Step 1: Bias Determination.} Analyzes the task prompt for cognitive biases:
+\begin{quote}
+\small
+You are a cognitive bias analyst. Your task is to identify cognitive biases in decision-making prompts.
+
+IMPORTANT: Cognitive biases are systematic patterns of deviation from rational judgment. Common examples include:
+- Anchoring bias: over-relying on the first piece of information encountered
+- Bandwagon bias: following what others do/think
+- Loss aversion: preferring to avoid losses over equivalent gains
+- Framing effect: being influenced by how information is presented
+
+Analyze the following prompt that will be given to a decision-maker:
+
+---PROMPT START---
+[task prompt inserted here]
+---PROMPT END---
+
+Break this prompt into sentences. For each sentence, determine if it contains a cognitive bias that could affect rational decision-making.
+
+Format: SENTENCE 1: [text] / BIASED: [YES/NO] ...
+At the end, state: BIAS\_DETECTED: [YES/NO]
+\end{quote}
+
+\textbf{Step 2: Bias Analysis.} For flagged sentences, identifies bias type:
+\begin{quote}
+\small
+You identified the following sentences as potentially biased:
+
+[flagged sentences inserted here]
+
+For each biased sentence, analyze what TYPE of cognitive bias is present.
+Common bias types: anchoring, bandwagon, loss aversion, framing, confirmation, availability, hindsight.
+
+Format: SENTENCE: [text] / BIAS\_TYPE: [type] / REASON: [explanation]
+\end{quote}
+
+\textbf{Step 3: Cognitive Debiasing.} Rewrites prompt to remove identified biases:
+\begin{quote}
+\small
+You are rewriting a prompt to remove cognitive biases while preserving the essential task.
+
+ORIGINAL PROMPT: [task prompt]
+
+IDENTIFIED BIASES: [bias analysis from step 2]
+
+RULES:
+1. Rewrite ONLY the biased sentences
+2. Preserve: entity names, numerical facts, core task requirements
+3. Remove: anchoring cues, leading language, irrelevant numerical references
+4. The decision-maker should still be able to complete the same task
+
+Provide the DEBIASED PROMPT:
+\end{quote}
+
+The loop iterates (max 3 times) until no biases are detected or maximum iterations reached. The final debiased prompt is then used for the sentencing task.
+
 \subsection{DeFrame Intervention}
 
 For framing experiments, the DeFrame condition added alternative-frame exposure before the decision:
