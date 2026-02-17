@@ -1,0 +1,53 @@
+{
+  "requestedModel": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+  "nPerCondition": 5,
+  "maxAttemptsFactor": 8,
+  "startedAt": "2026-02-12T03:08:24.692Z",
+  "completedAt": "2026-02-12T03:34:31.542Z",
+  "route": "direct-openrouter",
+  "targetValidRows": 30,
+  "integrity": {
+    "rows": 224,
+    "validRows": 19,
+    "uniqueReturnedModels": ["nvidia/llama-3.1-nemotron-ultra-253b-v1"],
+    "uniqueProviders": ["Nebius"]
+  },
+  "cellSummary": {
+    "original:low-anchor-3mo": {
+      "valid": 5,
+      "target": 5,
+      "attempts": 24,
+      "maxTries": 40
+    },
+    "original:high-anchor-9mo": {
+      "valid": 4,
+      "target": 5,
+      "attempts": 40,
+      "maxTries": 40
+    },
+    "casual:low-anchor-3mo": {
+      "valid": 3,
+      "target": 5,
+      "attempts": 40,
+      "maxTries": 40
+    },
+    "casual:high-anchor-9mo": {
+      "valid": 3,
+      "target": 5,
+      "attempts": 40,
+      "maxTries": 40
+    },
+    "structured:low-anchor-3mo": {
+      "valid": 3,
+      "target": 5,
+      "attempts": 40,
+      "maxTries": 40
+    },
+    "structured:high-anchor-9mo": {
+      "valid": 1,
+      "target": 5,
+      "attempts": 40,
+      "maxTries": 40
+    }
+  }
+}

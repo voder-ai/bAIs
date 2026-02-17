@@ -8,10 +8,10 @@ Determine whether models show inflated anchoring effects on classic Englich scen
 
 ### GPT-4o Results
 
-| Scenario Type | Low Anchor | High Anchor | Effect | % of Spread |
-|---------------|------------|-------------|--------|-------------|
-| Classic (shoplifting) | 3.7mo | 8.7mo | 5.0mo | 83% |
-| Novel (various crimes) | 7.7mo | 10.1mo | 2.4mo | 40% |
+| Scenario Type          | Low Anchor | High Anchor | Effect | % of Spread |
+| ---------------------- | ---------- | ----------- | ------ | ----------- |
+| Classic (shoplifting)  | 3.7mo      | 8.7mo       | 5.0mo  | 83%         |
+| Novel (various crimes) | 7.7mo      | 10.1mo      | 2.4mo  | 40%         |
 
 ### Effect Size Comparison
 
@@ -36,6 +36,7 @@ Determine whether models show inflated anchoring effects on classic Englich scen
 ## Conclusion
 
 The anchoring effect generalizes to novel scenarios, confirming it is not purely an artifact of memorization. However, the reduced effect size (40% vs 83%) suggests either:
+
 - Some contamination-driven inflation in classic scenarios, OR
 - The classic Englich paradigm is particularly effective at inducing anchoring
 

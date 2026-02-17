@@ -8,10 +8,10 @@ We set out to investigate anchoring bias in LLMs and discovered something more n
 
 **Mechanism signatures:**
 
-| Mechanism | No-Anchor → Low | No-Anchor → High | SACD Effect |
-|-----------|-----------------|------------------|-------------|
-| Compression | ↓↓ (large drop) | ↓ (smaller drop) | 0% or negative |
-| Compliance | → anchor exactly | → anchor exactly | 0% |
+| Mechanism      | No-Anchor → Low   | No-Anchor → High  | SACD Effect      |
+| -------------- | ----------------- | ----------------- | ---------------- |
+| Compression    | ↓↓ (large drop)   | ↓ (smaller drop)  | 0% or negative   |
+| Compliance     | → anchor exactly  | → anchor exactly  | 0%               |
 | True Anchoring | ↓ (toward anchor) | ↑ (toward anchor) | 60-89% reduction |
 
 ### 5.2 Implications for AI Safety
@@ -51,6 +51,7 @@ These pathways may be differentially active based on model architecture, trainin
 **Implications for bias research:**
 
 Future work on LLM biases should:
+
 1. Test for mechanism type before claiming bias presence
 2. Report no-anchor baselines alongside anchored conditions
 3. Validate debiasing effectiveness per-mechanism, not aggregate

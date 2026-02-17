@@ -8,13 +8,13 @@ Figure 2. Decision tree characterizing model responses to anchoring bias and SAC
 
 **Failure Mode Summary Table:**
 
-| Pattern | Example Models | Mechanism | SACD Effectiveness |
-|---------|----------------|-----------|-------------------|
-| Fixed Default | Hermes 405B | No anchoring mechanism | N/A (0mo baseline) |
-| Full Susceptibility | GPT-5.2, Opus 4.5 | Standard anchoring + correction | 89-99% reduction |
-| Amplification | Haiku 4.5 | Two-layer: base + amplification | Partial (~40%?) |
-| Compliance | MiniMax, o3-mini | Copies anchor directly | 0% |
-| Rationalization | o1 | Reasons + stays biased | +7% (worse) |
+| Pattern             | Example Models    | Mechanism                       | SACD Effectiveness |
+| ------------------- | ----------------- | ------------------------------- | ------------------ |
+| Fixed Default       | Hermes 405B       | No anchoring mechanism          | N/A (0mo baseline) |
+| Full Susceptibility | GPT-5.2, Opus 4.5 | Standard anchoring + correction | 89-99% reduction   |
+| Amplification       | Haiku 4.5         | Two-layer: base + amplification | Partial (~40%?)    |
+| Compliance          | MiniMax, o3-mini  | Copies anchor directly          | 0%                 |
+| Rationalization     | o1                | Reasons + stays biased          | +7% (worse)        |
 
 ---
 

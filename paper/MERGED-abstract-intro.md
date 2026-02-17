@@ -72,11 +72,11 @@ Our findings suggest that LLM behavior under numeric context is richer and more 
 
 ## Comparison: Original vs Merged
 
-| Element | Original Paper | Merged Draft |
-|---------|---------------|--------------|
-| Title | "Anchoring Bias in LLMs: Debiasing Interventions..." | "Three Mechanisms of Numeric Context Influence..." |
-| Opening | "Can we debias LLM anchoring?" | "What if LLM anchoring is not a single phenomenon?" |
-| Core claim | LLMs show anchoring, SACD helps some | LLMs show 3 mechanisms, explains everything |
-| SACD variance | Unexplained model-specific effect | Central finding (mechanism-dependent) |
-| Provider variance | Interesting anomaly | Key evidence for taxonomy |
-| Structure | Debiasing focus | Discovery focus |
+| Element           | Original Paper                                       | Merged Draft                                        |
+| ----------------- | ---------------------------------------------------- | --------------------------------------------------- |
+| Title             | "Anchoring Bias in LLMs: Debiasing Interventions..." | "Three Mechanisms of Numeric Context Influence..."  |
+| Opening           | "Can we debias LLM anchoring?"                       | "What if LLM anchoring is not a single phenomenon?" |
+| Core claim        | LLMs show anchoring, SACD helps some                 | LLMs show 3 mechanisms, explains everything         |
+| SACD variance     | Unexplained model-specific effect                    | Central finding (mechanism-dependent)               |
+| Provider variance | Interesting anomaly                                  | Key evidence for taxonomy                           |
+| Structure         | Debiasing focus                                      | Discovery focus                                     |

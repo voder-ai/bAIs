@@ -20,12 +20,12 @@ Our results have implications for AI safety: practitioners cannot assume a singl
 
 ## Key Changes from Original
 
-| Aspect | Original | Reframed |
-|--------|----------|----------|
-| Core claim | LLMs show anchoring bias | LLMs show 3 distinct mechanisms |
-| SACD variance | Unexplained limitation | Central finding (mechanism-dependent) |
-| Provider variance | Interesting anomaly | Evidence for mechanism diversity |
-| Contribution | Replication + debiasing test | Novel taxonomy + explanatory framework |
+| Aspect            | Original                     | Reframed                               |
+| ----------------- | ---------------------------- | -------------------------------------- |
+| Core claim        | LLMs show anchoring bias     | LLMs show 3 distinct mechanisms        |
+| SACD variance     | Unexplained limitation       | Central finding (mechanism-dependent)  |
+| Provider variance | Interesting anomaly          | Evidence for mechanism diversity       |
+| Contribution      | Replication + debiasing test | Novel taxonomy + explanatory framework |
 
 ## Intro Framing (Key Points)
 

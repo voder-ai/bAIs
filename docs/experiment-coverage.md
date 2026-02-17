@@ -4,18 +4,18 @@ Last updated: 2026-02-17 04:46 UTC
 
 ## Key Models
 
-| Model | Baseline | 3-turn Ctrl | Token Ctrl | SACD (1-pass) | SACD (Full) | Notes |
-|-------|----------|-------------|------------|---------------|-------------|-------|
-| **GPT-4o** | ✅ | ✅ (structure-matched) | ❌ | ✅ | ✅ | Full coverage |
-| **GPT-5.2** | ✅ | ✅ | ✅ | ❓ | ❌ (corrupted) | Need re-run full SACD |
-| **Claude Opus 4.5** | ✅ | ✅ | ✅ | ✅ | ✅ | Full coverage |
-| **Claude Opus 4.6** | ✅ | ✅ | ✅ | ❌ | ✅ | Missing single-pass |
-| **Llama 3.3** | ✅ | ❌ | ❌ | ✅ | ✅ | Missing controls |
-| **Hermes 405B** | ✅ | ❌ | ❌ | ❌ | ✅ | Missing controls + single-pass |
-| **o1** | ✅ | ✅ | ✅ | ❌ | 🔄 running | Pilot running SACD |
-| **Sonnet 4** | ✅ | ❌ | ❌ | ❌ | ❌ | Minimal coverage |
-| **Sonnet 4.5** | ✅ (temp sweep) | ❌ | ❌ | ❌ | ❌ | Minimal coverage |
-| **MiniMax M2.5** | ✅ | ❌ | ❌ | ✅ | ❌ | Missing full SACD |
+| Model               | Baseline        | 3-turn Ctrl            | Token Ctrl | SACD (1-pass) | SACD (Full)    | Notes                          |
+| ------------------- | --------------- | ---------------------- | ---------- | ------------- | -------------- | ------------------------------ |
+| **GPT-4o**          | ✅              | ✅ (structure-matched) | ❌         | ✅            | ✅             | Full coverage                  |
+| **GPT-5.2**         | ✅              | ✅                     | ✅         | ❓            | ❌ (corrupted) | Need re-run full SACD          |
+| **Claude Opus 4.5** | ✅              | ✅                     | ✅         | ✅            | ✅             | Full coverage                  |
+| **Claude Opus 4.6** | ✅              | ✅                     | ✅         | ❌            | ✅             | Missing single-pass            |
+| **Llama 3.3**       | ✅              | ❌                     | ❌         | ✅            | ✅             | Missing controls               |
+| **Hermes 405B**     | ✅              | ❌                     | ❌         | ❌            | ✅             | Missing controls + single-pass |
+| **o1**              | ✅              | ✅                     | ✅         | ❌            | 🔄 running     | Pilot running SACD             |
+| **Sonnet 4**        | ✅              | ❌                     | ❌         | ❌            | ❌             | Minimal coverage               |
+| **Sonnet 4.5**      | ✅ (temp sweep) | ❌                     | ❌         | ❌            | ❌             | Minimal coverage               |
+| **MiniMax M2.5**    | ✅              | ❌                     | ❌         | ✅            | ❌             | Missing full SACD              |
 
 ## Legend
 
@@ -34,6 +34,7 @@ Last updated: 2026-02-17 04:46 UTC
 ## Files Reference
 
 ### Full SACD Results
+
 - `results/gpt4o-full-sacd.jsonl` — GPT-4o
 - `results/opus45-full-sacd.jsonl` — Opus 4.5
 - `results/opus46-full-sacd.jsonl` — Opus 4.6
@@ -41,10 +42,12 @@ Last updated: 2026-02-17 04:46 UTC
 - `results/hermes405b-full-sacd.jsonl` — Hermes 405B
 
 ### Single-Pass SACD Results
+
 - `results/anthropic-sacd-30.jsonl` — Anthropic (Opus 4.5)
 - `results/minimax-m25-sacd.jsonl` — MiniMax
 
 ### Control Experiments
+
 - `results/gpt52-3turn-random-control.jsonl` — GPT-5.2 3-turn
 - `results/gpt52-token-matched-control.jsonl` — GPT-5.2 token-matched
 - `results/opus45-control-3turn.jsonl` — Opus 4.5 3-turn

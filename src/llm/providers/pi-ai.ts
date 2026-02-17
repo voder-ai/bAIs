@@ -126,7 +126,7 @@ export class PiAiProvider implements LlmProvider {
     // Get model from pi-ai
     // @ts-expect-error - dynamic provider/model lookup
     const registeredModel = getModel(this.providerName, modelId);
-    
+
     if (registeredModel) {
       this.model = registeredModel;
     } else if (this.providerName === 'openrouter') {

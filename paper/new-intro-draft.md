@@ -33,9 +33,11 @@ Our findings suggest that LLM behavior under numeric context is richer and more 
 ## Changes from Original Intro
 
 **Original opening:**
+
 > Recent research has demonstrated that LLMs exhibit cognitive biases such as anchoring, framing effects, and sunk cost fallacy. A natural question follows: can prompt-based techniques reduce these biases in LLMs?
 
 **New opening:**
+
 > When humans encounter numeric values in decision-making contexts... But what if "LLM anchoring" is not a single phenomenon?
 
 **Key shift:** From "Can we fix this?" to "What is actually happening?"

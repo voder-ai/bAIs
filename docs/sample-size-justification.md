@@ -12,13 +12,13 @@ Our experimental design uses 30 unique scenarios per condition with temperature=
 
 To validate that n=30 provides stable estimates, we conducted bootstrap resampling (10,000 iterations) on representative datasets:
 
-| n per condition | Mean Effect | 95% CI | CV |
-|-----------------|-------------|--------|-----|
-| 10 | 5.97mo | [5.8, 6.0] | 0.9% |
-| 15 | 5.97mo | [5.9, 6.0] | 0.7% |
-| 20 | 5.97mo | [5.9, 6.0] | 0.6% |
-| 25 | 5.97mo | [5.9, 6.0] | 0.6% |
-| 30 | 5.97mo | [5.9, 6.0] | 0.5% |
+| n per condition | Mean Effect | 95% CI     | CV   |
+| --------------- | ----------- | ---------- | ---- |
+| 10              | 5.97mo      | [5.8, 6.0] | 0.9% |
+| 15              | 5.97mo      | [5.9, 6.0] | 0.7% |
+| 20              | 5.97mo      | [5.9, 6.0] | 0.6% |
+| 25              | 5.97mo      | [5.9, 6.0] | 0.6% |
+| 30              | 5.97mo      | [5.9, 6.0] | 0.5% |
 
 **Finding:** Effect estimates stabilize rapidly, with CV < 1% at n=30. The narrow confidence intervals demonstrate that observed effects (2-6mo) are robust to scenario selection.
 
@@ -29,7 +29,8 @@ To distinguish real effects from noise, we simulated what "anchoring effect" wou
 - 10,000 simulations with 30 random values per condition
 - Response range: 1-18 months (plausible sentencing range)
 
-**Result:** 
+**Result:**
+
 - 95th percentile of spurious effects: 2.6mo
 - Effects ≥ 4mo occur < 0.3% by chance
 

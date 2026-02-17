@@ -66,21 +66,21 @@ We set out to test whether prompt-based techniques could reduce anchoring bias i
 
 **Step 2:** Compare to anchored conditions
 
-| If no-anchor is... | And anchored responses are... | Mechanism is... |
-|--------------------|-----------------------------|-----------------|
-| HIGHER than both anchored | Similar for low and high | Compression |
-| Between low and high anchored | Exactly matching anchor values | Compliance |
-| HIGHER than low, LOWER than high | Asymmetrically shifted | True Anchoring |
-| Any pattern | Reversed (high < low) | Reversal |
+| If no-anchor is...               | And anchored responses are...  | Mechanism is... |
+| -------------------------------- | ------------------------------ | --------------- |
+| HIGHER than both anchored        | Similar for low and high       | Compression     |
+| Between low and high anchored    | Exactly matching anchor values | Compliance      |
+| HIGHER than low, LOWER than high | Asymmetrically shifted         | True Anchoring  |
+| Any pattern                      | Reversed (high < low)          | Reversal        |
 
 ### 7.2 Selecting Interventions
 
-| Mechanism | Recommended Intervention |
-|-----------|-------------------------|
-| Compression | Avoid multi-turn; consider if moderation is acceptable |
-| Compliance | Remove numeric anchors from prompts; no debiasing needed |
-| True Anchoring | Apply SACD (89-99% effectiveness) |
-| Reversal | Investigate; likely idiosyncratic |
+| Mechanism      | Recommended Intervention                                 |
+| -------------- | -------------------------------------------------------- |
+| Compression    | Avoid multi-turn; consider if moderation is acceptable   |
+| Compliance     | Remove numeric anchors from prompts; no debiasing needed |
+| True Anchoring | Apply SACD (89-99% effectiveness)                        |
+| Reversal       | Investigate; likely idiosyncratic                        |
 
 ### 7.3 Deployment Checklist
 

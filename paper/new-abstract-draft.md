@@ -30,13 +30,13 @@ When LLMs encounter numeric values in prompts, how do they process this context?
 
 ## Key Changes from Original
 
-| Aspect | Original | New |
-|--------|----------|-----|
-| Framing | "Can we debias LLM anchoring?" | "What mechanisms underlie LLM numeric responses?" |
-| Contribution | Replication + debiasing | Discovery of three mechanisms |
-| SACD results | Central finding | Explained by mechanisms |
-| Model variance | Limitation | Feature (reveals mechanisms) |
-| Narrative | "Here's what works" | "Here's what's happening" |
+| Aspect         | Original                       | New                                               |
+| -------------- | ------------------------------ | ------------------------------------------------- |
+| Framing        | "Can we debias LLM anchoring?" | "What mechanisms underlie LLM numeric responses?" |
+| Contribution   | Replication + debiasing        | Discovery of three mechanisms                     |
+| SACD results   | Central finding                | Explained by mechanisms                           |
+| Model variance | Limitation                     | Feature (reveals mechanisms)                      |
+| Narrative      | "Here's what works"            | "Here's what's happening"                         |
 
 ---
 

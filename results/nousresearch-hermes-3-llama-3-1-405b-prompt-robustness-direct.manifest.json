@@ -1,0 +1,11 @@
+{
+  "requestedModel": "nousresearch/hermes-3-llama-3.1-405b",
+  "nPerCondition": 10,
+  "completedAt": "2026-02-12T02:42:12.373Z",
+  "integrity": {
+    "rows": 60,
+    "validRows": 60,
+    "uniqueReturnedModels": ["nousresearch/hermes-3-llama-3.1-405b"],
+    "uniqueProviders": ["DeepInfra"]
+  }
+}
