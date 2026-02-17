@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 /**
- * Run 24mo anchor experiment to test ceiling hypothesis
- * If 24mo → ~18mo: Bidirectional compression
- * If 24mo → ~12mo: Ceiling effect (12mo is max)
- * If 24mo → ~24mo: Compliance for high anchors
+ * Continue 24mo anchor experiment (runs 16-30)
  */
 
 import { appendFileSync } from 'fs';
 
 const MODEL = 'openrouter/openai/o3-mini';
 const OUTPUT = 'results/o3-mini-24mo-anchor.jsonl';
-const RUNS = 30;
+const START = 15;  // Continue from run 15
+const RUNS = 15;   // 15 more runs
 const ANCHOR = 24;
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
@@ -118,51 +116,32 @@ async function runTrial(runIndex) {
 }
 
 async function main() {
-  console.log(`Running 24mo anchor experiment: ${RUNS} trials`);
-  console.log(`Testing ceiling hypothesis: baseline=12mo, 3→6, 9→11`);
+  console.log(`Continuing 24mo anchor experiment: runs ${START+1}-${START+RUNS}`);
   console.log(`Output: ${OUTPUT}\n`);
   
   const results = [];
-  let successCount = 0;
   
   for (let i = 0; i < RUNS; i++) {
-    process.stdout.write(`Run ${i + 1}/${RUNS}... `);
+    const runIndex = START + i;
+    process.stdout.write(`Run ${runIndex + 1}/30... `);
     
-    const record = await runTrial(i);
+    const record = await runTrial(runIndex);
     appendFileSync(OUTPUT, JSON.stringify(record) + '\n');
     
     if (record.result) {
       console.log(`✓ sentence=${record.result.sentenceMonths}mo`);
       results.push(record.result.sentenceMonths);
-      successCount++;
     } else {
       console.log(`✗ ${record.error}`);
     }
     
-    // Rate limit: 1s between calls
     await new Promise(r => setTimeout(r, 1000));
   }
   
   if (results.length > 0) {
     const mean = results.reduce((a, b) => a + b, 0) / results.length;
-    const sorted = [...results].sort((a, b) => a - b);
-    const median = sorted[Math.floor(sorted.length / 2)];
-    const min = Math.min(...results);
-    const max = Math.max(...results);
-    
-    console.log(`\n=== Results ===`);
-    console.log(`N=${results.length}, Mean=${mean.toFixed(1)}mo, Median=${median}mo`);
-    console.log(`Range: ${min}-${max}mo`);
-    console.log(`\nInterpretation:`);
-    if (mean > 18) {
-      console.log(`→ COMPLIANCE: 24mo anchor pulls responses up (mean=${mean.toFixed(1)})`);
-    } else if (mean > 14) {
-      console.log(`→ BIDIRECTIONAL COMPRESSION: 24mo pulls UP from baseline (mean=${mean.toFixed(1)})`);
-    } else if (mean <= 14 && mean >= 10) {
-      console.log(`→ CEILING EFFECT: 12mo baseline is approximate maximum (mean=${mean.toFixed(1)})`);
-    } else {
-      console.log(`→ UNEXPECTED: mean=${mean.toFixed(1)}, investigate further`);
-    }
+    console.log(`\n=== Batch Complete ===`);
+    console.log(`N=${results.length}, Mean=${mean.toFixed(1)}mo`);
   }
 }
 
