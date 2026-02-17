@@ -28,6 +28,11 @@ interface AuthStore {
  */
 function loadApiKey(providerName: string): string | undefined {
   // First check environment variables (for CI)
+  // Check ANTHROPIC_OAUTH_TOKEN first (for OAuth tokens like sk-ant-oat01-...)
+  if (providerName === 'anthropic' && process.env['ANTHROPIC_OAUTH_TOKEN']) {
+    return process.env['ANTHROPIC_OAUTH_TOKEN'];
+  }
+
   const envKeyMap: Record<string, string> = {
     'openai-codex': 'OPENAI_CODEX_API_KEY',
     openai: 'OPENAI_API_KEY',
