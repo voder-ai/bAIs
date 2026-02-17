@@ -30,7 +30,22 @@ Models with "standard" anchoring bias respond predictably to SACD interventions:
 
 **Mechanism:** These models recognize anchors, are influenced by them, and can reflect and correct when prompted. SACD successfully interrupts the anchoring pathway.
 
-### 3. Compliance (MiniMax M2.5, o3-mini)
+### 2b. Weak Susceptibility (GPT-4o/Vultr)
+
+Some models show standard anchoring bias but only partial SACD response:
+
+| Condition | Low Anchor | High Anchor | Effect |
+|-----------|------------|-------------|--------|
+| 3-turn control | 6.00mo | 11.20mo | 5.20mo |
+| SACD | 6.00mo | 9.82mo | 3.82mo |
+
+**SACD effectiveness: 27%** (5.20mo → 3.82mo)
+
+**Distribution under SACD:** 36% of high-anchor trials debias to 6mo, 64% remain at 12mo. SACD "breaks through" inconsistently.
+
+**Mechanism:** The model shows standard anchoring (distinct from compliance—doesn't copy anchor exactly). SACD partially works but cannot fully overcome the anchor influence. This may represent an intermediate architecture between compliance and full susceptibility.
+
+### 3. Compliance (MiniMax M2.5, o3-mini, GPT-4o/Mac)
 
 Compliance models exhibit a distinct pattern: they copy the anchor value exactly rather than being influenced by it in a graduated way.
 
@@ -39,10 +54,13 @@ Compliance models exhibit a distinct pattern: they copy the anchor value exactly
 | MiniMax (baseline) | 3.1mo | 9.1mo | Copies anchor |
 | MiniMax (SACD) | 3.4mo | 9.1mo | Still copies |
 | o3-mini | 3.3mo | 9.1mo | Exact match |
+| GPT-4o (Mac) | 3mo | 9mo | Exact match |
 
 **SACD effectiveness: ~0%**
 
 **Mechanism:** These models skip the "influence" step entirely—they interpret the anchor as an instruction rather than a reference point. SACD cannot correct what was never processed as bias.
+
+**Note:** GPT-4o appears in this category only when called from the Mac deployment. The same model via Vultr shows standard anchoring bias (see "Weak Susceptibility" below). This demonstrates that compliance vs susceptibility is not a fixed model property—it can vary by deployment context.
 
 ### 4. Rationalization (o1)
 
@@ -57,23 +75,26 @@ Reasoning models present a paradoxical failure mode: extended deliberation deepe
 
 **Mechanism:** o1's chain-of-thought reasoning generates post-hoc justifications for anchor-influenced judgments. The model "reasons" its way to the biased conclusion rather than correcting it. This aligns with findings from arXiv:2503.08679 showing that CoT is not always faithful to the model's actual decision process.
 
-### 5. SACD-Triggered Amplification (Haiku 4.5)
+### 5. Anchor-Blind Escalation (Haiku 4.5)
 
-Haiku presents a unique failure mode where SACD intervention triggers an amplification response:
+Haiku presents a unique failure mode where SACD eliminates differential anchoring but shifts the entire distribution upward:
 
 | Condition | Low Anchor | High Anchor | Effect |
 |-----------|------------|-------------|--------|
 | Baseline | 5.5mo | 7.67mo | 2.17mo |
 | 3-turn control | 6mo | 12mo | 6.0mo (3× baseline) |
-| SACD (preliminary) | 9.07mo | ~10mo | ~1mo |
+| Token-matched | 6mo | 12mo | 6.0mo |
+| SACD | 9.13mo | 8.35mo | **-0.78mo** |
 
-**Pattern:** SACD compresses the differential anchoring effect (good) but shifts the entire distribution upward (bad). The model becomes "anchor-blind" but defaults to harsher sentencing.
+**Pattern:** SACD successfully eliminates differential anchoring (the -0.78mo shows slight reversal). However, both means shift dramatically upward—low anchor rises from 5.5mo to 9.13mo (+66%), high anchor stays elevated.
 
-**Mechanism:** Haiku appears to have a two-layer architecture:
-1. Base anchoring layer (SACD can reach this)
-2. Amplification layer (triggered by structure/intervention)
+**Mechanism:** Haiku's architecture appears to have separate:
+1. **Differential processing layer** — SACD can interrupt this (reduces anchor effect)
+2. **Default severity layer** — SACD cannot reach this, and may even amplify it
 
-SACD successfully reduces differential bias but activates the amplification layer, resulting in uniformly harsher outputs.
+The result is a model that becomes "anchor-blind" (no longer responds differentially to low vs high anchors) but defaults to harsher baseline judgments. The debiasing intervention successfully breaks the anchoring pathway while inadvertently escalating the severity baseline.
+
+**Implication:** Eliminating a bias is not the same as eliminating harm. A court model that gives 9 months regardless of prosecution request has no anchoring bias, but may have worse calibration than one that shows some anchoring but centers on more appropriate values.
 
 ## SACD Effectiveness Summary
 
@@ -82,12 +103,16 @@ SACD successfully reduces differential bias but activates the amplification laye
 | Opus 4.5 | 99%↓ | Fully susceptible |
 | GPT-5.2 | 89%↓ | Fully susceptible |
 | Opus 4.6 | >100%↓ | Fully susceptible |
-| Haiku 4.5 | Negative | Amplification trigger |
+| GPT-4o (Vultr) | 27%↓ | Weakly susceptible |
+| Haiku 4.5 | 0% diff, +66% severity | Anchor-blind escalation |
 | MiniMax | ~0%↓ | Compliance (resistant) |
 | o3-mini | 0%↓ | Compliance (resistant) |
 | o1 | +7%↑ | Rationalization (backfires) |
+| GPT-4o (Mac) | 0%↓ | Compliance (resistant) |
 
-**Success rate: 3/7 models (43%)**
+**Success rate: 4/9 deployments (44%)** — counting GPT-4o deployments separately
+
+Note: GPT-4o demonstrates that "model" is insufficient granularity. Same model name shows 0% (compliance) vs 27% (weak susceptibility) depending on deployment.
 
 ## Decision Tree for Predicting Model Behavior
 
@@ -96,21 +121,26 @@ SACD successfully reduces differential bias but activates the amplification laye
     ├── No → Fixed Default (Hermes)
     │        SACD: Unnecessary
     │
-    └── Yes → [Amplification Layer?]
-                  ├── Yes → SACD-Triggered Amplification (Haiku)
-                  │         SACD: Backfires (shifts distribution up)
+    └── Yes → [Severity Escalation Layer?]
+                  ├── Yes → Anchor-Blind Escalation (Haiku)
+                  │         SACD: Removes differential but escalates severity
                   │
                   └── No → [Processes Anchor as Influence?]
-                              ├── No → Compliance (MiniMax, o3-mini)
+                              ├── No → Compliance (MiniMax, o3-mini, GPT-4o/Mac)
                               │        SACD: Fails (0% effect)
                               │
                               └── Yes → [Can Reflect & Correct?]
                                           ├── No → Rationalization (o1)
                                           │        SACD: Backfires (+7%)
                                           │
-                                          └── Yes → Full Susceptibility
-                                                    (GPT-5.2, Opus)
-                                                    SACD: Works (89-99%)
+                                          └── Yes → [Strong Correction?]
+                                                      ├── Yes → Full Susceptibility
+                                                      │         (GPT-5.2, Opus)
+                                                      │         SACD: Works (89-99%)
+                                                      │
+                                                      └── No → Weak Susceptibility
+                                                                (GPT-4o/Vultr)
+                                                                SACD: Partial (27%)
 ```
 
 ## Implications
@@ -125,51 +155,19 @@ SACD successfully reduces differential bias but activates the amplification laye
 
 5. **Test per model AND per version:** Opus 4.5 vs 4.6 showed opposite architectures (shallow vs deep bias). Version updates can fundamentally change bias behavior.
 
-6. **Test per deployment:** Same API, same model name can yield different behavior depending on deployment infrastructure.
+6. **Test per deployment:** Same model name, same API, different behavior across infrastructure. GPT-4o via OpenRouter shows fundamentally different patterns depending on deployment location:
 
-## Provider Variance: A Case Study
+| Deployment | Low Anchor → | High Anchor → | Anchoring Effect | SACD |
+|------------|--------------|---------------|------------------|------|
+| Mac (residential IP) | 3mo (copy) | 9mo (copy) | 0mo (compliance) | 0% |
+| Vultr (datacenter) | 6mo | 11.2mo | 5.2mo (bias) | 27% |
 
-Our most striking finding emerged from running identical experiments from two different infrastructures:
+**This is not sampling variance.** The distributions are categorically different: Mac copies anchors exactly (compliance pattern), Vultr shows standard anchoring bias with partial SACD response. The "same" model behaves as two entirely different architectures depending on where the API call originates.
 
-### GPT-4o via OpenRouter: Two Deployments, Two Behaviors
+**Possible explanations:**
+- Regional model routing (different weights served to different regions)
+- IP-based A/B testing or canary deployments
+- Rate-limit tiers affecting model selection
+- Infrastructure-level caching/approximation
 
-| Metric | Mac (Residential IP) | Vultr (Datacenter IP) |
-|--------|---------------------|----------------------|
-| Low anchor response | 3mo | 6mo |
-| High anchor response | 9mo | 11.2mo |
-| Anchoring effect | 6mo (artificial) | 5.2mo (real bias) |
-| SACD effectiveness | 0% | 26.5% |
-| Pattern | Compliance | Weak susceptibility |
-
-**Same API endpoint. Same model name. Same prompt. Different behavior.**
-
-### Implications for Reproducibility
-
-This finding has serious implications for AI safety research:
-
-1. **"GPT-4o" is a label, not a model:** The same API name routes to different underlying models based on infrastructure factors we cannot observe.
-
-2. **Debiasing validation is deployment-specific:** A technique validated from one deployment may not transfer to another—even within the same organization.
-
-3. **Benchmarks on aggregated endpoints are suspect:** Published results on "GPT-4o" may not replicate across different callers.
-
-4. **Required disclosure for reproducibility:**
-   - Model name and version
-   - API provider
-   - Access method (direct/proxy)
-   - Source infrastructure (datacenter/residential)
-   - Geographic location
-   - Timestamp
-
-### The Four-Layer Testing Methodology
-
-Based on our findings, we recommend a four-layer validation approach:
-
-```
-1. Test per MODEL (GPT vs Claude vs Llama)
-2. Test per VERSION (Opus 4.5 vs 4.6)
-3. Test per DEPLOYMENT (datacenter vs residential)
-4. Test per ACCESS METHOD (direct API vs proxy)
-```
-
-Each layer revealed different behaviors in our study. Skipping any layer risks false confidence in debiasing effectiveness.
+**Implication:** Reproducibility requires specifying not just model name and API provider, but the deployment context. "OpenRouter/GPT-4o" is insufficient—the same identifier returns different models to different callers.
