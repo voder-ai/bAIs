@@ -36,7 +36,7 @@ Testing 15 model deployments across 4 providers on judicial sentencing scenarios
 
 \textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (13--24 months); with ANY anchor---high or low---responses compress to 6--8 months. Both anchors shift responses DOWN. (Opus 4.5, Llama 3.3)
 
-\textbf{2. Compliance}: Models copy the anchor value exactly, treating numeric context as instruction rather than reference. A 3-month anchor produces 3-month output; 9-month produces 9-month. This resembles ``perfect anchoring'' but reflects instruction-following, not cognitive bias. (MiniMax, o3-mini, some GPT-4o deployments)
+\textbf{2. Compliance}: Models copy the anchor value exactly, treating numeric context as instruction rather than reference. A 3-month anchor produces 3-month output; 9-month produces 9-month. This resembles ``perfect anchoring'' but reflects instruction-following, not cognitive bias. (o3-mini, some GPT-4o deployments)
 
 \textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with Tversky-Kahneman anchoring-and-adjustment. Only this mechanism resembles human cognitive bias. (GPT-4o via datacenter, GPT-5.2)
 
@@ -155,7 +155,7 @@ Model & No-Anchor & Low (3mo) & High (9mo) & Effect & $t$-test & $d$ & Pattern \
 Opus 4.5 & $13.2 \pm 0.0$ & $6.0 \pm 0.0$ & $8.0 \pm 0.0$ & 2.0mo & det. & $\infty$ & Compression \\
 Llama 3.3 & $14.4 \pm 2.1$ & $5.0\ [4.2, 5.7]$ & $6.0\ [6.0, 6.0]$ & 1.0mo & --- & --- & Compression \\
 GPT-4o (Copilot) & $12.7 \pm 1.8$ & $3.0 \pm 0.0$ & $9.0 \pm 0.0$ & 6.0mo & det. & $\infty$ & Compliance \\
-MiniMax M2.5 & --- & $5.9\ [5.3, 6.9]$ & --- & --- & --- & --- & Compliance$^\dagger$ \\
+MiniMax M2.5 & --- & $5.1\ [4.8, 5.4]$ & $8.1\ [7.7, 8.4]$ & 3.0mo & $t(118)=10.2^{***}$ & 1.87 & True Anchoring \\
 o3-mini & --- & $6.0 \pm 0.0$ & --- & --- & det. & --- & Compliance$^\dagger$ \\
 GPT-4o (Vultr) & $20.4 \pm 3.2$ & $3.8\ [3.5, 4.0]$ & $8.7\ [8.4, 9.0]$ & 5.0mo & $t(143)=26.2^{***}$ & 4.22 & True Anchoring \\
 Haiku 4.5 & --- & $3.3\ [3.0, 3.8]$ & $7.1\ [6.6, 7.5]$ & 3.8mo & $t(37)=12.5^{***}$ & 3.96 & True Anchoring \\
@@ -193,7 +193,7 @@ Models exhibiting compression: Opus 4.5, Opus 4.6, Llama 3.3
     \item Response tracks anchor precisely
 \end{itemize}
 
-Models exhibiting compliance: MiniMax M2.5, o3-mini, GPT-4o (Mac deployment)
+Models exhibiting compliance: o3-mini, GPT-4o (Mac deployment)
 
 \textbf{Interpretation}: These models interpret the prosecutor's recommendation as the ``correct answer'' rather than as context to consider.
 
@@ -262,7 +262,7 @@ Model & Mechanism & Baseline Effect & SACD Effect & Change \\
 GPT-5.2 & True Anchoring & 4.4mo & 0.5mo & $-89\%$ $\checkmark$ \\
 Opus 4.5 & Compression & 2.0mo & 0.0mo & $-100\%$ $\checkmark$ \\
 Haiku 4.5 & Compression & 2.2mo & --- & $+66\%$ severity $\times$ \\
-MiniMax & Compliance & 6.0mo & 6.0mo & 0\% \\
+MiniMax & True Anchoring & 3.0mo & --- & --- \\
 o3-mini & Compliance & 5.8mo & 5.8mo & 0\% \\
 \bottomrule
 \end{tabular}
@@ -386,7 +386,7 @@ For models showing no baseline bias, multi-turn prompting may be harmful. Llama 
 \begin{enumerate}
     \item \textbf{Single domain}: All experiments use judicial sentencing scenarios.
     \item \textbf{Limited no-anchor data}: Mechanism taxonomy based on models with no-anchor controls.
-    \item \textbf{Incomplete compliance data}: MiniMax M2.5 and o3-mini classifications are provisional---high anchor data collection incomplete at time of writing.
+    \item \textbf{Incomplete compliance data}: o3-mini classification is provisional---high anchor data collection incomplete at time of writing.
     \item \textbf{Mechanism boundaries}: May represent spectrum rather than discrete categories.
     \item \textbf{Temporal stability}: Unknown whether mechanisms are stable over model updates.
 \end{enumerate}
