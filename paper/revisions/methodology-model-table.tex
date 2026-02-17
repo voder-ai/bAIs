@@ -1,0 +1,42 @@
+% Methodology Table: Full Model Identifiers for Reproducibility
+% Generated 2026-02-17
+
+\begin{table*}[t]
+\centering
+\caption{Model Identifiers and API Providers Used in Experiments}
+\label{tab:model-identifiers}
+\begin{tabular}{llll}
+\toprule
+\textbf{Paper Label} & \textbf{API Model ID} & \textbf{Provider} & \textbf{Access Method} \\
+\midrule
+\multicolumn{4}{l}{\textit{Anthropic Models}} \\
+Opus 4.0 & claude-opus-4-0 & Anthropic API & Direct \\
+Opus 4.5 & claude-opus-4-5-20251101 & Anthropic API & Direct \\
+Opus 4.6 & claude-opus-4-6 & Anthropic API & Direct \\
+Sonnet 4 & claude-sonnet-4-20250514 & Anthropic API & Direct \\
+Sonnet 4.5 & claude-sonnet-4-5 & Anthropic API & Direct \\
+Haiku 3.5 & claude-3-5-haiku-20241022 & Anthropic API & Direct \\
+Haiku 4.5 & claude-haiku-4-5 & Anthropic API & Direct \\
+\midrule
+\multicolumn{4}{l}{\textit{OpenAI Models}} \\
+GPT-4o & gpt-4o & OpenRouter / GitHub Copilot & Proxy \\
+GPT-5.2 & gpt-5.2 & Codex CLI & Direct \\
+GPT-5.3 & gpt-5.3-codex & Codex CLI & Direct \\
+Codex (internal) & codex & Codex CLI & Direct \\
+\midrule
+\multicolumn{4}{l}{\textit{Meta Models}} \\
+Llama 3.3 70B & meta-llama/llama-3.3-70b-instruct & OpenRouter & Proxy \\
+Hermes 405B & nousresearch/hermes-3-llama-3.1-405b & OpenRouter & Proxy \\
+\midrule
+\multicolumn{4}{l}{\textit{Other Models}} \\
+MiniMax M2.5 & minimax/minimax-m2.5 & OpenRouter & Proxy \\
+Gemini 2.0 Flash & google/gemini-2.0-flash-001 & OpenRouter & Proxy \\
+Gemma 2 9B & google/gemma-2-9b-it & OpenRouter & Proxy \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{flushleft}
+\small
+\textit{Note:} We use dated model identifiers where available (e.g., claude-opus-4-5-20251101) to ensure reproducibility. Model aliases (e.g., claude-opus-4-5) may point to different versions over time. OpenRouter provides a unified API gateway for multiple model providers; Codex CLI provides direct access to OpenAI's internal models.
+\end{flushleft}
+\end{table*}

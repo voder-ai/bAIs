@@ -1,0 +1,37 @@
+% Version Comparison Finding: Opus 4.5 vs 4.6
+% Generated 2026-02-17
+
+\subsection{Model Version Effects on Bias Architecture}
+\label{sec:version-comparison}
+
+A striking finding emerged when comparing Claude Opus 4.5 and 4.6. Despite being sequential versions of the same model family, they exhibited fundamentally different bias architectures:
+
+\begin{table}[h]
+\centering
+\caption{Bias Architecture Comparison: Opus 4.5 vs 4.6}
+\label{tab:opus-version-comparison}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Opus 4.5} & \textbf{Opus 4.6} \\
+\midrule
+Baseline effect & 2.0mo & 1.27mo \\
+Response variance & Zero & Present \\
+Token-matched control & 0.0mo & 0.33mo \\
+3-turn random control & 0.0mo & \textbf{3.6mo} \\
+\midrule
+Bias pattern & Shallow/memorized & Deep/structural \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Interpretation.} Opus 4.5 exhibited what we term ``shallow'' bias---the anchoring effect appeared in baseline conditions but was eliminated by \emph{any} prompt perturbation, including semantically neutral multi-turn formatting or token-matched padding. This suggests the bias was pattern-matched to specific prompt structures rather than deeply integrated into the model's reasoning.
+
+In contrast, Opus 4.6 showed ``deep'' bias where multi-turn structure \emph{amplified} the anchoring effect from 1.27mo to 3.6mo. The model appears to interpret multi-turn context as strengthening the relevance of the anchor value rather than as irrelevant noise.
+
+\paragraph{Implications.} This finding has significant practical implications:
+
+\begin{enumerate}
+\item \textbf{No universal debiasing solution}: Techniques that eliminate bias in one model version may be ineffective or counterproductive in subsequent versions.
+\item \textbf{Continuous validation required}: Organizations deploying LLMs must re-validate debiasing interventions after each model update.
+\item \textbf{Version-specific calibration}: Safety-critical applications should pin specific model versions and include version identifiers in audit trails.
+\end{enumerate}

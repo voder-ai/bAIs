@@ -1,0 +1,92 @@
+% Bias Depth Framework Section
+% For inclusion in main.tex
+
+\subsection{A Framework for Model-Specific Debiasing}
+\label{sec:bias-depth-framework}
+
+Our experiments reveal that anchoring bias manifests differently across model architectures, requiring a systematic approach to debiasing. We propose a four-stage framework for practitioners.
+
+\subsubsection{Stage 1: Bias Detection}
+
+Establish baseline susceptibility through controlled experiments with known anchors. Our results show substantial variation:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Model & Baseline Effect & vs Human (2.05mo) \\
+\midrule
+GPT-5.2 & 4.40mo & 2.1× \\
+GPT-5.3 & 3.97mo & 1.9× \\
+MiniMax M2.5 & 3.10mo & 1.5× \\
+Opus 4.5 & 2.00mo & 1.0× \\
+\bottomrule
+\end{tabular}
+\caption{Baseline anchoring bias across models}
+\end{table}
+
+\subsubsection{Stage 2: Bias Profiling — Shallow vs Deep}
+
+A critical finding: models exhibit qualitatively different bias patterns that we characterize as \textit{shallow} or \textit{deep}:
+
+\textbf{Shallow/Brittle Bias} (exemplified by Opus 4.5):
+\begin{itemize}
+    \item Eliminated by \textit{any} prompt perturbation (controls showed 0.0mo effect)
+    \item Zero variance in baseline (all trials return identical values)
+    \item Suggests memorized patterns rather than emergent reasoning
+    \item Simple prompt noise as effective as sophisticated debiasing
+\end{itemize}
+
+\textbf{Deep/Robust Bias} (exemplified by GPT-5.x, MiniMax):
+\begin{itemize}
+    \item Persists through irrelevant perturbations
+    \item Shows natural variance in responses
+    \item Requires targeted debiasing interventions
+    \item Control conditions show minimal effect
+\end{itemize}
+
+The \textit{control sensitivity test} distinguishes these types: if adding irrelevant tokens eliminates bias, the model exhibits shallow bias. If bias persists, deeper intervention is required.
+
+\subsubsection{Stage 3: Intervention Matching}
+
+Debiasing effectiveness varies dramatically by bias type:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Technique & Opus 4.5 & GPT-5.2 & GPT-5.3 & Pattern \\
+\midrule
+Random Disclosure & 100\% ↓ & 91\% ↓ & 30\% ↓ & Varies \\
+Consider Opposite & 35\% ↓ & 95\% ↓ & 5\% ↓ & Model-specific \\
+Pre-commitment & 3\% ↓ & 18\% ↓ & \textbf{98\% ↓} & Inverted \\
+Scale Recalibration & \textbf{67\% ↑} & 55\% ↓ & 40\% ↓ & \textbf{Backfires} \\
+SACD & >100\%* & 80\% ↓ & 73\% ↓ & Deep only \\
+\bottomrule
+\end{tabular}
+\caption{Intervention effectiveness varies dramatically by model. Same technique produces opposite effects. *Overcorrection.}
+\end{table}
+
+\subsubsection{Stage 4: Empirical Validation — The Scale Recalibration Cautionary Tale}
+
+\textbf{Critical finding:} Scale Recalibration, a theoretically sound technique that asks models to ``establish your own independent scale,'' produced \textit{opposite effects} across models:
+
+\begin{itemize}
+    \item \textbf{Opus 4.5:} Increased bias by 67\% (2.0mo → 3.3mo)
+    \item \textbf{GPT-5.2:} Reduced bias by 55\% (4.4mo → 2.0mo)
+\end{itemize}
+
+This demonstrates that even well-motivated interventions can backfire. The instruction to ``establish a scale'' may prime numerical processing in models with shallow bias patterns, amplifying rather than reducing anchor sensitivity.
+
+\textbf{Practical implication:} Per-model validation is \textit{mandatory}. No debiasing technique should be deployed without empirical testing on the target model. The assumption that ``if it works on GPT-5, it works everywhere'' is demonstrably false.
+
+\subsubsection{Framework Summary}
+
+\begin{enumerate}
+    \item \textbf{Detect:} Measure baseline bias with controlled anchors
+    \item \textbf{Profile:} Test control sensitivity to classify shallow vs deep
+    \item \textbf{Match:} Select intervention appropriate to bias type
+    \item \textbf{Validate:} Empirically verify on target model before deployment
+\end{enumerate}
+
+This framework transforms debiasing from ad-hoc intervention to systematic practice, acknowledging that LLM bias is not monolithic but varies in both magnitude and mechanism across architectures.
