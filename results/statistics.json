@@ -665,23 +665,31 @@
   },
   "openrouter/openai/o3-mini": {
     "model": "openrouter/openai/o3-mini",
-    "n_low": 9,
-    "n_high": 0,
-    "n_total": 9,
+    "n_low": 39,
+    "n_high": 30,
+    "n_total": 69,
     "mean_low": 6,
-    "mean_high": null,
+    "mean_high": 10.9,
     "sd_low": 0,
-    "sd_high": null,
-    "anchoring_effect": null,
+    "sd_high": 1.2206555615733707,
+    "anchoring_effect": 4.9,
     "ci_low": {
       "lower": 6,
       "upper": 6,
       "margin": 0
     },
-    "ci_high": null,
-    "ttest": null,
-    "cohens_d": null,
-    "effect_magnitude": null
+    "ci_high": {
+      "lower": 10.463826509600503,
+      "upper": 11.336173490399498,
+      "margin": 0.4361734903994965
+    },
+    "ttest": {
+      "t": -21.986878332131326,
+      "p": 0.0020000000000000018,
+      "df": 29
+    },
+    "cohens_d": 6.101566489935506,
+    "effect_magnitude": "large"
   },
   "openrouter/qwen/qwen3-next-80b-a3b-instruct:free": {
     "model": "openrouter/qwen/qwen3-next-80b-a3b-instruct:free",
