@@ -1,56 +1,167 @@
 # bAIs Experiment Backlog
 
-Created: 2026-02-17 14:49 AEDT
+**Updated: 2026-02-17 22:15 AEDT**
 
-## Goal
-Complete full suite (Baseline + Controls + SACD + Debiasing) for all models.
+## CRITICAL GAPS (Adversarial Check Items)
 
-## Status Key
-- ✅ Complete
-- 🔄 In Progress
-- ❌ Missing
+### 1. Prompt Template Coverage (INCOMPLETE)
+**Purpose:** Validate cross-model claims aren't prompt-specific
 
-## Backlog
+| Model | Original | Casual | Structured | Status |
+|-------|----------|--------|------------|--------|
+| GPT-5.2 | ✅ | ❌ | ❌ | Needs 2 variants |
+| GPT-5.3 | ✅ | ❌ | ❌ | Needs 2 variants |
+| GPT-4o | ✅ | ❌ | ❌ | Needs 2 variants |
+| Opus 4.5 | ✅ | ❌ | ❌ | Needs 2 variants |
+| Opus 4.6 | ✅ | ❌ | ❌ | Needs 2 variants |
+| Haiku 4.5 | ✅ | ❌ | ❌ | DEPRECATED |
+| Llama 3.3 | ✅ | ❌ | ❌ | Needs 2 variants |
+| Hermes 405B | ✅ | ❌ | ❌ | Needs 2 variants |
+| MiniMax | ✅ | ❌ | ❌ | Needs 2 variants |
+| o1 | ✅ | ❌ | ❌ | Needs 2 variants |
+| o3-mini | ✅ | ❌ | ❌ | Needs 2 variants |
 
-### HIGH PRIORITY (Nearly Complete)
+**Trials needed:** 10 models × 2 variants × 2 anchors × 30 trials = 1,200 calls
 
-| Model | Baseline | Controls | SACD | Debiasing | Owner | Est. Trials |
-|-------|----------|----------|------|-----------|-------|-------------|
-| Opus 4.6 | ✅ | ✅ | ❌ | ❌ | Atlas | 210 |
-| MiniMax M2.5 | ✅ | ❌ | ✅ | ❌ | Atlas | 210 |
+---
 
-### MEDIUM PRIORITY (Partial Coverage)
+### 2. Temperature Sweep (INCOMPLETE)
+**Purpose:** Validate "dead zone at 0.7" finding generalizes
 
-| Model | Baseline | Controls | SACD | Debiasing | Owner | Est. Trials |
-|-------|----------|----------|------|-----------|-------|-------------|
-| GPT-4o | ✅ | ❌ | ✅ | partial | Atlas | 210 |
-| Llama 3.3 | ✅ | partial | ✅ | partial | Atlas | 150 |
-| Hermes 405B | ✅ | ❌ | ✅ | partial | Atlas | 210 |
+| Model | temp=0 | temp=0.3 | temp=0.5 | temp=0.7 | temp=1.0 | Status |
+|-------|--------|----------|----------|----------|----------|--------|
+| GPT-4o | ✅ | ✅ | ✅ | ✅ | ✅ | Complete |
+| GPT-5.2 | ✅ | ✅ | ❌ | ✅ | ✅ | Needs 0.5 |
+| Opus 4.5 | ✅ | ❌ | ❌ | ❌ | ❌ | Needs 4 temps |
+| Opus 4.6 | ✅ | ❌ | ❌ | ❌ | ❌ | Needs 4 temps |
+| Llama 3.3 | ✅ | ❌ | ❌ | ❌ | ❌ | Needs 4 temps |
 
-### LOW PRIORITY (Baseline Only)
+**Trials needed:** 4 models × 4 temps × 2 anchors × 30 trials = 960 calls
 
-| Model | Baseline | Controls | SACD | Debiasing | Owner | Est. Trials |
-|-------|----------|----------|------|-----------|-------|-------------|
-| Sonnet 4 | ✅ | ❌ | ❌ | ❌ | Atlas | 330 |
-| Haiku 4.5 | ✅ | ❌ | ❌ | ❌ | Atlas | 330 |
-| Gemma 2 9B | ✅ | ❌ | ❌ | partial | Atlas | 270 |
-| o1 | ✅ | ❌ | ❌ | ❌ | Atlas | 330 |
+---
 
-## Completed Models
+### 3. Random Baseline (MISSING)
+**Purpose:** Calibrate what "anchoring effect" looks like from noise
 
-| Model | Baseline | Controls | SACD | Debiasing | Completed |
-|-------|----------|----------|------|-----------|-----------|
-| Opus 4.5 | ✅ | ✅ | ✅ | ✅ | 2026-02-17 |
-| GPT-5.2 | ✅ | ✅ | ✅ | ✅ | 2026-02-17 |
-| GPT-5.3 | ✅ | ✅ | ✅ | ✅ | 2026-02-17 |
+**Implementation:**
+- Generate random responses in [1, 18] months
+- Compute spurious "effect" distribution
+- Report: "Effects < Xmo could be noise"
 
-## Total Remaining
-~2,250 trials across 9 models
+**Trials needed:** 0 (computational only)
 
-## Assignment (Revised)
-- **Pilot (Mac/OpenRouter):** o1, o1-mini, o1-preview, GPT-4o (~4 models)
-- **Atlas (Vultr/pi-ai/OpenRouter):** Opus 4.6, MiniMax, Sonnet 4, Haiku 4.5, Llama 3.3, Hermes 405B, Gemma 2, Gemini Flash, Mistral (~9 models)
+---
 
-## In Progress
-- **Pilot:** o1 baseline (5/60) 🔄
-- **Atlas:** Opus 4.6 SACD (4/60) 🔄
+### 4. Bootstrap Power Analysis (MISSING)
+**Purpose:** Justify n=30 per condition
+
+**Implementation:**
+- Resample existing 30 scenarios with replacement
+- Show effect estimates stable at n≥20
+- Report confidence bounds on effect sizes
+
+**Trials needed:** 0 (analysis of existing data)
+
+---
+
+### 5. Inter-Model Agreement (INCOMPLETE)
+**Purpose:** Do models shift same direction?
+
+| Model | No-Anchor Control | Status |
+|-------|-------------------|--------|
+| GPT-5.2 | ✅ 30 trials | Complete |
+| Opus 4.5 | ✅ 30 trials | Complete |
+| Hermes 405B | ✅ 30 trials | Complete |
+| GPT-4o | ❌ | Needs 30 trials |
+| Llama 3.3 | ❌ | Needs 30 trials |
+| MiniMax | ❌ | Needs 30 trials |
+| o1 | ❌ | Needs 30 trials |
+| o3-mini | ❌ | Needs 30 trials |
+
+**Trials needed:** 5 models × 30 trials = 150 calls
+
+---
+
+### 6. Contamination Analysis (ANALYSIS ONLY)
+**Purpose:** Compare classic vs novel effect sizes
+
+**Data exists:** Table 9 has classic + 4 novel scenarios
+**Needed:** Statistical comparison (are classic effects inflated?)
+
+**Trials needed:** 0 (analysis of existing data)
+
+---
+
+## EXISTING GAPS (Model Coverage)
+
+### Controls Coverage
+
+| Model | 3-Turn | Token-Matched | Random-Elab | Status |
+|-------|--------|---------------|-------------|--------|
+| GPT-5.2 | ✅ | ✅ | ✅ | Complete |
+| GPT-5.3 | ✅ | ✅ | ❌ | Needs random-elab |
+| GPT-4o Mac | ✅ | ✅ | ✅ | Complete |
+| GPT-4o Vultr | ✅ | ✅ | ❌ | Needs random-elab |
+| Opus 4.5 | ✅ | ❌ | ✅ | Needs token-matched |
+| Opus 4.6 | ❌ | ❌ | ❌ | Needs all 3 |
+| Haiku 4.5 | ✅ | ✅ | ❌ | DEPRECATED |
+| Llama 3.3 | ✅ | ✅ | ✅ | Complete |
+| Hermes 405B | ✅ | ✅ | ❌ | Needs random-elab |
+| MiniMax | ✅ | ❌ | ❌ | Needs 2 controls |
+| o1 | ✅ | ✅ | ❌ | Needs random-elab |
+| o3-mini | ✅ | ❌ | ❌ | Needs 2 controls |
+
+---
+
+## TOTAL EXPERIMENT BACKLOG
+
+| Category | Trials Needed |
+|----------|---------------|
+| Prompt template coverage | 1,200 |
+| Temperature sweep | 960 |
+| No-anchor controls | 150 |
+| Missing controls | ~300 |
+| **TOTAL** | ~2,610 calls |
+
+---
+
+## ANALYSIS BACKLOG (No New Experiments)
+
+1. ✅ Remove human baseline comparisons
+2. ⬜ Bootstrap power analysis
+3. ⬜ Random baseline calibration
+4. ⬜ Contamination statistical comparison
+5. ⬜ Inter-model agreement analysis (on existing data)
+
+---
+
+## PRIORITY ORDER
+
+**P0 (Blockers):**
+1. Remove human baseline comparisons from paper
+2. Bootstrap power analysis
+3. Random baseline calibration
+
+**P1 (Major gaps):**
+4. Temperature sweep (Opus 4.5, Llama 3.3)
+5. No-anchor controls for remaining models
+6. Contamination analysis
+
+**P2 (Completeness):**
+7. Prompt template coverage (all models)
+8. Missing controls
+
+---
+
+## OTHER GAPS NOT YET MENTIONED
+
+1. **Domain diversity:** All experiments use judicial sentencing. Medical/budget domains not tested.
+2. **Model version pinning:** Some models use dated IDs, others undated. Reproducibility risk.
+3. **Provider diversity for same model:** Only GPT-4o tested on multiple providers (Mac vs Vultr).
+4. **Retry tracking:** Excluded trials not characterized (were they systematic?).
+5. **Response length analysis:** Do biased responses differ in length/verbosity?
+6. **Confidence calibration:** When models express uncertainty, is bias reduced?
+
+---
+
+*Last updated: 2026-02-17 22:15 AEDT*
