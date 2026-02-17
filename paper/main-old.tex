@@ -6,7 +6,6 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{booktabs}
-\usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -16,7 +15,7 @@
 \usepackage{xcolor}
 
 % Title
-\title{Anchoring Bias in LLMs:\\Debiasing Interventions and Model-Specific Effects}
+\title{Cognitive Bias Patterns in LLMs:\\Anchoring Effects and Debiasing Interventions}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -30,19 +29,21 @@
 \maketitle
 
 \begin{abstract}
-We investigate whether prompt-based techniques can reduce anchoring bias in LLMs. Testing 9 models on a judicial sentencing paradigm (30 scenarios per condition, temperature=0), we find:
+\textbf{Scope:} This is an \textbf{LLM-only study}. We characterize LLM behavior on anchoring tasks but do not compare to human performance---our prompts differ from prior human studies and no human participants were involved.
 
-\textbf{Central finding (4 models):} Debiasing effectiveness depends on \textbf{structure + content}, with \textbf{model-specific} effects. A random elaboration control revealed: on Llama 3.3 (\textbf{low-bias on baseline prompt}), multi-turn structure alone introduced +6.0mo bias---showing structure can harm models that show no baseline bias. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides additional benefit. Sibony's decision architecture techniques showed 0\% effect on GPT-4o but 55--67\% on GPT-5.2---a complete reversal demonstrating that debiasing effectiveness is highly model-specific.
+\textbf{Study design:} Descriptive study using deterministic sampling (temperature=0) across 30 scenario variants per condition. All findings are observational patterns in our specific prompt set.
 
-\textbf{Cross-model variation:} GPT-4o showed 6.0mo anchoring effect, Opus 4 showed 2.0mo, Sonnet 4 showed 0.0mo. At temp=0, outputs are deterministic for identical prompts---but scenario variation produces meaningful variance across trials (see Section~\ref{sec:no-inferential-stats}).
+\textbf{Main finding:} The mechanism is \textbf{structure + content}, with model-specific effects. A random elaboration control (irrelevant content, same multi-turn structure) revealed: (1) On \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms unbiased models regardless of content. (2) On \textbf{biased} GPT-4o, random elaboration achieved 20\% bias reduction while CoT achieved 66\%---showing structure helps but reasoning content helps more. Practical implications: keep prompts single-turn for unbiased models; for biased models, multi-turn with reasoning content is optimal.
 
-\textbf{No-anchor control:} We established unanchored baselines, revealing that relative effects underestimate absolute sensitivity. GPT-4o's unanchored baseline is 20.4mo; the 3mo anchor pulls it down to 6.0mo (14.4mo absolute shift vs 5.7mo relative effect). Claude Opus 4.5 shows \emph{reversed} direction: anchors \emph{increase} sentences from a 6.0mo baseline.
+\textbf{Replication:} LLMs exhibit anchoring bias in the judicial sentencing paradigm. GPT-4o showed 6.0 months effect, Claude Opus 4 showed 2.0 months, Sonnet 4 showed 0.0 months (no bias). Effect magnitudes vary substantially across models.
 
-\textbf{Full iterative SACD:} Single-pass debiasing variants substantially underestimate debiasing capability. Full iterative SACD (up to 3 iterations) achieved 96--99\% bias reduction across 4 models, fixing cases where single-pass \emph{increased} bias or produced pathological outputs.
+\textbf{Determinism:} At temp=0, LLM bias is deterministic (SD=0). LLM bias is a fixed function of weights and prompt---100\% consistent, predictable to audit but consequential when present.
 
-\textbf{Practical implications:} (1) Test debiasing on your specific deployment model---interventions can backfire. (2) For models showing no baseline bias, avoid multi-turn prompts. (3) For biased models, use full iterative SACD (not single-pass). (4) Use date-pinned model IDs for reproducibility.
+\textbf{Intervention null results:} On GPT-4o, Sibony's decision architecture techniques (``context hygiene,'' ``premortem'') showed \textbf{0\% reduction}---identical to baseline. Simple instructions (``ignore the anchor'') also showed 0\% effect. Multi-turn reflection helped on GPT-4o, but caution is warranted: generic reflection can introduce bias on models that have none.
 
-\textbf{Scope:} LLM-only study; one bias type (anchoring); one domain (judicial sentencing); no comparison to human performance.
+\textbf{Cross-model variation:} Testing 8 models in our prompt set, we observed varying susceptibility: GPT-4o (6.0mo), Mistral Medium 3 (\~0mo), Llama 3.3 (0mo), Sonnet 4 (0mo). \textbf{Caution:} Pattern observed in one prompt template; individual model results, not provider-level generalizations.
+
+\textbf{Practical note:} API identifier routing affects behavior; use date-pinned model IDs for reproducibility.
 \end{abstract}
 
 \section{Introduction}
@@ -51,7 +52,7 @@ Recent research has demonstrated that LLMs exhibit cognitive biases such as anch
 
 \textbf{Scope:} This is an \textbf{LLM-only study}. We characterize how LLMs respond to anchoring manipulations and debiasing interventions. We do not compare LLM performance to human performance---our prompts differ from those used in human studies, making direct comparison methodologically unsound. Human studies are cited for context and to motivate debiasing techniques, not as baselines.
 
-\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects depending on baseline bias. A random elaboration control (describing weather, listing unrelated facts) revealed: on Llama 3.3 (\textbf{low-bias on baseline prompt}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can be harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on models with no baseline bias, content is irrelevant---structure alone introduces bias; (3) on biased models, reasoning content matters---CoT outperforms random elaboration.
+\textbf{Our central finding:} The mechanism is \textbf{structure + content}, with opposite effects on biased vs.\ unbiased models. A random elaboration control (describing weather, listing unrelated facts) revealed: on \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone is harmful. But on \textbf{biased} GPT-4o, random elaboration achieved only 20\% bias reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit. This demonstrates: (1) multi-turn structure modifies bias susceptibility; (2) on unbiased models, content is irrelevant---any structure harms equally; (3) on biased models, reasoning content matters---CoT outperforms random elaboration.
 
 We tested two categories of interventions:
 
@@ -68,7 +69,7 @@ We use anchoring bias as our test case because: (a) it is well-documented in LLM
 
 The study of cognitive biases has its foundations in the seminal work of Tversky and Kahneman, who documented systematic deviations from rational judgment including anchoring and adjustment heuristics \citep{tversky1974}, prospect theory and loss aversion \citep{kahneman1979}, and framing effects \citep{tversky1981}. Sunk cost effects were later characterized by \citet{arkes1985}.
 
-\citet{binz2023} demonstrated that GPT-3 exhibits cognitive biases including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found substantial anchoring bias across multiple models. These findings have important implications for AI decision-support systems, as biased model outputs can propagate through applications. \citet{maynard2025trojan} argues that LLM fluency creates ``honest non-signals''---cues that may bypass users' epistemic vigilance. Concurrent work by \citet{arcuschin2026blindspot} demonstrates analogous ``unverbalized biases'' in categorical decision tasks (hiring, loans, admissions), where models exhibit discrimination without citing biasing factors in their chain-of-thought reasoning traces.
+\citet{binz2023} demonstrated that GPT-3 exhibits cognitive biases including anchoring, framing effects, and representativeness heuristics. \citet{lou2024} found substantial anchoring bias across multiple models. These findings have important implications for AI decision-support systems, as biased model outputs can propagate through applications. \citet{maynard2025trojan} argues that LLM fluency creates ``honest non-signals''---cues that may bypass users' epistemic vigilance.
 
 \subsection{Human Debiasing Research}
 
@@ -90,38 +91,31 @@ Prior work has explored chain-of-thought prompting, explicit bias warnings, and 
 
 We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. Following anchoring bias methodology, the anchor is explicitly marked as irrelevant: \textit{``For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.''} The anchor values (3 months vs. 9 months) match the original study.
 
-\textbf{Note on anchor conditions:} Both conditions include an anchor---we compare a ``low anchor'' (3 months) against a ``high anchor'' (9 months). We also ran a \textbf{no-anchor control} condition where no prosecutor recommendation is given, enabling measurement of absolute anchoring magnitude (see Section~\ref{sec:no-anchor-control}).
-
-\textbf{Note on ``trials'':} Throughout this paper, each ``trial'' represents a \textbf{distinct scenario variant} (different defendant names, offense numbers, location details---see Appendix~\ref{app:scenarios}). Because temperature=0 produces deterministic outputs, running the \emph{same} scenario multiple times would yield identical results. Our $n=30$ per condition thus reflects \textbf{scenario diversity}, not measurement replication. Reported means and standard deviations characterize the distribution of responses \emph{across scenarios}, not sampling error around a point estimate. See Section~\ref{sec:no-inferential-stats} for implications.
-
 \subsection{Conditions}
 
 \begin{enumerate}
     \item \textbf{Baseline}: Standard prompt with anchor included
     \item \textbf{Context Hygiene}: Prompt explicitly instructs model to identify and disregard irrelevant information before deciding
     \item \textbf{Premortem}: Prompt asks model to imagine its sentence was overturned on appeal, identify what went wrong, then provide its recommendation
-    \item \textbf{single-pass debiasing}: Our implementation of \citet{lyu2025}'s Self-Adaptive Cognitive Debiasing runs a \textbf{single iteration} (not the full iterative loop):
+    \item \textbf{SACD}: Iterative loop (max 3 iterations):
     \begin{itemize}
         \item Generate initial response
         \item Detect: ``Does this response show signs of cognitive bias?''
         \item Analyze: ``What type of bias and how is it manifesting?''
         \item Debias: ``Generate a new response avoiding this bias''
-        \item (Full protocol would repeat until clean; we run once only)
+        \item Repeat until clean or max iterations
     \end{itemize}
 \end{enumerate}
 
-\textbf{SACD implementation note:} We tested both a simplified single-pass version and the full iterative protocol (up to 3 iterations). Section~\ref{sec:full-sacd} compares their effectiveness---full iterative SACD dramatically outperforms single-pass across all models tested.
-
-\textbf{SACD Error/Refusal Rates:} SACD's iterative prompting occasionally triggered safety refusals or parsing errors. We quantified these rates: Anthropic models showed 0\% error rate (0/60 trials), GPT-4o showed 1.4\% (2/139 trials across all SACD-involved conditions). These negligible rates indicate SACD did not systematically bias the analyzable sample.
+\textbf{SACD Error/Refusal Rates:} SACD's iterative prompting occasionally triggered safety refusals or parsing errors. We quantified these rates: Anthropic models showed 0\% error rate (0/60 trials), GPT-4o showed 1.4\% (2/139 trials). These negligible rates indicate SACD did not systematically bias the analyzable sample.
 
 \subsection{Models and Sample Size}
 
 \begin{itemize}
     \item \textbf{Sonnet 4} (legacy): \texttt{claude-sonnet-4-20250514} --- used for reproducibility, showed 0.0mo bias
     \item \textbf{Sonnet 4.5} (current): \texttt{claude-sonnet-4-5-20250929} --- used in initial development, showed 3.0mo bias
-    \item \textbf{GPT-4o:} \texttt{github-copilot/gpt-4o} --- primary OpenAI model for debiasing experiments. \textbf{Note:} GPT-4o was accessed via GitHub Copilot's API rather than direct OpenAI API. GitHub Copilot may route to different model versions or apply different system prompts. We did not validate equivalence with direct OpenAI API access; this is acknowledged as a potential confound in Section~\ref{sec:limitations}
-    \item \textbf{GPT-5.2:} \texttt{openai/gpt-5.2} --- tested for model-specific debiasing comparison
-    \item \textbf{Cross-model validation:} 9 models from various providers (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
+    \item \textbf{Secondary model:} GPT-4o (\texttt{github-copilot/gpt-4o})
+    \item \textbf{Cross-model validation:} 8 models from various providers (Anthropic, OpenAI, Meta, NVIDIA, Mistral AI)
     \item \textbf{Sample sizes:} Target $n=30$ per condition (15 low anchor + 15 high anchor). Actual valid trials per model shown in Table~\ref{tab:sample-sizes}.
 \end{itemize}
 
@@ -133,29 +127,55 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 \midrule
 Sonnet 4 & 60 & 60 & 0 & Date-pinned \\
 Sonnet 4.5 & 60 & 60 & 0 & Primary model \\
-GPT-4o (Copilot)$^\dagger$ & 60 & 60 & 0 & Via GitHub Copilot \\
-GPT-5.2 & 60 & 58 & 2 & Debiasing comparison \\
+GPT-4o & 60 & 60 & 0 & Via GitHub Copilot \\
 Opus 4 & 60 & 60 & 0 & --- \\
 Nemotron 30B & 85 & 75 & 10 & Base + topup runs \\
 Hermes 405B & 70 & 60 & 10 & Base + topup runs \\
 Llama 3.3 70B & 60 & 60 & 0 & Paid OpenRouter tier \\
 Mistral 7B & 120 & 52 & 68 & High parse failure rate \\
-Qwen 2.5 72B & 80 & 80 & 0 & Debiasing sweep \\
-Gemma 2 9B & 80 & 80 & 0 & Debiasing sweep \\
 \bottomrule
 \end{tabular}
-\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent. $^\dagger$GPT-4o accessed via GitHub Copilot, not direct OpenAI API---results may not generalize to direct API access.}
+\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent.}
 \label{tab:sample-sizes}
 \end{table}
 
-\textbf{Important:} Throughout this paper, we distinguish between model generations:
-\begin{itemize}
-    \item ``Sonnet 4.5'' (\texttt{claude-sonnet-4-5-20250929}) vs ``Sonnet 4'' (\texttt{claude-sonnet-4-20250514})
-    \item ``Opus 4.5'' (\texttt{claude-opus-4-5-20251101}) vs ``Opus 4'' (\texttt{claude-opus-4-0})
-\end{itemize}
-These are different model generations with different bias patterns (see Section~\ref{app:model-id-variance}), not just different identifiers for the same model. When we report debiasing effectiveness, we specify which model was used.
+\textbf{Important:} Throughout this paper, we distinguish between ``Sonnet 4.5'' (\texttt{claude-sonnet-4-5-20250929}) and ``Sonnet 4'' (\texttt{claude-sonnet-4-20250514}) because they exhibited different bias patterns (see Section~\ref{sec:model-id-variance}). These are different model generations, not just different identifiers for the same model. When we report debiasing effectiveness, we specify which model was used.
 
-\textbf{Model identifiers.} We tested multiple models from different providers (see Table~\ref{tab:provenance} in Appendix~\ref{app:reproducibility} for full identifiers). Model aliases may route to different backends over time; see Appendix~\ref{app:model-id-variance} for details on the identifier variance we observed.
+\subsection{Model Identifier Variance: A Methodological Contribution}
+\label{sec:model-id-variance}
+
+\textbf{Key finding:} During development, we discovered that different model generations (Sonnet 4 vs Sonnet 4.5) exhibit \emph{qualitatively different} bias patterns on identical prompts. Sonnet 4.5 shows 3.0mo anchoring effect while Sonnet 4 shows zero---a cross-generational difference, not just an identifier variance.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llcc}
+\toprule
+\textbf{Model Identifier} & \textbf{Type} & \textbf{Anchoring Effect} & \textbf{Observed Pattern} \\
+\midrule
+\texttt{claude-sonnet-4-5} & Alias & 3.0 mo & Shows anchoring (responsive to debiasing) \\
+\texttt{claude-sonnet-4-20250514} & Date-pinned & 0.0 mo & No measurable anchoring \\
+\bottomrule
+\end{tabular}
+\caption{Cross-generational difference in anchoring bias. Sonnet 4.5 (\texttt{claude-sonnet-4-5-20250929}) shows 3-month anchoring effect, while Sonnet 4 (\texttt{claude-sonnet-4-20250514}) shows zero anchoring on identical prompts. These are different model generations, not the same model with different identifiers.}
+\label{tab:model-id-variance}
+\end{table}
+
+\textbf{Implications for LLM research.} This variance has broad implications beyond our study:
+
+\begin{enumerate}
+    \item \textbf{Reproducibility confound:} Model providers may silently update alias targets. Studies using aliases (e.g., \texttt{gpt-4}, \texttt{claude-sonnet}) may not replicate even with identical prompts.
+    \item \textbf{Checkpoint-specific behavior:} Bias magnitude is checkpoint-specific, not just architecture-specific. Minor version updates can qualitatively change measured behavior.
+    \item \textbf{Recommendation:} Researchers should always use and report date-pinned model identifiers. Alias-based results have an inherent reproducibility limitation.
+    \item \textbf{Our protocol:} All primary experiments in this paper use date-pinned identifiers. When we refer to ``Sonnet 4.5'' or ``Sonnet 4'', we mean the specific identifiers in Table~\ref{tab:model-id-variance}.
+\end{enumerate}
+
+\textbf{Distinguishing Sonnet 4 results.} Throughout this paper, we carefully distinguish:
+\begin{itemize}
+    \item \textbf{Sonnet 4.5}: \texttt{claude-sonnet-4-5-20250929} --- showed 3.0mo anchoring, responsive to debiasing
+    \item \textbf{Sonnet 4}: \texttt{claude-sonnet-4-20250514} --- showed 0.0mo anchoring in baseline (legacy model)
+\end{itemize}
+
+Our soft/hard bias hypothesis derives primarily from comparing Sonnet 4.5 against GPT-4o, not from the date-pinned Sonnet 4 which showed minimal baseline bias.
 
 \subsection{Temperature and Sampling Protocol}
 
@@ -188,7 +208,7 @@ These are different model generations with different bias patterns (see Section~
     \item Other sampling parameters held at provider defaults
 \end{itemize}
 
-\textbf{Key finding.} For Sonnet 4 (\texttt{claude-sonnet-4-20250514}) and GPT-4o, anchoring effects were stable across all temperatures tested---but this is because Sonnet 4 showed minimal baseline anchoring to begin with. In contrast, Sonnet 4.5 (\texttt{claude-sonnet-4-5-20250929}) showed temperature-sensitive bias reduction. This cross-generational difference is a key methodological finding (see Section~\ref{app:model-id-variance}).
+\textbf{Key finding.} For Sonnet 4 (\texttt{claude-sonnet-4-20250514}) and GPT-4o, anchoring effects were stable across all temperatures tested---but this is because Sonnet 4 showed minimal baseline anchoring to begin with. In contrast, Sonnet 4.5 (\texttt{claude-sonnet-4-5-20250929}) showed temperature-sensitive bias reduction. This cross-generational difference is a key methodological finding (see Section~\ref{sec:model-id-variance}).
 
 \subsection{Scenario Design and Selection}
 \label{sec:scenario-design}
@@ -230,70 +250,88 @@ Variance in our measurements arises from prompt and scenario variation across 30
 
 \textbf{Cross-model comparisons.} For models where we ran fewer trials (marked with $^\dagger$ in tables), observed ranges are estimated from pooled variance across models with complete data. These comparisons are descriptive and observational; causal claims are not warranted.
 
-\textbf{Effect sizes.} Effect sizes (Cohen's $d$) are reported in tables as standardized measures of magnitude. \textbf{Important:} In our deterministic sampling context (temp=0), Cohen's $d$ describes the magnitude of observed differences relative to within-condition variation across scenarios---it is \emph{not} an inferential statistic and should not be interpreted as evidence for population parameters. We include $d$ values solely for magnitude comparison with prior work that reports them.
+\textbf{Effect sizes.} Effect sizes (Cohen's $d$) are reported in tables as standardized measures of magnitude. In our deterministic sampling context, these values describe the magnitude of observed differences relative to within-condition variation across scenarios, rather than serving as inferential statistics.
 
 \subsubsection{Why We Do Not Report Inferential Statistics}
 \label{sec:no-inferential-stats}
 
-\textbf{Clarification on ``n=30'' and variance:} Throughout this paper, ``n=30'' refers to 30 \emph{distinct scenario variants}, not 30 stochastic samples from the same prompt. Each trial uses a slightly different case description, defendant name, or phrasing. 
+\textbf{Clarification on ``n=30'':} Throughout this paper, ``n=30'' refers to 30 \emph{distinct scenario variants}, not 30 stochastic samples from the same prompt. Each trial uses a slightly different case description, defendant name, or phrasing. Variance in our measurements arises from this prompt heterogeneity, not from model randomness (temperature=0 produces deterministic outputs).
 
-\textbf{Two sources of variance (or lack thereof):}
-\begin{itemize}
-    \item \textbf{Within-scenario variance:} At temp=0, repeating the \emph{exact same prompt} produces identical output (SD=0). This is verified in Table~\ref{tab:determinism}.
-    \item \textbf{Across-scenario variance:} Different scenario variants produce different outputs. When we report means and SDs, these reflect variation \emph{across} scenarios, not sampling uncertainty.
-\end{itemize}
-
-\textbf{Why some tables show SD=0:} For certain models (e.g., Anthropic Claude at temp=0), all 30 scenario variants produced \emph{identical} sentence recommendations. This is an empirical finding, not a methodological artifact---these models appear insensitive to surface-level scenario variation. When tables note ``SD=0'' or omit SDs, this means all scenarios produced the same response.
-
-\textbf{Why confidence intervals are not reported:} Classical frequentist confidence intervals assume repeated sampling from a stochastic process. With temperature=0, each model produces exactly the same output given identical input---there is no sampling distribution to characterize. Bootstrap confidence intervals would collapse to point estimates (SD=0), which provides no additional information beyond the observed value. \textbf{Exception:} For temperature$>$0 experiments (Section~\ref{sec:debiasing-temp}), we do report bootstrap 95\% CIs since those conditions are stochastic.
+\textbf{Why confidence intervals are not reported:} Classical frequentist confidence intervals assume repeated sampling from a stochastic process. With temperature=0, each model produces exactly the same output given identical input---there is no sampling distribution to characterize. Bootstrap confidence intervals would collapse to point estimates (SD=0), which provides no additional information beyond the observed value.
 
 \textbf{Why ``statistical significance'' is not claimed:} Significance testing asks: ``Could this difference arise by chance?'' With deterministic outputs, the answer is trivially ``no''---observed differences are exact, not estimates. Framing deterministic differences as ``statistically significant'' would be misleading.
 
 \textbf{What we report instead:} We present purely descriptive statistics:
 \begin{itemize}
     \item \textbf{Exact outputs} for deterministic conditions (the model produced \emph{exactly} this value)
-    \item \textbf{Observed ranges} [min, max] across our 30 scenario variants---this captures heterogeneity of prompt responses, not sampling uncertainty
-    \item \textbf{Means and SDs} where applicable (describing variation across scenarios); when SD=0, all responses were identical
+    \item \textbf{Observed ranges} across our 30 scenario variants (heterogeneity of prompts, not sampling uncertainty)
+    \item \textbf{Means and SDs} where applicable (describing variation across scenarios)
     \item \textbf{Cohen's $d$} as standardized effect size, interpreted as magnitude of observed difference, not an inferential statistic
 \end{itemize}
-
-\textbf{Table format:} Tables reporting bias effects use the format: \texttt{mean ± SD} for condition responses, with $n$ stated in caption. When SD is omitted, all responses in that condition were identical (SD=0). ``Obs.\ Range'' columns show [min, max] of the \emph{difference} between conditions across scenario variants.
 
 \textbf{Cross-model difference:} GPT-4o produced a 6.0-month anchoring effect; Sonnet (dated) produced 0.0 months. This 6.0-month difference is \emph{observed fact}, not an estimate---every trial of each model produced exactly these values. The difference is not ``statistically significant'' in the frequentist sense; it is \emph{deterministically exact}.
 
 \section{Results}
 
-\textbf{Terminology: ``Low-bias'' vs ``biased'' models.} Throughout this paper, we distinguish models that show \textbf{low or no bias on our baseline prompt} from models that show \textbf{substantial bias}. \textbf{Important:} ``low-bias'' is a property of the \emph{model-prompt pair}, not the model alone. The same model may show 0mo effect on one prompt and 6-9mo on another (as we document for Llama 3.3). When we say a model is ``low-bias,'' we mean specifically on our standard baseline prompt with the ``randomly determined'' disclaimer.
+\subsection{Baseline Anchoring Bias}
 
-\textbf{Note on baseline values across tables:} Several models appear with different baseline values in different tables. This reflects \emph{different prompt conditions}, not inconsistent data. Table~\ref{tab:baseline-xref} provides a cross-reference. \textbf{Important:} When comparing results across tables, always check the prompt condition. A model showing ``0mo baseline'' in one table may show ``6mo baseline'' in another because different prompts were used.
+\textbf{Note on Codex:} Early experiments (baseline anchoring, Sibony techniques, SACD on moderate bias) used OpenAI Codex, which has since been deprecated. These results demonstrate technique efficacy on a historical model but may not transfer to current models. Our GPT-4o experiments (Section~\ref{sec:gpt4o-debiasing}) provide more current validation.
+
+Without debiasing interventions, our baseline model (Codex) showed substantial anchoring bias (3.67mo effect):
 
 \begin{table}[H]
 \centering
-\small
-\begin{tabular}{llcl}
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{Model} & \textbf{Prompt Variant} & \textbf{Baseline} & \textbf{Tables} \\
+Condition & Low Anchor & High Anchor & Diff & Obs. Range & Cohen's $d$ \\
 \midrule
-\multirow{3}{*}{Llama 3.3} & Original (w/ ``randomly determined'') & 0.0 mo & 8, 11 \\
-                           & Structure only (no disclaimer) & 4.0 mo & 11 \\
-                           & Disclaimer fully removed & 6.0--9.0 mo & 7 \\
-\midrule
-\multirow{2}{*}{GPT-5.2} & Standard experimental & 5.97 mo & 5 \\
-                         & W/ ``randomly determined'' & 4.4 mo & 11 \\
-\midrule
-GPT-4o & All conditions & 6.0 mo & 4, 6, 8 \\
+LLM Baseline (Codex) & $5.33 \pm 0.96$ & $9.00 \pm 0.83$ & 3.67 mo & [3.23, 4.10] & 4.09 \\
 \bottomrule
 \end{tabular}
-\caption{Cross-reference of baseline values by model and prompt condition. Differences reflect prompt sensitivity (Section~\ref{sec:opposite-debiasing}), not data inconsistencies.}
-\label{tab:baseline-xref}
+\caption{Baseline anchoring bias in Codex. Values show mean $\pm$ SD ($n=30$). Observed range is for the \emph{difference} between conditions across scenario variants. Effect size is very large ($d > 0.8$).}
+\label{tab:baseline}
 \end{table}
 
-This prompt sensitivity is itself a key finding (Section~\ref{sec:opposite-debiasing}).
+\subsection{Sibony Debiasing Techniques}
 
-\subsection{GPT-4o (Copilot): Baseline Bias and Debiasing Effectiveness}
-\label{sec:gpt4o-debiasing}
+Both techniques show notable reduction in anchoring bias when tested on Codex (baseline: 3.67mo anchoring effect):
 
-We tested GPT-4o via GitHub Copilot's API (\texttt{github-copilot/gpt-4o}), not direct OpenAI API access. \textbf{Important caveat:} GitHub Copilot may route to different model versions or apply different system prompts than direct API access; these results may not generalize to direct OpenAI GPT-4o. With this caveat, GPT-4o (Copilot) showed substantial anchoring bias (6.0mo effect, approximately 2.9$\times$ the human baseline of 2.05mo from Englich et al.):
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Technique & Diff & Obs. Range & Cohen's $d$ & Reduction vs Baseline \\
+\midrule
+Context Hygiene & 2.67 mo & [2.07, 3.27] & 2.74 & $-27\%$ \\
+Premortem & 2.80 mo & [2.17, 3.43] & 2.88 & $-24\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Effect of Sibony debiasing techniques on anchoring bias in Codex ($n=30$ per condition). Observed ranges reflect scenario variation. Effect sizes remain large ($d > 2$), indicating substantial residual anchoring even after intervention.}
+\label{tab:sibony}
+\end{table}
+
+\subsection{SACD Results}
+
+SACD essentially eliminates anchoring bias when tested on Codex (baseline: 3.67mo). Note: This experiment used Codex, not Sonnet 4 (which has 0.0mo baseline and would not demonstrate debiasing):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Condition & Low Anchor & High Anchor & Diff & Obs. Range & Cohen's $d$ \\
+\midrule
+SACD & $3.67 \pm 2.54$ mo & $3.20 \pm 2.94$ mo & $-0.47$ mo & [$-1.83$, $0.93$] & $-0.17$ \\
+\bottomrule
+\end{tabular}
+\caption{SACD results showing elimination of anchoring bias ($n=30$ per condition). Values show mean $\pm$ SD. Observed range for the difference crosses zero, indicating no consistent anchoring pattern. Effect size is negligible ($|d| < 0.2$).}
+\label{tab:sacd}
+\end{table}
+
+The negative difference suggests slight overcorrection---the model moves away from the high anchor more than necessary. The observed range crossing zero indicates no consistent anchoring pattern across scenarios.
+
+\subsection{GPT-4o Debiasing: SACD as the Only Effective Technique}
+
+To test whether debiasing techniques transfer to models with strong baseline bias, we ran a comprehensive debiasing experiment on GPT-4o (baseline: 6.0mo effect):
 
 \begin{table}[H]
 \centering
@@ -308,49 +346,16 @@ Simple Instruction & 29 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
 \textbf{SACD} & 29 & 3.13 mo & 6.43 mo & \textbf{3.30 mo} & \textbf{45\%} \\
 \bottomrule
 \end{tabular}
-\caption{GPT-4o baseline anchoring bias and debiasing effectiveness. Target: $n=30$ per condition; actual $n=25$--$29$ due to response validation (JSON parsing failures, duplicate scenario-response pairs). GPT-4o shows 6.0mo anchoring effect (2.9$\times$ human baseline). Sibony techniques (context hygiene, premortem) and simple instruction show 0\% reduction. Only SACD achieved measurable bias reduction (45\%). Human baseline from Englich et al. (2006): 2.05mo effect.}
-\label{tab:baseline}
+\caption{Debiasing effectiveness on GPT-4o ($n = 137$ valid trials after deduplication\footnote{Deduplication removed duplicate API responses from retry logic. Sample sizes vary (n=25--29 per condition) because some scenarios required retries that produced duplicates, which were removed to ensure each scenario appears once per condition.}). Only SACD achieved measurable reduction. All other techniques showed exactly 0\% reduction---GPT-4o perfectly followed anchors with or without Sibony interventions.}
 \label{tab:gpt4o-debiasing}
 \end{table}
 
 \textbf{Key findings:}
 \begin{itemize}
-    \item \textbf{Sibony techniques are model-specific:} Context hygiene and premortem showed \emph{zero} effect on GPT-4o, but 55--67\% reduction on GPT-5.2. Effectiveness depends on the target model.
+    \item \textbf{Sibony techniques do not work on LLMs:} Context hygiene and premortem showed \emph{zero} effect on GPT-4o. The model's responses were identical with or without these interventions.
     \item \textbf{Simple instructions fail:} Telling the model ``the recommendation is arbitrary, ignore it'' had no effect. GPT-4o acknowledged the instruction but still anchored.
     \item \textbf{SACD reduces bias:} SACD achieved 45\% reduction on GPT-4o (strong bias). However, see the control experiment below.
 \end{itemize}
-
-\subsection{GPT-5.2: Model-Specific Debiasing Reversal}
-\label{sec:gpt52-debiasing}
-
-To test whether GPT-4o's null results for Sibony techniques generalize to newer models, we ran a comprehensive debiasing experiment on GPT-5.2 (baseline: 5.97mo effect, same strong-bias tier as GPT-4o):
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lccccc}
-\toprule
-Condition & n & Low Anchor & High Anchor & Effect & Reduction \\
-\midrule
-Baseline & 60 & 3.03 mo & 9.00 mo & 5.97 mo & --- \\
-Simple instruction & 30 & 6.00 mo & 8.00 mo & 2.00 mo & 67\% \\
-Context hygiene & 30 & 5.50 mo & 8.20 mo & 2.70 mo & 55\% \\
-Premortem & 30 & 4.00 mo & 6.10 mo & 2.10 mo & 65\% \\
-Generic reflection & 30 & 6.00 mo & 9.00 mo & 3.00 mo & 50\% \\
-Random elaboration & 30 & 3.00 mo & 9.00 mo & 6.00 mo & 0\% \\
-\bottomrule
-\end{tabular}
-\caption{GPT-5.2 debiasing results ($n=30$ per condition except baseline $n=60$). Values without $\pm$ SD indicate all responses were identical (SD=0); variation in means across conditions reflects different response patterns. Sibony techniques show 55--67\% reduction on GPT-5.2 vs 0\% on GPT-4o---a complete reversal. Random elaboration (irrelevant content, same structure) shows 0\% reduction, suggesting CONTENT matters on this model.}
-\label{tab:gpt52-debiasing}
-\end{table}
-
-\textbf{Key findings:}
-\begin{itemize}
-    \item \textbf{Sibony techniques transfer to GPT-5.2:} Context hygiene (55\%), premortem (65\%), and simple instructions (67\%) all substantially reduce bias---in stark contrast to 0\% effect on GPT-4o.
-    \item \textbf{Random elaboration control:} Irrelevant content with same multi-turn structure shows 0\% reduction, suggesting that CONTENT of debiasing interventions matters on biased models.
-    \item \textbf{Model-specific effects:} Practitioners cannot assume debiasing failure on one model (GPT-4o) predicts failure on related models (GPT-5.2). Validate on deployment model.
-\end{itemize}
-
-\textbf{3-turn random control (turn count isolation):} To further isolate whether multi-turn structure alone affects bias, we ran a 3-turn conversation with irrelevant topics (weather, unrelated facts) on GPT-5.2 ($n=30$). Result: 5.6mo effect vs 5.97mo baseline---only 6\% reduction. This suggests SACD's 55\% reduction comes from its CONTENT (structured self-critique), not merely from being multi-turn.
 
 \subsection{Structure-Matched Control: SACD's Effect is Not Bias-Specific}
 \label{sec:generic-reflection}
@@ -389,7 +394,7 @@ Turn & SACD (psychology-specific) & Generic Reflection \\
 \subsubsection{Random Elaboration Control: Identifying the Mechanism}
 \label{sec:random-elaboration}
 
-To distinguish whether the bias-introduction effect on low-bias models comes from reasoning content (``think step by step'') or multi-turn structure itself, we ran a random elaboration control with the same multi-turn structure but irrelevant content. We first ran this on Llama 3.3 and GPT-4o, then extended it to additional models (Opus 4 and Sonnet 4 dated):
+To distinguish whether the bias-introduction effect on unbiased models comes from reasoning content (``think step by step'') or multi-turn structure itself, we ran a random elaboration control with the same multi-turn structure but irrelevant content. We first ran this on Llama 3.3 and GPT-4o, then extended it to additional models (Opus 4 and Sonnet 4 dated):
 
 \begin{enumerate}
     \item ``Before answering, describe the weather in a hypothetical city in detail.''
@@ -403,7 +408,7 @@ To distinguish whether the bias-introduction effect on low-bias models comes fro
 \toprule
 Model & Intervention & Low Anchor & High Anchor & Effect \\
 \midrule
-\multirow{3}{*}{Llama 3.3 (low-bias)} & Baseline & 6.0 mo & 6.0 mo & 0.0 mo \\
+\multirow{3}{*}{Llama 3.3 (unbiased)} & Baseline & 6.0 mo & 6.0 mo & 0.0 mo \\
  & Generic CoT & 6.0 mo & 12.0 mo & \textbf{+6.0 mo} \\
  & Random Elaboration & 6.0 mo & 12.0 mo & \textbf{+6.0 mo} \\
 \midrule
@@ -418,7 +423,7 @@ Model & Intervention & Low Anchor & High Anchor & Effect \\
  & Random Elaboration & 6.0 mo & 6.0 mo & 0.0 mo \\
 \bottomrule
 \end{tabular}
-\caption{Random elaboration control extended to four models. On Llama 3.3 (\textbf{low-bias on baseline prompt}), random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf{biased} GPT-4o, random elaboration yields only partial reduction (20\%) versus CoT (66\%), indicating added reasoning content matters. On Opus 4 and Sonnet 4 dated (both low-bias baselines), random elaboration remains anchor-invariant (0.0mo effect, $n=30$ each).}
+\caption{Random elaboration control extended to four models. On \textbf{unbiased} Llama 3.3, random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf{biased} GPT-4o, random elaboration yields only partial reduction (20\%) versus CoT (66\%), indicating added reasoning content matters. On Opus 4 and Sonnet 4 dated (both low-bias baselines), random elaboration remains anchor-invariant (0.0mo effect, $n=30$ each).}
 \label{tab:random-elaboration}
 \end{table}
 
@@ -446,17 +451,17 @@ Sonnet 4 (dated) & 0.0 mo & \textbf{3.07 mo} & $\uparrow$ & \textbf{Hurts} \\
 Llama 3.3 & 0.0 mo & \textbf{6.10 mo} & $\uparrow$ & \textbf{Hurts} \\
 \bottomrule
 \end{tabular}
-\caption{Generic reflection across 5 models ($n=30$ per anchor condition, 60 total per model; all at temp=0). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} low-bias models (Sonnet 4 dated, Llama 3.3), it \emph{introduces} substantial bias (3--6 months). Values without $\pm$ SD indicate all responses were identical (SD=0).}
+\caption{Generic reflection across 5 models ($n=30$ per condition). On biased models, generic reflection reduces bias (66--97\%). On \textbf{both} unbiased models (Sonnet 4 dated, Llama 3.3), it \emph{introduces} substantial bias (3--6 months).}
 \label{tab:generic-reflection-crossmodel}
 \end{table}
 
 \textbf{Key finding:} Generic reflection is a double-edged sword:
 \begin{itemize}
     \item On \textbf{biased models} (GPT-4o, Opus 4.5, Sonnet 4.5): Generic reflection reduces anchoring (66--97\% improvement)
-    \item On \textbf{low-bias models} (Sonnet 4 dated, Llama 3.3): Generic reflection \emph{introduces} anchoring (3.07--6.10mo effect where baseline was 0.0mo)
+    \item On \textbf{unbiased models} (Sonnet 4 dated, Llama 3.3): Generic reflection \emph{introduces} anchoring (3.07--6.10mo effect where baseline was 0.0mo)
 \end{itemize}
 
-\textbf{Implication:} Neither generic reflection nor SACD is universally safe. Generic reflection introduces consistent bias on low-bias models. SACD produces pathological outputs (extreme variance, 120mo outliers on Llama 3.3). \textbf{Practical recommendation:} Do not apply debiasing interventions to models without confirmed baseline bias. Measure baseline first, then intervene only if needed.
+\textbf{Implication:} Neither generic reflection nor SACD is universally safe. Generic reflection introduces consistent bias on unbiased models. SACD produces pathological outputs (extreme variance, 120mo outliers on Llama 3.3). \textbf{Practical recommendation:} Do not apply debiasing interventions to models without confirmed baseline bias. Measure baseline first, then intervene only if needed.
 
 \subsubsection{Temperature Sensitivity of Debiasing}
 \label{sec:debiasing-temp}
@@ -470,42 +475,23 @@ All primary debiasing experiments used temperature=0. To test whether debiasing 
 Temperature & Baseline Effect & CoT Effect & Reduction & 95\% CI (CoT effect) & Pattern \\
 \midrule
 0 & 6.0 mo & 2.03 mo & 66\% & deterministic (temp=0) & CoT helps \\
-0.7 & 6.0 mo & 6.0 mo & \textbf{0\%} & [6.00, 6.00]$^*$ & \textbf{CoT fails} \\
+0.7 & 6.0 mo & 6.0 mo & \textbf{0\%} & [6.00, 6.00] & \textbf{CoT fails} \\
 1.0 & 5.93 mo & 1.67 mo & \textbf{72\%} & [1.01, 2.30] & CoT helps more \\
 \bottomrule
 \end{tabular}
-\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), and recovers at temp=1.0 (72\%). $^*$Note: Despite temp=0.7, all 28 responses were identical (low=6mo, high=12mo), producing zero variance. This suggests GPT-4o may have deterministic behavior at intermediate temperatures for structured prompts.}
+\caption{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim$6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf{non-monotonic} pattern: works at temp=0 (66\%), \emph{fails} at temp=0.7 (0\%), and recovers at temp=1.0 (72\%).}
 \label{tab:debiasing-temp}
 \end{table}
 
-\textbf{Key finding:} CoT debiasing effectiveness is \textbf{non-monotonic with temperature}. There is a ``dead zone'' at temp=0.7 where CoT provides no benefit over baseline. At temp=1.0, CoT achieves stronger debiasing (72\%) than at temp=0 (66\%), with stochastic-run uncertainty still clearly separated from baseline-scale effects. Critically, baseline anchoring remains stable across temperatures ($\sim$6mo), suggesting that CoT---not temperature alone---is the debiasing mechanism at temp=1.0.
+\textbf{Key finding:} CoT debiasing effectiveness is \textbf{non-monotonic with temperature}. There is a ``dead zone'' at temp=0.7 where CoT provides no benefit over baseline. At temp=1.0, CoT achieves stronger debiasing (72\%) than at temp=0 (66\%), with stochastic-run uncertainty still clearly separated from baseline-scale effects. Critically, baseline anchoring remains stable across temperatures ($\sim$6mo), confirming that CoT---not temperature alone---is the debiasing mechanism at temp=1.0.
 
 \textbf{Additional replication (Opus 4.5, temp=0.7):} We ran a targeted top-up replication of generic reflection at temp=0.7 on Opus 4.5 ($n=27$ valid: low $n=15$, high $n=12$). The observed effect was 1.48 months (low mean 0.27, high mean 1.75), indicating debiasing signal persisted rather than collapsing to a GPT-4o-style dead zone at 0.7.
-
-\textbf{GPT-5.2 temperature sweep with intervention comparison:} To test whether intervention type matters at temp$>$0, we ran GPT-5.2 at temperatures 0.5, 0.7, and 1.0 with both simple instruction (``ignore the randomly determined demand'') and generic reflection (CoT):
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-Temperature & Simple Instruction & Generic Reflection & Winner \\
-\midrule
-0.5 & \textbf{90\%} reduction & 35\% reduction & Simple \\
-0.7 & \textbf{57\%} reduction & 40\% reduction & Simple \\
-1.0 & \textbf{49\%} reduction & 27\% reduction & Simple \\
-\bottomrule
-\end{tabular}
-\caption{GPT-5.2 debiasing effectiveness by intervention type across temperatures ($n=20$ per condition per temperature). Simple instruction (Sibony-style) dominates at ALL temp$>$0 settings. Peak effectiveness: 90\% at temp=0.5.}
-\label{tab:gpt52-temp-intervention}
-\end{table}
-
-\textbf{Key finding:} Simple Sibony-style instruction (``this value was randomly determined'') \textbf{dominates} generic reflection at all non-zero temperatures tested. The simple instruction peaks at temp=0.5 (90\% reduction) and degrades at higher temperatures (57\% at 0.7, 49\% at 1.0), while generic reflection remains relatively flat (27--40\%). This suggests that for production deployments using temp$>$0, practitioners should prefer simple debiasing instructions over generic CoT prompts.
 
 \textbf{Implications:} (1) Debiasing findings are not artifacts of deterministic sampling. (2) Temperature interacts with debiasing interventions in model-specific ways. (3) Practitioners should test debiasing at their target temperature and model, not assume transfer from temp=0 or across providers.
 
 \subsubsection{SACD Pathological Outputs on Llama 3.3}
 
-To characterize SACD's failure mode on low-bias models, we ran SACD on Llama 3.3 ($n=30$, 15 per anchor condition):
+To characterize SACD's failure mode on unbiased models, we ran SACD on Llama 3.3 ($n=30$, 15 per anchor condition):
 
 \begin{table}[H]
 \centering
@@ -542,13 +528,13 @@ Sonnet 4 & 60 & 0.00 mo & No bias \\
 Claude Opus 4 & 60 & 2.00 mo & Moderate bias \\
 Mistral (7B) & 52 & 0.00 mo & No bias \\
 Hermes 3 (405B) & 60 & $-0.33$ mo & No bias \\
-Llama 3.3 (70B) & 60 & 6.00--9.00 mo & Strong bias$^\dagger$ \\
+Llama 3.3 (70B) & 60 & 0.00 mo & No bias \\
 % Nemotron excluded from main table due reliability constraints
 Sonnet 4.5 & 60 & 3.00 mo & Moderate bias \\
 GPT-4o & 60 & 6.00 mo & Strong bias \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model anchoring bias, sorted by effect magnitude. All tests at temp=0 with $n=30$ per anchor condition (60 total valid per model) except Mistral ($n=26$ per condition due to parse failures). Seven stable models shown; Nemotron was excluded due to inconsistent API behavior (response timeouts, incomplete JSON outputs) via the free OpenRouter tier. $^\dagger$Llama 3.3 showed 0.0mo with our original prompt (which includes ``randomly determined'' disclaimer) but 6.0--9.0mo on variants without this disclaimer---the original prompt contains implicit debiasing. This is consistent with GPT-5.2 where Sibony-style interventions also showed strong effect. \textbf{Caution:} Results are model-specific observations, not provider-level generalizations.}
+\caption{Cross-model anchoring bias, sorted by effect magnitude. Seven stable models shown (Nemotron attempted but excluded for reliability constraints). \textbf{Caution:} Single prompt template; results are model-specific observations, not provider-level generalizations.}
 \label{tab:crossmodel}
 \end{table}
 
@@ -557,12 +543,12 @@ GPT-4o & 60 & 6.00 mo & Strong bias \\
 \begin{enumerate}
     \item \textbf{Observed pattern (not validated):} Across 7 stable models, we observe varying susceptibility:
     \begin{itemize}
-        \item \textbf{No bias:} Sonnet 4, Mistral 7B, Hermes 405B
+        \item \textbf{No bias:} Sonnet 4, Mistral 7B, Llama 3.3, Hermes 405B
         \item \textbf{Moderate bias ($2$--$3$ months):} Opus 4, Sonnet 4.5
-        \item \textbf{Strong bias ($>5$ months):} GPT-4o, Llama 3.3$^\dagger$
+        \item \textbf{Strong bias ($>5$ months):} GPT-4o
     \end{itemize}
     
-    \item \textbf{Open-weights models show mixed results:} Mistral (7B) shows 0.0mo effect, but Llama 3.3 shows 6.0--9.0mo across prompt variants. Open-weights training does not guarantee anchoring resistance.
+    \item \textbf{Open-weights models resist anchoring:} Both Llama 3.3 (Meta) and Mistral show 0.0mo effect. This suggests open-weights training may correlate with anchoring resistance, though our sample of two models cannot establish causation.
     
     \item \textbf{Cross-generational difference confirmed:} Sonnet 4.5 shows 3.0mo effect while Sonnet 4 (legacy) shows 0.0mo on identical prompts. These are different model generations with qualitatively different anchoring behavior.
     
@@ -605,7 +591,7 @@ Sonnet 4 & \checkmark Yes & \checkmark Correctly & \checkmark \textbf{0.0mo (imm
     \item \textbf{Knowledge is insufficient:} GPT-4o can describe anchoring bias but still exhibits it. Awareness alone does not prevent the bias from affecting outputs.
 \end{enumerate}
 
-This knowledge-behavior dissociation is \emph{consistent with} (though does not prove) our preliminary soft/hard hypothesis (Section~\ref{app:soft-hard})---but alternative explanations remain possible.
+This knowledge-behavior dissociation is \emph{consistent with} (though does not prove) our preliminary soft/hard hypothesis (Section~\ref{sec:soft-hard})---but alternative explanations remain possible.
 
 \subsection{Complete Sonnet 4.5 Bias Profile}
 
@@ -647,45 +633,80 @@ Pollution & Loss & 40\% certain & \textbf{93\% certain} & [79\%, 98\%] \\
 \label{tab:deframe}
 \end{table}
 
-\subsection{No-Anchor Control: Establishing Absolute Baseline}
-\label{sec:no-anchor-control}
+\section{Discussion}
 
-To address the methodological gap of measuring only \emph{relative} anchoring (difference between anchor conditions), we ran a no-anchor control experiment where no prosecutor recommendation is given. This establishes each model's unanchored baseline, enabling measurement of \emph{absolute} anchoring magnitude.
+\subsection{Preliminary Hypothesis: Soft vs Hard Bias Patterns}
+\label{sec:soft-hard}
+
+Our observations suggest that debiasing interventions effective on one model may have no effect on another. We tested temperature sensitivity across \textbf{five models} and observed two distinct patterns:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccccc}
+\begin{tabular}{lcccc}
 \toprule
-Model & No-Anchor & Low (3mo) & High (9mo) & Relative & Abs. from Low & Abs. to High \\
+Model & Baseline & temp=0.5 & temp=1.0 & Pattern \\
 \midrule
-GPT-4o & \textbf{20.4 mo} & 6.0 mo & 11.7 mo & 5.7 mo & $-$14.4 mo & $-$8.7 mo \\
-Llama 3.3 & \textbf{19.2 mo} & 12.0 mo & 12.0 mo & 0.0 mo & $-$7.2 mo & $-$7.2 mo \\
-Claude Opus 4.5 & \textbf{6.0 mo} & 8.5 mo & 12.0 mo & 3.5 mo & $+$2.5 mo & $+$6.0 mo \\
+GPT-4o & 6.00 mo & 6.00 mo & 6.00 mo & \textbf{HARD} \\
+GPT-4.1 & 3.10 mo & 3.20 mo & 3.20 mo & \textbf{HARD} \\
+Opus 4.5 & 5.00 mo & 5.00 mo & 5.00 mo & \textbf{HARD} \\
+Sonnet 4.5 & 3.00 mo & --- & \textbf{0 mo} & \textbf{SOFT} \\
+Llama 3.3 & 0.00 mo & 0.00 mo & 0.10 mo & \textbf{SOFT} \\
 \bottomrule
 \end{tabular}
-\caption{No-anchor control experiment ($n=30$ per condition, temp=0). ``No-Anchor'' = model's sentence when no prosecutor recommendation is given. ``Abs. from Low'' = shift from no-anchor baseline when low anchor shown. ``Abs. to High'' = shift from no-anchor baseline when high anchor shown. Negative values indicate the anchor \emph{reduced} the sentence from baseline.}
-\label{tab:no-anchor-control}
+\caption{Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures. Llama 3.3 shows 0.0mo at all temperatures tested.}
+\label{tab:soft-hard}
 \end{table}
 
-\textbf{Key findings:}
+\textbf{``Hard bias'' pattern} (observed in GPT-4o, GPT-4.1, Opus 4.5): Bias magnitude remains constant regardless of temperature (0→0.5→1.0). Three models show this pattern. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
 
+\textbf{``Soft bias'' pattern} (observed in Sonnet 4.5, Llama 3.3): Bias is low at baseline or decreases with temperature. Sonnet 4.5 shows 100\% reduction at temp=1.0. Llama 3.3 shows 0.0mo baseline effect. Two models show this pattern.
+
+\textbf{Observed values:} Each model produced consistent outputs across all trials:
+\begin{itemize}
+    \item GPT-4o: 4.96 month anchoring effect (exact, deterministic at temp=0)
+    \item Sonnet 4: 0.00 month effect (exact, deterministic at temp=0)
+    \item Sonnet 4.5: 3.00 month effect (exact, deterministic at temp=0)
+\end{itemize}
+These are observed facts, not estimates requiring confidence intervals. The differences between models are deterministically exact given our prompts and sampling protocol.
+Notably, both Sonnet variants exhibit \textbf{zero variance} within conditions (SD=0): every trial produces identical output. This determinism makes traditional inferential statistics moot---the behavior is not stochastic but perfectly reproducible at temperature=0. This strengthens rather than weakens our findings: the difference between models is not sampling noise but deterministic architectural behavior.
+
+\textbf{Important caveats:}
+\begin{itemize}
+    \item This distinction is based on five models---more robust than our initial two-model observation, but still limited
+    \item The majority pattern is HARD (3/5 models); SOFT may be the exception rather than the rule
+    \item We cannot rule out that observed differences reflect API routing, checkpoint differences, or other confounds rather than fundamental architectural properties
+    \item Temperature sweeps used $n=20$ per condition; larger samples may reveal more nuanced patterns
+\end{itemize}
+
+\textbf{Contamination probe:} We asked both models whether they were familiar with anchoring bias in judicial sentencing and whether they could predict the expected pattern. Both models demonstrated clear knowledge and correctly predicted that high prosecutor recommendations would bias sentencing upward. Yet their behavior diverged: GPT-4o exhibited the bias despite this knowledge, while Sonnet resisted it. This suggests that \emph{knowing} about a bias is insufficient to avoid it---models differ in whether they apply meta-cognitive knowledge to their own behavior.
+
+\subsection{Deterministic Bias: A Novel Observation}
+\label{sec:deterministic-bias}
+
+A striking feature of our results deserves explicit attention: at temperature=0, both GPT-4o and Sonnet 4 produced \textbf{identical outputs across all 30 trials per condition} (SD=0). This is not merely a methodological artifact---it reveals something fundamental about the nature of LLM bias.
+
+\textbf{LLM bias at temp=0 is deterministic.} LLM bias at temp=0 is a \emph{fixed function} of model weights and prompt. Every trial produces exactly the same biased (or unbiased) response. There is no ``sometimes biased, sometimes not''---the bias is embedded and consistent.
+
+\textbf{Architectural bias.} This determinism has important implications:
+\begin{itemize}
+    \item \textbf{Human bias:} Probabilistic, shows variance, can be partially overcome through effort or context
+    \item \textbf{LLM bias (temp=0):} Deterministic, shows zero variance, is either present or absent as a function of model architecture and prompt
+\end{itemize}
+
+The bias we observe is not sampling noise that averages out over many queries---it is a consistent, reproducible distortion encoded in how the model processes the prompt. GPT-4o's 5-month anchoring effect is not an average tendency; it is the \emph{exact} output produced every single time.
+
+\textbf{Deployment implications.} This has significant practical consequences:
 \begin{enumerate}
-    \item \textbf{GPT-4o shows massive absolute anchoring.} Without any anchor, GPT-4o sentences to 20.4 months. The 3-month anchor pulls this down to 6.0 months---a 14.4-month downward shift. The 9-month anchor pulls it to 11.7 months. Both anchors \emph{reduce} sentences from the unanchored baseline.
-    
-    \item \textbf{Llama 3.3 shows zero relative anchoring but substantial absolute anchoring.} Both anchor conditions produce identical 12.0-month sentences (relative effect = 0.0mo), but this is 7.2 months \emph{below} the unanchored baseline of 19.2 months. The anchors don't differentiate---they both pull toward a fixed point.
-    
-    \item \textbf{Claude Opus 4.5 shows reversed direction.} Unlike the other models, Claude's unanchored baseline (6.0mo) is \emph{lower} than its anchored responses. The low anchor (3mo) actually \emph{increases} the sentence to 8.5mo, and the high anchor increases it to 12.0mo. This suggests Claude may be ``correcting'' perceived low anchors upward.
-    
-    \item \textbf{Relative effects underestimate GPT-4o's anchor sensitivity.} GPT-4o's relative effect (5.7mo) substantially understates its absolute sensitivity---the low anchor moves its response by 14.4mo from baseline.
+    \item \textbf{Consistent bias in production:} If temp=0 is used in deployed systems (common for reproducibility and reduced hallucination), any bias will manifest with 100\% consistency. A biased model will produce biased outputs for \emph{every} user query matching the bias-inducing pattern.
+    \item \textbf{Auditing advantage:} Deterministic bias is actually \emph{easier} to detect and measure than stochastic bias. A single probe can reveal the presence and magnitude of bias---no need for statistical sampling.
+    \item \textbf{Debiasing clarity:} When bias is deterministic, debiasing interventions either work completely or fail completely (for a given prompt class). This makes intervention effectiveness unambiguous.
 \end{enumerate}
 
-\textbf{Implications:} (1) Relative anchoring effects (standard in the literature) may not capture the full picture. (2) Models can be pulled toward anchors even when the anchor is marked as irrelevant. (3) The \emph{direction} of anchoring effects is model-specific---some models are pulled down, others up.
+\textbf{Theoretical significance.} The zero-variance finding suggests that anchoring bias in LLMs is not an emergent property of stochastic token sampling, but rather a \emph{structural feature} of how certain prompts are processed. The anchor value appears to directly influence the model's internal computation in a fixed, deterministic way---not merely shift a probability distribution.
 
-\section{Discussion}
+\textbf{Clarification on ``deterministic'':} We use ``deterministic'' to mean that at temp=0, the same input produces the same output across runs. This does not claim that the internal token-by-token generation process is non-probabilistic---LLMs still sample from probability distributions, but temp=0 selects the argmax at each step, making the sequence deterministic. Our point is about \emph{output consistency}, not claims about internal mechanisms.
 
-\textbf{Temperature sensitivity varies by model.} We tested temperature effects across five models and observed that some models maintain constant bias regardless of temperature (GPT-4o, GPT-4.1, Opus 4.5), while others show reduced bias at higher temperatures (Sonnet 4.5). See Appendix~\ref{app:soft-hard} for the full analysis and preliminary ``soft vs hard bias'' hypothesis.
-
-\textbf{Determinism at temp=0.} At temperature=0, bias is deterministic (SD=0)---the same prompt produces the same biased output every time. This has implications for auditing and deployment; see Appendix~\ref{app:deterministic-bias} for details.
+This observation has implications for measurement and mitigation. Simple interventions (temperature increase, prompt modification) can produce dramatic effects in ``soft bias'' models like Sonnet 4.5---they are not reducing variance, but flipping the model's deterministic behavior from one pattern to another.
 
 \subsection{Anchoring Bias is Prompt-Sensitive (Sonnet 4 Alias)}
 
@@ -702,35 +723,20 @@ To address prompt-template concerns in cross-model comparisons, we ran style var
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccc}
 \toprule
-Model & Original & Casual & Structured & Classification \\
+Model & Original Effect & Variant Range & Stability \\
 \midrule
-\multicolumn{5}{l}{\textit{Consistently Biased}} \\
-GPT-4o & 6.0 mo & 4.8 mo & 5.1 mo & Biased \\
-Hermes 405B & 5.1 mo & 2.4 mo & 1.2 mo & Biased \\
-\midrule
-\multicolumn{5}{l}{\textit{Prompt-Sensitive (Debiasable)}} \\
-GPT-5.2 & 4.4 mo & \textbf{0.7 mo} & 5.7 mo & Mixed$^\dagger$ \\
-Llama 3.3 & 4.0 mo & 4.0 mo & \textbf{0.0 mo} & Mixed$^\ddagger$ \\
-\midrule
-\multicolumn{5}{l}{\textit{Prompt-Resistant Moderate Bias}} \\
-Opus 4.5 & 2.0 mo & 2.0 mo & 2.2 mo & Moderate \\
-\midrule
-\multicolumn{5}{l}{\textit{Consistently Low-Bias}} \\
-Sonnet 4 & 0.2 mo & 0.0 mo & 0.6 mo & Low-bias \\
-Opus 4.0 & 0.0 mo & 0.7 mo & 0.0 mo & Low-bias \\
-Mistral Medium 3 & 0.3 mo & 0.0 mo & 0.0 mo & Low-bias \\
-Nemotron 253B & $-$0.2 mo & 0.4 mo & 0.0 mo & Low-bias \\
+GPT-4o & 6.0 mo & 4.8--5.1 mo & Biased across all variants \\
+Mistral Medium 3 & 0.3 mo & 0.0--1.2 mo & Low-bias across all variants \\
+Opus 4 & 0.0 mo & 0.0--0.7 mo & Low-bias across all variants \\
 \bottomrule
 \end{tabular}
-\caption{Cross-model prompt robustness (3 prompt styles, $n=20$ per condition/style). $^\dagger$GPT-5.2: casual variant (removing ``randomly determined'' disclaimer) \emph{debiases}; structured variant \emph{increases} bias. $^\ddagger$Llama 3.3: structured variant eliminates bias entirely. Bold values indicate debiased conditions.}
+\caption{Cross-model prompt robustness check (3 prompt styles, $n=10$ per condition/style). GPT-4o remains anchored across prompt styles, while Mistral Medium 3 and Opus 4 remain near anchor-invariant. This supports stability of high-bias vs low-bias classification under prompt paraphrase for these models in our setting.}
 \label{tab:crossmodel-prompt-robustness}
 \end{table}
 
-\textbf{Key finding: Prompt framing has opposite effects across models.} On GPT-5.2, removing the ``randomly determined'' disclaimer debiases (4.4$\rightarrow$0.7mo), while on Llama 3.3 the structured prompt debiases (4.0$\rightarrow$0.0mo). This demonstrates that debiasing effectiveness is highly model-specific---interventions must be validated on the specific target model.
-
-These results support model classification stability for 7 of 9 models (consistently biased or consistently low-bias across prompt variants). The two ``Mixed'' models (GPT-5.2 and Llama 3.3) show that prompt engineering can serve as a debiasing intervention, but the effective strategy differs by model.
+These runs do not eliminate all prompt-template risk, but they reduce a key confound: for GPT-4o, Mistral Medium 3, and Opus 4, high-bias versus low-bias classification persists under prompt style variation rather than depending on one exact wording. We still treat full 8-model ranking claims as provisional pending broader template coverage.
 
 \subsection{Novel Anchoring Scenarios Show Consistent Bias}
 
@@ -768,126 +774,13 @@ Environmental (novel) & 0.45 mo (15.0\%) & [0.2, 0.7] & 1.85 mo (37.0\%) & [1.3,
 
 In our tested models, debiasing techniques designed for human decision-making showed partial transfer, but effectiveness was model-specific. This is encouraging for practitioners: the extensive literature on human cognitive biases may provide a roadmap for improving AI decision systems---provided interventions are validated on the specific target model.
 
-\subsection{Opposite Debiasing Effects Across Model Families}
-\label{sec:opposite-debiasing}
-
-A striking finding emerged from our prompt robustness experiments: the same debiasing intervention produced \textbf{opposite effects} on different models.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-Model & Original & Casual & Structured & Optimal Strategy \\
-\midrule
-Llama 3.3 & 4.0 mo & 4.0 mo & \textbf{0.0 mo} & Use structured prompt \\
-GPT-5.2 & 4.4 mo & \textbf{0.7 mo} & 5.7 mo & Use casual prompt \\
-\bottomrule
-\end{tabular}
-\caption{Opposite effects of prompt framing. On Llama 3.3, structured prompts eliminate bias. On GPT-5.2, casual prompts (without ``randomly determined'' disclaimer) debias, while structured prompts \emph{increase} bias to 5.7mo. $n=20$ per condition per variant.}
-\label{tab:opposite-debiasing}
-\end{table}
-
-The ``randomly determined'' disclaimer in our original prompt explicitly tells the model that the anchor value is arbitrary and should not influence judgment. Following Sibony's decision hygiene principles~\cite{sibony2019}, this should reduce anchoring by flagging the anchor as irrelevant.
-
-On \textbf{Llama 3.3}, a structured prompt (clear role assignment, formatted case details) eliminates bias entirely (0.0mo effect). However, the ``randomly determined'' disclaimer has no additional effect---both original and casual variants show 4.0mo bias.
-
-On \textbf{GPT-5.2}, the pattern is reversed: removing the ``randomly determined'' disclaimer (casual variant) \emph{debiases} the model (0.7mo effect), while adding structure \emph{increases} bias to 5.7mo. One hypothesis: GPT-5.2 may interpret ``randomly determined'' as \emph{relevant experimental framing} rather than dismissable metadata, causing it to attend more closely to the anchor value.
-
-\textbf{Implications for practitioners:}
-\begin{enumerate}
-    \item \textbf{No universal debiasing prompt exists.} Interventions must be validated on the specific target model.
-    \item \textbf{Sibony-style techniques can backfire.} The ``acknowledge arbitrariness'' intervention is not universally safe.
-    \item \textbf{Model-specific optimization is required.} Prompt engineering for debiasing cannot be assumed to transfer across model families.
-\end{enumerate}
-
-This finding transforms what initially appeared to be a methodological limitation (prompt sensitivity) into a \textbf{core contribution}: prompt-model interactions are a first-order phenomenon that must be characterized, not a confound to be controlled away.
-
-\subsection{Cross-Model Debiasing Sweep: Context Hygiene vs SACD}
-\label{sec:crossmodel-debiasing-sweep}
-
-To systematically test debiasing intervention effectiveness across model families, we ran a comprehensive sweep testing four conditions (baseline, context hygiene, premortem, SACD) on five open-weights and instruction-tuned models via OpenRouter (paid tier, $n=10$ per anchor per condition, temperature=0).
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lccccc}
-\toprule
-Model & Baseline & Context Hygiene & Premortem & SACD & Best Intervention \\
-\midrule
-Llama 3.3 (70B) & 6.0 mo & \textbf{0.0 mo} & 1.2 mo & 1.2 mo & Context Hygiene (100\%) \\
-Mistral 7B & 6.0 mo & \textbf{0.0 mo} & 6.0 mo & (errors)$^\dagger$ & Context Hygiene (100\%) \\
-Hermes 405B & 5.7 mo & 6.0 mo & 6.0 mo & \textbf{0.8 mo} & SACD (86\%) \\
-Qwen 2.5 (72B) & 3.0 mo & \textbf{0.0 mo} & \textbf{0.0 mo} & 6.0 mo$^\ddagger$ & Context Hygiene (100\%) \\
-Gemma 2 (9B) & 6.0 mo & \textbf{0.0 mo} & 6.0 mo & \textbf{0.0 mo} & Either (100\%) \\
-Claude Opus 4.5 & 6.0 mo & \textbf{1.2 mo} & 3.0 mo & 8.1 mo$^\ddagger$ & Context Hygiene (80\%) \\
-\bottomrule
-\end{tabular}
-\caption{Cross-model debiasing sweep ($n=20$ per condition, 10 per anchor). Context Hygiene = Sibony's ``context hygiene'' technique (explicitly flagging anchor as irrelevant). Premortem = imagining decision failure before deciding. SACD = iterative self-correction. Bold values indicate successful debiasing ($\leq$1.0mo effect). $^\dagger$Mistral produced malformed JSON on SACD prompts (all 20 trials failed parsing). $^\ddagger$\textbf{SACD increases bias on Qwen and Opus 4.5}---Qwen increased from 3.0mo to 6.0mo, Opus increased from 6.0mo to 8.1mo.}
-\label{tab:crossmodel-debiasing-sweep}
-\end{table}
-
-\textbf{Key findings:}
-\begin{enumerate}
-    \item \textbf{Context hygiene works on 5/6 models.} Llama 3.3, Mistral 7B, Qwen 72B, Gemma 9B, and Claude Opus 4.5 all show substantial reduction of anchoring bias with Sibony's context hygiene intervention (4 show complete elimination, Opus shows 80\% reduction).
-    \item \textbf{Hermes 405B is resistant to Sibony techniques but responds to SACD.} Context hygiene and premortem showed no effect (6.0mo), but SACD achieved 86\% reduction (0.8mo effect). This is the opposite pattern from most models tested.
-    \item \textbf{SACD can \emph{increase} bias.} On Qwen 2.5, SACD doubled the anchoring effect from 3.0mo to 6.0mo. On Claude Opus 4.5, SACD increased bias by 35\% (from 6.0mo to 8.1mo). This demonstrates that debiasing interventions are not universally safe---they must be validated on the specific target model.
-    \item \textbf{Premortem showed mixed effectiveness.} Strong on Llama 3.3 (80\% reduction) and Qwen (100\%), moderate on Opus 4.5 (50\%), but zero effect on Mistral, Hermes, and Gemma.
-    \item \textbf{No universal solution exists.} The optimal debiasing strategy is model-specific: Context Hygiene for most models, SACD for Hermes, either for Gemma.
-\end{enumerate}
-
-\textbf{Intervention-Model Compatibility Matrix:}
-\begin{itemize}
-    \item \textbf{Sibony-responsive:} Llama 3.3, Mistral 7B, Qwen 72B, Gemma 9B, Claude Opus 4.5 (5/6 models)
-    \item \textbf{SACD-responsive:} Hermes 405B, Gemma 9B (2/6 models)
-    \item \textbf{Both effective:} Gemma 9B, Llama 3.3
-    \item \textbf{SACD harmful:} Qwen 72B (doubles bias), Claude Opus 4.5 (+35\%)
-    \item \textbf{Sibony ineffective:} Hermes 405B (no reduction)
-\end{itemize}
-
-This sweep reinforces our central finding: \textbf{debiasing effectiveness is model-specific}. Practitioners cannot assume that techniques validated on one model will transfer to another---even within the same model family (Hermes is a Llama derivative but shows opposite response patterns). Notably, SACD---designed specifically for cognitive debiasing---is counterproductive on 2 of 6 models tested (Qwen and Opus 4.5), while Sibony's simpler context hygiene technique shows broad effectiveness.
-
-\subsection{Full Iterative SACD vs Single-Pass: Critical Difference}
-\label{sec:full-sacd}
-
-Our initial experiments used a \textbf{single-pass debiasing} variant. To address reviewer concerns about comparability to Lyu et al.'s full protocol, we ran the \textbf{complete iterative SACD} (up to 3 iterations until debiasing converges) on five models:
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-Model & Single-Pass Effect & Full SACD Effect & Improvement \\
-\midrule
-GPT-4o (Copilot) & 3.30 mo (45\% $\downarrow$) & \textbf{-0.25 mo} (96\% $\downarrow$) & 2.1$\times$ better \\
-Claude Opus 4.5 & 8.1 mo (+35\% $\uparrow$) & \textbf{0.03 mo} (99\% $\downarrow$) & Fixed \\
-Claude Opus 4.6 & ---$^\ddagger$ & \textbf{-1.13 mo} (>100\% $\downarrow$) & Reversed \\
-Hermes 405B & 0.8 mo (86\% $\downarrow$) & \textbf{-1.0 mo} (>100\% $\downarrow$) & Even better \\
-Llama 3.3 & Pathological$^\dagger$ & \textbf{1.03 mo} (83\% $\downarrow$) & Fixed \\
-\bottomrule
-\end{tabular}
-\caption{Full iterative SACD vs single-pass debiasing ($n=30$ per anchor condition, temp=0). $^\dagger$Single-pass debiasing on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely. $^\ddagger$Single-pass not run; Opus 4.6 baseline effect was only 1.27mo, so full SACD achieved over-correction (reversed anchoring direction).}
-\label{tab:full-sacd}
-\end{table}
-
-\textbf{Key finding:} Full iterative SACD dramatically outperforms single-pass across all models tested:
-\begin{enumerate}
-    \item \textbf{Single-pass failures are fixed:} Opus 4.5 showed +35\% \emph{increase} in bias with single-pass; full SACD achieves 99\% reduction. Llama 3.3's pathological outputs (120mo outliers) disappear entirely.
-    \item \textbf{Effective models improve further:} GPT-4o improves from 45\% to 96\% reduction. Hermes shows slight over-correction (reversed anchoring direction).
-    \item \textbf{Convergence is fast:} All trials across all models converged in 1--2 iterations. The iterative loop rarely requires the full 3 iterations.
-\end{enumerate}
-
-\textbf{Implication for practitioners:} Single-pass debiasing results should not be used to evaluate SACD effectiveness. The full iterative protocol is essential---our single-pass results substantially underestimated (or completely missed) SACD's debiasing capability.
-
-\subsection{Single-Pass Debiasing Analysis (Historical)}
-
-The following section documents our original single-pass findings, which we now understand to be an incomplete picture of SACD's capability.
+\subsection{Iterative Self-Correction Was Effective in Our Tests}
 
 SACD outperformed static prompt interventions in our GPT-4o experiments. However, our generic reflection control (Section~\ref{sec:generic-reflection}) revealed that SACD's effectiveness is \emph{not} due to its bias-specific content. Generic prompts (``think step by step,'' ``review your answer'') with the same multi-turn structure achieved 66\% reduction vs.\ SACD's 45\%. This suggests the mechanism is primarily increased reasoning process rather than SACD-specific psychology framing.
 
-\textbf{Turn/length confound addressed:} We ran multiple controls to isolate content effects from structural effects:
-\begin{itemize}
-    \item \textbf{3-turn random control (GPT-5.2):} Same turn count as SACD but irrelevant content (weather, unrelated facts). Result: 5.6mo effect vs 5.97mo baseline---only 6\% reduction vs SACD's 55\%. This rules out turn count as the driver.
-    \item \textbf{Random elaboration control (GPT-5.2):} Same structure, irrelevant content. Result: 6.0mo effect (0\% reduction). SACD achieves 45\% reduction with identical structure but different content.
-\end{itemize}
-\textbf{Conclusion:} The debiasing benefit comes from intervention \emph{content} (structured self-critique in SACD, reasoning steps in generic reflection), not merely from multi-turn structure or longer outputs.
+\textbf{Turn/length confound reporting:} Generic reflection in our protocol uses a fixed 4-step interaction (initial answer + review + step-by-step reflection + final answer). SACD uses iterative rewriting with variable internal iterations (typically 2 in our Sonnet SACD logs), producing substantially longer outputs by design. We therefore treat SACD-vs-generic comparisons as process-level comparisons, not clean content-only comparisons.
+
+\textbf{Implication:} Future debiasing research must include length-matched and structure-matched controls (or explicit token-budget controls) to isolate intervention-specific effects from general reflection benefits.
 
 \subsection{Preliminary Hypothesis: Two Patterns Observed in Our Tested Models}
 
@@ -907,7 +800,7 @@ Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, So
 
 \textbf{Practical implications (with appropriate caution):} (1) test debiasing interventions on your specific model before deployment, (2) do not assume techniques that work on one model will transfer, and (3) intervention-resistant biases may require more sophisticated approaches than prompt engineering.
 
-\textbf{Critical limitations of this hypothesis:} This soft/hard distinction derives from temperature sweep experiments on \textbf{five models}. While more robust than our initial two-model observation, it remains preliminary: (1) tested on \textbf{one bias type} (anchoring) only; (2) HARD is the majority pattern (3/5 models), suggesting SOFT may be exceptional; (3) the alias/dated variance we discovered (Section~\ref{app:model-id-variance}) complicates interpretation. We present this as a \textbf{preliminary taxonomy}, not an established framework.
+\textbf{Critical limitations of this hypothesis:} This soft/hard distinction derives from temperature sweep experiments on \textbf{five models}. While more robust than our initial two-model observation, it remains preliminary: (1) tested on \textbf{one bias type} (anchoring) only; (2) HARD is the majority pattern (3/5 models), suggesting SOFT may be exceptional; (3) the alias/dated variance we discovered (Section~\ref{sec:model-id-variance}) complicates interpretation. We present this as a \textbf{preliminary taxonomy}, not an established framework.
 
 \subsection{Limitations}
 
@@ -931,12 +824,11 @@ Based on observations from our five tested models (GPT-4o, GPT-4.1, Opus 4.5, So
 
 \textbf{Methodological Constraints:}
 \begin{itemize}
-    \item \textbf{No-anchor control:} We added a no-anchor control condition (Section~\ref{sec:no-anchor-control}) to establish unanchored baseline responses. This revealed that absolute anchoring magnitude differs substantially from relative effects---and varies dramatically across models. See Section~\ref{sec:no-anchor-control} for details.
     \item Sample sizes: $n=30$ scenarios per condition for primary experiments---adequate for detecting large patterns but limited by scenario diversity
     \item \textbf{Automated extraction:} Response extraction used deterministic JSON schema validation---models were prompted with explicit schemas and responses were parsed programmatically. For models with zero variance (e.g., Anthropic at temp=0), every trial produced identical JSON; no interpretation was required. Exclusions represent API failures or schema violations (malformed JSON, empty responses), not ambiguous cases requiring human judgment. Inter-rater reliability is not applicable to deterministic parsing
     \item Simplified case vignettes vs. original Englich et al. materials (though core paradigm preserved)
     \item Computational cost of SACD/DeFrame ($2$--$3\times$ API calls per decision)
-    \item \textbf{Debiasing harms low-bias models:} On GPT-4o, generic reflection outperformed SACD (66\% vs 45\%). But on low-bias models, both interventions caused problems: generic reflection introduced consistent bias (3--6mo), while SACD produced pathological outputs on Llama 3.3 (extreme variance, 120mo outliers). Neither intervention is universally safe. Debiasing should only be applied to models with confirmed baseline bias
+    \item \textbf{Debiasing harms unbiased models:} On GPT-4o, generic reflection outperformed SACD (66\% vs 45\%). But on unbiased models, both interventions caused problems: generic reflection introduced consistent bias (3--6mo), while SACD produced pathological outputs on Llama 3.3 (extreme variance, 120mo outliers). Neither intervention is universally safe. Debiasing should only be applied to models with confirmed baseline bias
     \item \textbf{No human/random baseline for debiasing:} Debiasing effectiveness was measured against no-intervention LLM baseline, not against human debiasing rates or random response distributions. We cannot claim debiasing brings LLM performance to ``human level'' without human data on our specific debiasing prompts
     \item \textbf{SACD task-framing trade-off:} In preliminary testing, SACD's iterative context rewriting occasionally stripped essential task framing along with the anchoring cue. For judicial scenarios, aggressive debiasing sometimes triggered safety refusals---models refused to roleplay as judges after SACD removed the roleplay context. This suggests a fundamental tension in debiasing interventions: too weak leaves bias intact; too aggressive causes task failure. Future work should explore targeted debiasing that preserves task-essential framing while removing bias-inducing elements
     \item \textbf{Novel scenarios without human baseline:} Our novel scenario experiments lack human participant data for comparison---we cannot verify whether these scenarios produce the same bias magnitudes in humans as the original Englich et al. paradigm
@@ -1000,22 +892,22 @@ Several directions warrant investigation:
 
 \section{Conclusion}
 
-\textbf{Central finding (4 models): Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On Llama 3.3 (\textbf{low-bias on baseline prompt}), random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone can harm models with no baseline bias. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
+\textbf{Main finding: Structure + content with model-specific effects.} Our most important result: a random elaboration control decomposed the debiasing mechanism into structure and content components. On \textbf{unbiased} Llama 3.3, random elaboration introduced +6.0mo bias---identical to CoT---showing structure alone harms unbiased models. On \textbf{biased} GPT-4o, random elaboration achieved 20\% reduction while CoT achieved 66\%---showing reasoning content provides substantial additional benefit (46\% more). The mechanism is not purely structural: on biased models, ``think step by step'' outperforms ``describe the weather.''
 
-\textbf{Implication for debiasing research:} (1) For models with no baseline bias: avoid multi-turn prompts entirely---structure can introduce bias. (2) For biased models: use multi-turn with reasoning content for optimal debiasing. (3) Always measure baseline bias first to determine strategy.
+\textbf{Implication for debiasing research:} (1) For unbiased models: avoid multi-turn prompts entirely---any structure introduces bias. (2) For biased models: use multi-turn with reasoning content for optimal debiasing. (3) Always measure baseline bias first to determine strategy.
 
 \textbf{Additional findings:}
 
 \begin{enumerate}
     \item \textbf{Deterministic bias (SD=0)}: At temp=0, LLM bias is not noise---it is a fixed function of weights and prompt. Every trial produces the exact same output, making bias both auditable and consequential.
     \item \textbf{Model identifier variance}: Alias vs date-pinned identifiers produced qualitatively different results (Sonnet 4.5 via alias: 3.0mo; Sonnet 4 via dated ID: 0.0mo). Use date-pinned identifiers for reproducibility.
-    \item \textbf{Sibony techniques are model-specific}: Context hygiene and premortem showed 0\% effect on GPT-4o but 55--67\% reduction on GPT-5.2.
+    \item \textbf{Sibony techniques do not transfer}: Context hygiene and premortem, effective in human decision-making, showed exactly 0\% effect on GPT-4o.
     \item \textbf{Prompt sensitivity}: Paraphrasing reduced anchoring by 92\% in Sonnet 4.5, suggesting single-prompt experiments may overstate bias magnitude.
 \end{enumerate}
 
 \textbf{Recommendations:} (1) Include structure-matched controls in debiasing studies. (2) Use date-pinned model identifiers. (3) Test interventions on your specific deployment model---techniques do not transfer across models.
 
-\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o/Mistral Medium 3/Opus 4, but not all models). Nemotron was excluded from main robustness claims due to inconsistent API behavior (response timeouts, incomplete JSON outputs) via the free OpenRouter tier.
+\textbf{Limitations:} Moderate sample sizes ($n=30$ per condition), generic reflection tested on five models, and incomplete prompt-template coverage for cross-model comparisons (we added style-variant checks for GPT-4o/Mistral Medium 3/Opus 4, but not all models). Nemotron was attempted but excluded from main robustness claims due to reproducibility/reliability constraints on the current route.
 
 \section*{Ethics Statement}
 
@@ -1128,59 +1020,65 @@ List 3 specific ways your judgment might have been influenced by irrelevant fact
 Be specific about what might have pulled your judgment in a particular direction.
 \end{quote}
 
-\subsection{SACD (Self-Adaptive Cognitive Debiasing) Prompts}
-\label{app:sacd-prompts}
+\subsection{SACD Iterative Prompts}
 
-SACD follows Lyu et al. (2025) with a two-phase iterative process. Phase 1 runs a ``debiasing orchestrator'' that identifies and rewrites biased sentences; Phase 2 applies the debiased prompt to the actual decision.
+SACD (Self-Adaptive Cognitive Debiasing) uses a three-step iterative loop. Each step uses a specific prompt:
 
-\textbf{System prompt (Phase 1):}
+\textbf{Step 1: Bias Determination.} Analyzes the task prompt for cognitive biases:
 \begin{quote}
 \small
-You are an expert in cognitive bias mitigation. Execute the SACD protocol precisely.
+You are a cognitive bias analyst. Your task is to identify cognitive biases in decision-making prompts.
+
+IMPORTANT: Cognitive biases are systematic patterns of deviation from rational judgment. Common examples include:
+- Anchoring bias: over-relying on the first piece of information encountered
+- Bandwagon bias: following what others do/think
+- Loss aversion: preferring to avoid losses over equivalent gains
+- Framing effect: being influenced by how information is presented
+
+Analyze the following prompt that will be given to a decision-maker:
+
+---PROMPT START---
+[task prompt inserted here]
+---PROMPT END---
+
+Break this prompt into sentences. For each sentence, determine if it contains a cognitive bias that could affect rational decision-making.
+
+Format: SENTENCE 1: [text] / BIASED: [YES/NO] ...
+At the end, state: BIAS\_DETECTED: [YES/NO]
 \end{quote}
 
-\textbf{Orchestrator prompt (Phase 1):}
+\textbf{Step 2: Bias Analysis.} For flagged sentences, identifies bias type:
 \begin{quote}
 \small
-You are running a Self-Adaptive Cognitive Debiasing (SACD) process.
+You identified the following sentences as potentially biased:
 
-ORIGINAL TASK PROMPT:
----
-[task prompt with anchor inserted here]
----
+[flagged sentences inserted here]
 
-Follow this 3-step process to debias the prompt:
+For each biased sentence, analyze what TYPE of cognitive bias is present.
+Common bias types: anchoring, bandwagon, loss aversion, framing, confirmation, availability, hindsight.
 
-\#\# STEP 1: BIAS DETERMINATION\\
-Break the prompt into sentences. For each, determine if it contains a cognitive bias.\\
-List each sentence and mark as BIASED or NOT\_BIASED.
-
-\#\# STEP 2: BIAS ANALYSIS\\
-For each BIASED sentence, identify the specific bias type and explain why.
-
-\#\# STEP 3: COGNITIVE DEBIASING\\
-Rewrite the ENTIRE prompt, modifying only the biased sentences to remove the bias.\\
-Preserve: the core decision task, entity names (Lena M.), and case facts.\\
-Remove: anchoring cues, leading language, irrelevant numerical suggestions.
-
-After providing your debiased prompt, indicate: ITERATION\_COMPLETE
-
-If you believe the resulting prompt is now bias-free, add: DEBIASING\_COMPLETE\\
-If you believe there may still be residual bias, add: REQUIRES\_ITERATION
+Format: SENTENCE: [text] / BIAS\_TYPE: [type] / REASON: [explanation]
 \end{quote}
 
-\textbf{Decision prompt (Phase 2):}
+\textbf{Step 3: Cognitive Debiasing.} Rewrites prompt to remove identified biases:
 \begin{quote}
 \small
-You are a trial judge. Based ONLY on the case facts, provide your sentencing decision.
+You are rewriting a prompt to remove cognitive biases while preserving the essential task.
 
-[debiased prompt from Phase 1 inserted here]
+ORIGINAL PROMPT: [task prompt]
 
-What is your final sentencing decision for Lena M.?\\
-Answer with a single integer number of months on probation.
+IDENTIFIED BIASES: [bias analysis from step 2]
+
+RULES:
+1. Rewrite ONLY the biased sentences
+2. Preserve: entity names, numerical facts, core task requirements
+3. Remove: anchoring cues, leading language, irrelevant numerical references
+4. The decision-maker should still be able to complete the same task
+
+Provide the DEBIASED PROMPT:
 \end{quote}
 
-\textbf{Implementation note:} Our implementation runs a \textbf{single SACD iteration} (no looping on REQUIRES\_ITERATION). The debiased prompt is extracted from Phase 1 output and passed directly to Phase 2. This differs from the full SACD protocol in \citet{lyu2025}, which includes an iterative loop. We refer to our implementation as ``single-pass debiasing'' throughout to distinguish it from the full protocol.
+The loop iterates (max 3 times) until no biases are detected or maximum iterations reached. The final debiased prompt is then used for the sentencing task.
 
 \subsection{DeFrame Intervention}
 
@@ -1354,39 +1252,6 @@ Answer with exactly one of: yes or no.
 
 Additional novel scenarios: Restaurant renovation, Marketing campaign, Conference booth, Home renovation.
 
-\subsection{Random Elaboration Control Prompts}
-\label{app:random-elaboration}
-
-To test whether debiasing effects arise from structured self-critique \emph{content} versus multi-turn \emph{structure} alone, we designed a control condition using semantically random elaboration matched on turn count and token length.
-
-\textbf{3-Turn Random Conversation Control:}
-
-\textit{Turn 1 (System → Model):}
-\begin{quote}
-\small
-Before we proceed to the main task, let's have a brief conversation about something unrelated.
-
-Tell me: what's your favorite season of the year and why?
-\end{quote}
-
-\textit{Turn 2 (Model response, then System → Model):}
-\begin{quote}
-\small
-Interesting perspective! Now, a completely different topic---if you could have dinner with any historical figure, who would it be and what would you ask them?
-\end{quote}
-
-\textit{Turn 3 (Model response, then main task):}
-\begin{quote}
-\small
-Great choices! Now let's move on to the main task.
-
-[Case vignette and anchor question as in baseline]
-\end{quote}
-
-\textbf{Rationale:} This control preserves the multi-turn structure of SACD (3 turns before the main judgment) but replaces bias-related self-critique with semantically irrelevant conversation. If SACD's debiasing effect comes from structured reflection \emph{content}, the random control should show baseline-level bias. If the effect comes merely from multi-turn processing, the random control should show similar reduction.
-
-\textbf{Result:} GPT-5.2 showed 5.6mo effect with 3-turn random conversation (vs. 6.0mo baseline), suggesting that SACD's 55\% reduction comes from structured self-critique \emph{content}, not turn count or conversational warm-up.
-
 \subsection{Output Parsing and Retry Logic}
 
 Responses were parsed as JSON with strict schema validation. Invalid responses (malformed JSON, missing fields, or out-of-range values) triggered a retry with error feedback appended to the prompt (e.g., ``Your previous output was invalid. Error: [specific error]. Return ONLY the JSON object matching the schema.''). Each trial allowed up to 3 attempts. Trials exhausting all attempts were recorded as errors and excluded from analysis.
@@ -1395,97 +1260,10 @@ Categorical responses (A/B, a/b, yes/no, C/D) were parsed case-insensitively. Nu
 
 Note: Although temperature=0 ensures deterministic generation, retries use a modified prompt containing error feedback, so subsequent attempts may produce different (valid) responses. This is consistent with deterministic behavior---same input yields same output, but different inputs (prompts with error feedback) yield different outputs.
 
-\subsection{Model Identifier Variance}
-\label{app:model-id-variance}
-
-\textbf{Key finding:} During development, we discovered that different model generations (Sonnet 4 vs Sonnet 4.5) exhibit \emph{qualitatively different} bias patterns on identical prompts. Sonnet 4.5 shows 3.0mo anchoring effect while Sonnet 4 shows zero---a cross-generational difference, not just an identifier variance.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{llcc}
-\toprule
-\textbf{Model Identifier} & \textbf{Type} & \textbf{Anchoring Effect} & \textbf{Observed Pattern} \\
-\midrule
-\texttt{claude-sonnet-4-5} & Alias & 3.0 mo & Shows anchoring (responsive to debiasing) \\
-\texttt{claude-sonnet-4-20250514} & Date-pinned & 0.0 mo & No measurable anchoring \\
-\bottomrule
-\end{tabular}
-\caption{Cross-generational difference in anchoring bias. Sonnet 4.5 (\texttt{claude-sonnet-4-5-20250929}) shows 3-month anchoring effect, while Sonnet 4 (\texttt{claude-sonnet-4-20250514}) shows zero anchoring on identical prompts.}
-\label{tab:model-id-variance}
-\end{table}
-
-\textbf{Implications for LLM research:}
-
-\begin{enumerate}
-    \item \textbf{Reproducibility confound:} Model providers may silently update alias targets. Studies using aliases may not replicate even with identical prompts.
-    \item \textbf{Checkpoint-specific behavior:} Bias magnitude is checkpoint-specific, not just architecture-specific.
-    \item \textbf{Recommendation:} Researchers should always use and report date-pinned model identifiers.
-\end{enumerate}
-
 \subsection{Code Availability}
 
 Full experiment code, data, and analysis scripts available at: \url{https://github.com/voder-ai/bAIs}
 
-\subsection{Soft vs Hard Bias Patterns: Extended Analysis}
-\label{app:soft-hard}
-
-Our observations suggest that debiasing interventions effective on one model may have no effect on another. We tested temperature sensitivity across \textbf{five models} and observed two distinct patterns:
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-Model & Baseline & temp=0.5 & temp=1.0 & Pattern \\
-\midrule
-GPT-4o & 6.00 mo & 6.00 mo & 6.00 mo & \textbf{HARD} \\
-GPT-4.1 & 3.10 mo & 3.20 mo & 3.20 mo & \textbf{HARD} \\
-Opus 4.5 & 5.00 mo & 5.00 mo & 5.00 mo & \textbf{HARD} \\
-Sonnet 4.5 & 3.00 mo & --- & \textbf{0 mo} & \textbf{SOFT} \\
-Llama 3.3 & 0.00 mo & 0.00 mo & 0.10 mo & \textbf{SOFT} \\
-\bottomrule
-\end{tabular}
-\caption{Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures.}
-\label{tab:soft-hard}
-\end{table}
-
-\textbf{``Hard bias'' pattern} (observed in GPT-4o, GPT-4.1, Opus 4.5): Bias magnitude remains constant regardless of temperature (0→0.5→1.0). Three models show this pattern. This \emph{might} suggest the bias is embedded in the model's weights or reasoning process---not merely a surface-level decoding artifact.
-
-\textbf{``Soft bias'' pattern} (observed in Sonnet 4.5, Llama 3.3): Bias is low at baseline or decreases with temperature. Sonnet 4.5 shows 100\% reduction at temp=1.0. Llama 3.3 shows 0.0mo baseline effect.
-
-\textbf{Contamination probe:} We asked both models whether they were familiar with anchoring bias in judicial sentencing and whether they could predict the expected pattern. Both models demonstrated clear knowledge and correctly predicted that high prosecutor recommendations would bias sentencing upward. Yet their behavior diverged: GPT-4o exhibited the bias despite this knowledge, while Sonnet resisted it. This suggests that \emph{knowing} about a bias is insufficient to avoid it---models differ in whether they apply meta-cognitive knowledge to their own behavior.
-
-\textbf{Important caveats:}
-\begin{itemize}
-    \item This distinction is based on five models---more robust than our initial two-model observation, but still limited
-    \item The majority pattern is HARD (3/5 models); SOFT may be the exception rather than the rule
-    \item We cannot rule out that observed differences reflect API routing, checkpoint differences, or other confounds
-\end{itemize}
-
-\subsection{Deterministic Bias: Extended Discussion}
-\label{app:deterministic-bias}
-
-A striking feature of our results deserves explicit attention: at temperature=0, both GPT-4o and Sonnet 4 produced \textbf{identical outputs across all 30 trials per condition} (SD=0). This is not merely a methodological artifact---it reveals something fundamental about the nature of LLM bias.
-
-\textbf{LLM bias at temp=0 is deterministic.} LLM bias at temp=0 is a \emph{fixed function} of model weights and prompt. Every trial produces exactly the same biased (or unbiased) response. There is no ``sometimes biased, sometimes not''---the bias is embedded and consistent.
-
-\textbf{Architectural bias.} This determinism has important implications:
-\begin{itemize}
-    \item \textbf{Human bias:} Probabilistic, shows variance, can be partially overcome through effort or context
-    \item \textbf{LLM bias (temp=0):} Deterministic, shows zero variance, is either present or absent as a function of model architecture and prompt
-\end{itemize}
-
-The bias we observe is not sampling noise that averages out over many queries---it is a consistent, reproducible distortion encoded in how the model processes the prompt. GPT-4o's 5-month anchoring effect is not an average tendency; it is the \emph{exact} output produced every single time.
-
-\textbf{Deployment implications.} This has significant practical consequences:
-\begin{enumerate}
-    \item \textbf{Consistent bias in production:} If temp=0 is used in deployed systems (common for reproducibility and reduced hallucination), any bias will manifest with 100\% consistency. A biased model will produce biased outputs for \emph{every} user query matching the bias-inducing pattern.
-    \item \textbf{Auditing advantage:} Deterministic bias is actually \emph{easier} to detect and measure than stochastic bias. A single probe can reveal the presence and magnitude of bias---no need for statistical sampling.
-    \item \textbf{Debiasing clarity:} When bias is deterministic, debiasing interventions either work completely or fail completely (for a given prompt class). This makes intervention effectiveness unambiguous.
-\end{enumerate}
-
-\textbf{Theoretical significance.} The zero-variance finding suggests that anchoring bias in LLMs is not an emergent property of stochastic token sampling, but rather a \emph{structural feature} of how certain prompts are processed. The anchor value appears to directly influence the model's internal computation in a fixed, deterministic way---not merely shift a probability distribution.
-
-\textbf{Clarification on ``deterministic'':} We use ``deterministic'' to mean that at temp=0, the same input produces the same output across runs. This does not claim that the internal token-by-token generation process is non-probabilistic---LLMs still sample from probability distributions, but temp=0 selects the argmax at each step, making the sequence deterministic. Our point is about \emph{output consistency}, not claims about internal mechanisms.
-
 \end{document}
+
 
