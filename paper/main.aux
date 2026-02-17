@@ -16,122 +16,57 @@
 \gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{tversky1974}
 \citation{binz2023,jones2022}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\citation{sibony2019}
-\citation{lyu2025}
-\citation{tversky1974}
-\citation{kahneman1979}
-\citation{tversky1981}
-\citation{arkes1985}
-\citation{binz2023}
-\citation{lou2024}
-\citation{maynard2025trojan}
-\citation{arcuschin2026blindspot}
-\citation{sibony2019}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Cognitive Biases in LLMs}{2}{subsection.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Human Debiasing Research}{2}{subsection.2.2}\protected@file@percent }
-\citation{lyu2025}
 \citation{englich2006}
-\citation{lyu2025}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}LLM Debiasing Attempts}{3}{subsection.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{3}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Experimental Paradigm}{3}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Conditions}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Models and Sample Size}{4}{subsection.3.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent. $^\dagger $GPT-4o accessed via GitHub Copilot, not direct OpenAI API---results may not generalize to direct API access.}}{4}{table.1}\protected@file@percent }
-\newlabel{tab:sample-sizes}{{1}{4}{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent. $^\dagger $GPT-4o accessed via GitHub Copilot, not direct OpenAI API---results may not generalize to direct API access}{table.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Temperature and Sampling Protocol}{5}{subsection.3.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Verification of deterministic output. Same prompt (high anchor, 9mo) queried 5 times on GPT-4o at temp=0. All outputs identical (SD=0). Variance reported in other tables arises from \emph  {scenario variation}, not model stochasticity.}}{5}{table.2}\protected@file@percent }
-\newlabel{tab:determinism-demo}{{2}{5}{Verification of deterministic output. Same prompt (high anchor, 9mo) queried 5 times on GPT-4o at temp=0. All outputs identical (SD=0). Variance reported in other tables arises from \emph {scenario variation}, not model stochasticity}{table.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Scenario Design and Selection}{6}{subsection.3.5}\protected@file@percent }
-\newlabel{sec:scenario-design}{{3.5}{6}{Scenario Design and Selection}{subsection.3.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Analysis}{6}{subsection.3.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.1}Variance Source Clarification}{6}{subsubsection.3.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.2}Descriptive Statistics Details}{7}{subsubsection.3.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.6.3}Why We Do Not Report Inferential Statistics}{7}{subsubsection.3.6.3}\protected@file@percent }
-\newlabel{sec:no-inferential-stats}{{3.6.3}{7}{Why We Do Not Report Inferential Statistics}{subsubsection.3.6.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{8}{section.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Cross-reference of baseline values by model and prompt condition. Differences reflect prompt sensitivity (Section\nobreakspace  {}\ref  {sec:opposite-debiasing}), not data inconsistencies.}}{8}{table.3}\protected@file@percent }
-\newlabel{tab:baseline-xref}{{3}{8}{Cross-reference of baseline values by model and prompt condition. Differences reflect prompt sensitivity (Section~\ref {sec:opposite-debiasing}), not data inconsistencies}{table.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}GPT-4o (Copilot): Baseline Bias and Debiasing Effectiveness}{8}{subsection.4.1}\protected@file@percent }
-\newlabel{sec:gpt4o-debiasing}{{4.1}{8}{GPT-4o (Copilot): Baseline Bias and Debiasing Effectiveness}{subsection.4.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces GPT-4o baseline anchoring bias and debiasing effectiveness. Target: $n=30$ per condition; actual $n=25$--$29$ due to response validation (JSON parsing failures, duplicate scenario-response pairs). GPT-4o shows 6.0mo anchoring effect (2.9$\times $ human baseline). Sibony techniques (context hygiene, premortem) and simple instruction show 0\% reduction. Only SACD achieved measurable bias reduction (45\%). Human baseline from Englich et al. (2006): 2.05mo effect.}}{9}{table.4}\protected@file@percent }
-\newlabel{tab:baseline}{{4}{9}{GPT-4o baseline anchoring bias and debiasing effectiveness. Target: $n=30$ per condition; actual $n=25$--$29$ due to response validation (JSON parsing failures, duplicate scenario-response pairs). GPT-4o shows 6.0mo anchoring effect (2.9$\times $ human baseline). Sibony techniques (context hygiene, premortem) and simple instruction show 0\% reduction. Only SACD achieved measurable bias reduction (45\%). Human baseline from Englich et al. (2006): 2.05mo effect}{table.4}{}}
-\newlabel{tab:gpt4o-debiasing}{{4}{9}{GPT-4o baseline anchoring bias and debiasing effectiveness. Target: $n=30$ per condition; actual $n=25$--$29$ due to response validation (JSON parsing failures, duplicate scenario-response pairs). GPT-4o shows 6.0mo anchoring effect (2.9$\times $ human baseline). Sibony techniques (context hygiene, premortem) and simple instruction show 0\% reduction. Only SACD achieved measurable bias reduction (45\%). Human baseline from Englich et al. (2006): 2.05mo effect}{table.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}GPT-5.2: Model-Specific Debiasing Reversal}{9}{subsection.4.2}\protected@file@percent }
-\newlabel{sec:gpt52-debiasing}{{4.2}{9}{GPT-5.2: Model-Specific Debiasing Reversal}{subsection.4.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces GPT-5.2 debiasing results ($n=30$ per condition except baseline $n=60$). Values without $\pm $ SD indicate all responses were identical (SD=0); variation in means across conditions reflects different response patterns. Sibony techniques show 55--67\% reduction on GPT-5.2 vs 0\% on GPT-4o---a complete reversal. Random elaboration (irrelevant content, same structure) shows 0\% reduction, suggesting CONTENT matters on this model.}}{9}{table.5}\protected@file@percent }
-\newlabel{tab:gpt52-debiasing}{{5}{9}{GPT-5.2 debiasing results ($n=30$ per condition except baseline $n=60$). Values without $\pm $ SD indicate all responses were identical (SD=0); variation in means across conditions reflects different response patterns. Sibony techniques show 55--67\% reduction on GPT-5.2 vs 0\% on GPT-4o---a complete reversal. Random elaboration (irrelevant content, same structure) shows 0\% reduction, suggesting CONTENT matters on this model}{table.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Structure-Matched Control: SACD's Effect is Not Bias-Specific}{10}{subsection.4.3}\protected@file@percent }
-\newlabel{sec:generic-reflection}{{4.3}{10}{Structure-Matched Control: SACD's Effect is Not Bias-Specific}{subsection.4.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Structure-matched control ($n=30$ valid trials). Both conditions use identical 3-turn multi-turn structure. Generic prompts (``Review your answer carefully,'' ``Think step by step'') produced \emph  {stronger} debiasing than SACD's psychology-specific content, demonstrating that structure---not content---drives the effect.}}{10}{table.6}\protected@file@percent }
-\newlabel{tab:generic-reflection}{{6}{10}{Structure-matched control ($n=30$ valid trials). Both conditions use identical 3-turn multi-turn structure. Generic prompts (``Review your answer carefully,'' ``Think step by step'') produced \emph {stronger} debiasing than SACD's psychology-specific content, demonstrating that structure---not content---drives the effect}{table.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Random Elaboration Control: Identifying the Mechanism}{10}{subsubsection.4.3.1}\protected@file@percent }
-\newlabel{sec:random-elaboration}{{4.3.1}{10}{Random Elaboration Control: Identifying the Mechanism}{subsubsection.4.3.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Random elaboration control extended to four models. On Llama 3.3 (\textbf  {low-bias on baseline prompt}), random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf  {biased} GPT-4o, random elaboration yields only partial reduction (20\%) versus CoT (66\%), indicating added reasoning content matters. On Opus 4 and Sonnet 4 dated (both low-bias baselines), random elaboration remains anchor-invariant (0.0mo effect, $n=30$ each).}}{11}{table.7}\protected@file@percent }
-\newlabel{tab:random-elaboration}{{7}{11}{Random elaboration control extended to four models. On Llama 3.3 (\textbf {low-bias on baseline prompt}), random elaboration matches CoT (+6.0mo), indicating structure alone can introduce bias. On \textbf {biased} GPT-4o, random elaboration yields only partial reduction (20\%) versus CoT (66\%), indicating added reasoning content matters. On Opus 4 and Sonnet 4 dated (both low-bias baselines), random elaboration remains anchor-invariant (0.0mo effect, $n=30$ each)}{table.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}Cross-Model Replication: Generic Reflection is Model-Specific}{11}{subsubsection.4.3.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Generic reflection across 5 models ($n=30$ per anchor condition, 60 total per model; all at temp=0). On biased models, generic reflection reduces bias (66--97\%). On \textbf  {both} low-bias models (Sonnet 4 dated, Llama 3.3), it \emph  {introduces} substantial bias (3--6 months). Values without $\pm $ SD indicate all responses were identical (SD=0).}}{12}{table.8}\protected@file@percent }
-\newlabel{tab:generic-reflection-crossmodel}{{8}{12}{Generic reflection across 5 models ($n=30$ per anchor condition, 60 total per model; all at temp=0). On biased models, generic reflection reduces bias (66--97\%). On \textbf {both} low-bias models (Sonnet 4 dated, Llama 3.3), it \emph {introduces} substantial bias (3--6 months). Values without $\pm $ SD indicate all responses were identical (SD=0)}{table.8}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.3}Temperature Sensitivity of Debiasing}{12}{subsubsection.4.3.3}\protected@file@percent }
-\newlabel{sec:debiasing-temp}{{4.3.3}{12}{Temperature Sensitivity of Debiasing}{subsubsection.4.3.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim $6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf  {non-monotonic} pattern: works at temp=0 (66\%), \emph  {fails} at temp=0.7 (0\%), and recovers at temp=1.0 (72\%). $^*$Note: Despite temp=0.7, all 28 responses were identical (low=6mo, high=12mo), producing zero variance. This suggests GPT-4o may have deterministic behavior at intermediate temperatures for structured prompts.}}{12}{table.9}\protected@file@percent }
-\newlabel{tab:debiasing-temp}{{9}{12}{Debiasing effectiveness across temperatures on GPT-4o ($n=28$--30 per condition). Baseline anchoring effect is stable across temperatures ($\sim $6mo). For stochastic conditions (temp$>$0), we report bootstrap 95\% confidence intervals (5,000 resamples over trials). CoT debiasing shows \textbf {non-monotonic} pattern: works at temp=0 (66\%), \emph {fails} at temp=0.7 (0\%), and recovers at temp=1.0 (72\%). $^*$Note: Despite temp=0.7, all 28 responses were identical (low=6mo, high=12mo), producing zero variance. This suggests GPT-4o may have deterministic behavior at intermediate temperatures for structured prompts}{table.9}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces GPT-5.2 debiasing effectiveness by intervention type across temperatures ($n=20$ per condition per temperature). Simple instruction (Sibony-style) dominates at ALL temp$>$0 settings. Peak effectiveness: 90\% at temp=0.5.}}{13}{table.10}\protected@file@percent }
-\newlabel{tab:gpt52-temp-intervention}{{10}{13}{GPT-5.2 debiasing effectiveness by intervention type across temperatures ($n=20$ per condition per temperature). Simple instruction (Sibony-style) dominates at ALL temp$>$0 settings. Peak effectiveness: 90\% at temp=0.5}{table.10}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.4}SACD Pathological Outputs on Llama 3.3}{13}{subsubsection.4.3.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces SACD output distribution on Llama 3.3 ($n=15$ per condition). Baseline: all responses = 6mo. SACD produces extreme variance with 120mo outliers (20\% of trials). Notably, the pattern is \textbf  {reversed}: high anchor produces \emph  {more} 0mo responses (6 vs 3), suggesting complete disruption rather than bias introduction. Effect: $-1.26$mo.}}{13}{table.11}\protected@file@percent }
-\newlabel{tab:sacd-pathological}{{11}{13}{SACD output distribution on Llama 3.3 ($n=15$ per condition). Baseline: all responses = 6mo. SACD produces extreme variance with 120mo outliers (20\% of trials). Notably, the pattern is \textbf {reversed}: high anchor produces \emph {more} 0mo responses (6 vs 3), suggesting complete disruption rather than bias introduction. Effect: $-1.26$mo}{table.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Cross-Model Validation}{14}{subsection.4.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Cross-model anchoring bias, sorted by effect magnitude. All tests at temp=0 with $n=30$ per anchor condition (60 total valid per model) except Mistral ($n=26$ per condition due to parse failures). Seven stable models shown; Nemotron was excluded due to inconsistent API behavior (response timeouts, incomplete JSON outputs) via the free OpenRouter tier. $^\dagger $Llama 3.3 showed 0.0mo with our original prompt (which includes ``randomly determined'' disclaimer) but 6.0--9.0mo on variants without this disclaimer---the original prompt contains implicit debiasing. This is consistent with GPT-5.2 where Sibony-style interventions also showed strong effect. \textbf  {Caution:} Results are model-specific observations, not provider-level generalizations.}}{14}{table.12}\protected@file@percent }
-\newlabel{tab:crossmodel}{{12}{14}{Cross-model anchoring bias, sorted by effect magnitude. All tests at temp=0 with $n=30$ per anchor condition (60 total valid per model) except Mistral ($n=26$ per condition due to parse failures). Seven stable models shown; Nemotron was excluded due to inconsistent API behavior (response timeouts, incomplete JSON outputs) via the free OpenRouter tier. $^\dagger $Llama 3.3 showed 0.0mo with our original prompt (which includes ``randomly determined'' disclaimer) but 6.0--9.0mo on variants without this disclaimer---the original prompt contains implicit debiasing. This is consistent with GPT-5.2 where Sibony-style interventions also showed strong effect. \textbf {Caution:} Results are model-specific observations, not provider-level generalizations}{table.12}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Knowledge of Bias $\neq  $ Resistance to Bias}{15}{subsection.4.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Knowledge-behavior dissociation. Both models know about anchoring bias and can predict its effects, yet only Sonnet 4 resists it in practice.}}{15}{table.13}\protected@file@percent }
-\newlabel{tab:knowledge-behavior}{{13}{15}{Knowledge-behavior dissociation. Both models know about anchoring bias and can predict its effects, yet only Sonnet 4 resists it in practice}{table.13}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Complete Sonnet 4.5 Bias Profile}{15}{subsection.4.6}\protected@file@percent }
-\citation{lim2026}
-\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Complete bias profile for Claude Sonnet 4.5 (\texttt  {claude-sonnet-4-5-20250929}) across four cognitive biases ($n=30$ per condition). $^*$Range for Bill scenario only (Linda showed 0\% errors). $^\dagger $Range for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option. \textbf  {Note:} Anchoring result differs for dated identifier (0.0mo).}}{16}{table.14}\protected@file@percent }
-\newlabel{tab:profile}{{14}{16}{Complete bias profile for Claude Sonnet 4.5 (\texttt {claude-sonnet-4-5-20250929}) across four cognitive biases ($n=30$ per condition). $^*$Range for Bill scenario only (Linda showed 0\% errors). $^\dagger $Range for gain-frame certain choice; loss-frame shows 50\% [33\%, 67\%] choosing risky option. \textbf {Note:} Anchoring result differs for dated identifier (0.0mo)}{table.14}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}DeFrame Substantially Reduces Framing Effect}{16}{subsection.4.7}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces DeFrame reduces framing effect bias ($n=30$ per condition). Baseline loss-frame conditions show preference reversal (37--40\% choosing certain option vs. 97\% in gain frame). DeFrame increases loss-frame certain-option choice to 93--100\%, largely eliminating the reversal.}}{16}{table.15}\protected@file@percent }
-\newlabel{tab:deframe}{{15}{16}{DeFrame reduces framing effect bias ($n=30$ per condition). Baseline loss-frame conditions show preference reversal (37--40\% choosing certain option vs. 97\% in gain frame). DeFrame increases loss-frame certain-option choice to 93--100\%, largely eliminating the reversal}{table.15}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}No-Anchor Control: Establishing Absolute Baseline}{16}{subsection.4.8}\protected@file@percent }
-\newlabel{sec:no-anchor-control}{{4.8}{16}{No-Anchor Control: Establishing Absolute Baseline}{subsection.4.8}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces No-anchor control experiment ($n=10$ per condition, temp=0). ``No-Anchor'' = model's sentence when no prosecutor recommendation is given. ``Abs. from Low'' = shift from no-anchor baseline when low anchor shown. ``Abs. to High'' = shift from no-anchor baseline when high anchor shown. Negative values indicate the anchor \emph  {reduced} the sentence from baseline.}}{16}{table.16}\protected@file@percent }
-\newlabel{tab:no-anchor-control}{{16}{16}{No-anchor control experiment ($n=10$ per condition, temp=0). ``No-Anchor'' = model's sentence when no prosecutor recommendation is given. ``Abs. from Low'' = shift from no-anchor baseline when low anchor shown. ``Abs. to High'' = shift from no-anchor baseline when high anchor shown. Negative values indicate the anchor \emph {reduced} the sentence from baseline}{table.16}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{17}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Anchoring Bias is Prompt-Sensitive (Sonnet 4 Alias)}{17}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Prompt Robustness Across Models}{17}{subsection.5.2}\protected@file@percent }
-\newlabel{sec:prompt-robustness-crossmodel}{{5.2}{17}{Prompt Robustness Across Models}{subsection.5.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Cross-model prompt robustness (3 prompt styles, $n=20$ per condition/style). $^\dagger $GPT-5.2: casual variant (removing ``randomly determined'' disclaimer) \emph  {debiases}; structured variant \emph  {increases} bias. $^\ddagger $Llama 3.3: structured variant eliminates bias entirely. Bold values indicate debiased conditions.}}{18}{table.17}\protected@file@percent }
-\newlabel{tab:crossmodel-prompt-robustness}{{17}{18}{Cross-model prompt robustness (3 prompt styles, $n=20$ per condition/style). $^\dagger $GPT-5.2: casual variant (removing ``randomly determined'' disclaimer) \emph {debiases}; structured variant \emph {increases} bias. $^\ddagger $Llama 3.3: structured variant eliminates bias entirely. Bold values indicate debiased conditions}{table.17}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Novel Anchoring Scenarios Show Consistent Bias}{18}{subsection.5.3}\protected@file@percent }
-\citation{sibony2019}
-\@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces Anchoring effects across classic and novel scenarios ($n=30$ per condition). ``Sonnet 4.5'' refers to \texttt  {claude-sonnet-4-5}. Percentages show effect size relative to classic scenario baseline. All 8 scenarios (4 novel + classic with variations) showed measurable anchoring in both models, though magnitude varied substantially by scenario content.}}{19}{table.18}\protected@file@percent }
-\newlabel{tab:novel-anchoring}{{18}{19}{Anchoring effects across classic and novel scenarios ($n=30$ per condition). ``Sonnet 4.5'' refers to \texttt {claude-sonnet-4-5}. Percentages show effect size relative to classic scenario baseline. All 8 scenarios (4 novel + classic with variations) showed measurable anchoring in both models, though magnitude varied substantially by scenario content}{table.18}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Human Techniques Partially Transfer (Model-Dependent)}{19}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Opposite Debiasing Effects Across Model Families}{19}{subsection.5.5}\protected@file@percent }
-\newlabel{sec:opposite-debiasing}{{5.5}{19}{Opposite Debiasing Effects Across Model Families}{subsection.5.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {19}{\ignorespaces Opposite effects of prompt framing. On Llama 3.3, structured prompts eliminate bias. On GPT-5.2, casual prompts (without ``randomly determined'' disclaimer) debias, while structured prompts \emph  {increase} bias to 5.7mo. $n=20$ per condition per variant.}}{19}{table.19}\protected@file@percent }
-\newlabel{tab:opposite-debiasing}{{19}{19}{Opposite effects of prompt framing. On Llama 3.3, structured prompts eliminate bias. On GPT-5.2, casual prompts (without ``randomly determined'' disclaimer) debias, while structured prompts \emph {increase} bias to 5.7mo. $n=20$ per condition per variant}{table.19}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Cross-Model Debiasing Sweep: Context Hygiene vs SACD}{20}{subsection.5.6}\protected@file@percent }
-\newlabel{sec:crossmodel-debiasing-sweep}{{5.6}{20}{Cross-Model Debiasing Sweep: Context Hygiene vs SACD}{subsection.5.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {20}{\ignorespaces Cross-model debiasing sweep ($n=20$ per condition, 10 per anchor). Context Hygiene = Sibony's ``context hygiene'' technique (explicitly flagging anchor as irrelevant). Premortem = imagining decision failure before deciding. SACD = iterative self-correction. Bold values indicate successful debiasing ($\leq $1.0mo effect). $^\dagger $Mistral produced malformed JSON on SACD prompts (all 20 trials failed parsing). $^\ddagger $\textbf  {SACD increases bias on Qwen and Opus 4.5}---Qwen increased from 3.0mo to 6.0mo, Opus increased from 6.0mo to 8.1mo.}}{20}{table.20}\protected@file@percent }
-\newlabel{tab:crossmodel-debiasing-sweep}{{20}{20}{Cross-model debiasing sweep ($n=20$ per condition, 10 per anchor). Context Hygiene = Sibony's ``context hygiene'' technique (explicitly flagging anchor as irrelevant). Premortem = imagining decision failure before deciding. SACD = iterative self-correction. Bold values indicate successful debiasing ($\leq $1.0mo effect). $^\dagger $Mistral produced malformed JSON on SACD prompts (all 20 trials failed parsing). $^\ddagger $\textbf {SACD increases bias on Qwen and Opus 4.5}---Qwen increased from 3.0mo to 6.0mo, Opus increased from 6.0mo to 8.1mo}{table.20}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Full Iterative SACD vs Single-Pass: Critical Difference}{21}{subsection.5.7}\protected@file@percent }
-\newlabel{sec:full-sacd}{{5.7}{21}{Full Iterative SACD vs Single-Pass: Critical Difference}{subsection.5.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {21}{\ignorespaces Full iterative SACD vs single-pass SACD ($n=30$ per anchor condition, temp=0). $^\dagger $Single-pass SACD on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely.}}{22}{table.21}\protected@file@percent }
-\newlabel{tab:full-sacd}{{21}{22}{Full iterative SACD vs single-pass SACD ($n=30$ per anchor condition, temp=0). $^\dagger $Single-pass SACD on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely}{table.21}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Single-Pass SACD Analysis (Historical)}{22}{subsection.5.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Preliminary Hypothesis: Two Patterns Observed in Our Tested Models}{23}{subsection.5.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Limitations}{23}{subsection.5.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.11}Future Work}{26}{subsection.5.11}\protected@file@percent }
-\bibstyle{plainnat}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Contributions}{2}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Methods}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Experimental Paradigm}{3}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Conditions}{3}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Models and Deployments}{3}{subsection.2.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Model deployments tested}}{3}{table.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Trial Design}{3}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Statistical Analysis}{3}{subsection.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}A Taxonomy of Numeric Context Mechanisms}{4}{section.3}\protected@file@percent }
+\newlabel{sec:taxonomy}{{3}{4}{A Taxonomy of Numeric Context Mechanisms}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Identifying Mechanisms: The No-Anchor Baseline}{4}{subsection.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Mechanism classification with statistical tests. Values: mean $\pm $ SD or mean [95\% CI]. Effect = High $-$ Low. Significance: $^{***}p < 0.001$. ``det.''\ = deterministic (SD=0 at temperature=0). $^\dagger $Classification provisional---high anchor data incomplete.}}{4}{table.2}\protected@file@percent }
+\newlabel{tab:mechanisms}{{2}{4}{Mechanism classification with statistical tests. Values: mean $\pm $ SD or mean [95\% CI]. Effect = High $-$ Low. Significance: $^{***}p < 0.001$. ``det.''\ = deterministic (SD=0 at temperature=0). $^\dagger $Classification provisional---high anchor data incomplete}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Mechanism 1: Compression}{4}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Mechanism 2: Compliance}{4}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Mechanism 3: True Anchoring}{5}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Mechanism Distribution}{5}{subsection.3.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Only 33\% show classical anchoring-and-adjustment}}{5}{table.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Mechanism-Dependent Debiasing}{5}{section.4}\protected@file@percent }
+\newlabel{sec:debiasing}{{4}{5}{Mechanism-Dependent Debiasing}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}SACD Effectiveness by Mechanism}{5}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces SACD effectiveness depends on mechanism}}{5}{table.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Detailed Results}{6}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces SACD results explained by mechanism}}{6}{table.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Deployment-Specific Variance}{6}{section.5}\protected@file@percent }
+\newlabel{sec:provider}{{5}{6}{Deployment-Specific Variance}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}The Provider Variance Finding}{6}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Same model, same API, different mechanisms}}{6}{table.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Implications}{6}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Evidence for Non-Model Factors}{6}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion and Practical Guidelines}{7}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{7}{Discussion and Practical Guidelines}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Summary of Findings}{7}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Mechanism signatures}}{7}{table.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Recommendations for Practitioners}{7}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Reasoning Models Do Not Escape Bias}{8}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Multi-Turn Structure Can Introduce Bias}{8}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}Limitations}{8}{subsection.6.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}Conclusion}{8}{subsection.6.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{8}{appendix.A}\protected@file@percent }
+\newlabel{app:prompts}{{A}{8}{Prompt Templates}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Baseline Prompt (Anchored Condition)}{8}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}No-Anchor Control}{9}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}SACD Prompt (Iterative Debiasing)}{9}{subsection.A.3}\protected@file@percent }
+\bibstyle{apalike}
 \bibdata{references}
 \bibcite{arkes1985}{{1}{1985}{{Arkes and Blumer}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{27}{section.6}\protected@file@percent }
 \bibcite{binz2023}{{2}{2023}{{Binz and Schulz}}{{}}}
 \bibcite{englich2006}{{3}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
 \bibcite{jones2022}{{4}{2022}{{Jones and Steinhardt}}{{}}}
@@ -141,36 +76,8 @@
 \bibcite{lyu2025}{{8}{2025}{{Lyu et~al.}}{{}}}
 \bibcite{maynard2025trojan}{{9}{2025}{{Maynard}}{{}}}
 \bibcite{sibony2019}{{10}{2019}{{Sibony}}{{}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}API Parameters}{10}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Data Availability}{10}{appendix.B}\protected@file@percent }
 \bibcite{tversky1974}{{11}{1974}{{Tversky and Kahneman}}{{}}}
 \bibcite{tversky1981}{{12}{1981}{{Tversky and Kahneman}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Reproducibility Details}{28}{appendix.A}\protected@file@percent }
-\newlabel{app:reproducibility}{{A}{28}{Reproducibility Details}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Experiment Provenance}{28}{subsection.A.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {22}{\ignorespaces Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version.}}{28}{table.22}\protected@file@percent }
-\newlabel{tab:provenance}{{22}{28}{Experiment provenance for reproducibility. Model ID is the exact identifier used in API calls. Commit refers to the bAIs repository version}{table.22}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Sampling Settings}{29}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Anchoring Experiment Prompt}{29}{subsection.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Context Hygiene Prompt Addition}{30}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Premortem Prompt Addition}{30}{subsection.A.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}SACD (Self-Adaptive Cognitive Debiasing) Prompts}{30}{subsection.A.6}\protected@file@percent }
-\newlabel{app:sacd-prompts}{{A.6}{30}{SACD (Self-Adaptive Cognitive Debiasing) Prompts}{subsection.A.6}{}}
-\citation{lyu2025}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}DeFrame Intervention}{31}{subsection.A.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.8}Framing Effect Prompts}{31}{subsection.A.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.9}Conjunction Fallacy Prompts}{32}{subsection.A.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.10}Sunk Cost Fallacy Prompts}{33}{subsection.A.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.11}Random Elaboration Control Prompts}{34}{subsection.A.11}\protected@file@percent }
-\newlabel{app:random-elaboration}{{A.11}{34}{Random Elaboration Control Prompts}{subsection.A.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.12}Output Parsing and Retry Logic}{34}{subsection.A.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.13}Model Identifier Variance}{34}{subsection.A.13}\protected@file@percent }
-\newlabel{app:model-id-variance}{{A.13}{34}{Model Identifier Variance}{subsection.A.13}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {23}{\ignorespaces Cross-generational difference in anchoring bias. Sonnet 4.5 (\texttt  {claude-sonnet-4-5-20250929}) shows 3-month anchoring effect, while Sonnet 4 (\texttt  {claude-sonnet-4-20250514}) shows zero anchoring on identical prompts.}}{35}{table.23}\protected@file@percent }
-\newlabel{tab:model-id-variance}{{23}{35}{Cross-generational difference in anchoring bias. Sonnet 4.5 (\texttt {claude-sonnet-4-5-20250929}) shows 3-month anchoring effect, while Sonnet 4 (\texttt {claude-sonnet-4-20250514}) shows zero anchoring on identical prompts}{table.23}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.14}Code Availability}{35}{subsection.A.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.15}Soft vs Hard Bias Patterns: Extended Analysis}{35}{subsection.A.15}\protected@file@percent }
-\newlabel{app:soft-hard}{{A.15}{35}{Soft vs Hard Bias Patterns: Extended Analysis}{subsection.A.15}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {24}{\ignorespaces Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures.}}{35}{table.24}\protected@file@percent }
-\newlabel{tab:soft-hard}{{24}{35}{Temperature sensitivity across 5 models ($n=30$--60 per temperature). HARD models show constant bias regardless of temperature. SOFT models show low bias across all temperatures}{table.24}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.16}Deterministic Bias: Extended Discussion}{36}{subsection.A.16}\protected@file@percent }
-\newlabel{app:deterministic-bias}{{A.16}{36}{Deterministic Bias: Extended Discussion}{subsection.A.16}{}}
-\gdef \@abspage@last{37}
+\gdef \@abspage@last{11}
