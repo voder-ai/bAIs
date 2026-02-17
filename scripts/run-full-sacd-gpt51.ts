@@ -1,13 +1,13 @@
 /**
- * Full Iterative SACD on GPT-5.2 (via GitHub Copilot)
+ * Full Iterative SACD on GPT-5.1 (via OpenAI Codex)
  * Uses the complete SACD protocol (up to 3 iterations)
  */
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 import { runAnchoringSACD } from '../src/run/runAnchoringSACD.js';
 
-const MODEL = 'github-copilot/gpt-5.2';
+const MODEL = 'openai-codex/gpt-5.1';
 const RUNS_PER_CONDITION = 30;
-const OUT_PATH = 'results/gpt52-full-sacd.jsonl';
+const OUT_PATH = 'results/gpt51-full-sacd.jsonl';
 
 async function main() {
   console.log(`Starting Full Iterative SACD on ${MODEL}`);

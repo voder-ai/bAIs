@@ -92,6 +92,8 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 
 \textbf{Note on anchor conditions:} Both conditions include an anchor---we compare a ``low anchor'' (3 months) against a ``high anchor'' (9 months). We also ran a \textbf{no-anchor control} condition where no prosecutor recommendation is given, enabling measurement of absolute anchoring magnitude (see Section~\ref{sec:no-anchor-control}).
 
+\textbf{Note on ``trials'':} Throughout this paper, each ``trial'' represents a \textbf{distinct scenario variant} (different defendant names, offense numbers, location details---see Appendix~\ref{app:scenarios}). Because temperature=0 produces deterministic outputs, running the \emph{same} scenario multiple times would yield identical results. Our $n=30$ per condition thus reflects \textbf{scenario diversity}, not measurement replication. Reported means and standard deviations characterize the distribution of responses \emph{across scenarios}, not sampling error around a point estimate. See Section~\ref{sec:no-inferential-stats} for implications.
+
 \subsection{Conditions}
 
 \begin{enumerate}
@@ -131,7 +133,7 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 \midrule
 Sonnet 4 & 60 & 60 & 0 & Date-pinned \\
 Sonnet 4.5 & 60 & 60 & 0 & Primary model \\
-GPT-4o & 60 & 60 & 0 & Via GitHub Copilot \\
+GPT-4o (Copilot)$^\dagger$ & 60 & 60 & 0 & Via GitHub Copilot \\
 GPT-5.2 & 60 & 58 & 2 & Debiasing comparison \\
 Opus 4 & 60 & 60 & 0 & --- \\
 Nemotron 30B & 85 & 75 & 10 & Base + topup runs \\
@@ -142,7 +144,7 @@ Qwen 2.5 72B & 80 & 80 & 0 & Debiasing sweep \\
 Gemma 2 9B & 80 & 80 & 0 & Debiasing sweep \\
 \bottomrule
 \end{tabular}
-\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent.}
+\caption{Per-model sample sizes for cross-model anchoring experiments. ``Valid'' = trials with parseable numeric response. ``Excluded'' = parsing failures after 3 retries. Mistral had high exclusion rate (57\%) due to difficulty following JSON output format; exclusions are scenario-independent. $^\dagger$GPT-4o accessed via GitHub Copilot, not direct OpenAI API---results may not generalize to direct API access.}
 \label{tab:sample-sizes}
 \end{table}
 
@@ -288,10 +290,10 @@ GPT-4o & All conditions & 6.0 mo & 4, 6, 8 \\
 
 This prompt sensitivity is itself a key finding (Section~\ref{sec:opposite-debiasing}).
 
-\subsection{GPT-4o: Baseline Bias and Debiasing Effectiveness}
+\subsection{GPT-4o (Copilot): Baseline Bias and Debiasing Effectiveness}
 \label{sec:gpt4o-debiasing}
 
-We tested GPT-4o (via OpenRouter, model \texttt{openai/gpt-4o}) as our primary baseline model. GPT-4o showed substantial anchoring bias (6.0mo effect, approximately 2.9$\times$ the human baseline of 2.05mo from Englich et al.):
+We tested GPT-4o via GitHub Copilot's API (\texttt{github-copilot/gpt-4o}), not direct OpenAI API access. \textbf{Important caveat:} GitHub Copilot may route to different model versions or apply different system prompts than direct API access; these results may not generalize to direct OpenAI GPT-4o. With this caveat, GPT-4o (Copilot) showed substantial anchoring bias (6.0mo effect, approximately 2.9$\times$ the human baseline of 2.05mo from Englich et al.):
 
 \begin{table}[H]
 \centering
