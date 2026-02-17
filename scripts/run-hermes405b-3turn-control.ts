@@ -80,7 +80,7 @@ async function main() {
     }
   }
 
-  console.log('\n=== 3-TURN RANDOM CONTROL COMPLETE ===');
+  console.log('\n=== HERMES 405B 3-TURN CONTROL COMPLETE ===');
 }
 
 main();
