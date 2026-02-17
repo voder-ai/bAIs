@@ -125,7 +125,7 @@ MiniMax M2.5, o1, o3-mini & OpenRouter & Datacenter \\
 
 \subsection{Trial Design}
 
-Each condition includes 30 unique scenario variants (different defendant names, offense counts, locations). Temperature=0 produces deterministic outputs; variance comes from scenario diversity, not sampling noise.
+Each condition includes 30 independent trials using the same base scenario. At temperature=0, most models produce deterministic outputs (identical across trials). Variance in our results comes from (a) models with non-zero default temperature, and (b) API-level stochasticity in some providers. We report SD=0 explicitly for deterministic models.
 
 \textbf{Sample size justification:} Bootstrap resampling (10,000 iterations) confirms that effect estimates are stable at n=30 (coefficient of variation $<$ 1\%). Random baseline simulation shows that spurious ``anchoring effects'' exceed 2.6 months only 5\% of the time by chance; our observed effects (2--6 months) substantially exceed this threshold.
 
