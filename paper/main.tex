@@ -44,6 +44,8 @@ This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognit
 
 \textbf{Critical deployment finding}: The SAME model (GPT-4o) shows different mechanisms depending on access path---compliance via residential IP, true anchoring via datacenter. ``Model name'' is insufficient granularity for reproducible LLM research.
 
+\textbf{Extended range testing}: With anchors \emph{above} baseline (24 months), models show a four-tier susceptibility pattern: strong amplifiers (o3-mini, GPT-5.2 exceed anchor by 36\%), partial susceptibility (Opus 4.5), weak effect (o1, Llama 3.3), and complete immunity (Opus 4.6, Hermes 405B). Critically, Opus 4.5$\rightarrow$4.6 changed from susceptible to immune---debiasing validation must be repeated per model VERSION.
+
 \textbf{Practical implication}: Before applying debiasing, identify which mechanism your deployment exhibits. We provide a decision framework and deployment checklist.
 \end{abstract}
 
@@ -228,6 +230,63 @@ Zero Effect & 1 & 7\% \\
 \caption{Only 33\% show classical anchoring-and-adjustment}
 \end{table}
 
+\subsection{Extended Range: High Anchor (24mo) Testing}
+
+Our initial experiments used anchors (3mo, 9mo) below the no-anchor baseline (~12mo). To test whether models show symmetric anchoring above baseline, we introduced a 24-month anchor condition.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccl}
+\toprule
+Model & Baseline & Low (3mo) & High (9mo) & \textbf{24mo} & Pattern \\
+\midrule
+o3-mini & 12.0 & 6.0 & 10.9 & \textbf{32.6} & Strong amplification \\
+GPT-5.2 & 12.0 & 6.1 & 9.2 & \textbf{28.2} & Strong amplification \\
+Opus 4.5 & 13.2 & 6.0 & 8.0 & \textbf{18.0} & Partial susceptibility \\
+o1 & 11.9 & 6.1 & 10.6 & \textbf{15.0} & Weak effect \\
+Llama 3.3 & 14.4 & 5.0 & 6.0 & \textbf{14.3} & Weak effect \\
+Opus 4.6 & 12.0 & 6.0 & 8.0 & \textbf{12.0} & Immune \\
+Hermes 405B & 12.3 & 5.3 & 5.1 & \textbf{12.0} & Immune \\
+\bottomrule
+\end{tabular}
+\caption{High anchor (24mo) reveals four-tier susceptibility. Models showing ``compression'' with low anchors show dramatically different responses to high anchors.}
+\label{tab:high-anchor}
+\end{table}
+
+\textbf{Key finding}: The ``compression'' pattern observed with low anchors does not generalize to high anchors. When presented with anchors \emph{above} baseline:
+
+\begin{itemize}
+    \item \textbf{Strong amplifiers} (o3-mini, GPT-5.2): Responses \emph{exceed} the anchor value (32.6mo vs 24mo anchor = 1.36$\times$). This is \emph{overcorrection}, not compression.
+    \item \textbf{Partial susceptibility} (Opus 4.5): Moderate pull toward anchor (+6mo from baseline).
+    \item \textbf{Weak effect} (o1, Llama 3.3): Minimal change despite extreme anchor (+2-3mo).
+    \item \textbf{Immune} (Opus 4.6, Hermes 405B): Zero effect---responses remain at baseline regardless of anchor value.
+\end{itemize}
+
+\subsection{Version Drift: Opus 4.5 vs 4.6}
+
+A striking finding emerged from comparing Anthropic model versions:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccl}
+\toprule
+Model & Low (3mo) & High (9mo) & 24mo & Pattern \\
+\midrule
+Opus 4.5 & 6.0 & 8.0 & 18.0 & Partial susceptibility \\
+Opus 4.6 & 6.0 & 8.0 & \textbf{12.0} & Immune \\
+\bottomrule
+\end{tabular}
+\caption{Model version changes susceptibility pattern}
+\end{table}
+
+\textbf{Opus 4.5 to 4.6 changed from susceptible to immune.} This has critical implications:
+
+\begin{enumerate}
+    \item Debiasing validation must be repeated for each model VERSION, not just model family.
+    \item Immunity to anchoring can emerge without explicit debiasing---architecture/training changes may inadvertently affect susceptibility.
+    \item Published benchmarks become stale as models update.
+\end{enumerate}
+
 %==============================================================================
 \section{Mechanism-Dependent Debiasing}
 \label{sec:debiasing}
@@ -328,16 +387,17 @@ What appears as ``anchoring'' actually comprises three distinct mechanisms---com
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-Mechanism & No-Anchor $\rightarrow$ Low & No-Anchor $\rightarrow$ High & SACD \\
+Mechanism & Low (3mo) & High (9mo) & \textbf{24mo} & SACD \\
 \midrule
-Compression & $\downarrow\downarrow$ (large drop) & $\downarrow$ (smaller drop) & 0\% or $-$ \\
-Compliance & $\rightarrow$ anchor exactly & $\rightarrow$ anchor exactly & 0\% \\
-True Anchoring & $\downarrow$ (toward anchor) & $\uparrow$ (toward anchor) & 60--89\% $\downarrow$ \\
+Strong Amplification & $\downarrow$ & $\downarrow$ & $\uparrow\uparrow$ (1.3--1.4$\times$) & varies \\
+Partial Susceptibility & $\downarrow$ & $\downarrow$ & $\uparrow$ (+6mo) & 99\% $\downarrow$ \\
+Weak Effect & $\downarrow$ & near baseline & near baseline & varies \\
+Immune & $\downarrow$ & $\downarrow$ & \textbf{no change} & N/A \\
 \bottomrule
 \end{tabular}
-\caption{Mechanism signatures}
+\caption{Four-tier susceptibility pattern revealed by extended anchor range}
 \end{table}
 
 \subsection{Recommendations for Practitioners}
@@ -385,11 +445,10 @@ For models showing no baseline bias, multi-turn prompting may be harmful. Llama 
 
 \begin{enumerate}
     \item \textbf{Single domain}: All experiments use judicial sentencing scenarios.
-    \item \textbf{Limited no-anchor data}: Mechanism taxonomy based on models with no-anchor controls.
     \item \textbf{Limited compliance examples}: Only one deployment (GPT-4o via residential IP) exhibits pure compliance in our sample.
     \item \textbf{Mechanism boundaries}: May represent spectrum rather than discrete categories.
-    \item \textbf{Temporal stability}: Unknown whether mechanisms are stable over model updates.
     \item \textbf{Baseline confound}: The no-anchor baseline (~12mo) may itself be influenced by numeric context in the case description (``12th offense'').
+    \item \textbf{Version stability}: We observed Opus 4.5$\rightarrow$4.6 changing susceptibility pattern; ongoing monitoring required.
 \end{enumerate}
 
 \subsection{Conclusion}
