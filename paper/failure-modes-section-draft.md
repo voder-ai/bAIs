@@ -124,3 +124,52 @@ SACD successfully reduces differential bias but activates the amplification laye
 4. **Architecture determines response:** Model capability (size, benchmark performance) does not predict debiasing susceptibility. The underlying bias architecture matters.
 
 5. **Test per model AND per version:** Opus 4.5 vs 4.6 showed opposite architectures (shallow vs deep bias). Version updates can fundamentally change bias behavior.
+
+6. **Test per deployment:** Same API, same model name can yield different behavior depending on deployment infrastructure.
+
+## Provider Variance: A Case Study
+
+Our most striking finding emerged from running identical experiments from two different infrastructures:
+
+### GPT-4o via OpenRouter: Two Deployments, Two Behaviors
+
+| Metric | Mac (Residential IP) | Vultr (Datacenter IP) |
+|--------|---------------------|----------------------|
+| Low anchor response | 3mo | 6mo |
+| High anchor response | 9mo | 11.2mo |
+| Anchoring effect | 6mo (artificial) | 5.2mo (real bias) |
+| SACD effectiveness | 0% | 26.5% |
+| Pattern | Compliance | Weak susceptibility |
+
+**Same API endpoint. Same model name. Same prompt. Different behavior.**
+
+### Implications for Reproducibility
+
+This finding has serious implications for AI safety research:
+
+1. **"GPT-4o" is a label, not a model:** The same API name routes to different underlying models based on infrastructure factors we cannot observe.
+
+2. **Debiasing validation is deployment-specific:** A technique validated from one deployment may not transfer to another—even within the same organization.
+
+3. **Benchmarks on aggregated endpoints are suspect:** Published results on "GPT-4o" may not replicate across different callers.
+
+4. **Required disclosure for reproducibility:**
+   - Model name and version
+   - API provider
+   - Access method (direct/proxy)
+   - Source infrastructure (datacenter/residential)
+   - Geographic location
+   - Timestamp
+
+### The Four-Layer Testing Methodology
+
+Based on our findings, we recommend a four-layer validation approach:
+
+```
+1. Test per MODEL (GPT vs Claude vs Llama)
+2. Test per VERSION (Opus 4.5 vs 4.6)
+3. Test per DEPLOYMENT (datacenter vs residential)
+4. Test per ACCESS METHOD (direct API vs proxy)
+```
+
+Each layer revealed different behaviors in our study. Skipping any layer risks false confidence in debiasing effectiveness.
