@@ -18,7 +18,8 @@
     "prepare": "husky install",
     "postinstall": "command -v patch-package >/dev/null && patch-package || true",
     "paper:review": "node scripts/review-paper-llm.mjs",
-    "paper:gaps": "node scripts/why-didnt-they-check.mjs"
+    "paper:gaps": "node scripts/why-didnt-they-check.mjs",
+    "stats": "node scripts/compute-stats.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.72.1",

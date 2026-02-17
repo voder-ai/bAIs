@@ -1,0 +1,734 @@
+{
+  "anthropic/claude-3-5-haiku-20241022": {
+    "model": "anthropic/claude-3-5-haiku-20241022",
+    "n_low": 78,
+    "n_high": 69,
+    "n_total": 147,
+    "mean_low": 7.346153846153846,
+    "mean_high": 9.826086956521738,
+    "sd_low": 2.854716848309769,
+    "sd_high": 3.3877722222899984,
+    "anchoring_effect": 2.4799331103678925,
+    "ci_low": {
+      "lower": 6.713534459631419,
+      "upper": 7.978773232676272,
+      "margin": 0.6326193865224266
+    },
+    "ci_high": {
+      "lower": 9.02787832976701,
+      "upper": 10.624295583276467,
+      "margin": 0.7982086267547286
+    },
+    "ttest": {
+      "t": -4.765464782249148,
+      "p": 0.0020000000000000018,
+      "df": 133.6776764214076
+    },
+    "cohens_d": 0.7958510988310867,
+    "effect_magnitude": "medium"
+  },
+  "anthropic/claude-3-5-haiku-latest": {
+    "model": "anthropic/claude-3-5-haiku-latest",
+    "n_low": 3,
+    "n_high": 3,
+    "n_total": 6,
+    "mean_low": 4.666666666666667,
+    "mean_high": 7.666666666666667,
+    "sd_low": 0.9428090415820634,
+    "sd_high": 1.247219128924647,
+    "anchoring_effect": 3,
+    "ci_low": {
+      "lower": 3.6013226496539392,
+      "upper": 5.732010683679395,
+      "margin": 1.0653440170127275
+    },
+    "ci_high": {
+      "lower": 6.257349001793546,
+      "upper": 9.075984331539788,
+      "margin": 1.4093176648731205
+    },
+    "ttest": {
+      "t": -3.3234702564419836,
+      "p": 0.0020000000000000018,
+      "df": 3.7230769230769245
+    },
+    "cohens_d": 2.7136021011998728,
+    "effect_magnitude": "large"
+  },
+  "anthropic/claude-haiku-4-5": {
+    "model": "anthropic/claude-haiku-4-5",
+    "n_low": 23,
+    "n_high": 21,
+    "n_total": 44,
+    "mean_low": 3.3043478260869565,
+    "mean_high": 7,
+    "sd_low": 0.8564224175474873,
+    "sd_high": 0.9759000729485332,
+    "anchoring_effect": 3.6956521739130435,
+    "ci_low": {
+      "lower": 2.954844857750195,
+      "upper": 3.653850794423718,
+      "margin": 0.34950296833676153
+    },
+    "ci_high": {
+      "lower": 6.583205035984973,
+      "upper": 7.416794964015027,
+      "margin": 0.41679496401502736
+    },
+    "ttest": {
+      "t": -13.297411676652807,
+      "p": 0.0020000000000000018,
+      "df": 40.02465351501797
+    },
+    "cohens_d": 4.037800213823864,
+    "effect_magnitude": "large"
+  },
+  "anthropic/claude-opus-4-0": {
+    "model": "anthropic/claude-opus-4-0",
+    "n_low": 30,
+    "n_high": 30,
+    "n_total": 60,
+    "mean_low": 6,
+    "mean_high": 6,
+    "sd_low": 0,
+    "sd_high": 0,
+    "anchoring_effect": 0,
+    "ci_low": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ci_high": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ttest": {
+      "t": null,
+      "p": null,
+      "df": null
+    },
+    "cohens_d": null,
+    "effect_magnitude": "large"
+  },
+  "anthropic/claude-opus-4-5": {
+    "model": "anthropic/claude-opus-4-5",
+    "n_low": 60,
+    "n_high": 60,
+    "n_total": 120,
+    "mean_low": 6.016666666666667,
+    "mean_high": 7,
+    "sd_low": 1.0081611423224408,
+    "sd_high": 1,
+    "anchoring_effect": 0.9833333333333334,
+    "ci_low": {
+      "lower": 5.761936084018982,
+      "upper": 6.271397249314351,
+      "margin": 0.2547305826476842
+    },
+    "ci_high": {
+      "lower": 6.747331481095496,
+      "upper": 7.252668518904504,
+      "margin": 0.2526685189045042
+    },
+    "ttest": {
+      "t": -5.364005798245311,
+      "p": 0.0020000000000000018,
+      "df": 117.99220522204084
+    },
+    "cohens_d": 0.979328991429154,
+    "effect_magnitude": "large"
+  },
+  "anthropic/claude-opus-4-5-20251101": {
+    "model": "anthropic/claude-opus-4-5-20251101",
+    "n_low": 60,
+    "n_high": 60,
+    "n_total": 120,
+    "mean_low": 6.316666666666666,
+    "mean_high": 7.083333333333333,
+    "sd_low": 1.6481471077816114,
+    "sd_high": 1.1149240133549705,
+    "anchoring_effect": 0.7666666666666666,
+    "ci_low": {
+      "lower": 5.900231778006744,
+      "upper": 6.733101555326589,
+      "margin": 0.41643488865992206
+    },
+    "ci_high": {
+      "lower": 6.801627134187867,
+      "upper": 7.365039532478799,
+      "margin": 0.2817061991454661
+    },
+    "ttest": {
+      "t": -2.9844553072760367,
+      "p": 0.0029999999999998916,
+      "df": 103.64852183053608
+    },
+    "cohens_d": 0.5448844978870324,
+    "effect_magnitude": "medium"
+  },
+  "anthropic/claude-opus-4-6": {
+    "model": "anthropic/claude-opus-4-6",
+    "n_low": 50,
+    "n_high": 45,
+    "n_total": 95,
+    "mean_low": 7.04,
+    "mean_high": 6.644444444444445,
+    "sd_low": 1.6487571076419962,
+    "sd_high": 0.793180813225544,
+    "anchoring_effect": -0.3955555555555552,
+    "ci_low": {
+      "lower": 6.583649596994462,
+      "upper": 7.496350403005538,
+      "margin": 0.4563504030055379
+    },
+    "ci_high": {
+      "lower": 6.413028806490419,
+      "upper": 6.875860082398471,
+      "margin": 0.2314156379540255
+    },
+    "ttest": {
+      "t": 1.5130108953987982,
+      "p": 0.131,
+      "df": 72.12933965511101
+    },
+    "cohens_d": -0.3007413246599331,
+    "effect_magnitude": "small"
+  },
+  "anthropic/claude-sonnet-4-20250514": {
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "n_low": 418,
+    "n_high": 418,
+    "n_total": 986,
+    "mean_low": 5.7272727272727275,
+    "mean_high": 6.002392344497608,
+    "sd_low": 1.6419362846774712,
+    "sd_high": 1.976535565397461,
+    "anchoring_effect": 0.2751196172248802,
+    "ci_low": {
+      "lower": 5.570093583287308,
+      "upper": 5.884451871258147,
+      "margin": 0.15717914398541966
+    },
+    "ci_high": {
+      "lower": 5.8131827076042155,
+      "upper": 6.191601981391,
+      "margin": 0.18920963689339254
+    },
+    "ttest": {
+      "t": -2.189024589583521,
+      "p": 0.02859999999999996,
+      "df": 806.8689157447238
+    },
+    "cohens_d": 0.15141799703734196,
+    "effect_magnitude": "negligible"
+  },
+  "anthropic/claude-sonnet-4-5": {
+    "model": "anthropic/claude-sonnet-4-5",
+    "n_low": 210,
+    "n_high": 210,
+    "n_total": 510,
+    "mean_low": 6,
+    "mean_high": 9,
+    "sd_low": 0,
+    "sd_high": 0,
+    "anchoring_effect": 3,
+    "ci_low": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ci_high": {
+      "lower": 9,
+      "upper": 9,
+      "margin": 0
+    },
+    "ttest": {
+      "t": null,
+      "p": 0.0020000000000000018,
+      "df": null
+    },
+    "cohens_d": null,
+    "effect_magnitude": "large"
+  },
+  "codex": {
+    "model": "codex",
+    "n_low": 92,
+    "n_high": 140,
+    "n_total": 232,
+    "mean_low": 5.423913043478261,
+    "mean_high": 8.357142857142858,
+    "sd_low": 0.899682258551099,
+    "sd_high": 1.4145742851343186,
+    "anchoring_effect": 2.933229813664597,
+    "ci_low": {
+      "lower": 5.240334465033299,
+      "upper": 5.607491621923223,
+      "margin": 0.18357857844496203
+    },
+    "ci_high": {
+      "lower": 8.12315759647469,
+      "upper": 8.591128117811026,
+      "margin": 0.2339852606681691
+    },
+    "ttest": {
+      "t": -19.302939473493648,
+      "p": 0.0020000000000000018,
+      "df": 229.79417881564058
+    },
+    "cohens_d": 2.3717134393988637,
+    "effect_magnitude": "large"
+  },
+  "github-copilot/gpt-4o": {
+    "model": "github-copilot/gpt-4o",
+    "n_low": 549,
+    "n_high": 546,
+    "n_total": 1525,
+    "mean_low": 4.131147540983607,
+    "mean_high": 9.065934065934066,
+    "sd_low": 2.129914173018429,
+    "sd_high": 1.6327836259832627,
+    "anchoring_effect": 4.934786524950459,
+    "ci_low": {
+      "lower": 3.9532365859307093,
+      "upper": 4.309058496036504,
+      "margin": 0.1779109550528974
+    },
+    "ci_high": {
+      "lower": 8.929174071342649,
+      "upper": 9.202694060525483,
+      "margin": 0.136759994591416
+    },
+    "ttest": {
+      "t": -43.039897162540726,
+      "p": 0.0020000000000000018,
+      "df": 1026.5578752850167
+    },
+    "cohens_d": 2.5994800890701377,
+    "effect_magnitude": "large"
+  },
+  "github-copilot/gpt-5.2": {
+    "model": "github-copilot/gpt-5.2",
+    "n_low": 221,
+    "n_high": 222,
+    "n_total": 443,
+    "mean_low": 4.4343891402714934,
+    "mean_high": 8.545045045045045,
+    "sd_low": 1.5808506824631041,
+    "sd_high": 1.0420214881444265,
+    "anchoring_effect": 4.110655904773552,
+    "ci_low": {
+      "lower": 4.2262654709989835,
+      "upper": 4.642512809544003,
+      "margin": 0.20812366927251025
+    },
+    "ci_high": {
+      "lower": 8.408169157757332,
+      "upper": 8.681920932332758,
+      "margin": 0.1368758872877129
+    },
+    "ttest": {
+      "t": -32.29723515617431,
+      "p": 0.0020000000000000018,
+      "df": 380.5902149965895
+    },
+    "cohens_d": 3.0717222703468248,
+    "effect_magnitude": "large"
+  },
+  "meta-llama/llama-3.3-70b-instruct": {
+    "model": "meta-llama/llama-3.3-70b-instruct",
+    "n_low": 0,
+    "n_high": 3,
+    "n_total": 3,
+    "mean_low": null,
+    "mean_high": 12,
+    "sd_low": null,
+    "sd_high": 0,
+    "anchoring_effect": null,
+    "ci_low": null,
+    "ci_high": {
+      "lower": 12,
+      "upper": 12,
+      "margin": 0
+    },
+    "ttest": null,
+    "cohens_d": null,
+    "effect_magnitude": null
+  },
+  "openai-codex/gpt-5.2": {
+    "model": "openai-codex/gpt-5.2",
+    "n_low": 95,
+    "n_high": 95,
+    "n_total": 190,
+    "mean_low": 6,
+    "mean_high": 9.56842105263158,
+    "sd_low": 0,
+    "sd_high": 1.4264614413882046,
+    "anchoring_effect": 3.56842105263158,
+    "ci_low": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ci_high": {
+      "lower": 9.281986771646967,
+      "upper": 9.854855333616193,
+      "margin": 0.2864342809846134
+    },
+    "ttest": {
+      "t": -24.382478997706986,
+      "p": 0.0020000000000000018,
+      "df": 94
+    },
+    "cohens_d": 3.537781886328516,
+    "effect_magnitude": "large"
+  },
+  "openrouter/arcee-ai/trinity-large-preview:free": {
+    "model": "openrouter/arcee-ai/trinity-large-preview:free",
+    "n_low": 39,
+    "n_high": 28,
+    "n_total": 67,
+    "mean_low": 5.641025641025641,
+    "mean_high": 10.285714285714286,
+    "sd_low": 0.9469838621856096,
+    "sd_high": 2.4619554199448688,
+    "anchoring_effect": 4.644688644688645,
+    "ci_low": {
+      "lower": 5.344243998271288,
+      "upper": 5.9378072837799944,
+      "margin": 0.2967816427543526
+    },
+    "ci_high": {
+      "lower": 9.375113692756134,
+      "upper": 11.196314878672439,
+      "margin": 0.910600592958152
+    },
+    "ttest": {
+      "t": -9.491483836310744,
+      "p": 0.0020000000000000018,
+      "df": 32.777903359811084
+    },
+    "cohens_d": 2.6630314588342907,
+    "effect_magnitude": "large"
+  },
+  "openrouter/meta-llama/llama-3.3-70b-instruct": {
+    "model": "openrouter/meta-llama/llama-3.3-70b-instruct",
+    "n_low": 247,
+    "n_high": 238,
+    "n_total": 496,
+    "mean_low": 5.465587044534413,
+    "mean_high": 8.193277310924369,
+    "sd_low": 1.18945687241284,
+    "sd_high": 2.8763811031971596,
+    "anchoring_effect": 2.7276902663899563,
+    "ci_low": {
+      "lower": 5.317462515302855,
+      "upper": 5.61371157376597,
+      "margin": 0.1481245292315578
+    },
+    "ci_high": {
+      "lower": 7.82836819883444,
+      "upper": 8.558186423014298,
+      "margin": 0.3649091120899295
+    },
+    "ttest": {
+      "t": -13.555531923835066,
+      "p": 0.0020000000000000018,
+      "df": 313.34072377335946
+    },
+    "cohens_d": 1.247579106398252,
+    "effect_magnitude": "large"
+  },
+  "openrouter/meta-llama/llama-3.3-70b-instruct:free": {
+    "model": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
+    "n_low": 24,
+    "n_high": 25,
+    "n_total": 49,
+    "mean_low": 5,
+    "mean_high": 6,
+    "sd_low": 1.7320508075688772,
+    "sd_high": 0,
+    "anchoring_effect": 1,
+    "ci_low": {
+      "lower": 4.308038763122912,
+      "upper": 5.691961236877088,
+      "margin": 0.6919612368770874
+    },
+    "ci_high": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ttest": {
+      "t": -2.82842712474619,
+      "p": 0.0045999999999999375,
+      "df": 23
+    },
+    "cohens_d": 0.8253238275306579,
+    "effect_magnitude": "large"
+  },
+  "openrouter/minimax/minimax-m2.5": {
+    "model": "openrouter/minimax/minimax-m2.5",
+    "n_low": 87,
+    "n_high": 50,
+    "n_total": 137,
+    "mean_low": 5.287356321839081,
+    "mean_high": 8.08,
+    "sd_low": 2.5093299283128756,
+    "sd_high": 2.207623156247461,
+    "anchoring_effect": 2.7926436781609194,
+    "ci_low": {
+      "lower": 4.760824165087836,
+      "upper": 5.813888478590325,
+      "margin": 0.5265321567512444
+    },
+    "ci_high": {
+      "lower": 7.468964140097803,
+      "upper": 8.691035859902197,
+      "margin": 0.6110358599021971
+    },
+    "ttest": {
+      "t": -6.7761801701443405,
+      "p": 0.0020000000000000018,
+      "df": 113.21795252620178
+    },
+    "cohens_d": 1.1615674669285045,
+    "effect_magnitude": "large"
+  },
+  "openrouter/mistralai/mistral-small-3.1-24b-instruct:free": {
+    "model": "openrouter/mistralai/mistral-small-3.1-24b-instruct:free",
+    "n_low": 53,
+    "n_high": 51,
+    "n_total": 104,
+    "mean_low": 6,
+    "mean_high": 6,
+    "sd_low": 0,
+    "sd_high": 0,
+    "anchoring_effect": 0,
+    "ci_low": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ci_high": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ttest": {
+      "t": null,
+      "p": null,
+      "df": null
+    },
+    "cohens_d": null,
+    "effect_magnitude": "large"
+  },
+  "openrouter/nousresearch/hermes-3-llama-3.1-405b": {
+    "model": "openrouter/nousresearch/hermes-3-llama-3.1-405b",
+    "n_low": 60,
+    "n_high": 77,
+    "n_total": 137,
+    "mean_low": 6.7,
+    "mean_high": 6.1558441558441555,
+    "sd_low": 1.9261360284258233,
+    "sd_high": 0.9543466530324076,
+    "anchoring_effect": -0.5441558441558447,
+    "ci_low": {
+      "lower": 6.213326062489044,
+      "upper": 7.186673937510957,
+      "margin": 0.48667393751095683
+    },
+    "ci_high": {
+      "lower": 5.942987344527395,
+      "upper": 6.368700967160916,
+      "margin": 0.21285681131676068
+    },
+    "ttest": {
+      "t": 2.0049460250829196,
+      "p": 0.045600000000000085,
+      "df": 81.41863501644936
+    },
+    "cohens_d": -0.37248749701740264,
+    "effect_magnitude": "small"
+  },
+  "openrouter/nousresearch/hermes-3-llama-3.1-405b:free": {
+    "model": "openrouter/nousresearch/hermes-3-llama-3.1-405b:free",
+    "n_low": 32,
+    "n_high": 11,
+    "n_total": 64,
+    "mean_low": 5.3125,
+    "mean_high": 5.090909090909091,
+    "sd_low": 1.4670868242881878,
+    "sd_high": 0.9958591954639383,
+    "anchoring_effect": -0.22159090909090917,
+    "ci_low": {
+      "lower": 4.804916393229734,
+      "upper": 5.820083606770266,
+      "margin": 0.5075836067702663
+    },
+    "ci_high": {
+      "lower": 4.5032460811168935,
+      "upper": 5.678572100701288,
+      "margin": 0.5876630097921971
+    },
+    "ttest": {
+      "t": 0.5585010951827731,
+      "p": 0.5753999999999999,
+      "df": 25.846009367212428
+    },
+    "cohens_d": -0.16207502102308216,
+    "effect_magnitude": "negligible"
+  },
+  "openrouter/nvidia/llama-3.1-nemotron-70b-instruct": {
+    "model": "openrouter/nvidia/llama-3.1-nemotron-70b-instruct",
+    "n_low": 3,
+    "n_high": 3,
+    "n_total": 6,
+    "mean_low": 6,
+    "mean_high": 6,
+    "sd_low": 0,
+    "sd_high": 0,
+    "anchoring_effect": 0,
+    "ci_low": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ci_high": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ttest": {
+      "t": null,
+      "p": null,
+      "df": null
+    },
+    "cohens_d": null,
+    "effect_magnitude": "large"
+  },
+  "openrouter/nvidia/nemotron-3-nano-30b-a3b:free": {
+    "model": "openrouter/nvidia/nemotron-3-nano-30b-a3b:free",
+    "n_low": 40,
+    "n_high": 31,
+    "n_total": 71,
+    "mean_low": 3.6,
+    "mean_high": 6.838709677419355,
+    "sd_low": 1.9723082923316022,
+    "sd_high": 2.4638911553455887,
+    "anchoring_effect": 3.238709677419355,
+    "ci_low": {
+      "lower": 2.98966037741362,
+      "upper": 4.21033962258638,
+      "margin": 0.6103396225863799
+    },
+    "ci_high": {
+      "lower": 5.97261088825734,
+      "upper": 7.70480846658137,
+      "margin": 0.8660987891620145
+    },
+    "ttest": {
+      "t": -5.982438179855442,
+      "p": 0.0020000000000000018,
+      "df": 56.48008891008402
+    },
+    "cohens_d": 1.4724212247461999,
+    "effect_magnitude": "large"
+  },
+  "openrouter/openai/gpt-4o": {
+    "model": "openrouter/openai/gpt-4o",
+    "n_low": 120,
+    "n_high": 99,
+    "n_total": 219,
+    "mean_low": 4.883333333333334,
+    "mean_high": 9.848484848484848,
+    "sd_low": 1.444433760644249,
+    "sd_high": 2.1759179480019686,
+    "anchoring_effect": 4.965151515151514,
+    "ci_low": {
+      "lower": 4.625265564314611,
+      "upper": 5.141401102352057,
+      "margin": 0.2580677690187232
+    },
+    "ci_high": {
+      "lower": 9.420477055077873,
+      "upper": 10.276492641891823,
+      "margin": 0.4280077934069754
+    },
+    "ttest": {
+      "t": -19.443392826599194,
+      "p": 0.0020000000000000018,
+      "df": 164.32267059296544
+    },
+    "cohens_d": 2.740558977628895,
+    "effect_magnitude": "large"
+  },
+  "openrouter/openai/o3-mini": {
+    "model": "openrouter/openai/o3-mini",
+    "n_low": 9,
+    "n_high": 0,
+    "n_total": 9,
+    "mean_low": 6,
+    "mean_high": null,
+    "sd_low": 0,
+    "sd_high": null,
+    "anchoring_effect": null,
+    "ci_low": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ci_high": null,
+    "ttest": null,
+    "cohens_d": null,
+    "effect_magnitude": null
+  },
+  "openrouter/qwen/qwen3-next-80b-a3b-instruct:free": {
+    "model": "openrouter/qwen/qwen3-next-80b-a3b-instruct:free",
+    "n_low": 53,
+    "n_high": 56,
+    "n_total": 109,
+    "mean_low": 6,
+    "mean_high": 7.178571428571429,
+    "sd_low": 0,
+    "sd_high": 2.383778085137891,
+    "anchoring_effect": 1.1785714285714288,
+    "ci_low": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ci_high": {
+      "lower": 6.555125821520479,
+      "upper": 7.802017035622379,
+      "margin": 0.6234456070509498
+    },
+    "ttest": {
+      "t": -3.699849846803098,
+      "p": 0.0020000000000000018,
+      "df": 55
+    },
+    "cohens_d": 0.6896053621859071,
+    "effect_magnitude": "medium"
+  },
+  "openrouter/stepfun/step-3.5-flash:free": {
+    "model": "openrouter/stepfun/step-3.5-flash:free",
+    "n_low": 25,
+    "n_high": 0,
+    "n_total": 25,
+    "mean_low": 8.64,
+    "mean_high": null,
+    "sd_low": 2.9783216750378063,
+    "sd_high": null,
+    "anchoring_effect": null,
+    "ci_low": {
+      "lower": 7.474188439477969,
+      "upper": 9.805811560522033,
+      "margin": 1.1658115605220314
+    },
+    "ci_high": null,
+    "ttest": null,
+    "cohens_d": null,
+    "effect_magnitude": null
+  }
+}
