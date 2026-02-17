@@ -38,7 +38,7 @@ We investigate whether prompt-based techniques can reduce anchoring bias in LLMs
 
 \textbf{No-anchor control:} We established unanchored baselines, revealing that relative effects underestimate absolute sensitivity. GPT-4o's unanchored baseline is 20.4mo; the 3mo anchor pulls it down to 6.0mo (14.4mo absolute shift vs 5.7mo relative effect). Claude Opus 4.5 shows \emph{reversed} direction: anchors \emph{increase} sentences from a 6.0mo baseline.
 
-\textbf{Full iterative SACD:} Single-pass SACD variants substantially underestimate debiasing capability. Full iterative SACD (up to 3 iterations) achieved 96--99\% bias reduction across 4 models, fixing cases where single-pass \emph{increased} bias or produced pathological outputs.
+\textbf{Full iterative SACD:} Single-pass debiasing variants substantially underestimate debiasing capability. Full iterative SACD (up to 3 iterations) achieved 96--99\% bias reduction across 4 models, fixing cases where single-pass \emph{increased} bias or produced pathological outputs.
 
 \textbf{Practical implications:} (1) Test debiasing on your specific deployment model---interventions can backfire. (2) For models showing no baseline bias, avoid multi-turn prompts. (3) For biased models, use full iterative SACD (not single-pass). (4) Use date-pinned model IDs for reproducibility.
 
@@ -100,7 +100,7 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
     \item \textbf{Baseline}: Standard prompt with anchor included
     \item \textbf{Context Hygiene}: Prompt explicitly instructs model to identify and disregard irrelevant information before deciding
     \item \textbf{Premortem}: Prompt asks model to imagine its sentence was overturned on appeal, identify what went wrong, then provide its recommendation
-    \item \textbf{SACD (single-pass)}: Our implementation of \citet{lyu2025}'s Self-Adaptive Cognitive Debiasing runs a \textbf{single iteration} (not the full iterative loop):
+    \item \textbf{single-pass debiasing}: Our implementation of \citet{lyu2025}'s Self-Adaptive Cognitive Debiasing runs a \textbf{single iteration} (not the full iterative loop):
     \begin{itemize}
         \item Generate initial response
         \item Detect: ``Does this response show signs of cognitive bias?''
@@ -848,7 +848,7 @@ This sweep reinforces our central finding: \textbf{debiasing effectiveness is mo
 \subsection{Full Iterative SACD vs Single-Pass: Critical Difference}
 \label{sec:full-sacd}
 
-Our initial experiments used a \textbf{single-pass} SACD variant. To address reviewer concerns about comparability to Lyu et al.'s full protocol, we ran the \textbf{complete iterative SACD} (up to 3 iterations until debiasing converges) on five models:
+Our initial experiments used a \textbf{single-pass debiasing} variant. To address reviewer concerns about comparability to Lyu et al.'s full protocol, we ran the \textbf{complete iterative SACD} (up to 3 iterations until debiasing converges) on five models:
 
 \begin{table}[H]
 \centering
@@ -863,7 +863,7 @@ Hermes 405B & 0.8 mo (86\% $\downarrow$) & \textbf{-1.0 mo} (>100\% $\downarrow$
 Llama 3.3 & Pathological$^\dagger$ & \textbf{1.03 mo} (83\% $\downarrow$) & Fixed \\
 \bottomrule
 \end{tabular}
-\caption{Full iterative SACD vs single-pass SACD ($n=30$ per anchor condition, temp=0). $^\dagger$Single-pass SACD on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely. $^\ddagger$Single-pass not run; Opus 4.6 baseline effect was only 1.27mo, so full SACD achieved over-correction (reversed anchoring direction).}
+\caption{Full iterative SACD vs single-pass debiasing ($n=30$ per anchor condition, temp=0). $^\dagger$Single-pass debiasing on Llama 3.3 produced extreme variance with 120mo outliers (20\% of trials). Full SACD eliminates this pathology entirely. $^\ddagger$Single-pass not run; Opus 4.6 baseline effect was only 1.27mo, so full SACD achieved over-correction (reversed anchoring direction).}
 \label{tab:full-sacd}
 \end{table}
 
@@ -874,9 +874,9 @@ Llama 3.3 & Pathological$^\dagger$ & \textbf{1.03 mo} (83\% $\downarrow$) & Fixe
     \item \textbf{Convergence is fast:} All trials across all models converged in 1--2 iterations. The iterative loop rarely requires the full 3 iterations.
 \end{enumerate}
 
-\textbf{Implication for practitioners:} Single-pass SACD results should not be used to evaluate SACD effectiveness. The full iterative protocol is essential---our single-pass results substantially underestimated (or completely missed) SACD's debiasing capability.
+\textbf{Implication for practitioners:} Single-pass debiasing results should not be used to evaluate SACD effectiveness. The full iterative protocol is essential---our single-pass results substantially underestimated (or completely missed) SACD's debiasing capability.
 
-\subsection{Single-Pass SACD Analysis (Historical)}
+\subsection{Single-Pass Debiasing Analysis (Historical)}
 
 The following section documents our original single-pass findings, which we now understand to be an incomplete picture of SACD's capability.
 
@@ -1180,7 +1180,7 @@ What is your final sentencing decision for Lena M.?\\
 Answer with a single integer number of months on probation.
 \end{quote}
 
-\textbf{Implementation note:} Our implementation runs a \textbf{single SACD iteration} (no looping on REQUIRES\_ITERATION). The debiased prompt is extracted from Phase 1 output and passed directly to Phase 2. This differs from the full SACD protocol in \citet{lyu2025}, which includes an iterative loop. We refer to our implementation as ``SACD (single-pass)'' throughout to distinguish it from the full protocol.
+\textbf{Implementation note:} Our implementation runs a \textbf{single SACD iteration} (no looping on REQUIRES\_ITERATION). The debiased prompt is extracted from Phase 1 output and passed directly to Phase 2. This differs from the full SACD protocol in \citet{lyu2025}, which includes an iterative loop. We refer to our implementation as ``single-pass debiasing'' throughout to distinguish it from the full protocol.
 
 \subsection{DeFrame Intervention}
 
