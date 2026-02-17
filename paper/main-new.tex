@@ -356,6 +356,20 @@ True Anchoring & $\downarrow$ (toward anchor) & $\uparrow$ (toward anchor) & 60-
     \end{itemize}
 \end{enumerate}
 
+\subsection{Reasoning Models Do Not Escape Bias}
+
+A natural question is whether reasoning models---those with native chain-of-thought capabilities---avoid anchoring bias through extended deliberation. Our results suggest not.
+
+Despite native chain-of-thought capabilities, o1 showed a 4.2-month anchoring effect at baseline. More strikingly, SACD actually \emph{increased} bias by 7\%, producing a 4.6-month effect under the debiasing intervention. This suggests that extended deliberation can rationalize biased judgments rather than correct them.
+
+This finding has practical implications: organizations cannot assume that ``thinking'' models are immune to numeric context effects. The mechanism taxonomy applies regardless of whether the model performs explicit reasoning.
+
+\subsection{Multi-Turn Structure Can Introduce Bias}
+
+For models showing no baseline bias, multi-turn prompting may be harmful. Llama 3.3 exhibited zero anchoring effect (0.1mo) in single-turn baseline prompts, but showed 6.0mo effect when the same content was delivered in a multi-turn format. The structure itself---not the reasoning content---introduced the bias.
+
+\textbf{Practical guideline}: For models that show no baseline bias, avoid multi-turn debiasing interventions. Test your specific deployment before applying any intervention.
+
 \subsection{Limitations}
 
 \begin{enumerate}
