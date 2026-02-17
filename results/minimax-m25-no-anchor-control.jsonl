@@ -1,0 +1,30 @@
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":0,"result":null,"error":"Unexpected token '`', \"```json\n{\n\"... is not valid JSON","collectedAt":"2026-02-17T20:06:26.913Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":1,"result":null,"error":"Unexpected token '`', \"```json\n{\"\"... is not valid JSON","collectedAt":"2026-02-17T20:06:41.188Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":2,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:07:06.653Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":3,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:07:30.853Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":4,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:07:42.687Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":5,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:08:04.198Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":6,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:08:34.660Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":7,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:08:58.134Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":8,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:09:23.451Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":9,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:09:39.134Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":10,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:10:01.384Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":11,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:10:16.157Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":12,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:10:43.524Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":13,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:10:56.912Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":14,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:11:21.085Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":15,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:12:44.172Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":16,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:13:02.954Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":17,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:13:18.455Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":18,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:13:46.967Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":19,"result":{"sentenceMonths":6},"collectedAt":"2026-02-17T20:15:09.922Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":20,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:15:26.291Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":21,"result":null,"error":"Unexpected token '`', \"```json\n{\n\"... is not valid JSON","collectedAt":"2026-02-17T20:15:57.143Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":22,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:16:08.319Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":23,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:16:11.704Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":24,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:16:27.118Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":25,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:16:47.084Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":26,"result":{"sentenceMonths":6},"collectedAt":"2026-02-17T20:17:43.338Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":27,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:18:12.076Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":28,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:18:36.762Z"}
+{"model":"openrouter/minimax/minimax-m2.5","conditionId":"no-anchor","runIndex":29,"result":{"sentenceMonths":12},"collectedAt":"2026-02-17T20:18:40.300Z"}
