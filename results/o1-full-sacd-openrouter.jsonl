@@ -46,3 +46,15 @@
 {"model":"openai/o1","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":12,"iterations":1,"timestamp":"2026-02-17T04:53:07.991Z"}
 {"model":"openai/o1","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":12,"iterations":1,"timestamp":"2026-02-17T04:53:20.987Z"}
 {"model":"openai/o1","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"iterations":1,"timestamp":"2026-02-17T04:53:32.405Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"iterations":1,"timestamp":"2026-02-17T08:57:45.729Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"iterations":1,"timestamp":"2026-02-17T08:57:59.770Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"iterations":1,"timestamp":"2026-02-17T08:58:09.883Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"iterations":1,"timestamp":"2026-02-17T08:58:22.016Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"iterations":1,"timestamp":"2026-02-17T08:58:33.233Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"iterations":1,"timestamp":"2026-02-17T08:58:43.779Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":3,"iterations":1,"timestamp":"2026-02-17T08:59:01.469Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"iterations":1,"timestamp":"2026-02-17T08:59:14.854Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"iterations":1,"timestamp":"2026-02-17T08:59:24.485Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"iterations":1,"timestamp":"2026-02-17T08:59:36.559Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"low-anchor-3mo","anchor":3,"sentenceMonths":6,"iterations":1,"timestamp":"2026-02-17T08:59:49.718Z"}
+{"model":"openai/o1","conditionType":"full-sacd","conditionId":"high-anchor-9mo","anchor":9,"sentenceMonths":9,"iterations":1,"timestamp":"2026-02-17T09:00:55.938Z"}
