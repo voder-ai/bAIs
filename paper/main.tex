@@ -344,6 +344,20 @@ Our findings suggest that ``anchoring bias in LLMs'' is not a unitary phenomenon
     \item \textbf{Debiasing interventions need validation.} The 44\% success rate of SACD (4/9 deployments) suggests that techniques from the human literature do not transfer reliably to LLMs.
 \end{enumerate}
 
+\subsection{Reasoning Models Do Not Escape Bias}
+
+A natural hypothesis is that reasoning models---with native chain-of-thought capabilities---might be more resistant to anchoring bias. Our results suggest otherwise. Despite extended deliberation, o1 showed a 4.2-month anchoring effect at baseline. More surprisingly, SACD actually \emph{increased} bias by 7\% on o1, compared to 89\% reduction on GPT-5.2.
+
+This suggests that extended deliberation can \emph{rationalize} biased judgments rather than correct them. The model generates post-hoc justifications for anchor-influenced conclusions, making the bias harder to detect and correct. This finding is consistent with recent work showing that chain-of-thought reasoning is not always faithful to the model's actual decision process.
+
+\textbf{Practical implication}: Do not assume that reasoning models are bias-resistant. Test explicitly before deployment.
+
+\subsection{Multi-Turn Structure Can Introduce Bias}
+
+We observed that multi-turn prompting structure can \emph{introduce} bias in models that show none at baseline. Llama 3.3 showed 0-month anchoring effect with single-turn prompts, but 6-month effect with three-turn structure---regardless of the content of intermediate turns.
+
+\textbf{Practical implication}: For models showing no baseline bias, avoid unnecessary multi-turn prompting. Structure alone can trigger latent biases.
+
 \subsection{Limitations}
 
 \begin{enumerate}
