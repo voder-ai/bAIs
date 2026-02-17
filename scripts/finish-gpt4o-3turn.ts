@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Finish: 1 high-anchor 3-turn trial for GPT-4o
  */

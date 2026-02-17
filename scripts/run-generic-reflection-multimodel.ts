@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 
 /**
  * Generic Reflection Control - Multi-model version

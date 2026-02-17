@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Token-matched random elaboration control on Haiku 4.5
  * Designed to produce ~200-400 tokens of irrelevant content (matching CoT length)

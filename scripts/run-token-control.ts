@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 
 /**
  * Token-length control experiment for SACD

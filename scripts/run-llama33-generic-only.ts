@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 import { appendFile } from 'node:fs/promises';
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';

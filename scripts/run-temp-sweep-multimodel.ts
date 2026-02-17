@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Temperature sweep on models with baseline bias
  * Tests soft/hard hypothesis: does temp>0 reduce bias?

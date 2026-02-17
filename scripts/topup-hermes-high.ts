@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Top-up Hermes 405B high anchor trials (need +17)
  */

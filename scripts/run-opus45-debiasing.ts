@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 
 /**
  * Opus 4.5 Debiasing Suite

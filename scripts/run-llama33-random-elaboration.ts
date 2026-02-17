@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Random elaboration control on Llama 3.3
  * Purpose: Test if ANY multi-turn structure introduces bias, or just CoT-specific content

@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Debiasing Sweep: Sibony + SACD on multiple models (PAID OpenRouter)
  * Models: Llama 3.3, Mistral, Hermes 405B, Qwen, Gemma

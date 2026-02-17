@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * o1 SACD Low-Anchor Topup — need 11 more trials to reach n=30
  */

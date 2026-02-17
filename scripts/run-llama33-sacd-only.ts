@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * SACD-only test on Llama 3.3 (unbiased model)
  * Purpose: Test if SACD introduces bias on unbiased models

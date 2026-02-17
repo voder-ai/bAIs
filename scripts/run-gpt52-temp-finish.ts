@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Finish GPT-5.2 temp=1.0 debiasing experiment
  */

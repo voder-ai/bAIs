@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * MiniMax M2.5 Full SACD (iterative) via OpenRouter
  */

@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * 3-turn high-anchor only for Haiku 4.5 (topping up from killed run)
  */

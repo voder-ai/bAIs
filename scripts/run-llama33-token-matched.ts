@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Llama 3.3 Token-Matched Control via OpenRouter
  */

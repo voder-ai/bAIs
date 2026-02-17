@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Top-up GPT-4o prompt robustness (need +19: 9 low, 10 high)
  */

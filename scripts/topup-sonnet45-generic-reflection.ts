@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Top-up Sonnet 4.5 generic reflection control (+10: 5 low, 5 high)
  */

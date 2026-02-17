@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Topup: Final 5 high-anchor SACD trials for Haiku 4.5
  */

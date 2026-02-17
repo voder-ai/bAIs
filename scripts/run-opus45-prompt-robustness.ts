@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Opus 4.5 prompt robustness experiment
  * Tests 3 prompt variants to address reviewer FAIL on prompt sensitivity confound

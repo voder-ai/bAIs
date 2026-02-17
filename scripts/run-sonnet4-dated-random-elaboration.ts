@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Random elaboration control on Sonnet 4 dated (unbiased model per baseline data)
  * Purpose: Test if multi-turn structure introduces bias in unbiased models

@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 
 /**
  * Top-up MiniMax M2.5 SACD high-anchor trials

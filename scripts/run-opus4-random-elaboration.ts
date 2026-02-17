@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Random elaboration control on Opus 4 (biased model per baseline data)
  * Purpose: Test if multi-turn structure alone debiases, confirming mechanism

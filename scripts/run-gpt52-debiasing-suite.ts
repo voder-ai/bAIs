@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Full debiasing suite on GPT-5.2 (temp=0)
  * Conditions: simple instruction, context hygiene, premortem, SACD, generic reflection, random elaboration

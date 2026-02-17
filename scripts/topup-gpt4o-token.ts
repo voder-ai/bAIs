@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Topup: 6 high-anchor token-matched trials for GPT-4o
  */

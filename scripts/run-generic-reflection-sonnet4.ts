@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Generic Reflection Control on Sonnet 4 dated (claude-sonnet-4-20250514)
  * For matched comparison with SACD data

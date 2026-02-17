@@ -1,4 +1,5 @@
 #!/usr/bin/env npx ts-node
+// @ts-nocheck
 
 /**
  * Compute bootstrap CIs for key comparisons in the bAIs paper

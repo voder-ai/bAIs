@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * LLM-based paper quality review
  * Uses bAIs LLM infrastructure to get an independent assessment

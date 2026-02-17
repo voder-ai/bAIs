@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Opus 4.5 with PROBATION framing (matching original Englich)
  * 2x2 design: Framing test for Mac infrastructure

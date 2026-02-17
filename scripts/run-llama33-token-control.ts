@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Token-matched random elaboration control on Llama 3.3
  * Designed to produce ~200-400 tokens of irrelevant content (matching CoT length)

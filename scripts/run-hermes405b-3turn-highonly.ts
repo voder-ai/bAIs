@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * 3-turn high-anchor only for Hermes 405B (continuing from completed low-anchor run)
  */

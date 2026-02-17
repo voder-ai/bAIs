@@ -1,4 +1,5 @@
 #!/usr/bin/env -S npx tsx
+// @ts-nocheck
 
 import { runAnchoringProsecutorSentencing } from '../src/run/runAnchoringProsecutorSentencing.js';
 import { anchoringProsecutorSentencingDebiasExperiment } from '../src/experiments/anchoringProsecutorSentencingDebias.js';

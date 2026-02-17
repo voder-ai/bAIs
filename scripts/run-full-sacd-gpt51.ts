@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Full Iterative SACD on GPT-5.1 (via OpenAI Codex)
  * Uses the complete SACD protocol (up to 3 iterations)

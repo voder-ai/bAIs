@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Full Iterative SACD on Hermes 3 405B
  * Uses the complete SACD protocol (up to 3 iterations)

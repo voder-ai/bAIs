@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Prompt robustness test specifically for Llama 3.3 70B
  * Tests 3 prompt paraphrases to verify bias classification stability

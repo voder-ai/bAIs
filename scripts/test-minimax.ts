@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 
 async function test() {

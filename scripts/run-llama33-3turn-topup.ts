@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * 3-turn random conversation control for Llama 3.3 — TOP UP
  * Continuing from 13 trials (all low anchor) to complete 30 total

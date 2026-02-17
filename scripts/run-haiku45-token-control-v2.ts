@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Token-matched random elaboration control on Haiku 4.5 (v2)
  * Uses two-turn approach to ensure JSON output

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Full Iterative SACD on Claude Opus 4.5
  * Uses the complete SACD protocol (up to 3 iterations)

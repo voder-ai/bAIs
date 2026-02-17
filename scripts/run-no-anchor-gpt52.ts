@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * No-Anchor Control on GPT-5.2 (via OpenAI Codex)
  * Establishes unanchored baseline for comparison

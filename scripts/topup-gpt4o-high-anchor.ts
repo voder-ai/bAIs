@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Topup: High-anchor 3-turn control for GPT-4o
  */

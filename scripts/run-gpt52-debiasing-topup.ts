@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Top-up for debiasing suite errors (2 missing trials)
  */

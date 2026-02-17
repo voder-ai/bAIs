@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 import { createProvider, parseModelSpec } from '../src/llm/provider.js';
 

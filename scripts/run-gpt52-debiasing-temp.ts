@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * GPT-5.2 debiasing at temp>0
  * Tests whether Sibony-style debiasing holds at non-zero temperatures

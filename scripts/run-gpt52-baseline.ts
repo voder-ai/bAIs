@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Baseline anchoring on GPT-5.2 (temp=0)
  */

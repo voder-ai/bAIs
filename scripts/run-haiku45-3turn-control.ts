@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * 3-turn random conversation control for Haiku 4.5
  * Tests whether SACD's effect is from structured self-critique or just multi-turn processing

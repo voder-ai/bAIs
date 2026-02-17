@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Opus 4.5 probation framing experiment
  * Uses original Englich "months on probation" framing

@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Opus 4.5 prompt robustness with DATED model ID
  * Uses legacy provider for direct Anthropic SDK access

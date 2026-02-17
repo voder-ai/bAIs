@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 
 /**
  * Quick test to verify GPT 5.3 access and get baseline anchoring data

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * No-Anchor Control on Hermes 405B
  * Establishes unanchored baseline for comparison

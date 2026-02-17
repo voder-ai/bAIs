@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * GPT-5.2 prompt robustness experiment
  * Tests 3 prompt variants to address reviewer FAIL on prompt sensitivity confound

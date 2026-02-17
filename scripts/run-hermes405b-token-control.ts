@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Token-matched random elaboration control on Hermes 405B
  * Designed to produce ~200-400 tokens of irrelevant content (matching CoT length)

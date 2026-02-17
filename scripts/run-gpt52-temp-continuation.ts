@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Continue GPT-5.2 debiasing at temp>0
  * Starting from temp=0.7 simple-instruction (Atlas got to 18/60)

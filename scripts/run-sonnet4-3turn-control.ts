@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * 3-turn random conversation control for Claude Sonnet 4
  * Tests whether multi-turn structure affects bias on Anthropic models

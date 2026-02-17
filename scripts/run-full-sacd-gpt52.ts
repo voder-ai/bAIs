@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Full Iterative SACD on GPT-5.2 (via GitHub Copilot)
  * Uses the complete SACD protocol (up to 3 iterations)

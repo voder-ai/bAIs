@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * No-Anchor Control on Claude Opus 4.5
  * Establishes unanchored baseline for comparison

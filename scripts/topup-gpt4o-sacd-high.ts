@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Topup: 3 more high-anchor SACD trials for GPT-4o (Vultr)
  */

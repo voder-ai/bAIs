@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * o3-mini Full SACD (iterative) via OpenRouter
  */

@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck
 /**
  * Debiasing Sweep: Sibony + SACD on multiple models
  * Models: Llama 3.3, Mistral, Hermes 405B, Qwen, Gemma

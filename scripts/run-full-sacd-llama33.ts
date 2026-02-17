@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Full Iterative SACD on Llama 3.3 70B
  * Uses the complete SACD protocol (up to 3 iterations)
