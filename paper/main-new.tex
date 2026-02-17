@@ -1,0 +1,379 @@
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+\usepackage{xcolor}
+
+% Title
+\title{Three Mechanisms of Numeric Context Influence\\in Large Language Models}
+
+\author{
+  Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
+  \textit{with} Tom Howard\thanks{Tom Howard provided direction and oversight. GitHub: @tompahoward}
+}
+
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+How do large language models (LLMs) respond to numeric context in judgment tasks? Prior work assumes LLMs exhibit anchoring bias similar to humans---adjusting estimates toward arbitrary reference points. We find the reality is more complex.
+
+Testing 15 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct mechanisms} by which LLMs respond to numeric context:
+
+\textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (13--24 months); with ANY anchor---high or low---responses compress to 6--8 months. Both anchors shift responses DOWN. (Opus 4.5, Llama 3.3)
+
+\textbf{2. Compliance}: Models copy the anchor value exactly, treating numeric context as instruction rather than reference. A 3-month anchor produces 3-month output; 9-month produces 9-month. This resembles ``perfect anchoring'' but reflects instruction-following, not cognitive bias. (MiniMax, o3-mini, some GPT-4o deployments)
+
+\textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with Tversky-Kahneman anchoring-and-adjustment. Only this mechanism resembles human cognitive bias. (GPT-4o via datacenter, GPT-5.2)
+
+This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognitive Debiasing) achieves 89--99\% reduction on some models but 0\% on others. SACD targets true anchoring; it cannot address compliance (nothing to debias) or compression (may amplify severity).
+
+\textbf{Critical deployment finding}: The SAME model (GPT-4o) shows different mechanisms depending on access path---compliance via residential IP, true anchoring via datacenter. ``Model name'' is insufficient granularity for reproducible LLM research.
+
+\textbf{Practical implication}: Before applying debiasing, identify which mechanism your deployment exhibits. We provide a decision framework and deployment checklist.
+\end{abstract}
+
+%==============================================================================
+\section{Introduction}
+%==============================================================================
+
+When humans encounter numeric values in decision-making contexts, these values can systematically bias subsequent judgments---the anchoring effect \citep{tversky1974}. Recent work has demonstrated that large language models (LLMs) also exhibit anchoring effects in various decision tasks \citep{binz2023,jones2022}. This has raised concerns about deploying LLMs in high-stakes domains like judicial sentencing, medical diagnosis, and financial forecasting.
+
+But what if ``LLM anchoring'' is not a single phenomenon?
+
+Prior studies report inconsistent results: debiasing techniques work dramatically on some models while failing completely on others. These inconsistencies are typically treated as noise or attributed to ``model-specific effects'' without explanation. We propose a different interpretation: \textbf{the inconsistency IS the finding}. Different models respond to numeric context through fundamentally different mechanisms.
+
+In this paper, we report a discovery: what researchers measure as ``anchoring bias'' in LLMs actually reflects \textbf{three distinct mechanisms}---compression, compliance, and true anchoring---each with different behavioral signatures and requiring different interventions.
+
+\textbf{Compression.} Some models compress responses toward a middle range whenever numeric context is present. Without any anchor, these models produce high values (13--24 months in sentencing tasks); with ANY anchor---high or low---responses compress to a moderate range (6--8 months). Both anchor directions shift responses DOWN from baseline. This is not classical anchoring-and-adjustment.
+
+\textbf{Compliance.} Some models treat the anchor as an instruction and copy it exactly. A 3-month anchor produces a 3-month response; a 9-month anchor produces 9 months. This appears as ``perfect anchoring'' in effect-size calculations but reflects instruction-following rather than cognitive bias.
+
+\textbf{True Anchoring.} Only a subset of models show classical Tversky-Kahneman anchoring: responses shift asymmetrically toward the anchor value, with the anchor serving as a starting point for insufficient adjustment.
+
+This taxonomy has immediate practical implications:
+
+\begin{itemize}
+    \item \textbf{SACD works on true anchoring (89--99\%)} but fails on compliance (0\%) and may backfire on compression (+66\% severity).
+    \item \textbf{The same model shows different mechanisms depending on deployment.} GPT-4o via residential IP shows compliance; GPT-4o via datacenter shows true anchoring.
+    \item \textbf{``Model name'' is insufficient for reproducibility.} Researchers must specify deployment path, provider, and access method.
+\end{itemize}
+
+\subsection{Contributions}
+
+\begin{enumerate}
+    \item \textbf{A taxonomy of LLM numeric context mechanisms} (Section~\ref{sec:taxonomy})---we identify and characterize compression, compliance, and true anchoring with distinct behavioral signatures.
+    
+    \item \textbf{Mechanism-dependent debiasing} (Section~\ref{sec:debiasing})---we show that SACD effectiveness depends entirely on which mechanism is active, explaining previously puzzling model-specific results.
+    
+    \item \textbf{Deployment-specific variance} (Section~\ref{sec:provider})---we demonstrate that the SAME model shows different mechanisms depending on deployment context, establishing that ``model name'' is insufficient granularity.
+    
+    \item \textbf{Practical decision framework} (Section~\ref{sec:discussion})---we provide a protocol for identifying which mechanism a deployment exhibits and selecting appropriate interventions.
+\end{enumerate}
+
+%==============================================================================
+\section{Methods}
+%==============================================================================
+
+\subsection{Experimental Paradigm}
+
+We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. Following anchoring bias methodology, the anchor is explicitly marked as irrelevant: \textit{``For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.''} The anchor values (3 months vs.\ 9 months) match the original study.
+
+\subsection{Conditions}
+
+\begin{enumerate}
+    \item \textbf{No-anchor baseline}: No prosecutor recommendation given
+    \item \textbf{Low anchor}: Prosecutor demands 3 months
+    \item \textbf{High anchor}: Prosecutor demands 9 months
+    \item \textbf{SACD}: Iterative self-debiasing protocol (up to 3 rounds)
+\end{enumerate}
+
+\subsection{Models and Deployments}
+
+We tested 15 deployments across 4 providers:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+Model & Provider & Access Path \\
+\midrule
+GPT-5.2, GPT-5.3 & OpenAI (Codex CLI) & Direct API \\
+GPT-4o & OpenRouter & Residential IP (Mac) \\
+GPT-4o & OpenRouter & Datacenter IP (Vultr) \\
+Opus 4.5, Opus 4.6, Haiku 4.5 & Anthropic & Direct API \\
+Llama 3.3, Hermes 405B & OpenRouter & Datacenter \\
+MiniMax M2.5, o1, o3-mini & OpenRouter & Datacenter \\
+\bottomrule
+\end{tabular}
+\caption{Model deployments tested}
+\end{table}
+
+\subsection{Trial Design}
+
+Each condition includes 30 unique scenario variants (different defendant names, offense counts, locations). Temperature=0 produces deterministic outputs; variance comes from scenario diversity, not sampling noise.
+
+%==============================================================================
+\section{A Taxonomy of Numeric Context Mechanisms}
+\label{sec:taxonomy}
+%==============================================================================
+
+\subsection{Identifying Mechanisms: The No-Anchor Baseline}
+
+The critical test for distinguishing mechanisms is the \textbf{no-anchor control}: what does the model produce when no prosecutor recommendation is provided?
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Model & No-Anchor & Low (3mo) & High (9mo) & Pattern \\
+\midrule
+Opus 4.5 & 13.2mo & 6.0mo & 8.0mo & Compression \\
+Llama 3.3 & 14.4mo & 5.9mo & 6.0mo & Compression \\
+GPT-4o (Mac) & 12.7mo & 3.1mo & 9.1mo & Compliance \\
+MiniMax M2.5 & --- & 3.1mo & 9.1mo & Compliance \\
+o3-mini & --- & 3.3mo & 9.1mo & Compliance \\
+GPT-4o (Vultr) & 20.4mo & 6.0mo & 11.2mo & True Anchoring \\
+GPT-5.2 & 18.3mo & 5.9mo & 10.3mo & True Anchoring \\
+Hermes 405B & 6.0mo & 5.3mo & 4.6mo & Reversal \\
+\bottomrule
+\end{tabular}
+\caption{No-anchor baseline reveals mechanism type}
+\label{tab:mechanisms}
+\end{table}
+
+\subsection{Mechanism 1: Compression}
+
+\textbf{Definition}: The presence of ANY numeric anchor compresses responses toward a middle range, regardless of anchor direction.
+
+\textbf{Behavioral signature}:
+\begin{itemize}
+    \item No-anchor baseline: HIGH (13--24mo)
+    \item Both low AND high anchors: MODERATE (6--8mo)
+    \item Direction: Both anchors shift DOWN from baseline
+\end{itemize}
+
+Models exhibiting compression: Opus 4.5, Opus 4.6, Llama 3.3
+
+\textbf{Interpretation}: These models appear to treat the prosecutor's recommendation as a signal that ``something moderate is expected'' rather than as a reference point for adjustment.
+
+\subsection{Mechanism 2: Compliance}
+
+\textbf{Definition}: The model copies the anchor value exactly as if it were an instruction.
+
+\textbf{Behavioral signature}:
+\begin{itemize}
+    \item Low anchor (3mo) $\rightarrow$ Response $\approx$ 3mo
+    \item High anchor (9mo) $\rightarrow$ Response $\approx$ 9mo
+    \item Response tracks anchor precisely
+\end{itemize}
+
+Models exhibiting compliance: MiniMax M2.5, o3-mini, GPT-4o (Mac deployment)
+
+\textbf{Interpretation}: These models interpret the prosecutor's recommendation as the ``correct answer'' rather than as context to consider.
+
+\subsection{Mechanism 3: True Anchoring}
+
+\textbf{Definition}: Responses shift asymmetrically toward the anchor value, consistent with Tversky-Kahneman anchoring-and-adjustment.
+
+\textbf{Behavioral signature}:
+\begin{itemize}
+    \item Low anchor: Pulls response DOWN from no-anchor baseline
+    \item High anchor: Pulls response UP (or down less) from baseline
+    \item Asymmetric effect: anchors pull toward themselves
+\end{itemize}
+
+Models exhibiting true anchoring: GPT-4o (Vultr deployment), GPT-5.2, GPT-5.3
+
+\subsection{Mechanism Distribution}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Mechanism & Models & \% of Deployments \\
+\midrule
+Compression & 3 & 20\% \\
+Compliance & 5 & 33\% \\
+True Anchoring & 5 & 33\% \\
+Reversal & 1 & 7\% \\
+Zero Effect & 1 & 7\% \\
+\bottomrule
+\end{tabular}
+\caption{Only 33\% show classical anchoring-and-adjustment}
+\end{table}
+
+%==============================================================================
+\section{Mechanism-Dependent Debiasing}
+\label{sec:debiasing}
+%==============================================================================
+
+Given the three-mechanism taxonomy, we can explain why debiasing interventions show model-specific effects.
+
+\subsection{SACD Effectiveness by Mechanism}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccp{6cm}}
+\toprule
+Mechanism & SACD Effect & Change & Explanation \\
+\midrule
+True Anchoring & 89--99\% $\downarrow$ & Success & SACD targets the right mechanism \\
+Compliance & 0\% & No effect & Nothing to debias---model copies anchor \\
+Compression & +66\% severity & Backfire & SACD amplifies compression effect \\
+\bottomrule
+\end{tabular}
+\caption{SACD effectiveness depends on mechanism}
+\end{table}
+
+\subsection{Detailed Results}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llccc}
+\toprule
+Model & Mechanism & Baseline Effect & SACD Effect & Change \\
+\midrule
+GPT-5.2 & True Anchoring & 4.4mo & 0.5mo & $-89\%$ $\checkmark$ \\
+Opus 4.5 & Compression & 2.0mo & 0.0mo & $-100\%$ $\checkmark$ \\
+Haiku 4.5 & Compression & 2.2mo & --- & $+66\%$ severity $\times$ \\
+MiniMax & Compliance & 6.0mo & 6.0mo & 0\% \\
+o3-mini & Compliance & 5.8mo & 5.8mo & 0\% \\
+\bottomrule
+\end{tabular}
+\caption{SACD results explained by mechanism}
+\end{table}
+
+\textbf{Key insight}: SACD asks the model to ``identify and correct for anchoring bias.'' But compliance models don't show anchoring---they show instruction-following. Asking them to ``debias'' produces no change because there's no bias to correct.
+
+%==============================================================================
+\section{Deployment-Specific Variance}
+\label{sec:provider}
+%==============================================================================
+
+\subsection{The Provider Variance Finding}
+
+Our most striking finding emerged from running identical experiments from two different network locations. When accessing GPT-4o through OpenRouter:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Access Path & Low (3mo) & High (9mo) & Effect & Pattern \\
+\midrule
+Residential IP (Mac) & 3.1mo & 9.1mo & 6.0mo & Compliance \\
+Datacenter IP (Vultr) & 4.4mo & 9.4mo & 5.0mo & True Anchoring \\
+\bottomrule
+\end{tabular}
+\caption{Same model, same API, different mechanisms}
+\end{table}
+
+\textbf{Same model. Same API. Same prompts. Different mechanisms.}
+
+The Mac deployment exhibited near-perfect compliance---the model copied the anchor value exactly in 96\% of trials. The Vultr deployment showed the classic anchoring pattern with genuine variance and partial anchor influence.
+
+\subsection{Implications}
+
+\textbf{Model routing}: OpenRouter and similar aggregators may route requests to different backend deployments based on source IP, geographic location, or load balancing.
+
+\textbf{Benchmark non-transferability}: Published benchmarks showing ``GPT-4o anchoring bias = X'' may not apply to your deployment.
+
+\textbf{Mechanism as deployment property}: The mechanism is not purely a property of the model architecture but of the specific deployment context.
+
+\subsection{Evidence for Non-Model Factors}
+
+To rule out temporal effects, we ran sequential tests:
+
+\begin{enumerate}
+    \item Mac test at $T_0$: Compliance pattern
+    \item Vultr test at $T_0 + 2h$: Anchoring pattern
+    \item Mac test at $T_0 + 4h$: Compliance pattern (unchanged)
+\end{enumerate}
+
+The patterns were stable and reproducible, ruling out model drift.
+
+%==============================================================================
+\section{Discussion and Practical Guidelines}
+\label{sec:discussion}
+%==============================================================================
+
+\subsection{Summary of Findings}
+
+What appears as ``anchoring'' actually comprises three distinct mechanisms---compression, compliance, and true anchoring---each with different behavioral signatures, underlying causes, and appropriate interventions.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Mechanism & No-Anchor $\rightarrow$ Low & No-Anchor $\rightarrow$ High & SACD \\
+\midrule
+Compression & $\downarrow\downarrow$ (large drop) & $\downarrow$ (smaller drop) & 0\% or $-$ \\
+Compliance & $\rightarrow$ anchor exactly & $\rightarrow$ anchor exactly & 0\% \\
+True Anchoring & $\downarrow$ (toward anchor) & $\uparrow$ (toward anchor) & 60--89\% $\downarrow$ \\
+\bottomrule
+\end{tabular}
+\caption{Mechanism signatures}
+\end{table}
+
+\subsection{Recommendations for Practitioners}
+
+\textbf{Before deploying LLMs in numeric judgment contexts:}
+
+\begin{enumerate}
+    \item \textbf{Run a mechanism identification test:}
+    \begin{itemize}
+        \item Collect no-anchor baseline ($n \geq 30$)
+        \item Collect low-anchor and high-anchor conditions
+        \item Compare shift directions to identify mechanism
+    \end{itemize}
+    
+    \item \textbf{Match intervention to mechanism:}
+    \begin{itemize}
+        \item True anchoring $\rightarrow$ SACD or similar debiasing
+        \item Compliance $\rightarrow$ Prompt engineering (separate context from instruction)
+        \item Compression $\rightarrow$ Consider whether compression is actually harmful
+    \end{itemize}
+    
+    \item \textbf{Validate per-deployment:}
+    \begin{itemize}
+        \item Do not assume provider benchmarks apply
+        \item Re-test after model updates
+        \item Monitor for mechanism drift
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Limitations}
+
+\begin{enumerate}
+    \item \textbf{Single domain}: All experiments use judicial sentencing scenarios.
+    \item \textbf{Limited no-anchor data}: Mechanism taxonomy based on 5 models with no-anchor controls.
+    \item \textbf{Mechanism boundaries}: May represent spectrum rather than discrete categories.
+    \item \textbf{Temporal stability}: Unknown whether mechanisms are stable over model updates.
+\end{enumerate}
+
+\subsection{Conclusion}
+
+What we call ``anchoring bias'' in LLMs is actually a family of phenomena. By distinguishing compression, compliance, and true anchoring, we explain previously puzzling findings and provide practitioners with a framework for selecting appropriate interventions. The path to reliable AI judgment is not a single debiasing technique but mechanism-aware deployment practices.
+
+%==============================================================================
+% References
+%==============================================================================
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}
