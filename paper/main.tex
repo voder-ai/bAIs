@@ -34,11 +34,11 @@ How do large language models (LLMs) respond to numeric context in judgment tasks
 
 Testing 15 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct mechanisms} by which LLMs respond to numeric context:
 
-\textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (13--24 months); with ANY anchor---high or low---responses compress to 6--8 months. Both anchors shift responses DOWN. (Opus 4.5, Llama 3.3)
+\textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (10--14 months); with ANY anchor---high or low---responses compress to 3--11 months. Both anchors shift responses DOWN from baseline. (Opus 4.5, Llama 3.3, Haiku 4.5, o3-mini, MiniMax)
 
 \textbf{2. Compliance}: Models copy the anchor value exactly, treating numeric context as instruction rather than reference. A 3-month anchor produces 3-month output; 9-month produces 9-month. This resembles ``perfect anchoring'' but reflects instruction-following, not cognitive bias. (GPT-4o via residential IP)
 
-\textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with Tversky-Kahneman anchoring-and-adjustment. Only this mechanism resembles human cognitive bias. (GPT-4o via datacenter, GPT-5.2)
+\textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with Tversky-Kahneman anchoring-and-adjustment. Only this mechanism resembles human cognitive bias. (GPT-4o via datacenter, o1)
 
 This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognitive Debiasing) achieves up to 89\% reduction on true anchoring models but 0\% on compliance models. SACD targets true anchoring; it cannot address compliance (nothing to debias) or compression (may amplify severity).
 
@@ -178,7 +178,7 @@ Hermes 405B & $12.3 \pm 4.5$ & $5.3\ [4.7, 5.7]$ & $5.1\ [4.4, 5.8]$ & $-0.2$mo 
     \item Direction: Both anchors shift DOWN from baseline
 \end{itemize}
 
-Models exhibiting compression: Opus 4.5, Opus 4.6, Llama 3.3
+Models exhibiting compression: Opus 4.5, Llama 3.3, Haiku 4.5, o3-mini, MiniMax M2.5
 
 \textbf{Interpretation}: These models appear to treat the prosecutor's recommendation as a signal that ``something moderate is expected'' rather than as a reference point for adjustment.
 
@@ -208,7 +208,7 @@ Models exhibiting compliance: GPT-4o (Mac deployment)
     \item Asymmetric effect: anchors pull toward themselves
 \end{itemize}
 
-Models exhibiting true anchoring: GPT-4o (Vultr deployment), GPT-5.2, GPT-5.3
+Models exhibiting true anchoring: GPT-4o (Vultr deployment), o1
 
 \subsection{Mechanism Distribution}
 
@@ -218,9 +218,9 @@ Models exhibiting true anchoring: GPT-4o (Vultr deployment), GPT-5.2, GPT-5.3
 \toprule
 Mechanism & Models & \% of Deployments \\
 \midrule
-Compression & 3 & 20\% \\
-Compliance & 5 & 33\% \\
-True Anchoring & 5 & 33\% \\
+Compression & 5 & 56\% \\
+Compliance & 1 & 11\% \\
+True Anchoring & 2 & 22\% \\
 Reversal & 1 & 7\% \\
 Zero Effect & 1 & 7\% \\
 \bottomrule
