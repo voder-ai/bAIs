@@ -40,7 +40,7 @@ Testing 11 model deployments across 4 providers on judicial sentencing scenarios
 
 \textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with classical anchoring-and-adjustment. (o1)
 
-This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognitive Debiasing) achieves up to 89\% reduction on true anchoring models but 0\% on compliance models. SACD targets true anchoring; it cannot address compliance (nothing to debias) or compression (may amplify severity).
+This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognitive Debiasing) shows highly variable effectiveness---up to 89\% reduction on some susceptible models (GPT-5.2) but 0\% on compliance models and even negative effects on others (o1 shows 7\% increase). SACD effectiveness depends on which mechanism is active.
 
 \textbf{Critical deployment finding}: The SAME model (GPT-4o) shows different mechanisms depending on access path---compliance via residential IP, true anchoring via datacenter. ``Model name'' is insufficient granularity for reproducible LLM research.
 
@@ -70,7 +70,7 @@ In this paper, we report a discovery: what researchers measure as ``anchoring bi
 This taxonomy has immediate practical implications:
 
 \begin{itemize}
-    \item \textbf{SACD works on true anchoring (up to 89\%)} but fails on compliance (0\%) and shows mixed results on compression models.
+    \item \textbf{SACD effectiveness varies dramatically}: up to 89\% reduction (GPT-5.2), 0\% on compliance, mixed on compression, and even 7\% \emph{increase} on o1.
     \item \textbf{The same model shows different mechanisms depending on deployment.} GPT-4o via residential IP shows compliance; GPT-4o via datacenter shows true anchoring.
     \item \textbf{``Model name'' is insufficient for reproducibility.} Researchers must specify deployment path, provider, and access method.
 \end{itemize}
@@ -320,7 +320,7 @@ Given the three-mechanism taxonomy, we can explain why debiasing interventions s
 \toprule
 Mechanism & SACD Effect & Change & Explanation \\
 \midrule
-True Anchoring & up to 89\% $\downarrow$ & Success & SACD targets the right mechanism \\
+True Anchoring (o1) & +7\% $\uparrow$ & Failure & Extended reasoning rationalizes bias \\
 Compliance & 0\% & No effect & Nothing to debias---model copies anchor \\
 Compression & varies & Model-specific & SACD effects vary: 100\% reduction (Opus 4.5) to 90\% amplification (MiniMax) \\
 \bottomrule
