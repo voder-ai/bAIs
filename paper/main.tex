@@ -151,9 +151,9 @@ All reported means include 95\% confidence intervals computed via 1,000-iteratio
 
 \textbf{Deterministic outputs}: Several models (Opus 4.5, GPT-4o Residential at temperature=0) produce identical outputs across all 30 scenario variants within each condition, yielding SD=0. For these models, traditional inferential statistics do not apply---the effect is categorical rather than statistical. We mark these as ``det.''\ (deterministic) in tables.
 
-\textbf{Effect size interpretation}: Cohen's $d > 0.8$ indicates a large effect. For models with measurable variance, our observed effects range from $d = 0.15$ (negligible, Sonnet 4) to $d > 4.0$ (very large, GPT-4o variants), with most susceptible models showing $d > 2.0$.
+\textbf{Effect size interpretation}: Cohen's $d > 0.8$ indicates a large effect. For models with measurable variance, our observed effects range from $d = 0.15$ (negligible) to $d > 4.0$ (very large), with most susceptible models showing $d > 2.0$.
 
-\textbf{Multiple comparisons}: Given 23 model/deployment comparisons, we apply Bonferroni correction ($\alpha = 0.05/23 = 0.0022$). Of 23 comparisons, 18 (78\%) remain significant after correction. All primary findings reported in Tables 1--3 survive Bonferroni correction; the 5 models that lose significance show small or reversed effects (e.g., Hermes 405B reversal, Sonnet 4 negligible effect).
+\textbf{Multiple comparisons}: Given 23 model/deployment comparisons, we apply Bonferroni correction ($\alpha = 0.05/23 = 0.0022$). Of 23 comparisons, 18 (78\%) remain significant after correction. All primary findings reported in Tables 1--3 survive Bonferroni correction; the 5 models that lose significance show small or reversed effects (e.g., Hermes 405B, Llama 3.3).
 
 %==============================================================================
 \section{A Taxonomy of Numeric Context Mechanisms}
@@ -225,7 +225,7 @@ Models exhibiting compliance: GPT-4o (Residential)
     \item Asymmetric effect: anchors pull toward themselves
 \end{itemize}
 
-Models exhibiting true anchoring: GPT-4o (Datacenter), o1
+Models exhibiting true anchoring: o1
 
 \subsection{Mechanism Distribution}
 
@@ -235,10 +235,10 @@ Models exhibiting true anchoring: GPT-4o (Datacenter), o1
 \toprule
 Mechanism & Models & \% of Deployments \\
 \midrule
-Compression & 4 & 50\% \\
+Compression & 5 & 62\% \\
 Compliance & 1 & 12\% \\
-True Anchoring & 2 & 25\% \\
-Reversal & 1 & 12\% \\
+True Anchoring & 1 & 12\% \\
+Immune/Reversal & 1 & 12\% \\
 \bottomrule
 \end{tabular}
 \caption{Only 25\% show classical anchoring-and-adjustment}
