@@ -95,6 +95,8 @@ This taxonomy has immediate practical implications:
 
 We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial judges sentencing a shoplifting case after hearing a prosecutor's recommendation. Following anchoring bias methodology, the anchor is explicitly marked as irrelevant: \textit{``For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.''} The anchor values (3 months vs.\ 9 months) match the original study.
 
+\textbf{Note on human comparison:} While our scenario differs from Englich's original (shoplifting vs.\ sexual assault, months vs.\ years), the finding that experienced human judges showed anchoring effects ($d = 0.6$--$1.2$) despite explicit irrelevance warnings provides important context. Our LLM effects range from near-zero to $d > 2.0$ depending on model, suggesting some deployments exhibit susceptibility comparable to or exceeding human judges in qualitatively similar paradigms.
+
 \subsection{Conditions}
 
 \begin{enumerate}
@@ -516,6 +518,7 @@ A deterministic model (SD=0) can still be highly responsive to SACD, because low
     \item \textbf{Mechanism boundaries}: May represent spectrum rather than discrete categories.
     \item \textbf{Baseline confound}: The no-anchor baseline (~12mo) may itself be influenced by numeric context in the case description (``12th offense'').
     \item \textbf{Version stability}: We observed Opus 4.5$\rightarrow$4.6 changing susceptibility pattern; ongoing monitoring required.
+    \item \textbf{No direct human comparison}: While we cite human anchoring effects from \citet{englich2006}, scenario differences (case type, jurisdiction, anchor magnitudes) preclude direct quantitative comparison. Our qualitative framing---that some LLMs show effects comparable to human judges---should not be interpreted as precise equivalence.
 \end{enumerate}
 
 \subsection{Conclusion}
