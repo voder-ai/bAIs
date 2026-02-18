@@ -88,6 +88,18 @@ This taxonomy has immediate practical implications:
 \end{enumerate}
 
 %==============================================================================
+\section{Related Work}
+%==============================================================================
+
+\textbf{Human Anchoring Bias.} The anchoring effect---where initial numeric values systematically bias subsequent estimates---was first documented by \citet{tversky1974} and has since been replicated across domains including legal judgments \citep{englich2006}, medical decisions, and financial forecasting. \citet{englich2006} demonstrated that even experienced judges' sentencing decisions are influenced by random prosecutor recommendations, with effect sizes of $d = 0.6$--$1.2$.
+
+\textbf{LLM Cognitive Biases.} Recent work has investigated whether LLMs exhibit human-like cognitive biases. \citet{binz2023} found that GPT-3 displays anchoring, framing, and other heuristics comparable to human subjects. \citet{jones2022} demonstrated anchoring effects in language model predictions across multiple domains. However, these studies treat anchoring as a unitary phenomenon without distinguishing underlying mechanisms.
+
+\textbf{Debiasing Techniques.} Various approaches have been proposed to mitigate biases in LLM outputs. \citet{lyu2025} introduced Self-Aware Counterfactual Dialogue (SACD), which uses multi-turn prompting to elicit self-reflection on potential biases. Other techniques include chain-of-thought prompting, explicit debiasing instructions, and response aggregation. Our work shows that debiasing effectiveness depends on the underlying mechanism---a consideration absent from prior evaluations.
+
+\textbf{Deployment Variance.} The observation that model behavior varies by deployment context has received limited attention. While researchers have noted differences between API providers, systematic investigation of how deployment affects behavioral patterns is sparse. Our finding that routing (residential vs.\ datacenter IP) affects mechanism classification contributes to the emerging literature on LLM deployment science.
+
+%==============================================================================
 \section{Methods}
 %==============================================================================
 
