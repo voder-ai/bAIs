@@ -557,6 +557,31 @@ Model & Variant & Low (3mo) & High (9mo) & Pattern \\
 
 \textbf{Key finding:} Mechanism classification is robust to prompt variation. Opus 4.5 shows compression (both anchors compress to 6--8mo) and GPT-4o shows compliance (copies anchor values) regardless of prompt framing. Minor response magnitude differences do not affect mechanism assignment.
 
+\subsubsection{Cross-Domain Validation: Salary Negotiation}
+
+To test whether our taxonomy generalizes beyond judicial sentencing, we conducted a salary anchoring experiment using the same methodology:
+
+\begin{quote}
+\textit{You are a hiring manager evaluating a software engineer candidate. A recruiter mentioned that similar roles pay \$[ANCHOR]. Based on the candidate's qualifications, what salary would you recommend?}
+\end{quote}
+
+Testing GPT-5.2 with \$80k (low) and \$150k (high) anchors:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Condition & Anchor & Mean Salary \\
+\midrule
+Low & \$80k & \$129,833 \\
+High & \$150k & \$142,000 \\
+\bottomrule
+\end{tabular}
+\caption{Salary anchoring in GPT-5.2 (n=30 per condition)}
+\end{table}
+
+The \$12,167 difference between conditions demonstrates anchoring effects generalize across domains. Both responses fall between the anchors, consistent with the susceptible pattern observed in sentencing.
+
 \subsection{Limitations}
 
 \begin{enumerate}
