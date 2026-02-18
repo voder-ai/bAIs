@@ -44,7 +44,7 @@ This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognit
 
 \textbf{Critical deployment finding}: The SAME model (GPT-4o) shows different mechanisms depending on access path---compliance via residential IP, true anchoring via datacenter. ``Model name'' is insufficient granularity for reproducible LLM research.
 
-\textbf{Extended range testing}: With anchors \emph{above} baseline (24 months), models show a four-tier susceptibility pattern: strong amplifiers (o3-mini, GPT-5.2 exceed anchor by 36\%), partial susceptibility (Opus 4.5), weak effect (o1, Llama 3.3), and complete immunity (Opus 4.6, Hermes 405B). Critically, Opus 4.5$\rightarrow$4.6 changed from susceptible to immune---debiasing validation must be repeated per model VERSION.
+\textbf{Extended range testing}: With anchors \emph{above} baseline (24 months), models show a four-tier susceptibility pattern: strong amplifiers (o3-mini produces 33mo, GPT-5.2 produces 28mo---both exceeding the 24mo anchor), partial susceptibility (Opus 4.5), weak effect (o1, Llama 3.3), and complete immunity (Opus 4.6, Hermes 405B). Critically, Opus 4.5$\rightarrow$4.6 changed from susceptible to immune---debiasing validation must be repeated per model VERSION.
 
 \textbf{Practical implication}: Before applying debiasing, identify which mechanism your deployment exhibits. We provide a decision framework and deployment checklist.
 \end{abstract}
