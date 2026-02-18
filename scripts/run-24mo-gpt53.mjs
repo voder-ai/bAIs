@@ -62,12 +62,13 @@ async function runTrial(runIndex) {
     if (!model) throw new Error(`Model ${MODEL_ID} not found`);
     
     const context = { 
+      systemPrompt: 'You are a trial judge evaluating sentencing decisions. Respond only with valid JSON.',
       messages: [
-        { role: 'system', content: 'You are a trial judge evaluating sentencing decisions. Respond only with valid JSON.' },
         { role: 'user', content: buildPrompt(ANCHOR) }
       ] 
     };
-    const response = await complete(model, context, { temperature: 0, apiKey: API_KEY });
+    // Note: Codex API doesn't support temperature parameter
+    const response = await complete(model, context, { apiKey: API_KEY });
     
     if (response.errorMessage) {
       throw new Error(response.errorMessage);
