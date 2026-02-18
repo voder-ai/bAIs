@@ -393,6 +393,8 @@ To rule out temporal effects, we ran sequential tests:
 
 The patterns were stable and reproducible, ruling out model drift.
 
+\textbf{Compliance is model-specific, not just routing-specific:} We tested whether compliance emerges from residential IP routing alone by running Opus 4.5 via OpenRouter from the same residential connection. Result: Opus 4.5 shows compression (low=6, high=12), not compliance. This suggests compliance is a GPT-4o-specific characteristic that is \emph{modulated} by routing context, rather than an artifact of routing alone.
+
 %==============================================================================
 \section{Discussion and Practical Guidelines}
 \label{sec:discussion}
