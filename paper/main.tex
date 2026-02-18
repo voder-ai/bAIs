@@ -139,7 +139,7 @@ All reported means include 95\% confidence intervals computed via 1,000-iteratio
 
 \textbf{Deterministic outputs}: Several models (Opus 4.5, GPT-4o via Copilot at temperature=0) produce identical outputs across all 30 scenario variants within each condition, yielding SD=0. For these models, traditional inferential statistics do not apply---the effect is categorical rather than statistical. We mark these as ``det.''\ (deterministic) in tables.
 
-\textbf{Effect size interpretation}: Cohen's $d > 0.8$ indicates a large effect. Our observed effects range from $d = 2.17$ (o1) to $d = 4.22$ (GPT-4o), indicating very large effects where measurable.
+\textbf{Effect size interpretation}: Cohen's $d > 0.8$ indicates a large effect. For models with measurable variance, our observed effects range from $d = 0.15$ (negligible, Sonnet 4) to $d > 4.0$ (very large, GPT-4o variants), with most susceptible models showing $d > 2.0$.
 
 \textbf{Multiple comparisons}: Given 23 model/deployment comparisons, we apply Bonferroni correction ($\alpha = 0.05/23 = 0.0022$). Of 23 comparisons, 18 (78\%) remain significant after correction. All primary findings reported in Tables 1--3 survive Bonferroni correction; the 5 models that lose significance show small or reversed effects (e.g., Hermes 405B reversal, Sonnet 4 negligible effect).
 
@@ -406,7 +406,7 @@ Immune & $\downarrow$ & $\downarrow$ & \textbf{no change} & N/A \\
 \end{table}
 
 \paragraph{Comparison to Human Anchoring}
-While direct quantitative comparison is precluded by methodological differences (our adapted scenario uses different anchor magnitudes and legal context than the original \citet{englich2006} study), our findings parallel the robust anchoring effects documented in human judges. \citet{englich2006} found effect sizes of $d = 0.6$--$1.2$ for human anchoring in judicial sentencing decisions. Our LLM effects range from $d = 0.1$ (weak/immune models) to $d = 2.8$ (strong amplification), suggesting that some models exhibit susceptibility comparable to or exceeding documented human levels. Critically, unlike humans---who show relatively consistent anchoring patterns across individuals---LLMs exhibit mechanism-dependent responses that vary dramatically by model and deployment. This heterogeneity underscores the need for deployment-specific testing rather than assuming uniform behavior.
+While direct quantitative comparison is precluded by methodological differences (our adapted scenario uses different anchor magnitudes and legal context than the original \citet{englich2006} study), our findings parallel the robust anchoring effects documented in human judges. \citet{englich2006} found effect sizes of $d = 0.6$--$1.2$ for human anchoring in judicial sentencing decisions. Our LLM effects range from negligible ($d < 0.2$ for immune models) to very large ($d > 4.0$ for strong amplifiers), suggesting that some models exhibit susceptibility comparable to or exceeding documented human levels. Critically, unlike humans---who show relatively consistent anchoring patterns across individuals---LLMs exhibit mechanism-dependent responses that vary dramatically by model and deployment. This heterogeneity underscores the need for deployment-specific testing rather than assuming uniform behavior.
 
 \subsection{Recommendations for Practitioners}
 
