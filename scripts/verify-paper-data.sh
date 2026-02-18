@@ -104,6 +104,8 @@ echo "=== Table 3: SACD Results ==="
 check_pattern "gpt52*sacd*.jsonl" 30 "GPT-5.2 SACD"
 check_pattern "anthropic-sacd*.jsonl" 30 "Opus 4.5 SACD"
 check_pattern "opus45*sacd*.jsonl" 30 "Opus 4.5 SACD (alt)"
+check_pattern "minimax*sacd*.jsonl" 30 "MiniMax SACD"
+check_pattern "o3-mini*sacd*.jsonl" 30 "o3-mini SACD"
 
 echo ""
 echo "==============================="
