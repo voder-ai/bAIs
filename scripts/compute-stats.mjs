@@ -69,6 +69,14 @@ function tTest(group1, group2) {
 }
 
 /**
+ * Bonferroni correction
+ * Adjusts p-value for multiple comparisons
+ */
+function bonferroniCorrect(p, numTests) {
+  return Math.min(p * numTests, 1.0);
+}
+
+/**
  * Cohen's d effect size
  */
 function cohensD(group1, group2) {
@@ -203,7 +211,11 @@ function computeAllStats() {
       // Statistical tests
       ttest: null,
       cohens_d: null,
-      effect_magnitude: null
+      effect_magnitude: null,
+      
+      // Bonferroni correction
+      p_bonferroni: null,
+      significant_bonferroni: null
     };
     
     // Compute anchoring effect and tests if both conditions present
@@ -218,6 +230,19 @@ function computeAllStats() {
     }
     
     results[model] = stats;
+  }
+  
+  // Apply Bonferroni correction across all models
+  const numTests = Object.keys(results).filter(m => results[m].ttest?.p).length;
+  const bonferroniAlpha = 0.05 / numTests;
+  
+  for (const model of Object.keys(results)) {
+    if (results[model].ttest?.p) {
+      results[model].p_bonferroni = bonferroniCorrect(results[model].ttest.p, numTests);
+      results[model].significant_bonferroni = results[model].p_bonferroni < 0.05;
+      results[model].bonferroni_alpha = bonferroniAlpha;
+      results[model].num_comparisons = numTests;
+    }
   }
   
   return results;
@@ -268,12 +293,41 @@ Generated: ${new Date().toISOString()}
     md += `| ${shortModel} | ${nStr} | ${lowStr} | ${highStr} | ${effectStr} | ${dStr} | ${pStr} |\n`;
   }
   
+  // Count Bonferroni results
+  const modelsWithStats = models.filter(m => results[m].ttest?.p);
+  const numTests = modelsWithStats.length;
+  const bonferroniAlpha = numTests > 0 ? (0.05 / numTests).toFixed(4) : 'N/A';
+  const sigAfterBonf = modelsWithStats.filter(m => results[m].significant_bonferroni).length;
+
+  md += `
+## Bonferroni Correction
+
+- **Number of comparisons**: ${numTests}
+- **Corrected α**: ${bonferroniAlpha} (0.05 / ${numTests})
+- **Significant after correction**: ${sigAfterBonf} / ${numTests} models
+
+### Models Significant After Bonferroni Correction
+
+| Model | p (uncorrected) | p (Bonferroni) | Significant |
+|-------|-----------------|----------------|-------------|
+`;
+
+  for (const model of modelsWithStats) {
+    const s = results[model];
+    const shortModel = model.replace(/^(anthropic|openai|openrouter)\//, '');
+    const pUncorr = s.ttest?.p < 0.001 ? '<.001' : s.ttest?.p?.toFixed(4) || 'N/A';
+    const pBonf = s.p_bonferroni < 0.001 ? '<.001' : s.p_bonferroni?.toFixed(4) || 'N/A';
+    const sig = s.significant_bonferroni ? '✅ Yes' : '❌ No';
+    md += `| ${shortModel} | ${pUncorr} | ${pBonf} | ${sig} |\n`;
+  }
+
   md += `
 ## Interpretation
 
 - **Effect**: Difference in mean sentence (high anchor - low anchor). Positive = anchoring toward higher values.
 - **Cohen's d**: Standardized effect size. |d| < 0.2 = negligible, 0.2-0.5 = small, 0.5-0.8 = medium, > 0.8 = large.
 - **p-value**: Two-tailed Welch's t-test. p < 0.05 suggests statistically significant difference.
+- **Bonferroni**: Corrected p-values account for multiple comparisons (α = 0.05 / ${numTests}).
 
 ## Notes
 

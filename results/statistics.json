@@ -25,7 +25,11 @@
       "df": 133.6776764214076
     },
     "cohens_d": 0.7958510988310867,
-    "effect_magnitude": "medium"
+    "effect_magnitude": "medium",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "anthropic/claude-3-5-haiku-latest": {
     "model": "anthropic/claude-3-5-haiku-latest",
@@ -53,7 +57,11 @@
       "df": 3.7230769230769245
     },
     "cohens_d": 2.7136021011998728,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "anthropic/claude-haiku-4-5": {
     "model": "anthropic/claude-haiku-4-5",
@@ -81,7 +89,11 @@
       "df": 40.02465351501797
     },
     "cohens_d": 4.037800213823864,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "anthropic/claude-opus-4-0": {
     "model": "anthropic/claude-opus-4-0",
@@ -109,7 +121,9 @@
       "df": null
     },
     "cohens_d": null,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": null,
+    "significant_bonferroni": null
   },
   "anthropic/claude-opus-4-5": {
     "model": "anthropic/claude-opus-4-5",
@@ -137,7 +151,11 @@
       "df": 98.66515631168367
     },
     "cohens_d": 1.1285958107661063,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "anthropic/claude-opus-4-5-20251101": {
     "model": "anthropic/claude-opus-4-5-20251101",
@@ -165,7 +183,11 @@
       "df": 103.64852183053608
     },
     "cohens_d": 0.5448844978870324,
-    "effect_magnitude": "medium"
+    "effect_magnitude": "medium",
+    "p_bonferroni": 0.06899999999999751,
+    "significant_bonferroni": false,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "anthropic/claude-opus-4-6": {
     "model": "anthropic/claude-opus-4-6",
@@ -193,7 +215,11 @@
       "df": 122.23388796278982
     },
     "cohens_d": 0.7480909775327051,
-    "effect_magnitude": "medium"
+    "effect_magnitude": "medium",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "anthropic/claude-sonnet-4-20250514": {
     "model": "anthropic/claude-sonnet-4-20250514",
@@ -221,7 +247,11 @@
       "df": 806.8689157447238
     },
     "cohens_d": 0.15141799703734196,
-    "effect_magnitude": "negligible"
+    "effect_magnitude": "negligible",
+    "p_bonferroni": 0.657799999999999,
+    "significant_bonferroni": false,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "anthropic/claude-sonnet-4-5": {
     "model": "anthropic/claude-sonnet-4-5",
@@ -249,7 +279,11 @@
       "df": null
     },
     "cohens_d": null,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "codex": {
     "model": "codex",
@@ -277,7 +311,11 @@
       "df": 229.79417881564058
     },
     "cohens_d": 2.3717134393988637,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "github-copilot/gpt-4o": {
     "model": "github-copilot/gpt-4o",
@@ -305,7 +343,11 @@
       "df": 1026.5578752850167
     },
     "cohens_d": 2.5994800890701377,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "github-copilot/gpt-5.2": {
     "model": "github-copilot/gpt-5.2",
@@ -333,7 +375,11 @@
       "df": 380.5902149965895
     },
     "cohens_d": 3.0717222703468248,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "meta-llama/llama-3.3-70b-instruct": {
     "model": "meta-llama/llama-3.3-70b-instruct",
@@ -353,7 +399,9 @@
     },
     "ttest": null,
     "cohens_d": null,
-    "effect_magnitude": null
+    "effect_magnitude": null,
+    "p_bonferroni": null,
+    "significant_bonferroni": null
   },
   "openai-codex/gpt-5.2": {
     "model": "openai-codex/gpt-5.2",
@@ -381,7 +429,11 @@
       "df": 94
     },
     "cohens_d": 3.537781886328516,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openai-codex/gpt-5.3-codex": {
     "model": "openai-codex/gpt-5.3-codex",
@@ -401,7 +453,41 @@
     },
     "ttest": null,
     "cohens_d": null,
-    "effect_magnitude": null
+    "effect_magnitude": null,
+    "p_bonferroni": null,
+    "significant_bonferroni": null
+  },
+  "openrouter/anthropic/claude-opus-4-5": {
+    "model": "openrouter/anthropic/claude-opus-4-5",
+    "n_low": 90,
+    "n_high": 90,
+    "n_total": 270,
+    "mean_low": 6,
+    "mean_high": 12,
+    "sd_low": 0,
+    "sd_high": 0,
+    "anchoring_effect": 6,
+    "ci_low": {
+      "lower": 6,
+      "upper": 6,
+      "margin": 0
+    },
+    "ci_high": {
+      "lower": 12,
+      "upper": 12,
+      "margin": 0
+    },
+    "ttest": {
+      "t": null,
+      "p": 0.0020000000000000018,
+      "df": null
+    },
+    "cohens_d": null,
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/arcee-ai/trinity-large-preview:free": {
     "model": "openrouter/arcee-ai/trinity-large-preview:free",
@@ -429,7 +515,11 @@
       "df": 32.777903359811084
     },
     "cohens_d": 2.6630314588342907,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/meta-llama/llama-3.3-70b-instruct": {
     "model": "openrouter/meta-llama/llama-3.3-70b-instruct",
@@ -457,7 +547,11 @@
       "df": 313.34072377335946
     },
     "cohens_d": 1.247579106398252,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/meta-llama/llama-3.3-70b-instruct:free": {
     "model": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
@@ -485,35 +579,43 @@
       "df": 23
     },
     "cohens_d": 0.8253238275306579,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.10579999999999856,
+    "significant_bonferroni": false,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/minimax/minimax-m2.5": {
     "model": "openrouter/minimax/minimax-m2.5",
     "n_low": 91,
-    "n_high": 83,
-    "n_total": 201,
+    "n_high": 84,
+    "n_total": 202,
     "mean_low": 5.351648351648351,
-    "mean_high": 12.53012048192771,
+    "mean_high": 12.80952380952381,
     "sd_low": 2.486772153711575,
-    "sd_high": 7.0151940941256425,
-    "anchoring_effect": 7.178472130279359,
+    "sd_high": 7.423380359628543,
+    "anchoring_effect": 7.457875457875459,
     "ci_low": {
       "lower": 4.841446466169968,
       "upper": 5.861850237126735,
       "margin": 0.5102018854783834
     },
     "ci_high": {
-      "lower": 11.02307137115522,
-      "upper": 14.0371695927002,
-      "margin": 1.5070491107724902
+      "lower": 11.224306410926275,
+      "upper": 14.394741208121346,
+      "margin": 1.5852173985975362
     },
     "ttest": {
-      "t": -8.830179995912285,
+      "t": -8.764955423659902,
       "p": 0.0020000000000000018,
-      "df": 100.66864926387595
+      "df": 100.09558625571896
     },
-    "cohens_d": 1.3892938771354488,
-    "effect_magnitude": "large"
+    "cohens_d": 1.369500461287332,
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/mistralai/mistral-small-3.1-24b-instruct:free": {
     "model": "openrouter/mistralai/mistral-small-3.1-24b-instruct:free",
@@ -541,7 +643,9 @@
       "df": null
     },
     "cohens_d": null,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": null,
+    "significant_bonferroni": null
   },
   "openrouter/nousresearch/hermes-3-llama-3.1-405b": {
     "model": "openrouter/nousresearch/hermes-3-llama-3.1-405b",
@@ -569,7 +673,11 @@
       "df": 81.41863501644936
     },
     "cohens_d": -0.37248749701740264,
-    "effect_magnitude": "small"
+    "effect_magnitude": "small",
+    "p_bonferroni": 1,
+    "significant_bonferroni": false,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/nousresearch/hermes-3-llama-3.1-405b:free": {
     "model": "openrouter/nousresearch/hermes-3-llama-3.1-405b:free",
@@ -597,7 +705,11 @@
       "df": 25.846009367212428
     },
     "cohens_d": -0.16207502102308216,
-    "effect_magnitude": "negligible"
+    "effect_magnitude": "negligible",
+    "p_bonferroni": 1,
+    "significant_bonferroni": false,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/nvidia/llama-3.1-nemotron-70b-instruct": {
     "model": "openrouter/nvidia/llama-3.1-nemotron-70b-instruct",
@@ -625,7 +737,9 @@
       "df": null
     },
     "cohens_d": null,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": null,
+    "significant_bonferroni": null
   },
   "openrouter/nvidia/nemotron-3-nano-30b-a3b:free": {
     "model": "openrouter/nvidia/nemotron-3-nano-30b-a3b:free",
@@ -653,35 +767,43 @@
       "df": 56.48008891008402
     },
     "cohens_d": 1.4724212247461999,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/openai/gpt-4o": {
     "model": "openrouter/openai/gpt-4o",
-    "n_low": 120,
-    "n_high": 129,
-    "n_total": 249,
-    "mean_low": 4.883333333333334,
-    "mean_high": 13.13953488372093,
-    "sd_low": 1.444433760644249,
-    "sd_high": 6.275020227332678,
-    "anchoring_effect": 8.256201550387598,
+    "n_low": 210,
+    "n_high": 219,
+    "n_total": 519,
+    "mean_low": 4.238095238095238,
+    "mean_high": 11.452054794520548,
+    "sd_low": 1.4607487285883765,
+    "sd_high": 5.2264896831388,
+    "anchoring_effect": 7.213959556425309,
     "ci_low": {
-      "lower": 4.625265564314611,
-      "upper": 5.141401102352057,
-      "margin": 0.2580677690187232
+      "lower": 4.040810890763646,
+      "upper": 4.43537958542683,
+      "margin": 0.19728434733159156
     },
     "ci_high": {
-      "lower": 12.058232812840554,
-      "upper": 14.220836954601307,
-      "margin": 1.0813020708803767
+      "lower": 10.760837175294576,
+      "upper": 12.14327241374652,
+      "margin": 0.6912176192259712
     },
     "ttest": {
-      "t": -14.535522294129537,
+      "t": -19.641742306552906,
       "p": 0.0020000000000000018,
-      "df": 142.4998653949524
+      "df": 253.21145571325465
     },
-    "cohens_d": 1.7842960398455818,
-    "effect_magnitude": "large"
+    "cohens_d": 1.8632339832535785,
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/openai/gpt-5.2": {
     "model": "openrouter/openai/gpt-5.2",
@@ -701,7 +823,9 @@
     },
     "ttest": null,
     "cohens_d": null,
-    "effect_magnitude": null
+    "effect_magnitude": null,
+    "p_bonferroni": null,
+    "significant_bonferroni": null
   },
   "openrouter/openai/o1": {
     "model": "openrouter/openai/o1",
@@ -721,7 +845,9 @@
     },
     "ttest": null,
     "cohens_d": null,
-    "effect_magnitude": null
+    "effect_magnitude": null,
+    "p_bonferroni": null,
+    "significant_bonferroni": null
   },
   "openrouter/openai/o3-mini": {
     "model": "openrouter/openai/o3-mini",
@@ -749,7 +875,11 @@
       "df": 74.76087058111516
     },
     "cohens_d": 1.6186403536938647,
-    "effect_magnitude": "large"
+    "effect_magnitude": "large",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/qwen/qwen3-next-80b-a3b-instruct:free": {
     "model": "openrouter/qwen/qwen3-next-80b-a3b-instruct:free",
@@ -777,7 +907,11 @@
       "df": 55
     },
     "cohens_d": 0.6896053621859071,
-    "effect_magnitude": "medium"
+    "effect_magnitude": "medium",
+    "p_bonferroni": 0.04600000000000004,
+    "significant_bonferroni": true,
+    "bonferroni_alpha": 0.002173913043478261,
+    "num_comparisons": 23
   },
   "openrouter/stepfun/step-3.5-flash:free": {
     "model": "openrouter/stepfun/step-3.5-flash:free",
@@ -797,6 +931,8 @@
     "ci_high": null,
     "ttest": null,
     "cohens_d": null,
-    "effect_magnitude": null
+    "effect_magnitude": null,
+    "p_bonferroni": null,
+    "significant_bonferroni": null
   }
 }
