@@ -49,10 +49,18 @@ SACD reduces responses by 50% — back to the GPT-4o true baseline.
 3. **"Compression" was partially an artifact** of implicit anchoring in GPT-4o
 4. **SACD effectiveness varies** but works on both LOW and HIGH anchors
 
-### Proposed Taxonomy (Simpler)
-1. **Immune** — Ignores anchors (Opus 4.6, Hermes 405B)
-2. **Susceptible** — Shifts toward anchor (varying degrees)
-3. **Compliant** — Copies anchor exactly (GPT-4o Residential)
+### Validated Taxonomy
+
+True baselines explain the patterns:
+
+| Pattern | Model | Baseline | With Anchors | Mechanism |
+|---------|-------|----------|--------------|-----------|
+| **Compression** | Opus 4.5 | ~20mo | 6-8mo | High baseline compressed DOWN |
+| **Compression** | o3-mini | ~18mo | 6-10mo | High baseline compressed DOWN |
+| **Compliance** | GPT-4o | ~12mo | copies anchor | Low baseline + echo behavior |
+| **Immune** | Opus 4.6 | ~? | ~6mo always | Ignores anchors |
+
+**Key insight:** "Compression" is REAL for high-baseline models. They genuinely compress from ~20mo to ~6-8mo. GPT-4o's "compliance" reflects its low baseline + instruction-following.
 
 ---
 
