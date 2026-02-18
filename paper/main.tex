@@ -260,6 +260,29 @@ True Anchoring & 1 & 12\% \\
 \caption{Mechanism distribution across tested deployments}
 \end{table}
 
+\subsection{Implicit Numeric Context: The ``12th Offense'' Effect}
+
+Our baseline measurements include the phrase ``12th shoplifting offense''---a design choice inherited from \citet{englich2006}. This creates a potential confound: the number ``12'' may itself function as an implicit anchor.
+
+We tested this explicitly with GPT-4o (Copilot deployment, n=39):
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Condition & Phrasing & Response \\
+\midrule
+Original baseline & ``12th shoplifting offense'' & $24.0 \pm 0.0$ mo \\
+True baseline & ``multiple previous convictions'' & $12.0 \pm 0.0$ mo \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Finding}: Removing ``12th'' halved GPT-4o's baseline response. This suggests the model anchors on implicit numeric context in the vignette, not just explicit prosecutor recommendations.
+
+\textbf{Scope}: This confound appears GPT-4o-specific. Other models (Hermes 405B, o3-mini, Opus 4.5) showed different patterns when tested with both phrasing variants. Our main findings---the three-mechanism taxonomy and deployment sensitivity---remain valid regardless of which baseline is used.
+
+\textbf{Methodological note}: Table~\ref{tab:mechanisms} reports ``no-anchor'' baselines that include the original ``12th offense'' phrasing, consistent with our adapted \citet{englich2006} methodology. This maintains internal consistency across our experiments while acknowledging that absolute baseline values may be influenced by implicit numeric context.
+
 \subsection{Extended Range: High Anchor (24mo) Testing}
 
 Our initial experiments used anchors (3mo, 9mo) below the no-anchor baseline (~12mo). To test whether models show symmetric anchoring above baseline, we introduced a 24-month anchor condition.
