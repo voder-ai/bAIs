@@ -1,0 +1,34 @@
+#!/bin/bash
+# Pre-push hook: verify all paper data before pushing
+
+echo "=== Pre-push verification ==="
+
+# Run paper data verification
+./scripts/verify-paper-data.sh
+if [[ $? -ne 0 ]]; then
+    echo ""
+    echo "❌ PUSH BLOCKED: Paper claims lack backing data"
+    echo "Fix gaps before pushing."
+    exit 1
+fi
+
+# Run unused data audit
+./scripts/audit-unused-data.sh | grep -E "^❌"
+if [[ $? -eq 0 ]]; then
+    echo ""
+    echo "⚠️  WARNING: You have collected data not used in paper"
+    echo "Review audit-unused-data.sh output before continuing."
+    # Don't block, just warn
+fi
+
+# Verify paper compiles
+cd paper && pdflatex -interaction=nonstopmode main.tex > /dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    echo ""
+    echo "❌ PUSH BLOCKED: Paper fails to compile"
+    exit 1
+fi
+
+echo ""
+echo "✅ All checks passed"
+exit 0
