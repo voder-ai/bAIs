@@ -442,6 +442,72 @@ For models showing no baseline bias, multi-turn prompting may be harmful. Llama 
 
 \textbf{Practical guideline}: For models that show no baseline bias, avoid multi-turn debiasing interventions. Test your specific deployment before applying any intervention.
 
+\subsection{Temperature and Debiasing: Orthogonal Controls}
+\label{sec:temperature}
+
+A natural concern is whether our findings are sensitive to temperature settings. We conducted systematic temperature variation experiments across five model deployments (Table~\ref{tab:temp-variation}).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Model & Condition & Temp=0 & Temp=0.5 & Temp=1.0 \\
+\midrule
+\multirow{3}{*}{GPT-4o (Res.)} 
+  & No-anchor & 24.0 (0.0) & 23.8 (1.1) & 24.8 (3.0) \\
+  & Low (3mo) & 3.0 (0.0) & 3.3 (0.9) & 3.8 (1.3) \\
+  & High (9mo) & 9.0 (0.0) & 9.0 (0.0) & 9.1 (0.5) \\
+\midrule
+\multirow{3}{*}{GPT-4o (DC)} 
+  & No-anchor & 24.0 (0.0) & 24.0 (0.0) & 25.6 (4.1) \\
+  & Low (3mo) & 6.0 (0.0) & 6.2 (1.1) & 7.5 (3.0) \\
+  & High (9mo) & 12.0 (0.0) & 12.4 (2.0) & 11.7 (1.6) \\
+\midrule
+\multirow{3}{*}{Opus 4.5} 
+  & No-anchor & 24.0 (0.0) & 24.4 (2.2) & 24.8 (3.0) \\
+  & Low (3mo) & 6.0 (0.0) & 6.0 (0.0) & 6.0 (0.0) \\
+  & High (9mo) & 12.0 (0.0) & 12.0 (0.0) & 12.0 (0.0) \\
+\midrule
+\multirow{3}{*}{GPT-5.2} 
+  & No-anchor & 32.4 (5.5) & 30.8 (6.0) & 33.0 (5.1) \\
+  & Low (3mo) & 6.1 (0.5) & 6.0 (0.0) & 6.0 (0.0) \\
+  & High (9mo) & 11.9 (0.4) & 11.9 (0.5) & 11.7 (0.8) \\
+\midrule
+\multirow{3}{*}{Hermes 405B} 
+  & No-anchor & 23.2 (3.0) & 21.2 (5.1) & 17.8 (5.9) \\
+  & Low (3mo) & 6.0 (0.0) & 6.0 (0.0) & 6.2 (1.1) \\
+  & High (9mo) & 12.0 (0.0) & 12.0 (0.0) & 11.4 (1.8) \\
+\bottomrule
+\end{tabular}
+\caption{Temperature variation results. Mean (SD) in months. n=30 per cell. Res.=Residential IP, DC=Datacenter IP.}
+\label{tab:temp-variation}
+\end{table}
+
+\textbf{Key findings:}
+
+\begin{enumerate}
+    \item \textbf{Mechanism classification is temperature-invariant.} GPT-4o (Residential) shows compliance at all temperatures; all other deployments show compression at all temperatures. Temperature adds variance but does not change the underlying mechanism.
+    
+    \item \textbf{Anchors reduce output entropy.} Across all models, anchor conditions show lower SD than no-anchor baselines. This effect is most pronounced in Opus 4.5, which shows SD=0 in anchor conditions \emph{even at temperature=1.0}. Anchors don't just shift the mean---they constrain the output distribution.
+    
+    \item \textbf{API stochasticity is model-specific.} GPT-5.2 shows SD=5.5 in the no-anchor baseline at temperature=0, indicating inherent API-level randomness independent of temperature settings.
+\end{enumerate}
+
+\subsubsection{Orthogonal Control Dimensions}
+
+We initially hypothesized that anchor-condition variance (SD) might predict SACD effectiveness: models with SD>0 would be ``looser'' and thus more amenable to debiasing. Testing this prediction against our SACD data, we found it \textbf{falsified} (50\% accuracy, no better than chance).
+
+This suggests temperature and SACD operate on orthogonal dimensions:
+\begin{itemize}
+    \item \textbf{Temperature} modulates output variance around an attractor point
+    \item \textbf{SACD} shifts the attractor position itself
+\end{itemize}
+
+A deterministic model (SD=0) can still be highly responsive to SACD, because low variance does not imply a fixed attractor position. Conversely, a high-variance model may resist debiasing if its attractor is strongly anchored.
+
+\textbf{Practical implication:} Do not assume that deterministic model behavior indicates resistance to debiasing. The cost of testing SACD is low; the cost of assuming it won't work is potentially high.
+
 \subsection{Limitations}
 
 \begin{enumerate}
