@@ -32,7 +32,7 @@
 \begin{abstract}
 How do large language models (LLMs) respond to numeric context in judgment tasks? Prior work assumes LLMs exhibit a single anchoring phenomenon---adjusting estimates toward arbitrary reference points. We find the reality is more complex.
 
-Testing 11 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct behavioral patterns} (which we term ``mechanisms'' for brevity) by which LLMs respond to numeric context:
+Testing 11 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct behavioral patterns} by which LLMs respond to numeric context (we use ``mechanisms'' as shorthand throughout, though these are observational patterns rather than mechanistic explanations):
 
 \textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (10--14 months); with ANY anchor---high or low---responses compress to 3--11 months. Both anchors shift responses DOWN from baseline. (Opus 4.5, Llama 3.3, o3-mini, MiniMax)
 
@@ -183,6 +183,23 @@ Hermes 405B$^\ddagger$ & $23.2 \pm 3.0$ & $6.0 \pm 0.0$ & $12.0 \pm 0.0$ & 6.0mo
 \caption{Mechanism classification with no-anchor baseline and statistical tests. Values: mean $\pm$ SD or mean [95\% CI]. Effect = High $-$ Low. Significance: $^{***}p < 0.001$. ``det.''\ = deterministic (SD=0 at temperature=0). --- = data not collected. $^\dagger$Direct Anthropic API. $^\ddagger$Values from temperature=0 experiments (Table~\ref{tab:temp-variation}).}
 \label{tab:mechanisms}
 \end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+& \textbf{No Anchor} & \textbf{Low Anchor (3mo)} & \textbf{High Anchor (9mo)} \\
+\hline
+\textbf{Compression} & 18--24mo & $\downarrow$ 6--9mo & $\downarrow$ 9--12mo \\
+\hline
+\textbf{Compliance} & 18--24mo & $\rightarrow$ 3mo & $\rightarrow$ 9mo \\
+\hline
+\textbf{True Anchoring} & 12mo & $\downarrow$ 6mo & $\uparrow$ 11mo \\
+\hline
+\end{tabular}
+\caption{Visual summary of three behavioral patterns. Compression: both anchors pull responses DOWN from baseline. Compliance: responses copy anchor exactly. True Anchoring: asymmetric shift toward anchor.}
+\label{fig:mechanisms}
+\end{figure}
 
 \subsection{Mechanism 1: Compression}
 
