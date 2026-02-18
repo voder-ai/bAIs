@@ -18,7 +18,7 @@ Atlas found:
 - Opus 4.5 with "multiple offenses" → 18-24mo (n=18)
 - Opus 4.5 does NOT show the 12×2 pattern
 
-**Interpretation:** GPT-4o has an unusually low baseline (~12mo) and is susceptible to implicit numeric anchoring from "12th". Opus 4.5 has a higher intrinsic baseline (~18mo) not affected by "12th".
+**Interpretation:** GPT-4o has an anomalously LOW baseline (~12mo) compared to other models (~18-20mo). GPT-4o is uniquely susceptible to implicit numeric anchoring from "12th". This is model-specific behavior.
 
 ### 2. SACD Works on HIGH Anchors
 
@@ -30,10 +30,11 @@ SACD reduces responses by 50% — back to the GPT-4o true baseline.
 
 ### 3. Model-Specific Baselines
 
-| Model | True Baseline | "12th" Effect |
-|-------|---------------|---------------|
-| GPT-4o | 12mo | 2× (24mo) |
-| Opus 4.5 | 18-24mo | None observed |
+| Model | True Baseline (no "12th", no anchor) | "12th" Effect |
+|-------|--------------------------------------|---------------|
+| GPT-4o | 12.0 ± 0.0mo (n=9) | 2× (24mo) |
+| Opus 4.5 | 19.8 ± 2.7mo (n=30) | None observed |
+| o3-mini | 18.4 ± 4.6mo (n=30) | Not tested |
 
 ---
 
