@@ -73,6 +73,7 @@ opus46-24mo-anchor.jsonl: n=30 ✅
 ```
 
 MiniMax 24mo now complete:
+
 ```
 minimax-24mo-anchor.jsonl: n=33 ✅
 ```

@@ -21,7 +21,7 @@
 
 ### 2. Taxonomy Instability
 
-o3-mini is classified as "Compression" in Table 1 (both anchors shift down from baseline). But Table 4 shows it as "Strong amplification" with the 24mo anchor (33.0 vs. 12.0 baseline). 
+o3-mini is classified as "Compression" in Table 1 (both anchors shift down from baseline). But Table 4 shows it as "Strong amplification" with the 24mo anchor (33.0 vs. 12.0 baseline).
 
 If a model is "compression" at some anchor values and "strong amplification" at others, the taxonomy is anchor-dependent, not model-dependent.
 
