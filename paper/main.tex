@@ -44,7 +44,7 @@ This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognit
 
 \textbf{Critical deployment finding}: The SAME model (GPT-4o) shows different mechanisms depending on access path---compliance via residential IP, true anchoring via datacenter. ``Model name'' is insufficient granularity for reproducible LLM research.
 
-\textbf{Extended range testing}: With anchors \emph{above} baseline (24 months), models show a four-tier susceptibility pattern: strong amplifiers (o3-mini produces 33mo, GPT-5.2 produces 28mo---both exceeding the 24mo anchor), partial susceptibility (Opus 4.5), weak effect (o1, Llama 3.3), and complete immunity (Opus 4.6, Hermes 405B). Critically, Opus 4.5$\rightarrow$4.6 changed from susceptible to immune---debiasing validation must be repeated per model VERSION.
+\textbf{Extended range testing}: With anchors \emph{above} baseline (24 months), models show distinct susceptibility patterns: strong amplifiers (o3-mini produces 33mo, GPT-5.2 produces 28mo---both exceeding the 24mo anchor), partial susceptibility (Opus 4.5), weak effect (o1, Llama 3.3), and consistent compression (Opus 4.6, Hermes 405B compress to $\sim$6--12mo regardless of anchor). Critically, Opus 4.5$\rightarrow$4.6 changed patterns---debiasing validation must be repeated per model VERSION.
 
 \textbf{Practical implication}: Before applying debiasing, identify which mechanism your deployment exhibits. We provide a decision framework and deployment checklist.
 \end{abstract}
@@ -252,10 +252,9 @@ Models exhibiting true anchoring: o1
 \toprule
 Mechanism & Models & \% of Deployments \\
 \midrule
-Compression & 5 & 62\% \\
+Compression & 6 & 75\% \\
 Compliance & 1 & 12\% \\
 True Anchoring & 1 & 12\% \\
-Immune/Reversal & 1 & 12\% \\
 \bottomrule
 \end{tabular}
 \caption{Mechanism distribution across tested deployments}
@@ -280,8 +279,8 @@ o1 & 11.9 & 6.1 & 10.6 & \textbf{17.4} & Partial susceptibility \\
 MiniMax M2.5 & 10.4 & 5.1 & 8.1 & \textbf{19.3} & Partial susceptibility \\
 Llama 3.3 & 14.4 & 5.0 & 6.0 & \textbf{15.0} & Weak effect \\
 GPT-4o (Datacenter)$^\ddagger$ & 24.0 & 6.0 & 12.0 & \textbf{12.0} & Compression \\
-Opus 4.6 & 12.0 & 6.0 & 8.0 & \textbf{12.0} & Immune \\
-Hermes 405B$^\ddagger$ & 23.2 & 6.0 & 12.0 & \textbf{12.0} & Immune \\
+Opus 4.6 & 12.0 & 6.0 & 8.0 & \textbf{12.0} & Consistent compression \\
+Hermes 405B$^\ddagger$ & 23.2 & 6.0 & 12.0 & \textbf{12.0} & Consistent compression \\
 \bottomrule
 \end{tabular}
 \caption{High anchor (24mo) reveals four-tier susceptibility. Models showing ``compression'' with low anchors show dramatically different responses to high anchors. $^\star$GPT-5.3: only 24mo anchor data collected.}
@@ -294,7 +293,7 @@ Hermes 405B$^\ddagger$ & 23.2 & 6.0 & 12.0 & \textbf{12.0} & Immune \\
     \item \textbf{Strong amplifiers} (o3-mini, GPT-5.2): Responses \emph{exceed} the anchor value (32.6mo vs 24mo anchor = 1.36$\times$). This is \emph{overcorrection}, not compression.
     \item \textbf{Partial susceptibility} (Opus 4.5): Moderate pull toward anchor (+6mo from baseline).
     \item \textbf{Weak effect} (o1, Llama 3.3): Minimal change despite extreme anchor (+2-3mo).
-    \item \textbf{Immune} (Opus 4.6, Hermes 405B): Zero effect---responses remain at baseline regardless of anchor value.
+    \item \textbf{Consistent compression} (Opus 4.6, Hermes 405B): Responses compress to $\sim$6--12mo regardless of anchor value, including 24mo anchors above baseline.
 \end{itemize}
 
 \subsection{Version Drift: Opus 4.5 vs 4.6}
@@ -308,17 +307,17 @@ A striking finding emerged from comparing Anthropic model versions:
 Model & Low (3mo) & High (9mo) & 24mo & Pattern \\
 \midrule
 Opus 4.5 & 9.2 & 12.0 & 18.0 & Partial susceptibility \\
-Opus 4.6 & 6.0 & 8.0 & \textbf{12.0} & Immune \\
+Opus 4.6 & 6.0 & 8.0 & \textbf{12.0} & Consistent compression \\
 \bottomrule
 \end{tabular}
 \caption{Model version changes susceptibility pattern}
 \end{table}
 
-\textbf{Opus 4.5 to 4.6 changed from susceptible to immune.} This has critical implications:
+\textbf{Opus 4.5 to 4.6 changed from partial susceptibility to consistent compression.} This has critical implications:
 
 \begin{enumerate}
     \item Debiasing validation must be repeated for each model VERSION, not just model family.
-    \item Immunity to anchoring can emerge without explicit debiasing---architecture/training changes may inadvertently affect susceptibility.
+    \item Susceptibility patterns can change without explicit debiasing---architecture/training changes may inadvertently affect mechanism behavior.
     \item Published benchmarks become stale as models update.
 \end{enumerate}
 
@@ -431,14 +430,14 @@ Mechanism & Low (3mo) & High (9mo) & \textbf{24mo} & SACD \\
 Strong Amplification & $\downarrow$ & $\downarrow$ & $\uparrow\uparrow$ (1.3--1.4$\times$) & varies \\
 Partial Susceptibility & $\downarrow$ & $\downarrow$ & $\uparrow$ (+6mo) & 99\% $\downarrow$ \\
 Weak Effect & $\downarrow$ & near baseline & near baseline & varies \\
-Immune & $\downarrow$ & $\downarrow$ & \textbf{no change} & N/A \\
+Consistent Compression & $\downarrow$ & $\downarrow$ & \textbf{stable} & N/A \\
 \bottomrule
 \end{tabular}
-\caption{Four-tier susceptibility pattern revealed by extended anchor range}
+\caption{Susceptibility patterns revealed by extended anchor range. ``Consistent compression'' models compress to $\sim$6--12mo regardless of anchor value, including high anchors.}
 \end{table}
 
 \paragraph{Comparison to Human Anchoring}
-While direct quantitative comparison is precluded by methodological differences (our adapted scenario uses different anchor magnitudes and legal context than the original \citet{englich2006} study), our findings parallel the robust anchoring effects documented in human judges. \citet{englich2006} found effect sizes of $d = 0.6$--$1.2$ for human anchoring in judicial sentencing decisions. Our LLM effects range from negligible ($d < 0.2$ for immune models) to very large ($d > 4.0$ for strong amplifiers), suggesting that some models exhibit susceptibility comparable to or exceeding documented human levels. Critically, unlike humans---who show relatively consistent anchoring patterns across individuals---LLMs exhibit mechanism-dependent responses that vary dramatically by model and deployment. This heterogeneity underscores the need for deployment-specific testing rather than assuming uniform behavior.
+While direct quantitative comparison is precluded by methodological differences (our adapted scenario uses different anchor magnitudes and legal context than the original \citet{englich2006} study), our findings parallel the robust anchoring effects documented in human judges. \citet{englich2006} found effect sizes of $d = 0.6$--$1.2$ for human anchoring in judicial sentencing decisions. Our LLM effects range from negligible ($d < 0.2$ for consistently-compressing models) to very large ($d > 4.0$ for strong amplifiers), suggesting that some models exhibit susceptibility comparable to or exceeding documented human levels. Critically, unlike humans---who show relatively consistent anchoring patterns across individuals---LLMs exhibit mechanism-dependent responses that vary dramatically by model and deployment. This heterogeneity underscores the need for deployment-specific testing rather than assuming uniform behavior.
 
 \subsection{Recommendations for Practitioners}
 
@@ -473,7 +472,7 @@ A natural question is whether reasoning models---those with native chain-of-thou
 
 Despite native chain-of-thought capabilities, o1 showed a 4.2-month anchoring effect at baseline. More strikingly, SACD actually \emph{increased} bias by 7\%, producing a 4.6-month effect under the debiasing intervention. This suggests that extended deliberation can rationalize biased judgments rather than correct them.
 
-This finding has practical implications: organizations cannot assume that ``thinking'' models are immune to numeric context effects. The mechanism taxonomy applies regardless of whether the model performs explicit reasoning.
+This finding has practical implications: organizations cannot assume that ``thinking'' models are unaffected by numeric context. The mechanism taxonomy applies regardless of whether the model performs explicit reasoning.
 
 \subsection{Multi-Turn Structure Can Introduce Bias}
 
