@@ -114,29 +114,29 @@
   "anthropic/claude-opus-4-5": {
     "model": "anthropic/claude-opus-4-5",
     "n_low": 60,
-    "n_high": 60,
-    "n_total": 120,
+    "n_high": 90,
+    "n_total": 150,
     "mean_low": 6.016666666666667,
-    "mean_high": 7,
+    "mean_high": 10.666666666666666,
     "sd_low": 1.0081611423224408,
-    "sd_high": 1,
-    "anchoring_effect": 0.9833333333333334,
+    "sd_high": 5.249338582674543,
+    "anchoring_effect": 4.6499999999999995,
     "ci_low": {
       "lower": 5.761936084018982,
       "upper": 6.271397249314351,
       "margin": 0.2547305826476842
     },
     "ci_high": {
-      "lower": 6.747331481095496,
-      "upper": 7.252668518904504,
-      "margin": 0.2526685189045042
+      "lower": 9.583712464616717,
+      "upper": 11.749620868716615,
+      "margin": 1.0829542020499494
     },
     "ttest": {
-      "t": -5.364005798245311,
+      "t": -8.180426923495741,
       "p": 0.0020000000000000018,
-      "df": 117.99220522204084
+      "df": 98.66515631168367
     },
-    "cohens_d": 0.979328991429154,
+    "cohens_d": 1.1285958107661063,
     "effect_magnitude": "large"
   },
   "anthropic/claude-opus-4-5-20251101": {
@@ -170,30 +170,30 @@
   "anthropic/claude-opus-4-6": {
     "model": "anthropic/claude-opus-4-6",
     "n_low": 50,
-    "n_high": 45,
-    "n_total": 95,
+    "n_high": 75,
+    "n_total": 125,
     "mean_low": 7.04,
-    "mean_high": 6.644444444444445,
+    "mean_high": 8.786666666666667,
     "sd_low": 1.6487571076419962,
-    "sd_high": 0.793180813225544,
-    "anchoring_effect": -0.3955555555555552,
+    "sd_high": 2.6946531419749644,
+    "anchoring_effect": 1.746666666666667,
     "ci_low": {
       "lower": 6.583649596994462,
       "upper": 7.496350403005538,
       "margin": 0.4563504030055379
     },
     "ci_high": {
-      "lower": 6.413028806490419,
-      "upper": 6.875860082398471,
-      "margin": 0.2314156379540255
+      "lower": 8.177692319558075,
+      "upper": 9.39564101377526,
+      "margin": 0.6089743471085928
     },
     "ttest": {
-      "t": 1.5130108953987982,
-      "p": 0.131,
-      "df": 72.12933965511101
+      "t": -4.492188457289132,
+      "p": 0.0020000000000000018,
+      "df": 122.23388796278982
     },
-    "cohens_d": -0.3007413246599331,
-    "effect_magnitude": "small"
+    "cohens_d": 0.7480909775327051,
+    "effect_magnitude": "medium"
   },
   "anthropic/claude-sonnet-4-20250514": {
     "model": "anthropic/claude-sonnet-4-20250514",
@@ -383,6 +383,26 @@
     "cohens_d": 3.537781886328516,
     "effect_magnitude": "large"
   },
+  "openai-codex/gpt-5.3-codex": {
+    "model": "openai-codex/gpt-5.3-codex",
+    "n_low": 0,
+    "n_high": 30,
+    "n_total": 30,
+    "mean_low": null,
+    "mean_high": 9.233333333333333,
+    "sd_low": null,
+    "sd_high": 2.1707653540219916,
+    "anchoring_effect": null,
+    "ci_low": null,
+    "ci_high": {
+      "lower": 8.457659727192016,
+      "upper": 10.009006939474649,
+      "margin": 0.7756736061413169
+    },
+    "ttest": null,
+    "cohens_d": null,
+    "effect_magnitude": null
+  },
   "openrouter/arcee-ai/trinity-large-preview:free": {
     "model": "openrouter/arcee-ai/trinity-large-preview:free",
     "n_low": 39,
@@ -415,7 +435,7 @@
     "model": "openrouter/meta-llama/llama-3.3-70b-instruct",
     "n_low": 247,
     "n_high": 238,
-    "n_total": 496,
+    "n_total": 526,
     "mean_low": 5.465587044534413,
     "mean_high": 8.193277310924369,
     "sd_low": 1.18945687241284,
@@ -469,30 +489,30 @@
   },
   "openrouter/minimax/minimax-m2.5": {
     "model": "openrouter/minimax/minimax-m2.5",
-    "n_low": 87,
-    "n_high": 50,
-    "n_total": 164,
-    "mean_low": 5.287356321839081,
-    "mean_high": 8.08,
-    "sd_low": 2.5093299283128756,
-    "sd_high": 2.207623156247461,
-    "anchoring_effect": 2.7926436781609194,
+    "n_low": 91,
+    "n_high": 83,
+    "n_total": 201,
+    "mean_low": 5.351648351648351,
+    "mean_high": 12.53012048192771,
+    "sd_low": 2.486772153711575,
+    "sd_high": 7.0151940941256425,
+    "anchoring_effect": 7.178472130279359,
     "ci_low": {
-      "lower": 4.760824165087836,
-      "upper": 5.813888478590325,
-      "margin": 0.5265321567512444
+      "lower": 4.841446466169968,
+      "upper": 5.861850237126735,
+      "margin": 0.5102018854783834
     },
     "ci_high": {
-      "lower": 7.468964140097803,
-      "upper": 8.691035859902197,
-      "margin": 0.6110358599021971
+      "lower": 11.02307137115522,
+      "upper": 14.0371695927002,
+      "margin": 1.5070491107724902
     },
     "ttest": {
-      "t": -6.7761801701443405,
+      "t": -8.830179995912285,
       "p": 0.0020000000000000018,
-      "df": 113.21795252620178
+      "df": 100.66864926387595
     },
-    "cohens_d": 1.1615674669285045,
+    "cohens_d": 1.3892938771354488,
     "effect_magnitude": "large"
   },
   "openrouter/mistralai/mistral-small-3.1-24b-instruct:free": {
@@ -638,57 +658,97 @@
   "openrouter/openai/gpt-4o": {
     "model": "openrouter/openai/gpt-4o",
     "n_low": 120,
-    "n_high": 99,
-    "n_total": 219,
+    "n_high": 129,
+    "n_total": 249,
     "mean_low": 4.883333333333334,
-    "mean_high": 9.848484848484848,
+    "mean_high": 13.13953488372093,
     "sd_low": 1.444433760644249,
-    "sd_high": 2.1759179480019686,
-    "anchoring_effect": 4.965151515151514,
+    "sd_high": 6.275020227332678,
+    "anchoring_effect": 8.256201550387598,
     "ci_low": {
       "lower": 4.625265564314611,
       "upper": 5.141401102352057,
       "margin": 0.2580677690187232
     },
     "ci_high": {
-      "lower": 9.420477055077873,
-      "upper": 10.276492641891823,
-      "margin": 0.4280077934069754
+      "lower": 12.058232812840554,
+      "upper": 14.220836954601307,
+      "margin": 1.0813020708803767
     },
     "ttest": {
-      "t": -19.443392826599194,
+      "t": -14.535522294129537,
       "p": 0.0020000000000000018,
-      "df": 164.32267059296544
+      "df": 142.4998653949524
     },
-    "cohens_d": 2.740558977628895,
+    "cohens_d": 1.7842960398455818,
     "effect_magnitude": "large"
+  },
+  "openrouter/openai/gpt-5.2": {
+    "model": "openrouter/openai/gpt-5.2",
+    "n_low": 0,
+    "n_high": 30,
+    "n_total": 30,
+    "mean_low": null,
+    "mean_high": 28.2,
+    "sd_low": null,
+    "sd_high": 3.5156791662493894,
+    "anchoring_effect": null,
+    "ci_low": null,
+    "ci_high": {
+      "lower": 26.943752044932932,
+      "upper": 29.456247955067067,
+      "margin": 1.2562479550670658
+    },
+    "ttest": null,
+    "cohens_d": null,
+    "effect_magnitude": null
+  },
+  "openrouter/openai/o1": {
+    "model": "openrouter/openai/o1",
+    "n_low": 0,
+    "n_high": 16,
+    "n_total": 46,
+    "mean_low": null,
+    "mean_high": 19.5,
+    "sd_low": null,
+    "sd_high": 5.809475019311125,
+    "anchoring_effect": null,
+    "ci_low": null,
+    "ci_high": {
+      "lower": 16.65747916232433,
+      "upper": 22.34252083767567,
+      "margin": 2.8425208376756723
+    },
+    "ttest": null,
+    "cohens_d": null,
+    "effect_magnitude": null
   },
   "openrouter/openai/o3-mini": {
     "model": "openrouter/openai/o3-mini",
-    "n_low": 39,
-    "n_high": 55,
-    "n_total": 124,
-    "mean_low": 6,
-    "mean_high": 20.78181818181818,
-    "sd_low": 0,
-    "sd_high": 11.45376620726032,
-    "anchoring_effect": 14.781818181818181,
+    "n_low": 54,
+    "n_high": 75,
+    "n_total": 159,
+    "mean_low": 5.833333333333333,
+    "mean_high": 19.8,
+    "sd_low": 0.687184270936277,
+    "sd_high": 11.288932633336069,
+    "anchoring_effect": 13.966666666666669,
     "ci_low": {
-      "lower": 6,
-      "upper": 6,
-      "margin": 0
+      "lower": 5.6503114204265295,
+      "upper": 6.016355246240137,
+      "margin": 0.18302191290680392
     },
     "ci_high": {
-      "lower": 17.759127347161513,
-      "upper": 23.80450901647485,
-      "margin": 3.022690834656669
+      "lower": 17.248773546082397,
+      "upper": 22.351226453917604,
+      "margin": 2.551226453917604
     },
     "ttest": {
-      "t": -9.57107868737831,
+      "t": -10.687000899433047,
       "p": 0.0020000000000000018,
-      "df": 54
+      "df": 74.76087058111516
     },
-    "cohens_d": 1.6845215674302467,
+    "cohens_d": 1.6186403536938647,
     "effect_magnitude": "large"
   },
   "openrouter/qwen/qwen3-next-80b-a3b-instruct:free": {
