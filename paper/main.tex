@@ -40,7 +40,7 @@ Testing 11 model deployments across 4 providers on judicial sentencing scenarios
 
 \textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with classical anchoring-and-adjustment. (o1)
 
-This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognitive Debiasing) shows highly variable effectiveness---up to 89\% reduction on some susceptible models (GPT-5.2) but 0\% on compliance models and even negative effects on others (o1 shows 7\% increase). SACD effectiveness depends on which mechanism is active.
+This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognitive Debiasing) shows highly variable effectiveness---up to 89\% reduction on susceptible models (GPT-5.2), elimination of compliance behavior (GPT-4o switches from copying anchors to consistent 6mo responses), but negative effects on others (o1 shows 7\% increase). SACD effectiveness depends on which mechanism is active.
 
 \textbf{Critical deployment finding}: The SAME model (GPT-4o) shows different mechanisms depending on access path---compliance via residential IP, true anchoring via datacenter. ``Model name'' is insufficient granularity for reproducible LLM research.
 
@@ -70,7 +70,7 @@ In this paper, we report a discovery: what researchers measure as ``anchoring bi
 This taxonomy has immediate practical implications:
 
 \begin{itemize}
-    \item \textbf{SACD effectiveness varies dramatically}: up to 89\% reduction (GPT-5.2), 0\% on compliance, mixed on compression, and even 7\% \emph{increase} on o1.
+    \item \textbf{SACD effectiveness varies dramatically}: up to 89\% reduction (GPT-5.2), eliminates compliance (GPT-4o Residential switches to compression), mixed on compression, and 7\% \emph{increase} on o1.
     \item \textbf{The same model shows different mechanisms depending on deployment.} GPT-4o via residential IP shows compliance; GPT-4o via datacenter shows true anchoring.
     \item \textbf{``Model name'' is insufficient for reproducibility.} Researchers must specify deployment path, provider, and access method.
 \end{itemize}
@@ -338,7 +338,7 @@ Given the three-mechanism taxonomy, we can explain why debiasing interventions s
 Mechanism & SACD Effect & Change & Explanation \\
 \midrule
 True Anchoring (o1) & +7\% $\uparrow$ & Failure & Extended reasoning rationalizes bias \\
-Compliance & 0\% & No effect & Nothing to debias---model copies anchor \\
+Compliance & $-$100\% & Eliminates & SACD overrides instruction-following; model gives 6mo regardless of anchor \\
 Compression & varies & Model-specific & SACD effects vary: 100\% reduction (Opus 4.5) to 90\% amplification (MiniMax) \\
 \bottomrule
 \end{tabular}
@@ -357,12 +357,13 @@ GPT-5.2 & Susceptible$^*$ & 4.4mo & 0.5mo & $-89\%$ $\checkmark$ \\
 Opus 4.5 & Compression & 2.0mo & 0.0mo & $-100\%$ $\checkmark$ \\
 MiniMax & Compression & 3.0mo & 5.7mo & $+90\%$ $\times$ \\
 o3-mini & Compression & 5.1mo & 5.8mo & $+14\%$ $\times$ \\
+GPT-4o (Res.) & Compliance & 6.0mo$^\dag$ & 0.0mo & $-100\%$ $\checkmark$ \\
 \bottomrule
 \end{tabular}
-\caption{SACD results explained by mechanism. $^*$GPT-5.2 shows susceptibility to standard anchors (3-9mo) but strong amplification with 24mo anchors.}
+\caption{SACD results explained by mechanism. $^*$GPT-5.2 shows susceptibility to standard anchors (3-9mo) but strong amplification with 24mo anchors. $^\dag$GPT-4o Residential baseline effect measured as deviation from anchor compliance (3mo$\rightarrow$3mo, 9mo$\rightarrow$9mo); under SACD, model gives consistent 6mo regardless of anchor.}
 \end{table}
 
-\textbf{Key insight}: SACD asks the model to ``identify and correct for anchoring bias.'' But compliance models don't show anchoring---they show instruction-following. Asking them to ``debias'' produces no change because there's no bias to correct.
+\textbf{Key insight}: SACD asks the model to ``identify and correct for anchoring bias.'' Surprisingly, this \emph{eliminates} compliance behavior---GPT-4o Residential, which normally copies anchor values exactly (3mo$\rightarrow$3mo, 9mo$\rightarrow$9mo), produces consistent 6mo responses under SACD regardless of anchor. SACD appears to override the instruction-following pattern that drives compliance.
 
 %==============================================================================
 \section{Deployment-Specific Variance}
