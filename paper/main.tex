@@ -336,13 +336,13 @@ Compression & varies & Model-specific & SACD effects vary: 100\% reduction (Opus
 \toprule
 Model & Mechanism & Baseline Effect & SACD Effect & Change \\
 \midrule
-GPT-5.2 & True Anchoring & 4.4mo & 0.5mo & $-89\%$ $\checkmark$ \\
+GPT-5.2 & Susceptible$^*$ & 4.4mo & 0.5mo & $-89\%$ $\checkmark$ \\
 Opus 4.5 & Compression & 2.0mo & 0.0mo & $-100\%$ $\checkmark$ \\
 MiniMax & Compression & 3.0mo & 5.7mo & $+90\%$ $\times$ \\
 o3-mini & Compression & 5.1mo & 5.8mo & $+14\%$ $\times$ \\
 \bottomrule
 \end{tabular}
-\caption{SACD results explained by mechanism}
+\caption{SACD results explained by mechanism. $^*$GPT-5.2 shows susceptibility to standard anchors (3-9mo) but strong amplification with 24mo anchors.}
 \end{table}
 
 \textbf{Key insight}: SACD asks the model to ``identify and correct for anchoring bias.'' But compliance models don't show anchoring---they show instruction-following. Asking them to ``debias'' produces no change because there's no bias to correct.
