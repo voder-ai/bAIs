@@ -98,6 +98,7 @@ check_file "opus46-24mo-anchor.jsonl" 30 "Opus 4.6 24mo"
 check_file "hermes405b-24mo-anchor.jsonl" 30 "Hermes 405B 24mo"
 check_file "gpt4o-vultr-24mo-anchor.jsonl" 30 "GPT-4o Vultr 24mo"
 check_file "gpt4o-residential-24mo-anchor.jsonl" 30 "GPT-4o Residential 24mo"
+check_file "minimax-24mo-anchor.jsonl" 30 "MiniMax 24mo"
 
 echo ""
 echo "=== Table 3: SACD Results ==="
