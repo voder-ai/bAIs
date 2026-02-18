@@ -529,6 +529,34 @@ A deterministic model (SD=0) can still be highly responsive to SACD, because low
 
 \textbf{Practical implication:} Do not assume that deterministic model behavior indicates resistance to debiasing. The cost of testing SACD is low; the cost of assuming it won't work is potentially high.
 
+\subsubsection{Prompt Sensitivity}
+
+A natural concern is whether mechanism classification depends on prompt wording. We tested three prompt variants across multiple models:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Model & Variant & Low (3mo) & High (9mo) & Pattern \\
+\midrule
+\multirow{3}{*}{Opus 4.5} 
+  & Original & 6.0 & 8.0 & Compression \\
+  & Casual & 6.0 & 8.0 & Compression \\
+  & Structured & 6.0 & 8.2 & Compression \\
+\midrule
+\multirow{3}{*}{GPT-4o (Res.)} 
+  & Original & 3.0 & 9.0 & Compliance \\
+  & Casual & 4.2 & 9.0 & Compliance \\
+  & Structured & 4.2 & 9.3 & Compliance \\
+\bottomrule
+\end{tabular}
+\caption{Mechanism classification is stable across prompt variants. n=10 per cell.}
+\label{tab:prompt-sensitivity}
+\end{table}
+
+\textbf{Key finding:} Mechanism classification is robust to prompt variation. Opus 4.5 shows compression (both anchors compress to 6--8mo) and GPT-4o shows compliance (copies anchor values) regardless of prompt framing. Minor response magnitude differences do not affect mechanism assignment.
+
 \subsection{Limitations}
 
 \begin{enumerate}
