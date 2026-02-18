@@ -38,7 +38,7 @@ Testing 11 model deployments across 4 providers on judicial sentencing scenarios
 
 \textbf{2. Compliance}: Models copy the anchor value exactly, treating numeric context as instruction rather than reference. A 3-month anchor produces 3-month output; 9-month produces 9-month. This resembles ``perfect anchoring'' but reflects instruction-following, not cognitive bias. (GPT-4o via residential IP)
 
-\textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with classical anchoring-and-adjustment. (GPT-4o via datacenter, o1)
+\textbf{3. True Anchoring}: Models show asymmetric adjustment toward anchor values, consistent with classical anchoring-and-adjustment. (o1)
 
 This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognitive Debiasing) achieves up to 89\% reduction on true anchoring models but 0\% on compliance models. SACD targets true anchoring; it cannot address compliance (nothing to debias) or compression (may amplify severity).
 
@@ -362,8 +362,8 @@ Our most striking finding emerged from running identical experiments from two di
 \toprule
 Access Path & Low (3mo) & High (9mo) & Effect & Pattern \\
 \midrule
-Residential IP (Mac) & 3.1mo & 9.1mo & 6.0mo & Compliance \\
-Datacenter IP (Vultr) & 4.4mo & 9.4mo & 5.0mo & True Anchoring \\
+Residential IP (Mac) & 3.0mo & 9.0mo & 6.0mo & Compliance \\
+Datacenter IP (Vultr) & 6.0mo & 12.0mo & 6.0mo & Compression \\
 \bottomrule
 \end{tabular}
 \caption{Same model, same API, different mechanisms}
@@ -371,7 +371,7 @@ Datacenter IP (Vultr) & 4.4mo & 9.4mo & 5.0mo & True Anchoring \\
 
 \textbf{Same model. Same API. Same prompts. Different mechanisms.}
 
-The Mac deployment exhibited near-perfect compliance---the model copied the anchor value exactly in 96\% of trials. The Vultr deployment showed the classic anchoring pattern with genuine variance and partial anchor influence.
+The Mac deployment exhibited near-perfect compliance---the model copied the anchor value exactly. The Vultr deployment showed compression---both anchors pulled responses toward a middle range (6--12 months) from a 24-month baseline.
 
 \subsection{Implications}
 
