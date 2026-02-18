@@ -33,8 +33,9 @@ SACD reduces responses by 50% — back to the GPT-4o true baseline.
 | Model | True Baseline (no "12th", no anchor) | "12th" Effect |
 |-------|--------------------------------------|---------------|
 | GPT-4o | 12.0 ± 0.0mo (n=9) | 2× (24mo) |
-| Opus 4.5 | 19.8 ± 2.7mo (n=30) | None observed |
+| Hermes 405B | 12.0 ± 0.0mo (n=30) | Not tested |
 | o3-mini | 18.4 ± 4.6mo (n=30) | Not tested |
+| Opus 4.5 | 19.8 ± 2.7mo (n=30) | None observed |
 
 ---
 
@@ -57,8 +58,9 @@ True baselines explain the patterns:
 |---------|-------|----------|--------------|-----------|
 | **Compression** | Opus 4.5 | ~20mo | 6-8mo | High baseline compressed DOWN |
 | **Compression** | o3-mini | ~18mo | 6-10mo | High baseline compressed DOWN |
+| **Compression** | Hermes 405B | ~12mo | 6mo | Medium baseline compressed DOWN |
 | **Compliance** | GPT-4o | ~12mo | copies anchor | Low baseline + echo behavior |
-| **Immune** | Opus 4.6 | ~? | ~6mo always | Ignores anchors |
+| **Immune?** | Opus 4.6 | ~? | ~6mo always | Needs baseline test |
 
 **Key insight:** "Compression" is REAL for high-baseline models. They genuinely compress from ~20mo to ~6-8mo. GPT-4o's "compliance" reflects its low baseline + instruction-following.
 
