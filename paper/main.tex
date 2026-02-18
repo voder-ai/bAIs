@@ -32,7 +32,7 @@
 \begin{abstract}
 How do large language models (LLMs) respond to numeric context in judgment tasks? Prior work assumes LLMs exhibit a single anchoring phenomenon---adjusting estimates toward arbitrary reference points. We find the reality is more complex.
 
-Testing 14 model deployments across 4 providers on judicial sentencing scenarios (n=1,700+ trials), we identify \textbf{three distinct mechanisms} by which LLMs respond to numeric context:
+Testing 11 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct mechanisms} by which LLMs respond to numeric context:
 
 \textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (10--14 months); with ANY anchor---high or low---responses compress to 3--11 months. Both anchors shift responses DOWN from baseline. (Opus 4.5, Llama 3.3, o3-mini, MiniMax)
 
@@ -106,7 +106,7 @@ We adapt the paradigm from Study 2 of \citet{englich2006}: LLMs act as trial jud
 
 \subsection{Models and Deployments}
 
-We tested 15 deployments across 4 providers:
+We tested 11 model deployments across 4 providers:
 
 \begin{table}[H]
 \centering
