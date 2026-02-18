@@ -32,7 +32,7 @@
 \begin{abstract}
 How do large language models (LLMs) respond to numeric context in judgment tasks? Prior work assumes LLMs exhibit a single anchoring phenomenon---adjusting estimates toward arbitrary reference points. We find the reality is more complex.
 
-Testing 11 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct mechanisms} by which LLMs respond to numeric context:
+Testing 11 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct behavioral patterns} (which we term ``mechanisms'' for brevity) by which LLMs respond to numeric context:
 
 \textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (10--14 months); with ANY anchor---high or low---responses compress to 3--11 months. Both anchors shift responses DOWN from baseline. (Opus 4.5, Llama 3.3, o3-mini, MiniMax)
 
@@ -322,7 +322,7 @@ Mechanism & SACD Effect & Change & Explanation \\
 \midrule
 True Anchoring & up to 89\% $\downarrow$ & Success & SACD targets the right mechanism \\
 Compliance & 0\% & No effect & Nothing to debias---model copies anchor \\
-Compression & varies & Mixed & SACD may reduce or amplify compression \\
+Compression & varies & Model-specific & SACD effects vary: 100\% reduction (Opus 4.5) to 90\% amplification (MiniMax) \\
 \bottomrule
 \end{tabular}
 \caption{SACD effectiveness depends on mechanism}
