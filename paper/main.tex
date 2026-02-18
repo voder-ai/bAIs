@@ -630,14 +630,18 @@ The \$12,167 difference between conditions demonstrates anchoring effects genera
     \item \textbf{Single domain}: All experiments use judicial sentencing scenarios.
     \item \textbf{Limited compliance examples}: Only one deployment (GPT-4o via residential IP) exhibits pure compliance in our sample.
     \item \textbf{Mechanism boundaries}: May represent spectrum rather than discrete categories.
-    \item \textbf{Baseline confound}: The no-anchor baseline (~12mo) may itself be influenced by numeric context in the case description (``12th offense'').
+    \item \textbf{Baseline confound}: The no-anchor baseline is influenced by numeric context in the case description (``12th offense''). We document this effect explicitly for GPT-4o, where removing ``12th'' halved the baseline response. We retain the ``12th'' phrasing for consistency with our adapted \citet{englich2006} methodology; readers should interpret absolute baseline values with this caveat.
     \item \textbf{Version stability}: We observed Opus 4.5$\rightarrow$4.6 changing susceptibility pattern; ongoing monitoring required.
     \item \textbf{No direct human comparison}: While we cite human anchoring effects from \citet{englich2006}, scenario differences (case type, jurisdiction, anchor magnitudes) preclude direct quantitative comparison. Our qualitative framing---that some LLMs show effects comparable to human judges---should not be interpreted as precise equivalence.
 \end{enumerate}
 
 \subsection{Conclusion}
 
-What we call ``anchoring bias'' in LLMs is actually a family of phenomena. By distinguishing compression, compliance, and true anchoring, we explain previously puzzling findings and provide practitioners with a framework for selecting appropriate interventions. The path to reliable AI judgment is not a single debiasing technique but mechanism-aware deployment practices.
+What we call ``anchoring bias'' in LLMs is actually a family of phenomena. By distinguishing \textbf{compression} (responses pulled toward a fixed range regardless of anchor direction), \textbf{compliance} (responses copy anchor values), and \textbf{true anchoring} (asymmetric shifts toward anchor), we explain previously puzzling findings---including why the same intervention can eliminate bias in one model while amplifying it in another.
+
+Our key contributions: (1) a three-mechanism taxonomy that classifies 8 model deployments, (2) evidence that mechanism type depends on deployment context (same model, different API paths, different mechanisms), and (3) a practical framework for matching interventions to mechanisms.
+
+The path to reliable AI judgment is not a single debiasing technique but mechanism-aware deployment practices. Test each deployment independently; do not assume published benchmarks generalize.
 
 %==============================================================================
 % Appendix
