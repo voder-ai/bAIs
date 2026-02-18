@@ -62,7 +62,12 @@ True baselines explain the patterns:
 | **Compliance** | GPT-4o | ~12mo | copies anchor | Low baseline + echo behavior |
 | **Immune?** | Opus 4.6 | ~? | ~6mo always | Needs baseline test |
 
-**Key insight:** "Compression" is REAL for high-baseline models. They genuinely compress from ~20mo to ~6-8mo. GPT-4o's "compliance" reflects its low baseline + instruction-following.
+**Key insight:** "Compression" is the dominant pattern. Most models compress from their baseline (12-20mo) to ~6mo. GPT-4o is unique in showing "compliance" (copying anchor values). The "immune" category may not exist — what we called immune was just compression to 6mo.
+
+**Cleaner taxonomy:**
+1. **Compression** — Response < Baseline (Hermes, Opus 4.5, o3-mini)
+2. **Compliance** — Response = Anchor (GPT-4o only)
+3. **True Anchoring** — Response shifts toward anchor (o1, possibly)
 
 ---
 
