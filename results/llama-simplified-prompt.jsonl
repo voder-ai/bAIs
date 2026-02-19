@@ -1,0 +1,6 @@
+{"experimentId":"simplified-prompt","model":"openrouter/meta-llama/llama-3.3-70b-instruct","conditionId":"anchor-3mo","anchor":3,"sentenceMonths":6,"runIndex":0,"collectedAt":"2026-02-19T10:10:15.714Z"}
+{"experimentId":"simplified-prompt","model":"openrouter/meta-llama/llama-3.3-70b-instruct","conditionId":"anchor-3mo","anchor":3,"sentenceMonths":6,"runIndex":1,"collectedAt":"2026-02-19T10:10:21.085Z"}
+{"experimentId":"simplified-prompt","model":"openrouter/meta-llama/llama-3.3-70b-instruct","conditionId":"anchor-3mo","anchor":3,"sentenceMonths":6,"runIndex":2,"collectedAt":"2026-02-19T10:10:25.696Z"}
+{"experimentId":"simplified-prompt","model":"openrouter/meta-llama/llama-3.3-70b-instruct","conditionId":"anchor-3mo","anchor":3,"sentenceMonths":6,"runIndex":3,"collectedAt":"2026-02-19T10:10:28.823Z"}
+{"experimentId":"simplified-prompt","model":"openrouter/meta-llama/llama-3.3-70b-instruct","conditionId":"anchor-3mo","anchor":3,"sentenceMonths":12,"runIndex":4,"collectedAt":"2026-02-19T10:10:40.634Z"}
+{"experimentId":"simplified-prompt","model":"openrouter/meta-llama/llama-3.3-70b-instruct","conditionId":"anchor-3mo","anchor":3,"sentenceMonths":6,"runIndex":5,"collectedAt":"2026-02-19T10:10:42.345Z"}
