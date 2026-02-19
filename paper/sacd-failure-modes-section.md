@@ -37,6 +37,8 @@ OpenAI's reasoning model (o3-mini) appears to ignore SACD instructions entirely.
 
 OpenAI's instruction-tuned models (GPT-4o, GPT-5.2) and Anthropic's Haiku show extreme over-correction. Rather than returning to baseline, these models produce sentences far below baseline—in some cases recommending near-zero sentences. GPT-5.2 produced 8 trials with 0-month sentences (no prison time for a 12th-offense shoplifter), representing a 90% deviation below baseline.
 
+This is not merely a failure to debias—it is introducing a new systematic bias in the opposite direction. The anchor bias is replaced with an equally problematic leniency bias.
+
 ### 4.X.3 The GPT-5.2 Problem
 
 The GPT-5.2 result warrants special attention. With a mean sentence of 2.5 months against a 24-month baseline and 45-month anchor, SACD produces outcomes **90% worse than no intervention**. Eight of twenty trials returned 0-month sentences—effectively recommending no prison time for a 12th-offense shoplifter.
@@ -49,7 +51,7 @@ These findings have significant implications for practitioners:
 
 1. **SACD is not a universal fix.** The same technique achieves perfect debiasing on some models (Opus), has no effect on others (o3-mini), and produces catastrophically worse outcomes on others (GPT-4o, GPT-5.2).
 
-2. **Over-correction can be worse than no intervention.** A practitioner using SACD on GPT-5.2 would produce systematically worse outcomes than someone who applied no debiasing technique at all.
+2. **Over-correction can be worse than no intervention.** A practitioner following "best practices" (use SACD to debias) would produce **systematically worse** outcomes than someone who applied no debiasing technique at all.
 
 3. **Newer models may be more susceptible.** Within OpenAI's instruction-tuned family, GPT-5.2 shows more extreme over-correction than GPT-4o (90% vs 71% below baseline), suggesting that newer models may be more—not less—susceptible to this failure mode.
 
