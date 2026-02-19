@@ -403,7 +403,6 @@ Model & Family & Anchor & Simplified & Disclosure & Debiasing \\
 \midrule
 \multicolumn{6}{l}{\textbf{Strong Positive Response}} \\
 Haiku 4.5 & Anthropic & 67mo & 67.0mo & 36.0mo & \textbf{+97.5\%} \\
-Hermes 405B & Open-source & 21mo & 23.4mo & 12.6mo & \textbf{+95\%} \\
 Opus 4.5 & Anthropic & 43mo & 43.0mo & 24.0mo & \textbf{+94\%} \\
 Opus 4.6 & Anthropic & 33mo & 33.0mo & 24.0mo & \textbf{+60\%} \\
 Haiku 3.5 & Anthropic & 62mo & 54.0mo & 45.6mo & \textbf{+39\%} \\
@@ -425,7 +424,7 @@ o1 & OpenAI & 21mo & 21.3mo & 23.9mo & \textbf{$-$28\%} \\
 \textbf{Key finding:} Sibony-style disclosure is \textbf{not a universal debiasing technique}. Its effectiveness depends entirely on model family and architecture:
 
 \begin{itemize}
-    \item \textbf{Anthropic/RLHF models (35--97.5\% debiasing):} These models appear to treat the ``randomly determined'' disclosure as a relevance signal---if the anchor is explicitly arbitrary, the model appropriately reduces its influence. This aligns with training that rewards truthful, calibrated responses.
+    \item \textbf{Anthropic models (35--97.5\% debiasing):} These models appear to treat the ``randomly determined'' disclosure as a relevance signal---if the anchor is explicitly arbitrary, the model appropriately reduces its influence. This aligns with RLHF/Constitutional AI training that rewards truthful, calibrated responses.
     
     \item \textbf{OpenAI compliance models (0\% effect):} GPT-4o and o3-mini show near-perfect compliance---copying the anchor value regardless of disclosure. The disclosure doesn't override the compliance mechanism because the anchor appears in the instruction and is therefore ``followed.''
     

@@ -30,6 +30,12 @@ Lyu, Y. et~al. (2025).
 \newblock Self-adaptive cognitive debiasing for large language models.
 \newblock {\em arXiv preprint arXiv:2504.04141}.
 
+\bibitem[Sibony et~al., 2021]{sibony2016}
+Sibony, O., Lovallo, D., and Kahneman, D. (2021).
+\newblock {\em Noise: A Flaw in Human Judgment}.
+\newblock Little, Brown Spark.
+\newblock Decision hygiene principles first presented in HBR 2016.
+
 \bibitem[Song et~al., 2026]{song2026reasoning}
 Song, P. et~al. (2026).
 \newblock Large language model reasoning failures.
