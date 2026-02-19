@@ -387,6 +387,68 @@ GPT-4o (Res.) & Compliance & 6.0mo$^\dag$ & 0.0mo & $-100\%$ $\checkmark$ \\
 
 \textbf{Key insight}: SACD asks the model to ``identify and correct for anchoring bias.'' Surprisingly, this \emph{eliminates} compliance behavior---GPT-4o Residential, which normally copies anchor values exactly (3mo$\rightarrow$3mo, 9mo$\rightarrow$9mo), produces consistent 6mo responses under SACD regardless of anchor. SACD appears to override the instruction-following pattern that drives compliance.
 
+\subsection{Disclosure Debiasing: Model-Family Dependent Effects}
+\label{sec:disclosure}
+
+The original \citet{englich2006} methodology included an explicit disclaimer: ``the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise.'' This mirrors \citeauthor{sibony2016}'s recommendation for \textbf{disclosure}---explicitly acknowledging the arbitrary nature of reference values to reduce their influence.
+
+We tested whether this disclosure functions as an effective debiasing intervention for LLMs by comparing responses to a ``simplified'' prompt (no disclosure) versus the full ``Englich'' prompt (with disclosure), using symmetric high anchors (high = 2$\times$baseline $-$ low).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llcccc}
+\toprule
+Model & Family & Anchor & Simplified & Disclosure & Debiasing \\
+\midrule
+\multicolumn{6}{l}{\textbf{Strong Positive Response}} \\
+Haiku 4.5 & Anthropic & 67mo & 67.0mo & 36.0mo & \textbf{+97.5\%} \\
+Hermes 405B & Open-source & 21mo & 23.4mo & 12.6mo & \textbf{+95\%} \\
+Opus 4.5 & Anthropic & 43mo & 43.0mo & 24.0mo & \textbf{+94\%} \\
+Opus 4.6 & Anthropic & 33mo & 33.0mo & 24.0mo & \textbf{+60\%} \\
+Haiku 3.5 & Anthropic & 62mo & 54.0mo & 45.6mo & \textbf{+39\%} \\
+Sonnet 4.5 & Anthropic & 43mo & 43.0mo & 36.0mo & \textbf{+35\%} \\
+\midrule
+\multicolumn{6}{l}{\textbf{Null Effect}} \\
+GPT-4o & OpenAI & 45mo & 45.0mo & 45.0mo & \textbf{0\%} \\
+o3-mini & OpenAI & 21mo & 21.1mo & 21.1mo & \textbf{0\%} \\
+\midrule
+\multicolumn{6}{l}{\textbf{Inverse Response (Backfires)}} \\
+GPT-5.2 & OpenAI & 45mo & 45.0mo & 48.0mo & \textbf{$-$14\%} \\
+o1 & OpenAI & 21mo & 21.3mo & 23.9mo & \textbf{$-$28\%} \\
+\bottomrule
+\end{tabular}
+\caption{Disclosure debiasing effectiveness by model. Debiasing = reduction in anchoring effect. Negative values indicate disclosure \emph{increases} bias. n=20--30 per condition.}
+\label{tab:disclosure}
+\end{table}
+
+\textbf{Key finding:} Sibony-style disclosure is \textbf{not a universal debiasing technique}. Its effectiveness depends entirely on model family and architecture:
+
+\begin{itemize}
+    \item \textbf{Anthropic/RLHF models (35--97.5\% debiasing):} These models appear to treat the ``randomly determined'' disclosure as a relevance signal---if the anchor is explicitly arbitrary, the model appropriately reduces its influence. This aligns with training that rewards truthful, calibrated responses.
+    
+    \item \textbf{OpenAI compliance models (0\% effect):} GPT-4o and o3-mini show near-perfect compliance---copying the anchor value regardless of disclosure. The disclosure doesn't override the compliance mechanism because the anchor appears in the instruction and is therefore ``followed.''
+    
+    \item \textbf{OpenAI reasoning models ($-$14 to $-$28\%):} Disclosure makes anchoring \emph{worse} for o1 and GPT-5.2. This inverts Sibony's prediction. We hypothesize that extended reasoning chains may over-process the disclosure, treating ``randomly determined'' as a signal requiring MORE careful consideration of the anchor rather than dismissal. This resembles the ``ironic process'' in psychology---trying to suppress a thought makes it more prominent.
+\end{itemize}
+
+\subsubsection{Implications for Experimental Design}
+
+Human anchoring studies that used ``randomly determined'' disclaimers---including the original \citet{englich2006} study we adapt---may have \emph{underestimated} true anchoring susceptibility. If disclosure functions as an inadvertent debiasing intervention for human judges (as it does for Anthropic models), the measured effect sizes represent anchoring \emph{after partial mitigation}.
+
+\subsubsection{SACD vs Disclosure Comparison}
+
+SACD and disclosure operate through different mechanisms:
+
+\begin{itemize}
+    \item \textbf{Disclosure} works by providing metadata about the anchor's relevance
+    \item \textbf{SACD} works by changing the reasoning structure through multi-turn prompting
+\end{itemize}
+
+For compliance-exhibiting models (GPT-4o Residential), SACD eliminates compliance behavior (model switches to consistent 6mo responses) while disclosure has zero effect. For reasoning models (o1), both interventions can backfire---SACD shows +7\% increase, disclosure shows $-$28\%.
+
+\textbf{Recommendation:} Test both techniques on your specific deployment. Do not assume one is universally superior.
+
 %==============================================================================
 \section{Deployment-Specific Variance}
 \label{sec:provider}
