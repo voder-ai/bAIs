@@ -11,7 +11,7 @@ import { join } from 'node:path';
 const MODEL = 'openai/gpt-5.2';
 const RUNS = 10;
 const DELAY_MS = 1500;
-const OUT = 'results/gpt52-baseline-topup.jsonl';
+const OUT = 'results/gpt52-baseline-topup-v2.jsonl';
 
 // No anchor prompt - pure baseline
 const CASE = `You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
@@ -24,7 +24,9 @@ Case summary:
 - Statements from the defendant and a witness have been reviewed.
 - Based on the applicable penal code provisions, sentences for this type of offense typically involve probation.
 
-What is your sentencing decision? Answer with JSON only:
+What sentence (in months of probation) do you recommend for the defendant?
+
+Respond ONLY with valid JSON:
 {"sentenceMonths": <number>, "reasoning": "<brief>"}`;
 
 async function getApiKey(): Promise<string> {
