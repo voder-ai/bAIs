@@ -102,7 +102,7 @@ function detectTechnique(obj: any, filename: string): string {
   if (tech === 'context-hygiene' || tech === 'ch') return 'context-hygiene';
   if (tech === 'premortem') return 'premortem';
   if (tech === 'sacd') return 'sacd';
-  if (tech === 'disclosure') return 'disclosure';
+  if (tech === 'disclosure') return 'englich';
   if (tech === 'none' || tech === 'baseline') return 'none';
   
   // Condition field (debiasing-sweep files use this)
@@ -122,8 +122,8 @@ function detectTechnique(obj: any, filename: string): string {
   // SACD
   if (f.includes('sacd') || exp.includes('sacd') || cond.includes('sacd')) return 'sacd';
   
-  // Disclosure (Englich-style)
-  if (f.includes('englich') || exp.includes('disclosure') || cond.includes('englich')) return 'disclosure';
+  // Englich standard paradigm (with "randomly determined" framing)
+  if (f.includes('englich') || exp.includes('disclosure') || cond.includes('englich')) return 'englich';
   
   // Baseline/anchoring without debiasing
   if (f.includes('baseline') || f.includes('no-anchor') || cond.includes('baseline')) return 'none';
@@ -224,7 +224,7 @@ function main() {
   const models = ['opus-4.5', 'opus-4.6', 'sonnet-4.5', 'haiku-4.5', 'haiku-3.5', 
                   'hermes-405b', 'llama-3.3', 'o3-mini', 'o1', 'gpt-4o', 'gpt-5.2', 'minimax'];
   const anchorTypes = ['baseline', 'low', 'high'];
-  const techniques = ['none', 'anchored', 'sacd', 'context-hygiene', 'premortem', 'disclosure'];
+  const techniques = ['none', 'anchored', 'sacd', 'context-hygiene', 'premortem', 'englich'];
   
   // Print summary tables
   for (const anchorType of anchorTypes) {
@@ -234,7 +234,7 @@ function main() {
     console.log();
     
     // Header
-    console.log('| Model       | Baseline | None   | Anchored | SACD   | C-H    | Pre    | Disc   |');
+    console.log('| Model       | Baseline | None   | Anchored | SACD   | C-H    | Pre    | Eng    |');
     console.log('|-------------|----------|--------|----------|--------|--------|--------|--------|');
     
     for (const model of models) {
@@ -248,7 +248,7 @@ function main() {
         return `${stats.mean.toFixed(0).padStart(2)}mo(${stats.n})`;
       };
       
-      console.log(`| ${model.padEnd(11)} | ${String(baseline).padEnd(8)} | ${format('none')} | ${format('anchored')} | ${format('sacd')} | ${format('context-hygiene')} | ${format('premortem')} | ${format('disclosure')} |`);
+      console.log(`| ${model.padEnd(11)} | ${String(baseline).padEnd(8)} | ${format('none')} | ${format('anchored')} | ${format('sacd')} | ${format('context-hygiene')} | ${format('premortem')} | ${format('englich')} |`);
     }
     console.log();
   }
@@ -258,7 +258,7 @@ function main() {
   console.log('HIGH ANCHOR PAPER TABLE (Debiasing Effect %)');
   console.log('='.repeat(90));
   console.log();
-  console.log('| Model       | Anchor | Raw→Baseline | SACD | C-H  | Pre  | Disc |');
+  console.log('| Model       | Anchor | Raw→Baseline | SACD | C-H  | Pre  | Eng  |');
   console.log('|-------------|--------|--------------|------|------|------|------|');
   
   for (const model of models) {
@@ -291,7 +291,7 @@ function main() {
     
     const rawVal = rawStats.n > 0 ? `${rawStats.mean.toFixed(0)}→${baseline}` : `-`;
     
-    console.log(`| ${model.padEnd(11)} | ${String(highAnchor).padEnd(6)} | ${rawVal.padEnd(12)} | ${calcEffect('sacd')} | ${calcEffect('context-hygiene')} | ${calcEffect('premortem')} | ${calcEffect('disclosure')} |`);
+    console.log(`| ${model.padEnd(11)} | ${String(highAnchor).padEnd(6)} | ${rawVal.padEnd(12)} | ${calcEffect('sacd')} | ${calcEffect('context-hygiene')} | ${calcEffect('premortem')} | ${calcEffect('englich')} |`);
   }
   console.log();
   

@@ -121,7 +121,7 @@
 | GPT-5.2 | 45mo | 30 | 33mo | 24mo | ❌ -38% backfire |
 | MiniMax | 21mo | 37 | 19mo | 12mo | ❌ -58% backfire |
 
-### Disclosure Debiasing at High Anchors
+### Englich Debiasing at High Anchors
 
 | Model | Anchor | n | Mean | Baseline | Effect |
 |-------|--------|---|------|----------|--------|
@@ -154,7 +154,7 @@ Based on high anchor experiments:
 ### No Universal Debiasing
 - SACD over-corrects GPT models but under-corrects Anthropic
 - Sibony techniques over-correct Anthropic but backfire on GPT/o3-mini
-- Disclosure backfires on nearly all models at high anchors
+- Englich backfires on nearly all models at high anchors
 
 ### Model-Specific Recommendations
 | Model Family | Best Technique | Avoid |
@@ -188,7 +188,7 @@ GPT-5.2 shows MORE extreme failure modes than GPT-4o across all techniques.
 - `sibony-high-anchor-*mo-*.jsonl` (Sibony experiments)
 - `*-24mo-sacd.jsonl` / `*-45mo-sacd.jsonl` (SACD high anchor)
 - `anthropic-sibony-high-*.jsonl` (Anthropic Sibony)
-- `*-englich-*mo-*.jsonl` (Disclosure experiments)
+- `*-englich-*mo-*.jsonl` (Englich experiments)
 
 ---
 
