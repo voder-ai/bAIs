@@ -105,6 +105,12 @@ function detectTechnique(obj: any, filename: string): string {
   if (tech === 'disclosure') return 'disclosure';
   if (tech === 'none' || tech === 'baseline') return 'none';
   
+  // Condition field (debiasing-sweep files use this)
+  if (cond === 'context-hygiene' || cond === 'ch') return 'context-hygiene';
+  if (cond === 'premortem') return 'premortem';
+  if (cond === 'sacd') return 'sacd';
+  if (cond === 'baseline') return 'none';
+  
   // Sibony techniques from filename/condition
   if (f.includes('sibony') || cond.includes('sibony')) {
     if (f.includes('premortem') || cond.includes('premortem')) return 'premortem';
