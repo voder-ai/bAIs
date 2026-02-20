@@ -122,12 +122,12 @@
 - [x] Opus 4.6 @ 33mo ✅ (18mo = baseline)
 - [x] Sonnet 4.5 @ 43mo ✅ (18mo, over-correction)
 - [x] Haiku 4.5 @ 67mo ✅ (24mo, over-correction)
-- [ ] Hermes 405B @ 21mo
-- [ ] Llama 3.3 @ 21mo
-- [ ] o3-mini @ 21mo
-- [ ] GPT-4o @ 45mo
-- [ ] GPT-5.2 @ 45mo
-- [ ] MiniMax @ 21mo
+- [x] Hermes 405B @ 21mo ✅ (C-H: 14.6mo +71%, Pre: 13.8mo +80%)
+- [x] Llama 3.3 @ 21mo ✅ (C-H: 16.6mo +49%, Pre: 22.6mo -18% BACKFIRES)
+- [x] o3-mini @ 21mo ✅ (C-H: 25.0mo -44%, Pre: 24.5mo -39% BACKFIRES)
+- [x] GPT-4o @ 45mo ✅ (C-H: 27.6mo +83%, Pre: 27.0mo +86%)
+- [x] GPT-5.2 @ 45mo ✅ (C-H: 31.0mo +67%, Pre: 33.0mo +57%)
+- [x] MiniMax @ 21mo ✅ (C-H: 19.1mo +21%, Pre: 🔄 running)
 
 ### Baselines at Symmetric High Anchors (Missing)
 - [ ] Sonnet 4.5 @ 43mo
@@ -152,3 +152,8 @@ SACD produces 90% worse outcomes than no intervention on GPT-5.2.
 
 ### Paper Section Ready
 Draft at `paper/sacd-failure-modes-section.md` - awaiting Tom's approval for LaTeX.
+
+## Experiment Backlog
+
+1. **MiniMax Sibony premortem** — running (`dawn-coral`), ~30min ETA
+2. **Personality traits × debiasing** — arxiv:2502.14219 suggests conscientiousness enhances debiasing. Test "respond conscientiously" system prompt as lightweight alternative to SACD.
