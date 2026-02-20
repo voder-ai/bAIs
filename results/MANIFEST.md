@@ -1,49 +1,49 @@
 # Results Manifest
 
-## Model List (11 models)
+## Model List (11 models) — All via OpenRouter
 
-### Anthropic (via pi-ai OAuth)
-| Model | ID | Dated |
-|-------|-----|-------|
-| Opus 4.6 | `anthropic/claude-opus-4-6` | TBD |
-| Sonnet 4.6 | `anthropic/claude-sonnet-4-6` | TBD |
-| Haiku 4.5 | `anthropic/claude-haiku-4-5` | TBD |
+### Anthropic (3)
+| Model | OpenRouter ID |
+|-------|---------------|
+| Opus 4.6 | `anthropic/claude-opus-4.6` |
+| Sonnet 4.6 | `anthropic/claude-sonnet-4.6` |
+| Haiku 4.5 | `anthropic/claude-haiku-4.5` |
 
-### OpenAI (via Codex CLI)
-| Model | ID | Dated |
-|-------|-----|-------|
-| GPT-4o | `openai/gpt-4o-2024-11-20` | Yes |
-| GPT-5.3 | `openai/gpt-5.3` | No |
-| o1 | `openai/o1` | No |
-| o3-mini | `openai/o3-mini` | No |
+### OpenAI (4)
+| Model | OpenRouter ID |
+|-------|---------------|
+| GPT-5.2 | `openai/gpt-5.2` |
+| GPT-4.1 | `openai/gpt-4.1` |
+| o3 | `openai/o3` |
+| o4-mini | `openai/o4-mini` |
 
-### Open Source (via OpenRouter)
-| Model | ID | Provider |
-|-------|-----|----------|
-| MiniMax M2.5 | `minimax/minimax-m2.5` | MiniMax |
-| Kimi K2.5 | `moonshotai/kimi-k2.5` | Moonshot AI |
-| GLM 5 | `z-ai/glm-5` | Z-AI |
-| DeepSeek V3.2 | `deepseek/deepseek-v3.2` | DeepSeek |
+### Open Source (4)
+| Model | OpenRouter ID |
+|-------|---------------|
+| MiniMax M2.5 | `minimax/minimax-m2.5` |
+| Kimi K2.5 | `moonshotai/kimi-k2.5` |
+| GLM 5 | `z-ai/glm-5` |
+| DeepSeek V3.2 | `deepseek/deepseek-v3.2` |
 
 ## Experiment Conditions
 
 ### Per Model (3 conditions)
-1. **Baseline** — no anchor
-2. **Low anchor** — 3mo (standard Englich)
-3. **Symmetric high anchor** — 2 × baseline - 3
+1. **Baseline** — no anchor, n=30
+2. **Low anchor (3mo)** — standard Englich, n=30
+3. **Symmetric high anchor** — 2 × baseline - 3, n=30
 
 ### Methodology
 - Standardized Englich paradigm from `src/experiments/anchoringProsecutorSentencing.ts`
 - 3-turn structure: prosecutor → defense → final
 - "Randomly determined" disclosure for anchor conditions
-- n=30 trials per condition
+- All models via OpenRouter API
 
 ## Status
 
-All data deleted 2026-02-20. Clean slate for methodical re-run.
+All data deleted 2026-02-20. Clean slate.
 
-### Baselines (pending)
-All 11 models need baseline runs to determine symmetric high anchor values.
+### Phase 1: Baselines
+Run baseline (no-anchor) for all 11 models to determine symmetric high anchor values.
 
-### Experiments (pending)
-After baselines: low anchor + symmetric high anchor for each model.
+### Phase 2: Anchor Conditions
+After baselines complete, run low + symmetric high anchor for each model.
