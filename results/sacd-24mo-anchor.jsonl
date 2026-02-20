@@ -1,7 +1,0 @@
-{"model":"openrouter/anthropic/claude-opus-4-5","conditionId":"high-anchor-24mo-sacd","anchor":24,"sentenceMonths":18,"sacdIterations":1,"biasesDetected":["anchoring","framing"],"timestamp":"2026-02-18T12:36:37.996Z"}
-{"model":"openrouter/anthropic/claude-opus-4-5","conditionId":"high-anchor-24mo-sacd","anchor":24,"sentenceMonths":24,"sacdIterations":1,"biasesDetected":["anchoring","framing"],"timestamp":"2026-02-18T12:37:03.289Z"}
-{"model":"openrouter/anthropic/claude-opus-4-5","conditionId":"high-anchor-24mo-sacd","anchor":24,"sentenceMonths":6,"sacdIterations":1,"biasesDetected":["anchoring"],"timestamp":"2026-02-18T12:37:29.789Z"}
-{"model":"openrouter/anthropic/claude-opus-4-5","conditionId":"high-anchor-24mo-sacd","anchor":24,"sentenceMonths":6,"sacdIterations":1,"biasesDetected":["anchoring","framing"],"timestamp":"2026-02-18T12:37:51.959Z"}
-{"model":"openrouter/anthropic/claude-opus-4-5","conditionId":"high-anchor-24mo-sacd","anchor":24,"sentenceMonths":6,"sacdIterations":1,"biasesDetected":["anchoring","framing"],"timestamp":"2026-02-18T12:38:14.749Z"}
-{"model":"openrouter/anthropic/claude-opus-4-5","conditionId":"high-anchor-24mo-sacd","anchor":24,"sentenceMonths":3,"sacdIterations":1,"biasesDetected":["anchoring","framing"],"timestamp":"2026-02-18T12:39:03.956Z"}
-{"model":"openrouter/anthropic/claude-opus-4-5","conditionId":"high-anchor-24mo-sacd","anchor":24,"sentenceMonths":18,"sacdIterations":1,"biasesDetected":["anchoring"],"timestamp":"2026-02-18T12:39:31.070Z"}
