@@ -59,7 +59,7 @@
 | o3-mini | 21mo | ✅ | ✅ n=30 (25.0mo, -44%) | ✅ n=30 (24.5mo, -39%) | ✅ n=30 | ✅ |
 | GPT-4o | 45mo | ✅ | ✅ n=30 (27.6mo, +83%) | ✅ n=30 (27.0mo, +86%) | ✅ n=30 | ✅ |
 | GPT-5.2 | 45mo | ✅ | ✅ n=30 (31.0mo, +67%) | ✅ n=30 (33.0mo, +57%) | ✅ n=30 | ✅ |
-| MiniMax | 21mo | ❌ | 🔄 ~18mo | - | ✅ n=30 | ❌ |
+| MiniMax | 21mo | ❌ | ✅ n=30 (19.1mo, +21%) | 🔄 7/30 | ✅ n=30 | ❌ |
 
 ### Sibony Technique Results (Anthropic @ High Anchors)
 
@@ -81,7 +81,7 @@
 | o3-mini | 21mo | 12mo | 25.0mo (-44%) | 24.5mo (-39%) | +1% | 🔴 Both BACKFIRE |
 | GPT-4o | 45mo | 24mo | 27.6mo (+83%) | 27.0mo (+86%) | -70% | ✅ Sibony works, SACD fails |
 | GPT-5.2 | 45mo | 24mo | 31.0mo (+67%) | 33.0mo (+57%) | -83% | ✅ Sibony works, SACD fails |
-| MiniMax | 21mo | 12mo | 🔄 13/30 | - | +81% | Running... |
+| MiniMax | 21mo | 12mo | ✅ 19.1mo (+21%) | 🔄 7/30 | +81% | Weak effect |
 
 **Key Insight:** SACD over-corrects GPT models, but Sibony techniques work well. Opposite for o3-mini.
 
