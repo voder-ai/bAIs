@@ -1,7 +1,7 @@
 # bAIs Experiment Manifest
-**Last Updated:** 2026-02-20 05:40 UTC
+**Last Updated:** 2026-02-20 05:48 UTC
 
-## SACD at Symmetric High Anchors - IN PROGRESS (10 models, topping to n=30)
+## SACD at Symmetric High Anchors - COMPLETE (10 models, n=30)
 
 | Model | Anchor | n | Mean | Baseline | Debiasing | Mode |
 |-------|--------|---|------|----------|-----------|------|
@@ -14,9 +14,9 @@
 | o3-mini | 21mo | 30 | 20.9mo | 12mo | ❌ 1% | Resistant |
 | GPT-4o | 45mo | 30 | 7.2mo | 24mo | 🔴 -70% | Catastrophic |
 | GPT-5.2 | 45mo | 30 | 4.0mo | 24mo | 🔴🔴 -83% | Catastrophic |
-| MiniMax | 21mo | 27* | ~12mo | 12mo | ⚠️ ~100% | Unstable |
+| MiniMax | 21mo | 30 | 13.7mo | 12mo | ⚠️ 81% | Unstable |
 
-*Need top-up to n=30
+*Note: n=30 (27 valid, 3 refused = 10%). Bimodal: over-correction (0-6mo) OR anchor-adherent (21mo).*
 
 ## Debiasing at Low Anchor (3mo) - EXISTING DATA
 
@@ -54,14 +54,12 @@
 | Opus 4.6 | 33mo | ✅ | ✅ n=30 (18mo=baseline) | ✅ n=30 (18mo=baseline) | ✅ n=30 | ✅ |
 | Sonnet 4.5 | 43mo | ❌ | ✅ n=30 (18mo, -18%) | ✅ n=30 (18mo, -18%) | ✅ n=30 | ✅ |
 | Haiku 4.5 | 67mo | ✅ | ✅ n=30 (24mo, -29%) | ✅ n=30 (24mo, -29%) | ✅ n=30 | ✅ |
-| Hermes 405B | 21mo | ✅ | ❌ | ❌ | ✅ n=20* | ✅ |
-| Llama 3.3 | 21mo | ❌ | ❌ | ❌ | ✅ n=20* | ✅ |
-| o3-mini | 21mo | ✅ | ❌ | ❌ | ✅ n=20* | ✅ |
-| GPT-4o | 45mo | ✅ | ❌ | ❌ | ✅ n=20* | ✅ |
-| GPT-5.2 | 45mo | ✅ | ❌ | ❌ | ✅ n=20* | ✅ |
-| MiniMax | 21mo | ❌ | ❌ | ❌ | 🔄 n=17* | ❌ |
-
-*Need top-up to n=30
+| Hermes 405B | 21mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
+| Llama 3.3 | 21mo | ❌ | ❌ | ❌ | ✅ n=30 | ✅ |
+| o3-mini | 21mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
+| GPT-4o | 45mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
+| GPT-5.2 | 45mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
+| MiniMax | 21mo | ❌ | ❌ | ❌ | ✅ n=30 | ❌ |
 
 ### Sibony Technique Results (Anthropic @ High Anchors)
 
@@ -80,7 +78,7 @@
 2. **Partial (38-81%)** - Sonnet, Hermes, Llama
 3. **Resistant (0%)** - o3-mini
 4. **Catastrophic (-22 to -90%)** - GPT-4o, GPT-5.2, Haiku
-5. **Unstable** - MiniMax (high variance + refusals, but converging to baseline)
+5. **Unstable** - MiniMax (bimodal: over-correction OR anchor-adherent, 10% refusals)
 
 ## Disclosure Debiasing at Symmetric High Anchors - COMPLETE (10 models)
 
@@ -105,7 +103,7 @@
 - [x] o3-mini SACD @ 21mo: ✅ n=30 (20.9mo, resistant)
 - [x] GPT-4o SACD @ 45mo: ✅ n=30 (7.2mo, -70%)
 - [x] GPT-5.2 SACD @ 45mo: ✅ n=30 (4.0mo, -83%)
-- [ ] MiniMax SACD @ 21mo: 27/30 (slow API)
+- [x] MiniMax SACD @ 21mo: ✅ n=30 (27 valid, 81% partial debiasing, bimodal)
 
 ### Context-Hygiene/Premortem at Symmetric High Anchors
 - [x] Opus 4.6 @ 33mo ✅ (18mo = baseline)
