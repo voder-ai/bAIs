@@ -58,12 +58,19 @@
 | GPT-5.2 | 9mo | 121 | Partial |
 | MiniMax | 6mo | 124 | Minimal |
 
-### Sibony at Low Anchor (GPT-4o only)
+### Sibony at Low Anchor (3mo)
 
-| Technique | Mean | n | Effect |
-|-----------|------|---|--------|
-| Context-Hygiene | 10mo | 39 | +67% vs anchored |
-| Premortem | 9mo | 19 | +50% vs anchored |
+| Model | C-H Mean | C-H n | Pre Mean | Pre n | Effect vs Anchored |
+|-------|----------|-------|----------|-------|-------------------|
+| Opus 4.5 | 17mo | 20 | 11mo | 20 | C-H: +143%, Pre: +57% |
+| Hermes 405B | 9mo | 20 | 9mo | 20 | C-H: +80%, Pre: +80% |
+| Llama 3.3 | 12mo | 20 | 14mo | 20 | C-H: +100%, Pre: +133% |
+| GPT-4o | 8mo | 45 | 7mo | 47 | C-H: +33%, Pre: +17% |
+| Qwen 2.5 | ✅ | 20 | ✅ | 20 | In debiasing-sweep |
+| Gemma 2 9B | ✅ | 20 | ✅ | 20 | In debiasing-sweep |
+| Mistral 7B | ✅ | 20 | ✅ | 20 | In debiasing-sweep |
+
+*Data from `*-debiasing-sweep.jsonl` files (field: `condition`) + `gpt4o-debiasing-30.jsonl`*
 
 ---
 
