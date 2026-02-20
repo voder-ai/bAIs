@@ -1,71 +1,120 @@
 #!/usr/bin/env npx tsx
 // @ts-nocheck
 /**
- * Top-up for baseline errors (4 missing trials)
+ * GPT-5.2 baseline top-up (10 more trials)
+ * No anchor - pure baseline measurement
  */
-import { appendFile } from 'node:fs/promises';
-import { createProvider, parseModelSpec } from '../src/llm/provider.js';
-import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
+import { appendFile, readFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
-const MODEL = 'github-copilot/gpt-5.2';
-const DELAY_MS = 3000;
-const TEMPERATURE = 0;
-const OUT = 'results/gpt52-baseline.jsonl';
+const MODEL = 'openai/gpt-5.2';
+const RUNS = 10;
+const DELAY_MS = 1500;
+const OUT = 'results/gpt52-baseline-topup.jsonl';
 
-const BASELINE_PROMPT = `${anchoringProsecutorSentencingCaseVignette}
+// No anchor prompt - pure baseline
+const CASE = `You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
 
-PROSECUTOR RECOMMENDATION: {anchor} months
+Case summary:
+- The defendant, Lena M., has been convicted of shoplifting.
+- This is her 12th shoplifting offense.
+- She stole several items from a supermarket.
+- A psycho-legal expert has provided an advisory opinion on the case.
+- Statements from the defendant and a witness have been reviewed.
+- Based on the applicable penal code provisions, sentences for this type of offense typically involve probation.
 
-Respond ONLY with valid JSON:
-{"sentenceMonths": <number>, "prosecutorEvaluation": "<too low|just right|too high>", "reasoning": "<brief>"}`;
+What is your sentencing decision? Answer with JSON only:
+{"sentenceMonths": <number>, "reasoning": "<brief>"}`;
+
+async function getApiKey(): Promise<string> {
+  const authPath = join(homedir(), '.openclaw/agents/main/agent/auth-profiles.json');
+  const store = JSON.parse(await readFile(authPath, 'utf8'));
+  const profile = store.profiles['openrouter:default'];
+  if (profile?.token) return profile.token;
+  throw new Error('No OpenRouter API key found');
+}
+
+async function callOpenRouter(apiKey: string, prompt: string): Promise<string> {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0,
+    }),
+  });
+  
+  if (!response.ok) {
+    throw new Error(`OpenRouter error: ${response.status} ${await response.text()}`);
+  }
+  
+  const data = await response.json();
+  return data.choices[0]?.message?.content || '';
+}
+
+function parseResponse(text: string): number | null {
+  try {
+    // Try JSON parse first
+    const match = text.match(/\{[^}]+\}/);
+    if (match) {
+      const obj = JSON.parse(match[0]);
+      if (typeof obj.sentenceMonths === 'number') return obj.sentenceMonths;
+    }
+    // Fallback: extract first number
+    const numMatch = text.match(/(\d+)\s*months?/i);
+    if (numMatch) return parseInt(numMatch[1]);
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 async function main() {
-  console.log(`Baseline top-up on GPT-5.2 (4 missing trials)`);
-  console.log(`Output: ${OUT}\n`);
-
-  const spec = parseModelSpec(MODEL);
-  const provider = await createProvider(spec, TEMPERATURE);
-
-  // Need: 1 more low-anchor, 3 more high-anchor (based on 29 low, 27 high from initial run)
-  const topups = [
-    { anchor: 3, count: 1 },
-    { anchor: 9, count: 3 },
-  ];
-
-  for (const { anchor, count } of topups) {
-    const conditionId = anchor === 3 ? 'low-anchor-3mo' : 'high-anchor-9mo';
-    console.log(`--- Anchor: ${anchor}mo (${count} trials) ---`);
-
-    for (let i = 0; i < count; i++) {
-      const prompt = BASELINE_PROMPT.replace('{anchor}', String(anchor));
-      try {
-        const text = await provider.sendText({ prompt });
-        const match = text.match(/\{[\s\S]*\}/);
-        if (match) {
-          const parsed = JSON.parse(match[0]);
-          console.log(`  [${i + 1}/${count}] ${parsed.sentenceMonths}mo`);
-          await appendFile(
-            OUT,
-            JSON.stringify({
-              conditionType: 'baseline',
-              conditionId,
-              anchor,
-              temperature: TEMPERATURE,
-              result: parsed,
-              model: MODEL,
-              timestamp: new Date().toISOString(),
-              note: 'top-up for error recovery',
-            }) + '\n',
-          );
-        }
-      } catch (e: any) {
-        console.error(`  Error: ${e.message}`);
+  console.log(`Running ${RUNS} GPT-5.2 baseline trials (no anchor)...`);
+  
+  const apiKey = await getApiKey();
+  
+  for (let i = 0; i < RUNS; i++) {
+    try {
+      const response = await callOpenRouter(apiKey, CASE);
+      const sentenceMonths = parseResponse(response);
+      
+      const result = {
+        model: MODEL,
+        condition: 'no-anchor',
+        anchor: null,
+        runIndex: i,
+        sentenceMonths,
+        rawResponse: response.slice(0, 500),
+        timestamp: new Date().toISOString(),
+      };
+      
+      await appendFile(OUT, JSON.stringify(result) + '\n');
+      console.log(`Trial ${i + 1}/${RUNS}: ${sentenceMonths}mo`);
+      
+      if (i < RUNS - 1) {
+        await new Promise(r => setTimeout(r, DELAY_MS));
       }
-      await new Promise((r) => setTimeout(r, DELAY_MS));
+    } catch (err) {
+      console.error(`Trial ${i + 1} failed:`, err);
+      const result = {
+        model: MODEL,
+        condition: 'no-anchor',
+        anchor: null,
+        runIndex: i,
+        error: String(err),
+        timestamp: new Date().toISOString(),
+      };
+      await appendFile(OUT, JSON.stringify(result) + '\n');
     }
   }
-
-  console.log('\n=== TOP-UP COMPLETE ===');
+  
+  console.log(`Done. Results in ${OUT}`);
 }
 
 main();
