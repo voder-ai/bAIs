@@ -1,7 +1,7 @@
 # bAIs Experiment Manifest
-**Last Updated:** 2026-02-20 04:40 UTC
+**Last Updated:** 2026-02-20 04:53 UTC
 
-## SACD at Symmetric High Anchors — IN PROGRESS (10 models, topping to n=30)
+## SACD at Symmetric High Anchors - IN PROGRESS (10 models, topping to n=30)
 
 | Model | Anchor | n | Mean | Baseline | Debiasing | Mode |
 |-------|--------|---|------|----------|-----------|------|
@@ -10,7 +10,7 @@
 | Sonnet 4.5 | 43mo | 30 | 26.6mo | 22mo | ⚠️ 81% | Partial |
 | Haiku 4.5 | 67mo | 30 | 26.7mo | 34mo | 🔴 -22% | Catastrophic |
 | Hermes 405B | 21mo | 30 | 14.6mo | 12mo | ⚠️ 71% | Partial |
-| Llama 3.3 | 21mo | 20* | 17.6mo | 12mo | ⚠️ 38% | Partial |
+| Llama 3.3 | 21mo | 30 | 18mo | 12mo | ⚠️ 33% | Partial |
 | o3-mini | 21mo | 20* | 21.5mo | 12mo | ❌ 0% | Resistant |
 | GPT-4o | 45mo | 20* | 6.9mo | 24mo | 🔴 -71% | Catastrophic |
 | GPT-5.2 | 45mo | 20* | 2.5mo | 24mo | 🔴🔴 -90% | Catastrophic |
@@ -18,7 +18,7 @@
 
 *Need top-up to n=30
 
-## Debiasing at Low Anchor (3mo) — EXISTING DATA
+## Debiasing at Low Anchor (3mo) - EXISTING DATA
 
 | Model | Baseline | Context-Hygiene | Premortem | SACD | File |
 |-------|----------|-----------------|-----------|------|------|
@@ -26,12 +26,12 @@
 | Hermes 405B | ✅ n=20 | ✅ n=20 | ✅ n=20 | ✅ n=20 | hermes-3-llama-3.1-405b-debiasing-sweep.jsonl |
 | Llama 3.3 | ✅ n=20 | ✅ n=20 | ✅ n=20 | ✅ n=20 | llama-3.3-70b-instruct-debiasing-sweep.jsonl |
 | GPT-4o | ✅ n=25 | ✅ n=27 | ✅ n=29 | ✅ n=29 | gpt4o-debiasing-30.jsonl |
-| GPT-5.2 | ✅ n=75 | — | — | — | gpt52-debiasing-suite.jsonl |
+| GPT-5.2 | ✅ n=75 | - | - | - | gpt52-debiasing-suite.jsonl |
 | Qwen 2.5 72B | ✅ n=20 | ✅ n=20 | ✅ n=20 | ✅ n=20 | qwen-2.5-72b-instruct-debiasing-sweep.jsonl |
 | Gemma 2 9B | ✅ n=20 | ✅ n=20 | ✅ n=20 | ✅ n=20 | gemma-2-9b-it-debiasing-sweep.jsonl |
 | Mistral 7B | ✅ n=33 | ✅ n=20 | ✅ n=20 | ❌ | mistral-7b-instruct-debiasing-sweep.jsonl |
 
-### Low Anchor SACD (Full Protocol) — Additional Files
+### Low Anchor SACD (Full Protocol) - Additional Files
 
 | Model | n | File |
 |-------|---|------|
@@ -76,13 +76,13 @@
 
 ## Five SACD Failure Modes
 
-1. **Calibrated (100%)** — Opus 4.5, 4.6
-2. **Partial (38-81%)** — Sonnet, Hermes, Llama
-3. **Resistant (0%)** — o3-mini
-4. **Catastrophic (-22 to -90%)** — GPT-4o, GPT-5.2, Haiku
-5. **Unstable** — MiniMax (high variance + refusals, but converging to baseline)
+1. **Calibrated (100%)** - Opus 4.5, 4.6
+2. **Partial (38-81%)** - Sonnet, Hermes, Llama
+3. **Resistant (0%)** - o3-mini
+4. **Catastrophic (-22 to -90%)** - GPT-4o, GPT-5.2, Haiku
+5. **Unstable** - MiniMax (high variance + refusals, but converging to baseline)
 
-## Disclosure Debiasing at Symmetric High Anchors — COMPLETE (10 models)
+## Disclosure Debiasing at Symmetric High Anchors - COMPLETE (10 models)
 
 | Model | Effect |
 |-------|--------|
@@ -101,8 +101,8 @@
 
 ### Immediate (n=30 top-ups)
 - [x] Hermes 405B SACD @ 21mo: ✅ n=30 (14.6mo)
-- [ ] Llama 3.3 SACD @ 21mo: 🔄 running  
-- [ ] o3-mini SACD @ 21mo: +10 trials
+- [x] Llama 3.3 SACD @ 21mo: ✅ n=30 (18mo)
+- [ ] o3-mini SACD @ 21mo: 🔄 running
 - [ ] GPT-4o SACD @ 45mo: +10 trials
 - [ ] GPT-5.2 SACD @ 45mo: +10 trials
 - [ ] MiniMax SACD @ 21mo: continue to 30
@@ -124,7 +124,7 @@
 - [ ] MiniMax @ 21mo
 
 ### Skipped
-- o1 SACD @ 21mo — timeout issues with reasoning model
+- o1 SACD @ 21mo - timeout issues with reasoning model
 
 ## Key Findings
 
@@ -140,4 +140,4 @@ GPT-5.2 shows MORE extreme over-correction than GPT-4o (90% vs 71%).
 SACD produces 90% worse outcomes than no intervention on GPT-5.2.
 
 ### Paper Section Ready
-Draft at `paper/sacd-failure-modes-section.md` — awaiting Tom's approval for LaTeX.
+Draft at `paper/sacd-failure-modes-section.md` - awaiting Tom's approval for LaTeX.
