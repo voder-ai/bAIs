@@ -1,5 +1,5 @@
 # bAIs Experiment Manifest
-**Last Updated:** 2026-02-20 03:30 UTC
+**Last Updated:** 2026-02-20 03:55 UTC
 
 ## SACD at Symmetric High Anchors — IN PROGRESS (10 models, topping to n=30)
 
@@ -46,14 +46,14 @@
 | o1 | 60 | o1-full-sacd-openrouter.jsonl |
 | o3-mini | 60 | o3-mini-full-sacd-openrouter.jsonl |
 
-## Debiasing at Symmetric High Anchors — GAPS
+## Debiasing at Symmetric High Anchors
 
 | Model | Anchor | Baseline | Context-Hygiene | Premortem | SACD | Disclosure |
 |-------|--------|----------|-----------------|-----------|------|------------|
-| Opus 4.5 | 43mo | ✅ | ✅ n=30 | ✅ n=30 | ✅ n=30 | ✅ |
-| Opus 4.6 | 33mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
-| Sonnet 4.5 | 43mo | ❌ | ❌ | ❌ | ✅ n=30 | ✅ |
-| Haiku 4.5 | 67mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
+| Opus 4.5 | 43mo | ✅ | ✅ n=30 (1mo) | ✅ n=30 (1mo) | ✅ n=30 | ✅ |
+| Opus 4.6 | 33mo | ✅ | ✅ n=30 (18mo=baseline) | ✅ n=30 (18mo=baseline) | ✅ n=30 | ✅ |
+| Sonnet 4.5 | 43mo | ❌ | ✅ n=30 (18mo, -18%) | ✅ n=30 (18mo, -18%) | ✅ n=30 | ✅ |
+| Haiku 4.5 | 67mo | ✅ | ✅ n=30 (24mo, -29%) | ✅ n=30 (24mo, -29%) | ✅ n=30 | ✅ |
 | Hermes 405B | 21mo | ✅ | ❌ | ❌ | ✅ n=20* | ✅ |
 | Llama 3.3 | 21mo | ❌ | ❌ | ❌ | ✅ n=20* | ✅ |
 | o3-mini | 21mo | ✅ | ❌ | ❌ | ✅ n=20* | ✅ |
@@ -62,6 +62,17 @@
 | MiniMax | 21mo | ❌ | ❌ | ❌ | 🔄 n=17* | ❌ |
 
 *Need top-up to n=30
+
+### Sibony Technique Results (Anthropic @ High Anchors)
+
+| Model | Anchor | Baseline | Context-Hygiene | Premortem | Effect |
+|-------|--------|----------|-----------------|-----------|--------|
+| Opus 4.5 | 43mo | 22mo | 1mo | 1mo | 🔴 Extreme over-correction |
+| Opus 4.6 | 33mo | 18mo | 18mo | 18mo | ✅ 100% to baseline |
+| Sonnet 4.5 | 43mo | 22mo | 18mo | 18mo | ⚠️ -18% over-correction |
+| Haiku 4.5 | 67mo | 34mo | 24mo | 24mo | ⚠️ -29% over-correction |
+
+**Pattern:** Sibony techniques work perfectly on Opus 4.6 but over-correct on other Anthropic models.
 
 ## Five SACD Failure Modes
 
@@ -97,9 +108,9 @@
 - [ ] MiniMax SACD @ 21mo: continue to 30
 
 ### Context-Hygiene/Premortem at Symmetric High Anchors
-- [ ] Opus 4.6 @ 33mo
-- [ ] Sonnet 4.5 @ 43mo
-- [ ] Haiku 4.5 @ 67mo
+- [x] Opus 4.6 @ 33mo ✅ (18mo = baseline)
+- [x] Sonnet 4.5 @ 43mo ✅ (18mo, over-correction)
+- [x] Haiku 4.5 @ 67mo ✅ (24mo, over-correction)
 - [ ] Hermes 405B @ 21mo
 - [ ] Llama 3.3 @ 21mo
 - [ ] o3-mini @ 21mo
