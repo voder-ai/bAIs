@@ -1,5 +1,5 @@
 # bAIs Experiment Manifest
-**Last Updated:** 2026-02-20 05:48 UTC
+**Last Updated:** 2026-02-20 06:02 UTC
 
 ## SACD at Symmetric High Anchors - COMPLETE (10 models, n=30)
 
@@ -54,12 +54,12 @@
 | Opus 4.6 | 33mo | ✅ | ✅ n=30 (18mo=baseline) | ✅ n=30 (18mo=baseline) | ✅ n=30 | ✅ |
 | Sonnet 4.5 | 43mo | ❌ | ✅ n=30 (18mo, -18%) | ✅ n=30 (18mo, -18%) | ✅ n=30 | ✅ |
 | Haiku 4.5 | 67mo | ✅ | ✅ n=30 (24mo, -29%) | ✅ n=30 (24mo, -29%) | ✅ n=30 | ✅ |
-| Hermes 405B | 21mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
-| Llama 3.3 | 21mo | ❌ | ❌ | ❌ | ✅ n=30 | ✅ |
-| o3-mini | 21mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
-| GPT-4o | 45mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
-| GPT-5.2 | 45mo | ✅ | ❌ | ❌ | ✅ n=30 | ✅ |
-| MiniMax | 21mo | ❌ | ❌ | ❌ | ✅ n=30 | ❌ |
+| Hermes 405B | 21mo | ✅ | ✅ n=30 (14.6mo, +71%) | ✅ n=30 (13.8mo, +80%) | ✅ n=30 | ✅ |
+| Llama 3.3 | 21mo | ❌ | ✅ n=30 (16.6mo, +49%) | ✅ n=30 (22.6mo, -18%) | ✅ n=30 | ✅ |
+| o3-mini | 21mo | ✅ | ✅ n=30 (25.0mo, -44%) | ✅ n=30 (24.5mo, -39%) | ✅ n=30 | ✅ |
+| GPT-4o | 45mo | ✅ | ✅ n=30 (27.6mo, +83%) | ✅ n=30 (27.0mo, +86%) | ✅ n=30 | ✅ |
+| GPT-5.2 | 45mo | ✅ | ✅ n=30 (31.0mo, +67%) | ✅ n=30 (33.0mo, +57%) | ✅ n=30 | ✅ |
+| MiniMax | 21mo | ❌ | 🔄 ~18mo | - | ✅ n=30 | ❌ |
 
 ### Sibony Technique Results (Anthropic @ High Anchors)
 
@@ -71,6 +71,19 @@
 | Haiku 4.5 | 67mo | 34mo | 24mo | 24mo | ⚠️ -29% over-correction |
 
 **Pattern:** Sibony techniques work perfectly on Opus 4.6 but over-correct on other Anthropic models.
+
+### Sibony Technique Results (OpenRouter @ High Anchors) - IN PROGRESS
+
+| Model | Anchor | Baseline | Context-Hygiene | Premortem | SACD | Effect |
+|-------|--------|----------|-----------------|-----------|------|--------|
+| Hermes 405B | 21mo | 12mo | 14.6mo (+71%) | 13.8mo (+80%) | +71% | ✅ Both work |
+| Llama 3.3 | 21mo | 12mo | 16.6mo (+49%) | 22.6mo (-18%) | +33% | ⚠️ Premortem backfires |
+| o3-mini | 21mo | 12mo | 25.0mo (-44%) | 24.5mo (-39%) | +1% | 🔴 Both BACKFIRE |
+| GPT-4o | 45mo | 24mo | 27.6mo (+83%) | 27.0mo (+86%) | -70% | ✅ Sibony works, SACD fails |
+| GPT-5.2 | 45mo | 24mo | 31.0mo (+67%) | 33.0mo (+57%) | -83% | ✅ Sibony works, SACD fails |
+| MiniMax | 21mo | 12mo | 🔄 13/30 | - | +81% | Running... |
+
+**Key Insight:** SACD over-corrects GPT models, but Sibony techniques work well. Opposite for o3-mini.
 
 ## Five SACD Failure Modes
 
