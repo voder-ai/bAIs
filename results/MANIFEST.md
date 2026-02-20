@@ -59,7 +59,7 @@
 | o3-mini | 21mo | ✅ | ✅ n=30 (25.0mo, -44%) | ✅ n=30 (24.5mo, -39%) | ✅ n=30 | ✅ |
 | GPT-4o | 45mo | ✅ | ✅ n=30 (27.6mo, +83%) | ✅ n=30 (27.0mo, +86%) | ✅ n=30 | ✅ |
 | GPT-5.2 | 45mo | ✅ | ✅ n=30 (31.0mo, +67%) | ✅ n=30 (33.0mo, +57%) | ✅ n=30 | ✅ |
-| MiniMax | 21mo | ❌ | ✅ n=30 (19.1mo, +21%) | 🔄 7/30 | ✅ n=30 | ❌ |
+| MiniMax | 21mo | ❌ | ✅ n=30 (19.1mo, +21%) | ✅ n=30 (18.4mo, +29%) | ✅ n=30 | ❌ |
 
 ### Sibony Technique Results (Anthropic @ High Anchors)
 
@@ -81,7 +81,7 @@
 | o3-mini | 21mo | 12mo | 25.0mo (-44%) | 24.5mo (-39%) | +1% | 🔴 Both BACKFIRE |
 | GPT-4o | 45mo | 24mo | 27.6mo (+83%) | 27.0mo (+86%) | -70% | ✅ Sibony works, SACD fails |
 | GPT-5.2 | 45mo | 24mo | 31.0mo (+67%) | 33.0mo (+57%) | -83% | ✅ Sibony works, SACD fails |
-| MiniMax | 21mo | 12mo | ✅ 19.1mo (+21%) | 🔄 7/30 | +81% | Weak effect |
+| MiniMax | 21mo | 12mo | ✅ 19.1mo (+21%) | ✅ 18.4mo (+29%) | +81% | Weak effect |
 
 **Key Insight:** SACD over-corrects GPT models, but Sibony techniques work well. Opposite for o3-mini.
 
@@ -127,7 +127,7 @@
 - [x] o3-mini @ 21mo ✅ (C-H: 25.0mo -44%, Pre: 24.5mo -39% BACKFIRES)
 - [x] GPT-4o @ 45mo ✅ (C-H: 27.6mo +83%, Pre: 27.0mo +86%)
 - [x] GPT-5.2 @ 45mo ✅ (C-H: 31.0mo +67%, Pre: 33.0mo +57%)
-- [x] MiniMax @ 21mo ✅ (C-H: 19.1mo +21%, Pre: 🔄 running)
+- [x] MiniMax @ 21mo ✅ (C-H: 19.1mo +21%, Pre: 18.4mo +29%)
 
 ### Baselines at Symmetric High Anchors (Missing)
 - [ ] Sonnet 4.5 @ 43mo
@@ -155,5 +155,5 @@ Draft at `paper/sacd-failure-modes-section.md` - awaiting Tom's approval for LaT
 
 ## Experiment Backlog
 
-1. **MiniMax Sibony premortem** — running (`dawn-coral`), ~30min ETA
+1. ~~MiniMax Sibony premortem~~ ✅ Complete (18.4mo, +29%)
 2. **Personality traits × debiasing** — arxiv:2502.14219 suggests conscientiousness enhances debiasing. Test "respond conscientiously" system prompt as lightweight alternative to SACD.
