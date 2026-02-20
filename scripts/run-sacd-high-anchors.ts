@@ -78,6 +78,8 @@ Please respond with ONLY a JSON object in this exact format:
 // Model configurations with symmetric high anchors
 const MODELS = [
   { model: 'openrouter/openai/o3-mini', anchor: 21, baseline: 12 },
+  { model: 'openrouter/meta-llama/llama-3.3-70b-instruct', anchor: 21, baseline: 12 },
+  { model: 'openrouter/minimax/minimax-m2.5', anchor: 21, baseline: 12 },
   { model: 'openrouter/openai/o1', anchor: 21, baseline: 12 },
   { model: 'openrouter/nousresearch/hermes-3-llama-3.1-405b', anchor: 21, baseline: 12 },
   { model: 'openrouter/openai/gpt-4o', anchor: 45, baseline: 24 },
