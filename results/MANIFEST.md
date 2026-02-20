@@ -1,5 +1,5 @@
 # bAIs Experiment Manifest
-**Last Updated:** 2026-02-20 04:53 UTC
+**Last Updated:** 2026-02-20 05:20 UTC
 
 ## SACD at Symmetric High Anchors - IN PROGRESS (10 models, topping to n=30)
 
@@ -11,10 +11,10 @@
 | Haiku 4.5 | 67mo | 30 | 26.7mo | 34mo | 🔴 -22% | Catastrophic |
 | Hermes 405B | 21mo | 30 | 14.6mo | 12mo | ⚠️ 71% | Partial |
 | Llama 3.3 | 21mo | 30 | 18mo | 12mo | ⚠️ 33% | Partial |
-| o3-mini | 21mo | 20* | 21.5mo | 12mo | ❌ 0% | Resistant |
+| o3-mini | 21mo | 30 | 20.9mo | 12mo | ❌ 1% | Resistant |
 | GPT-4o | 45mo | 20* | 6.9mo | 24mo | 🔴 -71% | Catastrophic |
 | GPT-5.2 | 45mo | 20* | 2.5mo | 24mo | 🔴🔴 -90% | Catastrophic |
-| MiniMax | 21mo | 17* | 11.7mo | 12mo | ⚠️ ~97% | Unstable |
+| MiniMax | 21mo | 27* | ~12mo | 12mo | ⚠️ ~100% | Unstable |
 
 *Need top-up to n=30
 
@@ -102,8 +102,8 @@
 ### Immediate (n=30 top-ups)
 - [x] Hermes 405B SACD @ 21mo: ✅ n=30 (14.6mo)
 - [x] Llama 3.3 SACD @ 21mo: ✅ n=30 (18mo)
-- [ ] o3-mini SACD @ 21mo: 🔄 running
-- [ ] GPT-4o SACD @ 45mo: +10 trials
+- [x] o3-mini SACD @ 21mo: ✅ n=30 (20.9mo, resistant)
+- [ ] GPT-4o SACD @ 45mo: 🔄 running
 - [ ] GPT-5.2 SACD @ 45mo: +10 trials
 - [ ] MiniMax SACD @ 21mo: continue to 30
 
