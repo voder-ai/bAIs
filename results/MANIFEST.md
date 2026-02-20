@@ -1,5 +1,5 @@
 # bAIs Experiment Manifest
-**Last Updated:** 2026-02-20 03:55 UTC
+**Last Updated:** 2026-02-20 04:40 UTC
 
 ## SACD at Symmetric High Anchors — IN PROGRESS (10 models, topping to n=30)
 
@@ -9,7 +9,7 @@
 | Opus 4.6 | 33mo | 30 | 18mo | 18mo | ✅ 100% | Calibrated |
 | Sonnet 4.5 | 43mo | 30 | 26.6mo | 22mo | ⚠️ 81% | Partial |
 | Haiku 4.5 | 67mo | 30 | 26.7mo | 34mo | 🔴 -22% | Catastrophic |
-| Hermes 405B | 21mo | 20* | 15.3mo | 12mo | ⚠️ 63% | Partial |
+| Hermes 405B | 21mo | 30 | 14.6mo | 12mo | ⚠️ 71% | Partial |
 | Llama 3.3 | 21mo | 20* | 17.6mo | 12mo | ⚠️ 38% | Partial |
 | o3-mini | 21mo | 20* | 21.5mo | 12mo | ❌ 0% | Resistant |
 | GPT-4o | 45mo | 20* | 6.9mo | 24mo | 🔴 -71% | Catastrophic |
@@ -100,8 +100,8 @@
 ## TODO / Gaps
 
 ### Immediate (n=30 top-ups)
-- [ ] Hermes 405B SACD @ 21mo: +10 trials
-- [ ] Llama 3.3 SACD @ 21mo: +10 trials  
+- [x] Hermes 405B SACD @ 21mo: ✅ n=30 (14.6mo)
+- [ ] Llama 3.3 SACD @ 21mo: 🔄 running  
 - [ ] o3-mini SACD @ 21mo: +10 trials
 - [ ] GPT-4o SACD @ 45mo: +10 trials
 - [ ] GPT-5.2 SACD @ 45mo: +10 trials
