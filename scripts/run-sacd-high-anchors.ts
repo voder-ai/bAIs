@@ -86,7 +86,7 @@ const MODELS = [
   { model: 'openrouter/openai/gpt-5.2', anchor: 45, baseline: 24 },
 ];
 
-const N_TRIALS = 20;
+const N_TRIALS = parseInt(process.env.SACD_TRIALS || '20');
 
 async function runSACDTrial(provider: any, anchor: number): Promise<{
   sentenceMonths: number | null;
