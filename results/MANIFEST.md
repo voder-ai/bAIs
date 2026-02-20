@@ -1,5 +1,5 @@
 # bAIs Experiment Manifest
-**Last Updated:** 2026-02-20 00:59 UTC
+**Last Updated:** 2026-02-20 01:35 UTC
 
 ## SACD at Symmetric High Anchors — COMPLETE (10 models)
 
@@ -14,9 +14,9 @@
 | o3-mini | 21mo | 20 | 21.5mo | 12mo | ❌ 0% | Resistant |
 | GPT-4o | 45mo | 20 | 6.9mo | 24mo | 🔴 -71% | Catastrophic |
 | GPT-5.2 | 45mo | 20 | 2.5mo | 24mo | 🔴🔴 -90% | Catastrophic |
-| MiniMax | 21mo | 11* | 8.4mo | 12mo | 🔴 -30% | Unstable |
+| MiniMax | 21mo | 17* | 11.7mo | 12mo | ⚠️ ~97% | Unstable |
 
-*MiniMax: 11/20 trials, 18% refusal rate, still running
+*MiniMax: 17 trials (15 valid, 12% refusal rate), still running
 
 ## Five SACD Failure Modes
 
@@ -24,7 +24,7 @@
 2. **Partial (38-81%)** — Sonnet, Hermes, Llama
 3. **Resistant (0%)** — o3-mini
 4. **Catastrophic (-22 to -90%)** — GPT-4o, GPT-5.2, Haiku
-5. **Unstable** — MiniMax (high variance + refusals)
+5. **Unstable** — MiniMax (high variance + refusals, but converging to baseline)
 
 ## Disclosure Debiasing — COMPLETE (10 models)
 
@@ -41,16 +41,33 @@
 | GPT-5.2 | -14% |
 | o1 | -28% |
 
-## Gaps
+## Gaps / TODO
 
-- [ ] MiniMax SACD: 9 more trials to reach 20 (running)
-- [ ] o1 SACD: Skipped (timeout issues)
+- [x] Llama 3.3 SACD @ 21mo — DONE
+- [ ] MiniMax SACD @ 21mo — Running (17/31 trials, ~14 more)
+- [ ] o1 SACD — Skipped (timeout issues with reasoning model)
+
+## Key Findings
+
+### SACD Failure Mode Taxonomy
+- **Calibrated:** Anthropic Opus models return to baseline perfectly
+- **Partial:** Open models (Hermes, Llama) show 38-63% debiasing
+- **Resistant:** o3-mini compliance training overrides SACD
+- **Catastrophic:** GPT-4o, GPT-5.2 over-correct by 71-90%
+- **Unstable:** MiniMax shows refusals + high variance
+
+### Newer ≠ Better
+GPT-5.2 shows MORE extreme over-correction than GPT-4o (90% vs 71%).
+SACD produces 90% worse outcomes than no intervention on GPT-5.2.
+
+### Paper Section Ready
+Draft at `paper/sacd-failure-modes-section.md` — awaiting Tom's approval for LaTeX.
 
 ## Result Files
 
-- `sacd-high-anchor-21mo-llama-3.3-70b-instruct.jsonl` — Llama 3.3 (n=20)
-- `sacd-high-anchor-21mo-minimax-m2.5.jsonl` — MiniMax (n=11, running)
-- `sacd-high-anchor-21mo-o3-mini.jsonl` — o3-mini (n=20)
-- `sacd-high-anchor-21mo-hermes-3-llama-3.1-405b.jsonl` — Hermes (n=20)
-- `sacd-high-anchor-45mo-gpt-4o.jsonl` — GPT-4o (n=20)
-- `sacd-high-anchor-45mo-gpt-5.2.jsonl` — GPT-5.2 (n=20)
+- `sacd-high-anchor-21mo-llama-3.3-70b-instruct.jsonl` — Llama 3.3 (n=20) ✅
+- `sacd-high-anchor-21mo-minimax-m2.5.jsonl` — MiniMax (n=17, running)
+- `sacd-high-anchor-21mo-o3-mini.jsonl` — o3-mini (n=20) ✅
+- `sacd-high-anchor-21mo-hermes-3-llama-3.1-405b.jsonl` — Hermes (n=20) ✅
+- `sacd-high-anchor-45mo-gpt-4o.jsonl` — GPT-4o (n=20) ✅
+- `sacd-high-anchor-45mo-gpt-5.2.jsonl` — GPT-5.2 (n=20) ✅
