@@ -1,5 +1,5 @@
 # bAIs Experiment Manifest
-**Last Updated:** 2026-02-20 05:20 UTC
+**Last Updated:** 2026-02-20 05:22 UTC
 
 ## SACD at Symmetric High Anchors - IN PROGRESS (10 models, topping to n=30)
 
@@ -12,7 +12,7 @@
 | Hermes 405B | 21mo | 30 | 14.6mo | 12mo | ⚠️ 71% | Partial |
 | Llama 3.3 | 21mo | 30 | 18mo | 12mo | ⚠️ 33% | Partial |
 | o3-mini | 21mo | 30 | 20.9mo | 12mo | ❌ 1% | Resistant |
-| GPT-4o | 45mo | 20* | 6.9mo | 24mo | 🔴 -71% | Catastrophic |
+| GPT-4o | 45mo | 30 | 7.2mo | 24mo | 🔴 -70% | Catastrophic |
 | GPT-5.2 | 45mo | 20* | 2.5mo | 24mo | 🔴🔴 -90% | Catastrophic |
 | MiniMax | 21mo | 27* | ~12mo | 12mo | ⚠️ ~100% | Unstable |
 
@@ -103,8 +103,8 @@
 - [x] Hermes 405B SACD @ 21mo: ✅ n=30 (14.6mo)
 - [x] Llama 3.3 SACD @ 21mo: ✅ n=30 (18mo)
 - [x] o3-mini SACD @ 21mo: ✅ n=30 (20.9mo, resistant)
-- [ ] GPT-4o SACD @ 45mo: 🔄 running
-- [ ] GPT-5.2 SACD @ 45mo: +10 trials
+- [x] GPT-4o SACD @ 45mo: ✅ n=30 (7.2mo, -70%)
+- [ ] GPT-5.2 SACD @ 45mo: 🔄 running
 - [ ] MiniMax SACD @ 21mo: continue to 30
 
 ### Context-Hygiene/Premortem at Symmetric High Anchors
