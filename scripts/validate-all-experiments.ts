@@ -109,7 +109,10 @@ function detectTechnique(obj: any, filename: string): string {
   if (cond === 'context-hygiene' || cond === 'ch') return 'context-hygiene';
   if (cond === 'premortem') return 'premortem';
   if (cond === 'sacd') return 'sacd';
-  if (cond === 'baseline') return 'none';
+  if (cond === 'baseline' || cond === 'no-anchor') return 'none';
+  
+  // Temp-variation files: no condition but anchor=null means baseline
+  if (!cond && f.includes('temp') && f.includes('variation')) return 'none';
   
   // Sibony techniques from filename/condition
   if (f.includes('sibony') || cond.includes('sibony')) {

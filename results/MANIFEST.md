@@ -18,7 +18,7 @@
 | o3-mini | 12mo | 15mo | 60 | Slight high bias |
 | o1 | 12mo | 12mo | 30 | ✅ |
 | GPT-4o | 24mo | 9mo | 60 | ⚠️ From anchored condition |
-| GPT-5.2 | 24mo | - | 0 | Not collected |
+| GPT-5.2 | 24mo | 32mo | 90 | ⚠️ Higher than expected (from temp-variation files) |
 | MiniMax | 12mo | 12mo | 27 | ✅ |
 
 ---
