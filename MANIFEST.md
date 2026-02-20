@@ -12,11 +12,12 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 | `anthropic/claude-sonnet-4.6` | Mid-tier, released Feb 17 2026 |
 | `anthropic/claude-haiku-4.5` | Fast/cheap tier, latest Haiku |
 
-### OpenAI (3 models)
+### OpenAI (4 models)
 
 | Model ID | Rationale |
 |----------|-----------|
 | `openai/gpt-5.2` | Latest non-reasoning flagship |
+| `openai/gpt-4.1` | Smartest non-reasoning model |
 | `openai/o3` | Reasoning model flagship |
 | `openai/o4-mini` | Fast reasoning, successor to o3-mini |
 
@@ -61,6 +62,7 @@ Starting fresh with standardized methodology.
 | claude-sonnet-4.6 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | claude-haiku-4.5 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | gpt-5.2 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| gpt-4.1 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | o3 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | o4-mini | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | minimax-m2.5 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
