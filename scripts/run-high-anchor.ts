@@ -1,11 +1,11 @@
 #!/usr/bin/env npx tsx
 /**
- * High Anchor Experiment — Proportional (baseline × 2)
+ * High Anchor Experiment — Proportional (baseline × 1.5)
  * 
  * Usage: npx tsx scripts/run-high-anchor.ts <model-id> <anchor> [n=30]
  * Example: npx tsx scripts/run-high-anchor.ts anthropic/claude-opus-4.6 36 30
  * 
- * Note: Anchor must be calculated from baseline first (baseline × 2)
+ * Note: Anchor must be calculated from baseline first (baseline × 1.5)
  * 
  * Output: results/high-anchor-<model-short>.jsonl
  */
@@ -20,8 +20,8 @@ const N_TRIALS = parseInt(process.argv[4] || '30');
 if (!MODEL || !ANCHOR) {
   console.error('Usage: npx tsx scripts/run-high-anchor.ts <model-id> <anchor> [n=30]');
   console.error('');
-  console.error('Anchor should be baseline × 2 (proportional high)');
-  console.error('Example: If baseline = 18mo, anchor = 36mo');
+  console.error('Anchor should be baseline × 1.5 (proportional high)');
+  console.error('Example: If baseline = 18mo, anchor = 27mo');
   process.exit(1);
 }
 
@@ -97,7 +97,7 @@ async function runTrial(apiKey: string, index: number): Promise<number | null> {
 async function main() {
   console.log(`=== High Anchor Experiment (Proportional) ===`);
   console.log(`Model: ${MODEL}`);
-  console.log(`Anchor: ${ANCHOR}mo (baseline × 2)`);
+  console.log(`Anchor: ${ANCHOR}mo (baseline × 1.5)`);
   console.log(`Trials: ${N_TRIALS}`);
   console.log(`Output: ${RESULTS_FILE}`);
   console.log('');

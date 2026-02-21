@@ -34,9 +34,9 @@
 | Anchor | Formula | Example (baseline=18mo) |
 |--------|---------|------------------------|
 | **Low** | `baseline / 2` | 9mo |
-| **High** | `baseline × 2` | 36mo |
+| **High** | `baseline × 1.5` | 27mo |
 
-This creates symmetric multiplicative deviation: low is 0.5× baseline, high is 2× baseline.
+This creates symmetric multiplicative deviation: low is 0.5× baseline, high is 1.5× baseline.
 
 ---
 
@@ -48,7 +48,7 @@ This creates symmetric multiplicative deviation: low is 0.5× baseline, high is 
 |-----------|--------|--------|-----------|
 | **baseline** | `run-baseline.ts` | None | Establishes unanchored reference. Required to calculate proportional anchors. |
 | **low-anchor** | `run-low-anchor.ts` | baseline / 2 | Tests downward anchoring susceptibility with proportional low anchor. |
-| **high-anchor** | `run-high-anchor.ts` | baseline × 2 | Tests upward anchoring susceptibility with proportional high anchor. |
+| **high-anchor** | `run-high-anchor.ts` | baseline × 1.5 | Tests upward anchoring susceptibility with proportional high anchor. |
 
 ### SACD Debiasing (2 conditions)
 
@@ -57,7 +57,7 @@ Self-Administered Cognitive Debiasing (Lyu et al.) — Model detects and correct
 | Condition | Script | Anchor | Rationale |
 |-----------|--------|--------|-----------|
 | **sacd-low** | `run-sacd.ts` | baseline / 2 | Tests if self-reflection reduces low anchoring. |
-| **sacd-high** | `run-sacd.ts` | baseline × 2 | Tests if self-reflection reduces high anchoring. |
+| **sacd-high** | `run-sacd.ts` | baseline × 1.5 | Tests if self-reflection reduces high anchoring. |
 
 ### Sibony Debiasing (6 conditions)
 
@@ -66,11 +66,11 @@ Three techniques from Sibony's decision hygiene framework, tested independently.
 | Condition | Script | Anchor | Rationale |
 |-----------|--------|--------|-----------|
 | **outside-view-low** | `run-outside-view.ts` | baseline / 2 | Base rates BEFORE anchor. Tests if pre-commitment reduces anchoring. |
-| **outside-view-high** | `run-outside-view.ts` | baseline × 2 | Outside view with high anchor. |
+| **outside-view-high** | `run-outside-view.ts` | baseline × 1.5 | Outside view with high anchor. |
 | **premortem-low** | `run-premortem.ts` | baseline / 2 | Anticipate failure. Tests if considering criticism reduces anchoring. |
-| **premortem-high** | `run-premortem.ts` | baseline × 2 | Pre-mortem with high anchor. |
+| **premortem-high** | `run-premortem.ts` | baseline × 1.5 | Pre-mortem with high anchor. |
 | **devils-advocate-low** | `run-devils-advocate.ts` | baseline / 2 | Challenge anchor. Tests if counter-arguments reduce anchoring. |
-| **devils-advocate-high** | `run-devils-advocate.ts` | baseline × 2 | Devil's advocate with high anchor. |
+| **devils-advocate-high** | `run-devils-advocate.ts` | baseline × 1.5 | Devil's advocate with high anchor. |
 
 ---
 
@@ -85,7 +85,7 @@ Three techniques from Sibony's decision hygiene framework, tested independently.
 - All models via OpenRouter API (single provider, no routing confounds)
 - Standardized Englich paradigm from `src/experiments/anchoringProsecutorSentencing.ts`
 - "Randomly determined" disclosure in anchor conditions
-- **Proportional anchors:** low = baseline/2, high = baseline×2
+- **Proportional anchors:** low = baseline/2, high = baseline×1.5
 
 ### Output Files
 ```
@@ -128,5 +128,5 @@ results/
 ## Status
 
 - **2026-02-20:** All prior data deleted. Clean slate.
-- **2026-02-21:** Updated to proportional anchors (baseline/2, baseline×2). Scripts ready.
+- **2026-02-21:** Updated to proportional anchors (baseline/2, baseline×1.5). Scripts ready.
 - **Awaiting:** Approval to begin Phase 1 baselines.
