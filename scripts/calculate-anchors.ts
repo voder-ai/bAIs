@@ -5,7 +5,7 @@
  * Reads baseline JSONL files and calculates:
  * - Mean baseline per model
  * - Low anchor = baseline / 2
- * - High anchor = baseline × 1.5
+ * - High anchor = baseline × 2
  * 
  * Usage: npx tsx scripts/calculate-anchors.ts
  * 
@@ -89,7 +89,7 @@ function main() {
     
     // Calculate proportional anchors
     const lowAnchor = Math.round(mean / 2);
-    const highAnchor = Math.round(mean * 1.5);
+    const highAnchor = Math.round(mean * 2);
     
     const stats: ModelStats = {
       model,
