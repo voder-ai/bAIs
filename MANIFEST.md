@@ -109,22 +109,37 @@ Rationale: Fair cross-model comparison. A model with baseline 30mo gets low=15mo
 
 ---
 
+## Temperature Variable
+
+Each condition is run at **3 temperatures**: 0, 0.7, 1.0
+
+| Temp | Description |
+|------|-------------|
+| 0 | Deterministic (greedy decoding) |
+| 0.7 | Standard deployment setting |
+| 1.0 | Full distribution sampling |
+
+**Anchor Calculation (Option B):** Average baselines across all 3 temperatures, then use the same anchors for all temperature conditions. This allows clean comparison of "does temperature affect anchoring susceptibility?"
+
+---
+
 ## Trial Summary
 
 | Metric | Count |
 |--------|-------|
 | Models | 11 |
 | Conditions per model | 11 |
+| Temperatures | 3 |
 | Trials per condition | 30 |
-| **Total trials** | **3,630** |
+| **Total trials** | **10,890** |
 
 ### Execution Order
 
-1. **Phase 1:** Baselines (11 models × 30 = 330 trials)
-2. Calculate symmetric high anchors from baseline means
-3. **Phase 2:** Anchoring low/high (11 × 2 × 30 = 660 trials)
-4. **Phase 3:** SACD low/high (11 × 2 × 30 = 660 trials)
-5. **Phase 4:** Sibony techniques (11 × 6 × 30 = 1,980 trials)
+1. **Phase 1:** Baselines at all 3 temps (11 models × 3 temps × 30 = 990 trials)
+2. Calculate anchors from averaged baselines (per model)
+3. **Phase 2:** Anchoring low/high at all temps (11 × 2 × 3 × 30 = 1,980 trials)
+4. **Phase 3:** SACD low/high at all temps (11 × 2 × 3 × 30 = 1,980 trials)
+5. **Phase 4:** Sibony techniques at all temps (11 × 6 × 3 × 30 = 5,940 trials)
 
 ---
 
