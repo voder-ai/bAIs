@@ -138,6 +138,40 @@ results/
 ## Status
 
 - **2026-02-21 02:44 UTC:** Option B methodology finalized.
-- **2026-02-21 04:38 UTC:** Phase 1 baselines complete (990 trials).
+- **2026-02-21 04:38 UTC:** Phase 1 baselines complete (998 trials).
 - **2026-02-21 04:39 UTC:** Anchor values computed and saved.
-- **Next:** Phase 2 anchor conditions (1,980 trials).
+- **2026-02-21 12:42 UTC:** Phase 2 anchor conditions complete.
+  - 10/11 models complete (1,938 trials)
+  - minimax incomplete (123/180 trials) — API issues
+- **2026-02-21 13:06 UTC:** Phase 3 SACD complete for commercial models.
+  - OpenAI (4 models): 682 trials ✅
+  - Anthropic (3 models): 621 trials ✅
+  - Open source (3 models): 125 trials (in progress, ~23%)
+  - **Total SACD: 1,428 trials**
+
+### Key Findings (Preliminary)
+
+**Anchoring Effects:**
+- All models susceptible to anchoring (Cohen's d > 0.5)
+- Pattern varies: classic anchoring (GPT-5.2), compression (Opus), asymmetric (o3)
+
+**SACD Debiasing:**
+- 62% of conditions moved toward baseline (26/42)
+- Best responder: o3 (-15mo effect on high anchors)
+- Worst responder: Haiku (5/6 conditions worsened)
+- Average debiasing effect: 4.8mo
+
+### Current Totals
+
+| Phase | Trials |
+|-------|--------|
+| Phase 1 (Baselines) | 998 |
+| Phase 2 (Anchors) | 1,938 |
+| Phase 3 (SACD) | 1,428 |
+| **Total** | **4,364** |
+
+### Next Steps
+
+- ⏳ Phase 3 open source SACD: continuing (~140h ETA)
+- 📝 Paper analysis and writing (data sufficient for publication)
+- ❌ Phases 4-6 (Sibony techniques): Deferred
