@@ -25,25 +25,95 @@
 | GLM 5 | `z-ai/glm-5` | #3 by usage (1.03T tokens/week) |
 | DeepSeek V3.2 | `deepseek/deepseek-v3.2` | #5 by usage (738B tokens/week) |
 
+---
+
+## Trial List (11 conditions)
+
+### Core Anchoring (3 conditions)
+
+| Condition | Script | Rationale |
+|-----------|--------|-----------|
+| **baseline** | `run-baseline.ts` | Establishes unanchored reference point for each model. Required to calculate symmetric high anchor (2×baseline-3). |
+| **low-anchor (3mo)** | `run-low-anchor.ts` | Standard Englich paradigm with low anchor. Tests downward anchoring susceptibility. |
+| **high-anchor (symmetric)** | `run-high-anchor.ts` | Symmetric high anchor per model. Tests upward anchoring susceptibility and asymmetry. |
+
+### SACD Debiasing (2 conditions)
+
+Self-Administered Cognitive Debiasing (Lyu et al.) — Model detects and corrects its own bias through iterative reflection.
+
+| Condition | Script | Rationale |
+|-----------|--------|-----------|
+| **sacd-low** | `run-sacd.ts` | SACD applied to low anchor (3mo). Tests if self-reflection reduces anchoring. |
+| **sacd-high** | `run-sacd.ts` | SACD applied to symmetric high anchor. Tests if SACD works for high anchors. |
+
+### Sibony Debiasing (6 conditions)
+
+Three techniques from Sibony's decision hygiene framework, tested independently to measure each technique's contribution.
+
+| Condition | Script | Rationale |
+|-----------|--------|-----------|
+| **outside-view-low** | `run-outside-view.ts` | Reference class / base rates BEFORE seeing anchor. Tests if establishing baseline expectations reduces anchoring. |
+| **outside-view-high** | `run-outside-view.ts` | Outside view with high anchor. |
+| **premortem-low** | `run-premortem.ts` | Imagine sentence criticized 6 months later. Tests if anticipating failure modes reduces anchoring. |
+| **premortem-high** | `run-premortem.ts` | Pre-mortem with high anchor. |
+| **devils-advocate-low** | `run-devils-advocate.ts` | Generate arguments against the anchor. Tests if challenging the anchor reduces its influence. |
+| **devils-advocate-high** | `run-devils-advocate.ts` | Devil's advocate with high anchor. |
+
+---
+
 ## Experiment Design
 
-### Conditions (3 per model)
-1. **Baseline** — no anchor, n=30
-2. **Low anchor (3mo)** — standard Englich paradigm, n=30
-3. **Symmetric high anchor** — formula: 2 × baseline - 3, n=30
+### Per Condition
+- **n = 30 trials** per model per condition
+- **Temperature = 0.7** (default)
+- **3-turn structure** for anchor conditions (Englich paradigm)
 
 ### Methodology
-- Standardized Englich paradigm from `src/experiments/anchoringProsecutorSentencing.ts`
-- 3-turn structure: prosecutor → defense → final
-- "Randomly determined" disclosure for anchor conditions
 - All models via OpenRouter API (single provider, no routing confounds)
+- Standardized Englich paradigm from `src/experiments/anchoringProsecutorSentencing.ts`
+- "Randomly determined" disclosure in anchor conditions
+- Symmetric high anchor formula: `high = 2 × baseline - 3`
+
+### Output Files
+```
+results/
+├── baseline-<model>.jsonl
+├── low-anchor-<model>.jsonl
+├── high-anchor-<model>.jsonl
+├── sacd-3mo-<model>.jsonl
+├── sacd-<high>mo-<model>.jsonl
+├── outside-view-3mo-<model>.jsonl
+├── outside-view-<high>mo-<model>.jsonl
+├── premortem-3mo-<model>.jsonl
+├── premortem-<high>mo-<model>.jsonl
+├── devils-advocate-3mo-<model>.jsonl
+└── devils-advocate-<high>mo-<model>.jsonl
+```
+
+---
+
+## Totals
+
+- **11 models × 11 conditions × 30 trials = 3,630 total trials**
+- **Estimated API calls:** ~10,000+ (multi-turn conversations)
+
+---
+
+## Execution Order
+
+1. **Phase 1: Baselines** — Run all 11 models (330 trials)
+2. **Calculate symmetric highs** — Per model: `high = 2 × mean(baseline) - 3`
+3. **Phase 2: Low anchor conditions** — All 11 models (330 trials)
+4. **Phase 3: High anchor conditions** — All 11 models with calculated highs (330 trials)
+5. **Phase 4: SACD** — Low and high for all models (660 trials)
+6. **Phase 5: Outside View** — Low and high for all models (660 trials)
+7. **Phase 6: Pre-mortem** — Low and high for all models (660 trials)
+8. **Phase 7: Devil's Advocate** — Low and high for all models (660 trials)
+
+---
 
 ## Status
 
-All data deleted 2026-02-20. Clean slate for methodical re-run.
-
-### Phase 1: Baselines
-Run baseline (no-anchor) for all 11 models to determine symmetric high anchor values.
-
-### Phase 2: Anchor Conditions  
-After baselines complete, run low + symmetric high anchor for each model.
+- **2026-02-20:** All prior data deleted. Clean slate.
+- **2026-02-21:** MANIFEST updated with 11 conditions. Scripts ready.
+- **Awaiting:** Approval to begin Phase 1 baselines.
