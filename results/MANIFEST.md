@@ -115,7 +115,29 @@ results/
 
 ---
 
+## Computed Anchor Values
+
+**Source:** `results/anchor-values.json` (computed by `calculate-anchors.ts`)
+
+| Model | Baseline | Low Anchor | High Anchor |
+|-------|----------|------------|-------------|
+| claude-opus-4.6 | 18.0mo | 9mo | 27mo |
+| claude-sonnet-4.6 | 24.1mo | 12mo | 36mo |
+| claude-haiku-4.5 | 29.1mo | 15mo | 44mo |
+| gpt-5.2 | 31.8mo | 16mo | 48mo |
+| gpt-4.1 | 25.1mo | 13mo | 38mo |
+| o3 | 33.7mo | 17mo | 51mo |
+| o4-mini | 35.7mo | 18mo | 54mo |
+| minimax-m2.5 | 24.2mo | 12mo | 36mo |
+| kimi-k2.5 | 30.7mo | 15mo | 46mo |
+| glm-5 | 31.8mo | 16mo | 48mo |
+| deepseek-v3.2 | 29.6mo | 15mo | 44mo |
+
+---
+
 ## Status
 
-- **2026-02-21:** Updated to include temperature as variable. Option B (averaged baselines).
-- **Awaiting:** Approval to begin Phase 1 baselines.
+- **2026-02-21 02:44 UTC:** Option B methodology finalized.
+- **2026-02-21 04:38 UTC:** Phase 1 baselines complete (990 trials).
+- **2026-02-21 04:39 UTC:** Anchor values computed and saved.
+- **Next:** Phase 2 anchor conditions (1,980 trials).
