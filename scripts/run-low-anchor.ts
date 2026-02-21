@@ -2,31 +2,34 @@
 /**
  * Low Anchor Experiment — Proportional (baseline / 2)
  * 
- * Usage: npx tsx scripts/run-low-anchor.ts <model-id> <anchor> [n=30]
- * Example: npx tsx scripts/run-low-anchor.ts anthropic/claude-opus-4.6 9 30
+ * Usage: npx tsx scripts/run-low-anchor.ts <model-id> <anchor> <temp> [n=30]
+ * Example: npx tsx scripts/run-low-anchor.ts anthropic/claude-opus-4.6 9 0.7 30
  * 
  * Note: Anchor must be calculated from baseline first (baseline / 2)
  * 
- * Output: results/low-anchor-<model-short>.jsonl
+ * Output: results/low-anchor/t<temp>-<anchor>mo-<model-short>.jsonl
  */
-import { appendFile } from 'node:fs/promises';
+import { appendFile, mkdir } from 'node:fs/promises';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
 import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
-const N_TRIALS = parseInt(process.argv[4] || '30');
+const TEMPERATURE = parseFloat(process.argv[4]);
+const N_TRIALS = parseInt(process.argv[5] || '30');
 
-if (!MODEL || !ANCHOR) {
-  console.error('Usage: npx tsx scripts/run-low-anchor.ts <model-id> <anchor> [n=30]');
+if (!MODEL || isNaN(ANCHOR) || isNaN(TEMPERATURE)) {
+  console.error('Usage: npx tsx scripts/run-low-anchor.ts <model-id> <anchor> <temp> [n=30]');
+  console.error('Example: npx tsx scripts/run-low-anchor.ts anthropic/claude-opus-4.6 9 0.7 30');
   console.error('');
   console.error('Anchor should be baseline / 2 (proportional low)');
-  console.error('Example: If baseline = 18mo, anchor = 9mo');
+  console.error('Temperatures: 0, 0.7, or 1.0');
   process.exit(1);
 }
 
 const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
-const RESULTS_FILE = `results/low-anchor-${MODEL_SHORT}.jsonl`;
+const RESULTS_DIR = 'results/low-anchor';
+const RESULTS_FILE = `${RESULTS_DIR}/t${TEMPERATURE}-${ANCHOR}mo-${MODEL_SHORT}.jsonl`;
 
 // Englich paradigm prompts
 const prosecutorQuestion = (anchor: number) => 
@@ -62,17 +65,17 @@ async function runTrial(apiKey: string, index: number): Promise<number | null> {
   
   // Turn 1: Prosecutor question
   messages.push({ role: 'user', content: prosecutorQuestion(ANCHOR) });
-  let response = await callOpenRouter(apiKey, MODEL, messages);
+  let response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
   messages.push({ role: 'assistant', content: response });
   
   // Turn 2: Defense attorney question
   messages.push({ role: 'user', content: defenseAttorneyQuestion });
-  response = await callOpenRouter(apiKey, MODEL, messages);
+  response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
   messages.push({ role: 'assistant', content: response });
   
   // Turn 3: Final sentence question
   messages.push({ role: 'user', content: finalSentenceQuestion });
-  response = await callOpenRouter(apiKey, MODEL, messages);
+  response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
   
   const sentence = extractSentence(response);
   
@@ -80,6 +83,7 @@ async function runTrial(apiKey: string, index: number): Promise<number | null> {
     const record = {
       experimentId: 'low-anchor',
       model: MODEL,
+      temperature: TEMPERATURE,
       condition: `low-anchor-${ANCHOR}mo`,
       anchor: ANCHOR,
       anchorType: 'proportional-low',
@@ -98,10 +102,12 @@ async function main() {
   console.log(`=== Low Anchor Experiment (Proportional) ===`);
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo (baseline / 2)`);
+  console.log(`Temperature: ${TEMPERATURE}`);
   console.log(`Trials: ${N_TRIALS}`);
   console.log(`Output: ${RESULTS_FILE}`);
   console.log('');
 
+  await mkdir(RESULTS_DIR, { recursive: true });
   const apiKey = await getOpenRouterKey();
   const results: number[] = [];
 
@@ -123,7 +129,7 @@ async function main() {
   if (results.length > 0) {
     const mean = results.reduce((a, b) => a + b, 0) / results.length;
     console.log(`\n=== Results ===`);
-    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo | anchor=${ANCHOR}mo`);
+    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo | anchor=${ANCHOR}mo | temp=${TEMPERATURE}`);
   }
 }
 

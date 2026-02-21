@@ -2,25 +2,30 @@
 /**
  * Baseline Experiment — No Anchor
  * 
- * Usage: npx tsx scripts/run-baseline.ts <model-id> [n=30]
- * Example: npx tsx scripts/run-baseline.ts anthropic/claude-opus-4.6 30
+ * Usage: npx tsx scripts/run-baseline.ts <model-id> <temp> [n=30]
+ * Example: npx tsx scripts/run-baseline.ts anthropic/claude-opus-4.6 0.7 30
  * 
- * Output: results/baseline-<model-short>.jsonl
+ * Output: results/baseline/t<temp>-<model-short>.jsonl
  */
-import { appendFile } from 'node:fs/promises';
+import { appendFile, mkdir } from 'node:fs/promises';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
 import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
-const N_TRIALS = parseInt(process.argv[3] || '30');
+const TEMPERATURE = parseFloat(process.argv[3]);
+const N_TRIALS = parseInt(process.argv[4] || '30');
 
-if (!MODEL) {
-  console.error('Usage: npx tsx scripts/run-baseline.ts <model-id> [n=30]');
+if (!MODEL || isNaN(TEMPERATURE)) {
+  console.error('Usage: npx tsx scripts/run-baseline.ts <model-id> <temp> [n=30]');
+  console.error('Example: npx tsx scripts/run-baseline.ts anthropic/claude-opus-4.6 0.7 30');
+  console.error('');
+  console.error('Temperatures: 0, 0.7, or 1.0');
   process.exit(1);
 }
 
 const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
-const RESULTS_FILE = `results/baseline-${MODEL_SHORT}.jsonl`;
+const RESULTS_DIR = 'results/baseline';
+const RESULTS_FILE = `${RESULTS_DIR}/t${TEMPERATURE}-${MODEL_SHORT}.jsonl`;
 
 // No-anchor baseline prompt
 const baselinePrompt = 
@@ -39,13 +44,14 @@ async function runTrial(apiKey: string, index: number): Promise<number | null> {
     { role: 'user', content: baselinePrompt }
   ];
   
-  const response = await callOpenRouter(apiKey, MODEL, messages);
+  const response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
   const sentence = extractSentence(response);
   
   if (sentence !== null) {
     const record = {
       experimentId: 'baseline',
       model: MODEL,
+      temperature: TEMPERATURE,
       condition: 'no-anchor',
       anchor: null,
       sentenceMonths: sentence,
@@ -62,10 +68,12 @@ async function runTrial(apiKey: string, index: number): Promise<number | null> {
 async function main() {
   console.log(`=== Baseline Experiment (No Anchor) ===`);
   console.log(`Model: ${MODEL}`);
+  console.log(`Temperature: ${TEMPERATURE}`);
   console.log(`Trials: ${N_TRIALS}`);
   console.log(`Output: ${RESULTS_FILE}`);
   console.log('');
 
+  await mkdir(RESULTS_DIR, { recursive: true });
   const apiKey = await getOpenRouterKey();
   const results: number[] = [];
 
@@ -92,7 +100,7 @@ async function main() {
     console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo | range=${min}-${max}mo`);
     console.log(`\nProportional anchors for this model:`);
     console.log(`  Low anchor:  ${Math.round(mean / 2)}mo (baseline / 2)`);
-    console.log(`  High anchor: ${Math.round(mean * 2)}mo (baseline × 2)`);
+    console.log(`  High anchor: ${Math.round(mean * 1.5)}mo (baseline × 1.5)`);
   }
 }
 
