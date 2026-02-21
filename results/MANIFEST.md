@@ -27,37 +27,50 @@
 
 ---
 
+## Anchor Design — Proportional (Option 3)
+
+**Rationale:** Using proportional anchors ensures fair cross-model comparison. Each model faces an equally extreme anchor relative to its natural baseline, allowing us to compare susceptibility directly without confounding baseline differences.
+
+| Anchor | Formula | Example (baseline=18mo) |
+|--------|---------|------------------------|
+| **Low** | `baseline / 2` | 9mo |
+| **High** | `baseline × 2` | 36mo |
+
+This creates symmetric multiplicative deviation: low is 0.5× baseline, high is 2× baseline.
+
+---
+
 ## Trial List (11 conditions)
 
 ### Core Anchoring (3 conditions)
 
-| Condition | Script | Rationale |
-|-----------|--------|-----------|
-| **baseline** | `run-baseline.ts` | Establishes unanchored reference point for each model. Required to calculate symmetric high anchor (2×baseline-3). |
-| **low-anchor (3mo)** | `run-low-anchor.ts` | Standard Englich paradigm with low anchor. Tests downward anchoring susceptibility. |
-| **high-anchor (symmetric)** | `run-high-anchor.ts` | Symmetric high anchor per model. Tests upward anchoring susceptibility and asymmetry. |
+| Condition | Script | Anchor | Rationale |
+|-----------|--------|--------|-----------|
+| **baseline** | `run-baseline.ts` | None | Establishes unanchored reference. Required to calculate proportional anchors. |
+| **low-anchor** | `run-low-anchor.ts` | baseline / 2 | Tests downward anchoring susceptibility with proportional low anchor. |
+| **high-anchor** | `run-high-anchor.ts` | baseline × 2 | Tests upward anchoring susceptibility with proportional high anchor. |
 
 ### SACD Debiasing (2 conditions)
 
 Self-Administered Cognitive Debiasing (Lyu et al.) — Model detects and corrects its own bias through iterative reflection.
 
-| Condition | Script | Rationale |
-|-----------|--------|-----------|
-| **sacd-low** | `run-sacd.ts` | SACD applied to low anchor (3mo). Tests if self-reflection reduces anchoring. |
-| **sacd-high** | `run-sacd.ts` | SACD applied to symmetric high anchor. Tests if SACD works for high anchors. |
+| Condition | Script | Anchor | Rationale |
+|-----------|--------|--------|-----------|
+| **sacd-low** | `run-sacd.ts` | baseline / 2 | Tests if self-reflection reduces low anchoring. |
+| **sacd-high** | `run-sacd.ts` | baseline × 2 | Tests if self-reflection reduces high anchoring. |
 
 ### Sibony Debiasing (6 conditions)
 
-Three techniques from Sibony's decision hygiene framework, tested independently to measure each technique's contribution.
+Three techniques from Sibony's decision hygiene framework, tested independently.
 
-| Condition | Script | Rationale |
-|-----------|--------|-----------|
-| **outside-view-low** | `run-outside-view.ts` | Reference class / base rates BEFORE seeing anchor. Tests if establishing baseline expectations reduces anchoring. |
-| **outside-view-high** | `run-outside-view.ts` | Outside view with high anchor. |
-| **premortem-low** | `run-premortem.ts` | Imagine sentence criticized 6 months later. Tests if anticipating failure modes reduces anchoring. |
-| **premortem-high** | `run-premortem.ts` | Pre-mortem with high anchor. |
-| **devils-advocate-low** | `run-devils-advocate.ts` | Generate arguments against the anchor. Tests if challenging the anchor reduces its influence. |
-| **devils-advocate-high** | `run-devils-advocate.ts` | Devil's advocate with high anchor. |
+| Condition | Script | Anchor | Rationale |
+|-----------|--------|--------|-----------|
+| **outside-view-low** | `run-outside-view.ts` | baseline / 2 | Base rates BEFORE anchor. Tests if pre-commitment reduces anchoring. |
+| **outside-view-high** | `run-outside-view.ts` | baseline × 2 | Outside view with high anchor. |
+| **premortem-low** | `run-premortem.ts` | baseline / 2 | Anticipate failure. Tests if considering criticism reduces anchoring. |
+| **premortem-high** | `run-premortem.ts` | baseline × 2 | Pre-mortem with high anchor. |
+| **devils-advocate-low** | `run-devils-advocate.ts` | baseline / 2 | Challenge anchor. Tests if counter-arguments reduce anchoring. |
+| **devils-advocate-high** | `run-devils-advocate.ts` | baseline × 2 | Devil's advocate with high anchor. |
 
 ---
 
@@ -72,7 +85,7 @@ Three techniques from Sibony's decision hygiene framework, tested independently 
 - All models via OpenRouter API (single provider, no routing confounds)
 - Standardized Englich paradigm from `src/experiments/anchoringProsecutorSentencing.ts`
 - "Randomly determined" disclosure in anchor conditions
-- Symmetric high anchor formula: `high = 2 × baseline - 3`
+- **Proportional anchors:** low = baseline/2, high = baseline×2
 
 ### Output Files
 ```
@@ -80,13 +93,13 @@ results/
 ├── baseline-<model>.jsonl
 ├── low-anchor-<model>.jsonl
 ├── high-anchor-<model>.jsonl
-├── sacd-3mo-<model>.jsonl
+├── sacd-<low>mo-<model>.jsonl
 ├── sacd-<high>mo-<model>.jsonl
-├── outside-view-3mo-<model>.jsonl
+├── outside-view-<low>mo-<model>.jsonl
 ├── outside-view-<high>mo-<model>.jsonl
-├── premortem-3mo-<model>.jsonl
+├── premortem-<low>mo-<model>.jsonl
 ├── premortem-<high>mo-<model>.jsonl
-├── devils-advocate-3mo-<model>.jsonl
+├── devils-advocate-<low>mo-<model>.jsonl
 └── devils-advocate-<high>mo-<model>.jsonl
 ```
 
@@ -102,9 +115,9 @@ results/
 ## Execution Order
 
 1. **Phase 1: Baselines** — Run all 11 models (330 trials)
-2. **Calculate symmetric highs** — Per model: `high = 2 × mean(baseline) - 3`
+2. **Calculate proportional anchors** — Per model: low = mean(baseline)/2, high = mean(baseline)×2
 3. **Phase 2: Low anchor conditions** — All 11 models (330 trials)
-4. **Phase 3: High anchor conditions** — All 11 models with calculated highs (330 trials)
+4. **Phase 3: High anchor conditions** — All 11 models (330 trials)
 5. **Phase 4: SACD** — Low and high for all models (660 trials)
 6. **Phase 5: Outside View** — Low and high for all models (660 trials)
 7. **Phase 6: Pre-mortem** — Low and high for all models (660 trials)
@@ -115,5 +128,5 @@ results/
 ## Status
 
 - **2026-02-20:** All prior data deleted. Clean slate.
-- **2026-02-21:** MANIFEST updated with 11 conditions. Scripts ready.
+- **2026-02-21:** Updated to proportional anchors (baseline/2, baseline×2). Scripts ready.
 - **Awaiting:** Approval to begin Phase 1 baselines.
