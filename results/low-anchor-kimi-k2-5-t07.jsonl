@@ -1,0 +1,1 @@
+{"experimentId":"low-anchor","model":"moonshotai/kimi-k2.5","actualModel":"moonshotai/kimi-k2.5","condition":"low-anchor-15mo","anchor":15,"anchorType":"proportional-low","temperature":0.7,"promptHash":"aa353b5d","sentenceMonths":24,"methodology":"englich-3turn","runIndex":0,"collectedAt":"2026-02-21T05:32:43.785Z"}

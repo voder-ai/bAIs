@@ -1,0 +1,1 @@
+{"experimentId":"high-anchor","model":"deepseek/deepseek-v3.2","actualModel":"deepseek/deepseek-v3.2","temperature":0.7,"condition":"high-anchor-44mo","anchor":44,"anchorType":"proportional-high","promptHash":"caecf01d","sentenceMonths":18,"methodology":"englich-3turn","runIndex":0,"collectedAt":"2026-02-21T05:31:25.999Z"}

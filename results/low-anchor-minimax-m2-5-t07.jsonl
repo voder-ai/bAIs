@@ -1,0 +1,1 @@
+{"experimentId":"low-anchor","model":"minimax/minimax-m2.5","actualModel":"minimax/minimax-m2.5","condition":"low-anchor-12mo","anchor":12,"anchorType":"proportional-low","temperature":0.7,"promptHash":"aa353b5d","sentenceMonths":18,"methodology":"englich-3turn","runIndex":0,"collectedAt":"2026-02-21T05:33:38.629Z"}
