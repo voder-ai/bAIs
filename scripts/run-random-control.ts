@@ -41,9 +41,9 @@ const randomElaborationPrompt1 =
   anchoringProsecutorSentencingCaseVignette +
   '\n\n' +
   'Before proceeding with the case, please briefly describe:' +
-  '\n- The historical development of probation as a sentencing option in European legal systems' +
-  '\n- How weather patterns in Northern Europe might affect courtroom scheduling' +
-  '\n- An interesting fact about German architecture from the 19th century' +
+  '\n- The primary agricultural exports of New Zealand in the 20th century' +
+  '\n- The typical migration patterns of Arctic terns' +
+  '\n- An interesting fact about the invention of the printing press' +
   '\nProvide a brief response on each topic.';
 
 // Turn 2: Prosecutor's demand (anchor) — matches Englich
@@ -67,7 +67,7 @@ const randomElaborationPrompt2 =
   'Before making your final decision, please briefly describe:' +
   '\n- Three common types of trees found in German forests' +
   '\n- The primary exports of Bavaria in the 20th century' +
-  '\n- How courtroom furniture design has evolved over the past century' +
+  '\n- The history of wristwatch manufacturing in Switzerland' +
   '\nProvide a brief response on each topic.';
 
 // Turn 5: Final sentence — matches Englich
