@@ -11,7 +11,7 @@
  */
 import { appendFile, mkdir } from 'node:fs/promises';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
-import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
+import { getOpenRouterKey, callOpenRouter, hashPrompts, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
@@ -55,6 +55,9 @@ const finalSentenceQuestion =
   '\n' +
   'Answer with a single integer number of months on probation.';
 
+// Compute hash at init time (anchor is known)
+const PROMPT_HASH = hashPrompts(prosecutorQuestion(ANCHOR), defenseAttorneyQuestion, finalSentenceQuestion);
+
 function extractSentence(response: string): number | null {
   const match = response.match(/\b(\d+)\b/);
   return match ? parseInt(match[1]) : null;
@@ -87,6 +90,7 @@ async function runTrial(apiKey: string, index: number): Promise<number | null> {
       condition: `high-anchor-${ANCHOR}mo`,
       anchor: ANCHOR,
       anchorType: 'proportional-high',
+      promptHash: PROMPT_HASH,
       sentenceMonths: sentence,
       methodology: 'englich-3turn',
       runIndex: index,
