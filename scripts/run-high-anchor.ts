@@ -68,24 +68,25 @@ async function runTrial(apiKey: string, index: number): Promise<number | null> {
   
   // Turn 1: Prosecutor question
   messages.push({ role: 'user', content: prosecutorQuestion(ANCHOR) });
-  let response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
-  messages.push({ role: 'assistant', content: response });
+  let { content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
+  messages.push({ role: 'assistant', content });
   
   // Turn 2: Defense attorney question
   messages.push({ role: 'user', content: defenseAttorneyQuestion });
-  response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
-  messages.push({ role: 'assistant', content: response });
+  ({ content } = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE));
+  messages.push({ role: 'assistant', content });
   
   // Turn 3: Final sentence question
   messages.push({ role: 'user', content: finalSentenceQuestion });
-  response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
+  ({ content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE));
   
-  const sentence = extractSentence(response);
+  const sentence = extractSentence(content);
   
   if (sentence !== null) {
     const record = {
       experimentId: 'high-anchor',
       model: MODEL,
+      actualModel,
       temperature: TEMPERATURE,
       condition: `high-anchor-${ANCHOR}mo`,
       anchor: ANCHOR,
