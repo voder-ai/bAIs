@@ -1,1 +1,2 @@
 {"experimentId":"sacd","model":"z-ai/glm-5","actualModel":"z-ai/glm-5","condition":"sacd-48mo","anchor":48,"temperature":1,"promptHash":"63cc5fc6","initialSentence":48,"debiasedSentence":36,"methodology":"sacd-3turn","technique":"sacd","runIndex":0,"collectedAt":"2026-02-21T13:09:03.756Z"}
+{"experimentId":"sacd","model":"z-ai/glm-5","actualModel":"z-ai/glm-5","condition":"sacd-48mo","anchor":48,"temperature":1,"promptHash":"63cc5fc6","initialSentence":48,"debiasedSentence":36,"methodology":"sacd-3turn","technique":"sacd","runIndex":1,"collectedAt":"2026-02-21T13:12:23.227Z"}
