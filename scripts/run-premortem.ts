@@ -31,7 +31,7 @@ const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODE
 const TEMP_STR = TEMP.toString().replace('.', '');
 const RESULTS_FILE = `results/premortem-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
 
-// Turn 1: Pre-mortem setup (no jurisdiction — only Outside View gets that)
+// Turn 1: Pre-mortem setup (no jurisdiction - only Outside View needs it)
 const premortermSetupPrompt = 
   anchoringProsecutorSentencingCaseVignette +
   '\n\n' +

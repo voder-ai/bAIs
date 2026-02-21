@@ -31,7 +31,7 @@ const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODE
 const TEMP_STR = TEMP.toString().replace('.', '');
 const RESULTS_FILE = `results/devils-advocate-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
 
-// Turn 1: Devil's advocate setup (no jurisdiction — only Outside View gets that)
+// Turn 1: Devil's advocate setup (no jurisdiction - only Outside View needs it)
 const devilsAdvocateSetupPrompt = 
   anchoringProsecutorSentencingCaseVignette +
   '\n\n' +

@@ -35,14 +35,15 @@ const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODE
 const TEMP_STR = TEMP.toString().replace('.', '');
 const RESULTS_FILE = `results/random-control-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
 
-// Turn 1: Irrelevant elaboration (no jurisdiction — only Outside View gets that)
+// Turn 1: Irrelevant elaboration (token-matched to other Sibony Turn 1s)
+// No jurisdiction - only Outside View needs it
 const randomElaborationPrompt1 = 
   anchoringProsecutorSentencingCaseVignette +
   '\n\n' +
   'Before proceeding with the case, please briefly describe:' +
-  '\n- The historical development of probation as a sentencing option in legal systems' +
-  '\n- How weather patterns might affect courtroom scheduling' +
-  '\n- An interesting architectural fact from the 19th century' +
+  '\n- The historical development of probation as a sentencing option in European legal systems' +
+  '\n- How weather patterns in Northern Europe might affect courtroom scheduling' +
+  '\n- An interesting fact about German architecture from the 19th century' +
   '\nProvide a brief response on each topic.';
 
 // Turn 2: Prosecutor's demand (anchor) — matches Englich
