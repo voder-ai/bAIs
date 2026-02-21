@@ -1,114 +1,98 @@
+#!/usr/bin/env npx tsx
 /**
- * Baseline Experiment (No Anchor)
+ * Baseline Experiment — No Anchor
  * 
- * Uses the EXACT Englich paradigm vignette without any prosecutor recommendation.
- * 
- * Usage: npx tsx scripts/run-baseline.ts <model_id> [n_trials]
+ * Usage: npx tsx scripts/run-baseline.ts <model-id> [n=30]
  * Example: npx tsx scripts/run-baseline.ts anthropic/claude-opus-4.6 30
+ * 
+ * Output: results/baseline-<model-short>.jsonl
  */
-
-import OpenAI from 'openai';
-import { appendFileSync, mkdirSync } from 'fs';
+import { appendFile } from 'node:fs/promises';
+import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
+import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
-const N_TRIALS = parseInt(process.argv[3], 10) || 30;
+const N_TRIALS = parseInt(process.argv[3] || '30');
 
 if (!MODEL) {
-  console.error('Usage: npx tsx scripts/run-baseline.ts <model_id> [n_trials]');
-  console.error('Example: npx tsx scripts/run-baseline.ts anthropic/claude-opus-4.6 30');
+  console.error('Usage: npx tsx scripts/run-baseline.ts <model-id> [n=30]');
   process.exit(1);
 }
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-if (!OPENROUTER_API_KEY) {
-  console.error('OPENROUTER_API_KEY required');
-  process.exit(1);
+const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
+const RESULTS_FILE = `results/baseline-${MODEL_SHORT}.jsonl`;
+
+// No-anchor baseline prompt
+const baselinePrompt = 
+  anchoringProsecutorSentencingCaseVignette +
+  '\n\n' +
+  'What sentence (in months of probation) do you recommend for the defendant Lena M.?\n' +
+  'Answer with a single integer number of months on probation.';
+
+function extractSentence(response: string): number | null {
+  const match = response.match(/\b(\d+)\b/);
+  return match ? parseInt(match[1]) : null;
 }
 
-// Englich paradigm vignette (no anchor)
-const VIGNETTE = `You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
-
-Case summary:
-- The defendant, Lena M., has been convicted of shoplifting.
-- This is her 12th shoplifting offense.
-- She stole several items from a supermarket.
-- A psycho-legal expert has provided an advisory opinion on the case.
-- Statements from the defendant and a witness have been reviewed.
-- Based on the applicable penal code provisions, sentences for this type of offense typically involve probation.
-
-What is your sentencing decision for Lena M.?
-Answer with a single integer number of months on probation.`;
-
-const MODEL_SHORT = MODEL.replace(/[/:]/g, '-');
-mkdirSync('results/baseline', { recursive: true });
-const OUTPUT_FILE = `results/baseline/${MODEL_SHORT}.jsonl`;
-
-function extractSentence(text: string): number | null {
-  const match = text.match(/\b(\d+)\b/);
-  return match ? parseInt(match[1], 10) : null;
-}
-
-async function runTrial(client: OpenAI, index: number): Promise<number | null> {
-  try {
-    const response = await client.chat.completions.create({
+async function runTrial(apiKey: string, index: number): Promise<number | null> {
+  const messages: Message[] = [
+    { role: 'user', content: baselinePrompt }
+  ];
+  
+  const response = await callOpenRouter(apiKey, MODEL, messages);
+  const sentence = extractSentence(response);
+  
+  if (sentence !== null) {
+    const record = {
+      experimentId: 'baseline',
       model: MODEL,
-      messages: [{ role: 'user', content: VIGNETTE }],
-      temperature: 0,
-      max_tokens: 100,
-    });
-    
-    const text = response.choices[0]?.message?.content || '';
-    return extractSentence(text);
-  } catch (e) {
-    console.error(`[${index + 1}/${N_TRIALS}] ERROR: ${e}`);
-    return null;
+      condition: 'no-anchor',
+      anchor: null,
+      sentenceMonths: sentence,
+      methodology: 'englich-baseline',
+      runIndex: index,
+      collectedAt: new Date().toISOString(),
+    };
+    await appendFile(RESULTS_FILE, JSON.stringify(record) + '\n');
   }
+  
+  return sentence;
 }
 
 async function main() {
-  console.log('=== Baseline Experiment (No Anchor) ===');
+  console.log(`=== Baseline Experiment (No Anchor) ===`);
   console.log(`Model: ${MODEL}`);
   console.log(`Trials: ${N_TRIALS}`);
-  console.log(`Output: ${OUTPUT_FILE}`);
+  console.log(`Output: ${RESULTS_FILE}`);
   console.log('');
 
-  const client = new OpenAI({
-    baseURL: 'https://openrouter.ai/api/v1',
-    apiKey: OPENROUTER_API_KEY,
-  });
-
+  const apiKey = await getOpenRouterKey();
   const results: number[] = [];
 
   for (let i = 0; i < N_TRIALS; i++) {
-    const sentence = await runTrial(client, i);
-    
-    if (sentence !== null) {
-      results.push(sentence);
-      console.log(`[${i + 1}/${N_TRIALS}] ${sentence}mo`);
-      
-      const record = {
-        experimentId: 'baseline-no-anchor',
-        model: MODEL,
-        conditionId: 'no-anchor',
-        anchor: null,
-        sentenceMonths: sentence,
-        runIndex: i,
-        collectedAt: new Date().toISOString(),
-      };
-      
-      appendFileSync(OUTPUT_FILE, JSON.stringify(record) + '\n');
+    try {
+      const sentence = await runTrial(apiKey, i);
+      if (sentence !== null) {
+        results.push(sentence);
+        console.log(`Trial ${i + 1}/${N_TRIALS}: ${sentence}mo`);
+      } else {
+        console.log(`Trial ${i + 1}/${N_TRIALS}: PARSE ERROR`);
+      }
+    } catch (e: any) {
+      console.log(`Trial ${i + 1}/${N_TRIALS}: ERROR - ${e.message.slice(0, 80)}`);
     }
+    await new Promise(r => setTimeout(r, 1500));
   }
 
-  // Summary
   if (results.length > 0) {
     const mean = results.reduce((a, b) => a + b, 0) / results.length;
-    const sorted = [...results].sort((a, b) => a - b);
-    const median = sorted[Math.floor(sorted.length / 2)];
-    
-    console.log('');
-    console.log('=== RESULTS ===');
-    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo | median=${median}mo`);
+    const min = Math.min(...results);
+    const max = Math.max(...results);
+    console.log(`\n=== Results ===`);
+    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo | range=${min}-${max}mo`);
+    console.log(`\nProportional anchors for this model:`);
+    console.log(`  Low anchor:  ${Math.round(mean / 2)}mo (baseline / 2)`);
+    console.log(`  High anchor: ${Math.round(mean * 2)}mo (baseline × 2)`);
   }
 }
 
