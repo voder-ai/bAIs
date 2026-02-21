@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 /**
- * SACD Debiasing — Self-Administered Cognitive Debiasing (Lyu et al.)
+ * SACD Debiasing — Self-Administered Cognitive Debiasing
  * 
  * Usage: npx tsx scripts/run-sacd.ts <model-id> <anchor> <temperature> [n=30]
  * Example: npx tsx scripts/run-sacd.ts anthropic/claude-opus-4.6 9 0.7 30
@@ -9,7 +9,7 @@
  */
 import { appendFile } from 'node:fs/promises';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
-import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
+import { getOpenRouterKey, callOpenRouter, hashPrompts, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
@@ -48,6 +48,12 @@ const debiasedPrompt =
   'What is your final, debiased sentencing recommendation?\n' +
   'Answer with a single integer number of months on probation.';
 
+const PROMPT_HASH = hashPrompts(
+  initialPrompt(999).replace('999', 'ANCHOR'),
+  biasDetectionPrompt,
+  debiasedPrompt
+);
+
 function extractSentence(response: string): number | null {
   const match = response.match(/\b(\d+)\b/);
   return match ? parseInt(match[1]) : null;
@@ -57,24 +63,26 @@ async function runTrial(apiKey: string, index: number) {
   const messages: Message[] = [];
   
   messages.push({ role: 'user', content: initialPrompt(ANCHOR) });
-  let response = await callOpenRouter(apiKey, MODEL, messages, TEMP);
-  messages.push({ role: 'assistant', content: response });
-  const initial = extractSentence(response);
+  let { content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP);
+  messages.push({ role: 'assistant', content });
+  const initial = extractSentence(content);
   
   messages.push({ role: 'user', content: biasDetectionPrompt });
-  response = await callOpenRouter(apiKey, MODEL, messages, TEMP);
-  messages.push({ role: 'assistant', content: response });
+  ({ content } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
+  messages.push({ role: 'assistant', content });
   
   messages.push({ role: 'user', content: debiasedPrompt });
-  response = await callOpenRouter(apiKey, MODEL, messages, TEMP);
-  const debiased = extractSentence(response);
+  ({ content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
+  const debiased = extractSentence(content);
   
   const record = {
     experimentId: 'sacd',
     model: MODEL,
+    actualModel,
     condition: `sacd-${ANCHOR}mo`,
     anchor: ANCHOR,
     temperature: TEMP,
+    promptHash: PROMPT_HASH,
     initialSentence: initial,
     debiasedSentence: debiased,
     methodology: 'sacd-3turn',
@@ -92,6 +100,7 @@ async function main() {
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo`);
   console.log(`Temperature: ${TEMP}`);
+  console.log(`Prompt Hash: ${PROMPT_HASH}`);
   console.log(`Output: ${RESULTS_FILE}\n`);
   
   const apiKey = await getOpenRouterKey();
@@ -116,7 +125,6 @@ async function main() {
     console.log(`\n=== Results ===`);
     console.log(`Initial:  n=${initials.length} | mean=${mI.toFixed(1)}mo`);
     console.log(`Debiased: n=${debiaseds.length} | mean=${mD.toFixed(1)}mo`);
-    console.log(`Change: ${(mD - mI).toFixed(1)}mo (${((mD - mI) / mI * 100).toFixed(1)}%)`);
   }
 }
 

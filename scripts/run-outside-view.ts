@@ -9,7 +9,7 @@
  */
 import { appendFile } from 'node:fs/promises';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
-import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
+import { getOpenRouterKey, callOpenRouter, hashPrompts, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
@@ -39,6 +39,11 @@ const anchoredDecisionPrompt = (anchor: number) =>
   'what is your final sentencing decision for Lena M.?\n' +
   'Answer with a single integer number of months on probation.';
 
+const PROMPT_HASH = hashPrompts(
+  outsideViewPrompt,
+  anchoredDecisionPrompt(999).replace('999', 'ANCHOR')
+);
+
 function extractSentence(response: string): number | null {
   const match = response.match(/\b(\d+)\b/);
   return match ? parseInt(match[1]) : null;
@@ -48,19 +53,21 @@ async function runTrial(apiKey: string, index: number) {
   const messages: Message[] = [];
   
   messages.push({ role: 'user', content: outsideViewPrompt });
-  let response = await callOpenRouter(apiKey, MODEL, messages, TEMP);
-  messages.push({ role: 'assistant', content: response });
+  let { content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP);
+  messages.push({ role: 'assistant', content });
   
   messages.push({ role: 'user', content: anchoredDecisionPrompt(ANCHOR) });
-  response = await callOpenRouter(apiKey, MODEL, messages, TEMP);
-  const sentence = extractSentence(response);
+  ({ content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
+  const sentence = extractSentence(content);
   
   const record = {
     experimentId: 'outside-view',
     model: MODEL,
+    actualModel,
     condition: `outside-view-${ANCHOR}mo`,
     anchor: ANCHOR,
     temperature: TEMP,
+    promptHash: PROMPT_HASH,
     sentenceMonths: sentence,
     methodology: 'outside-view-2turn',
     technique: 'outside-view',
@@ -77,6 +84,7 @@ async function main() {
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo`);
   console.log(`Temperature: ${TEMP}`);
+  console.log(`Prompt Hash: ${PROMPT_HASH}`);
   console.log(`Output: ${RESULTS_FILE}\n`);
   
   const apiKey = await getOpenRouterKey();
