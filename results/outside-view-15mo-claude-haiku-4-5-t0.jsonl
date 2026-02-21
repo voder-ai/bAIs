@@ -1,0 +1,1 @@
+{"experimentId":"outside-view","model":"anthropic/claude-haiku-4.5","actualModel":"anthropic/claude-haiku-4.5","condition":"outside-view-15mo","anchor":15,"temperature":0,"promptHash":"5c364862","baseRateEstimate":60,"sentenceMonths":24,"methodology":"outside-view-4turn","technique":"outside-view","runIndex":0,"collectedAt":"2026-02-21T20:58:54.113Z"}
