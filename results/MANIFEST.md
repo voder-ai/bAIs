@@ -88,6 +88,11 @@
 | **devils-advocate-low**  | `run-devils-advocate.ts` | baseline / 2   |
 | **devils-advocate-high** | `run-devils-advocate.ts` | baseline × 1.5 |
 
+**Design notes:**
+- **Jurisdiction:** Only Outside View includes German federal court context (needed for base rate estimation). Other Sibony techniques use baseline vignette without jurisdiction.
+- **Final prompt:** All Sibony techniques use neutral final prompt ("What is your final sentencing decision?") to measure implicit priming, not instruction-following.
+- **Englich structure:** All follow 4-5 turn structure with prosecutor demand (anchor) + defense demand (1mo) + final decision.
+
 ### Token-Matched Random Control (2 conditions)
 
 | Condition               | Script                  | Anchor         |
@@ -95,10 +100,22 @@
 | **random-control-low**  | `run-random-control.ts` | baseline / 2   |
 | **random-control-high** | `run-random-control.ts` | baseline × 1.5 |
 
-**Purpose:** Isolate content effects from length effects. Same token count as SACD debiasing prompt, but random/irrelevant elaboration instead of actual debiasing content.
+**Purpose:** Isolate content effects from length/turn-count effects. Same structure as Sibony techniques but with irrelevant content.
 
-- If random control shows same bias reduction as SACD → length/distraction was the factor
-- If SACD outperforms random → debiasing content matters
+**Critical design rationale (addressing turn count confound):**
+
+| Condition      | Turns | Content    | Purpose                |
+|----------------|-------|------------|------------------------|
+| Baseline       | 3     | None       | Reference              |
+| Sibony         | 4-5   | Debiasing  | Test intervention      |
+| Random Control | 4-5   | Irrelevant | Control for turn count |
+
+**Interpretation:**
+- If Sibony > Random Control → debiasing CONTENT matters
+- If Sibony ≈ Random Control → effect is from extra turns/thinking time, not content
+- If Random Control > Baseline → turn count alone affects responses
+
+This is standard experimental design for isolating content vs. structure effects. Random Control directly addresses the confound that Sibony techniques use more turns than baseline.
 
 ---
 
