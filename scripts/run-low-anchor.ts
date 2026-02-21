@@ -2,34 +2,28 @@
 /**
  * Low Anchor Experiment — Proportional (baseline / 2)
  * 
- * Usage: npx tsx scripts/run-low-anchor.ts <model-id> <anchor> <temp> [n=30]
+ * Usage: npx tsx scripts/run-low-anchor.ts <model-id> <anchor> <temperature> [n=30]
  * Example: npx tsx scripts/run-low-anchor.ts anthropic/claude-opus-4.6 9 0.7 30
  * 
- * Note: Anchor must be calculated from baseline first (baseline / 2)
- * 
- * Output: results/low-anchor/t<temp>-<anchor>mo-<model-short>.jsonl
+ * Output: results/low-anchor-<model-short>-t<temp>.jsonl
  */
-import { appendFile, mkdir } from 'node:fs/promises';
+import { appendFile } from 'node:fs/promises';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
-import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
+import { getOpenRouterKey, callOpenRouter, hashPrompts, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
-const TEMPERATURE = parseFloat(process.argv[4]);
+const TEMP = parseFloat(process.argv[4]);
 const N_TRIALS = parseInt(process.argv[5] || '30');
 
-if (!MODEL || isNaN(ANCHOR) || isNaN(TEMPERATURE)) {
-  console.error('Usage: npx tsx scripts/run-low-anchor.ts <model-id> <anchor> <temp> [n=30]');
-  console.error('Example: npx tsx scripts/run-low-anchor.ts anthropic/claude-opus-4.6 9 0.7 30');
-  console.error('');
-  console.error('Anchor should be baseline / 2 (proportional low)');
-  console.error('Temperatures: 0, 0.7, or 1.0');
+if (!MODEL || !ANCHOR || isNaN(TEMP)) {
+  console.error('Usage: npx tsx scripts/run-low-anchor.ts <model-id> <anchor> <temperature> [n=30]');
   process.exit(1);
 }
 
 const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
-const RESULTS_DIR = 'results/low-anchor';
-const RESULTS_FILE = `${RESULTS_DIR}/t${TEMPERATURE}-${ANCHOR}mo-${MODEL_SHORT}.jsonl`;
+const TEMP_STR = TEMP.toString().replace('.', '');
+const RESULTS_FILE = `results/low-anchor-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
 
 // Englich paradigm prompts
 const prosecutorQuestion = (anchor: number) => 
@@ -55,6 +49,13 @@ const finalSentenceQuestion =
   '\n' +
   'Answer with a single integer number of months on probation.';
 
+// Prompt hash (using placeholder for anchor since it varies)
+const PROMPT_HASH = hashPrompts(
+  prosecutorQuestion(999).replace('999', 'ANCHOR'),
+  defenseAttorneyQuestion,
+  finalSentenceQuestion
+);
+
 function extractSentence(response: string): number | null {
   const match = response.match(/\b(\d+)\b/);
   return match ? parseInt(match[1]) : null;
@@ -63,51 +64,48 @@ function extractSentence(response: string): number | null {
 async function runTrial(apiKey: string, index: number): Promise<number | null> {
   const messages: Message[] = [];
   
-  // Turn 1: Prosecutor question
   messages.push({ role: 'user', content: prosecutorQuestion(ANCHOR) });
-  let response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
-  messages.push({ role: 'assistant', content: response });
+  let { content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP);
+  messages.push({ role: 'assistant', content });
   
-  // Turn 2: Defense attorney question
   messages.push({ role: 'user', content: defenseAttorneyQuestion });
-  response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
-  messages.push({ role: 'assistant', content: response });
+  ({ content } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
+  messages.push({ role: 'assistant', content });
   
-  // Turn 3: Final sentence question
   messages.push({ role: 'user', content: finalSentenceQuestion });
-  response = await callOpenRouter(apiKey, MODEL, messages, TEMPERATURE);
+  ({ content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
   
-  const sentence = extractSentence(response);
+  const sentence = extractSentence(content);
   
-  if (sentence !== null) {
-    const record = {
-      experimentId: 'low-anchor',
-      model: MODEL,
-      temperature: TEMPERATURE,
-      condition: `low-anchor-${ANCHOR}mo`,
-      anchor: ANCHOR,
-      anchorType: 'proportional-low',
-      sentenceMonths: sentence,
-      methodology: 'englich-3turn',
-      runIndex: index,
-      collectedAt: new Date().toISOString(),
-    };
-    await appendFile(RESULTS_FILE, JSON.stringify(record) + '\n');
-  }
+  const record = {
+    experimentId: 'low-anchor',
+    model: MODEL,
+    actualModel,
+    condition: `low-anchor-${ANCHOR}mo`,
+    anchor: ANCHOR,
+    anchorType: 'proportional-low',
+    temperature: TEMP,
+    promptHash: PROMPT_HASH,
+    sentenceMonths: sentence,
+    methodology: 'englich-3turn',
+    runIndex: index,
+    collectedAt: new Date().toISOString(),
+  };
+  await appendFile(RESULTS_FILE, JSON.stringify(record) + '\n');
   
   return sentence;
 }
 
 async function main() {
-  console.log(`=== Low Anchor Experiment (Proportional) ===`);
+  console.log(`=== Low Anchor Experiment ===`);
   console.log(`Model: ${MODEL}`);
-  console.log(`Anchor: ${ANCHOR}mo (baseline / 2)`);
-  console.log(`Temperature: ${TEMPERATURE}`);
+  console.log(`Anchor: ${ANCHOR}mo`);
+  console.log(`Temperature: ${TEMP}`);
+  console.log(`Prompt Hash: ${PROMPT_HASH}`);
   console.log(`Trials: ${N_TRIALS}`);
   console.log(`Output: ${RESULTS_FILE}`);
   console.log('');
 
-  await mkdir(RESULTS_DIR, { recursive: true });
   const apiKey = await getOpenRouterKey();
   const results: number[] = [];
 
@@ -129,7 +127,7 @@ async function main() {
   if (results.length > 0) {
     const mean = results.reduce((a, b) => a + b, 0) / results.length;
     console.log(`\n=== Results ===`);
-    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo | anchor=${ANCHOR}mo | temp=${TEMPERATURE}`);
+    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo | anchor=${ANCHOR}mo`);
   }
 }
 

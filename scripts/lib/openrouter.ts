@@ -4,6 +4,7 @@
 import { readFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 
 export async function getOpenRouterKey(): Promise<string> {
   if (process.env.OPENROUTER_API_KEY) return process.env.OPENROUTER_API_KEY;
@@ -17,15 +18,49 @@ export async function getOpenRouterKey(): Promise<string> {
 
 export interface Message { role: 'user' | 'assistant' | 'system'; content: string; }
 
-export async function callOpenRouter(apiKey: string, model: string, messages: Message[], temperature = 0.7): Promise<string> {
+export interface OpenRouterResponse {
+  id: string;
+  model: string;
+  choices: Array<{
+    message: {
+      content: string;
+    };
+  }>;
+}
+
+export async function callOpenRouter(
+  apiKey: string, 
+  model: string, 
+  messages: Message[], 
+  temperature = 0.7
+): Promise<{ content: string; actualModel: string }> {
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://github.com/voder-ai/bAIs' },
+    headers: { 
+      Authorization: `Bearer ${apiKey}`, 
+      'Content-Type': 'application/json', 
+      'HTTP-Referer': 'https://github.com/voder-ai/bAIs' 
+    },
     body: JSON.stringify({ model, messages, temperature }),
   });
-  if (!response.ok) throw new Error(`OpenRouter error ${response.status}`);
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content || '';
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`OpenRouter error ${response.status}: ${text.slice(0, 200)}`);
+  }
+  const data: OpenRouterResponse = await response.json();
+  return {
+    content: data.choices?.[0]?.message?.content || '',
+    actualModel: data.model || model,
+  };
+}
+
+/**
+ * Hash prompts for drift detection
+ * Returns first 8 chars of SHA256
+ */
+export function hashPrompts(...prompts: string[]): string {
+  const combined = prompts.join('|||');
+  return createHash('sha256').update(combined).digest('hex').slice(0, 8);
 }
 
 export const MODELS = {
