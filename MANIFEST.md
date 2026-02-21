@@ -51,18 +51,18 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 
 | # | Condition | Script | Rationale |
 |---|-----------|--------|-----------|
-| 4 | **SACD @ low anchor** | `run-sacd.ts 3` | Tests Lyu et al. Self-Adaptive Cognitive Debiasing. Iterative: detect bias → analyze → rewrite → execute. |
-| 5 | **SACD @ high anchor** | `run-sacd.ts <high>` | Same SACD method at symmetric high anchor. Tests if debiasing works for both directions. |
+| 4 | **SACD @ low anchor** | `run-sacd.ts <low>` | Tests Lyu et al. Self-Adaptive Cognitive Debiasing. Iterative: detect bias → analyze → rewrite → execute. |
+| 5 | **SACD @ high anchor** | `run-sacd.ts <high>` | Same SACD method at high anchor. Tests if debiasing works for both directions. |
 
 ### Phase 4: Sibony Debiasing (Separate Techniques)
 
 | # | Condition | Script | Rationale |
 |---|-----------|--------|-----------|
-| 6 | **Outside View @ low** | `run-outside-view.ts 3` | Sibony technique: establish base rates BEFORE seeing anchor. Tests reference class reasoning. |
+| 6 | **Outside View @ low** | `run-outside-view.ts <low>` | Sibony technique: establish base rates BEFORE seeing anchor. Tests reference class reasoning. |
 | 7 | **Outside View @ high** | `run-outside-view.ts <high>` | Same technique at high anchor. |
-| 8 | **Pre-mortem @ low** | `run-premortem.ts 3` | Sibony technique: imagine failure before deciding. Tests prospective hindsight. |
+| 8 | **Pre-mortem @ low** | `run-premortem.ts <low>` | Sibony technique: imagine failure before deciding. Tests prospective hindsight. |
 | 9 | **Pre-mortem @ high** | `run-premortem.ts <high>` | Same technique at high anchor. |
-| 10 | **Devil's Advocate @ low** | `run-devils-advocate.ts 3` | Sibony technique: argue against the anchor. Tests adversarial reasoning. |
+| 10 | **Devil's Advocate @ low** | `run-devils-advocate.ts <low>` | Sibony technique: argue against the anchor. Tests adversarial reasoning. |
 | 11 | **Devil's Advocate @ high** | `run-devils-advocate.ts <high>` | Same technique at high anchor. |
 
 ---
