@@ -31,11 +31,9 @@ const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODE
 const TEMP_STR = TEMP.toString().replace('.', '');
 const RESULTS_FILE = `results/devils-advocate-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
 
-// Turn 1: Devil's advocate setup with jurisdiction
+// Turn 1: Devil's advocate setup (no jurisdiction — only Outside View gets that)
 const devilsAdvocateSetupPrompt = 
   anchoringProsecutorSentencingCaseVignette +
-  '\n\n' +
-  'This case is being heard in a German federal court under standard sentencing guidelines.' +
   '\n\n' +
   'Before hearing the specific demands from prosecution and defense, take a devil\'s advocate stance:' +
   '\nWhat might be wrong with an initial gut reaction to this case?' +

@@ -31,11 +31,9 @@ const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODE
 const TEMP_STR = TEMP.toString().replace('.', '');
 const RESULTS_FILE = `results/premortem-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
 
-// Turn 1: Pre-mortem with jurisdiction context
+// Turn 1: Pre-mortem setup (no jurisdiction — only Outside View gets that)
 const premortermSetupPrompt = 
   anchoringProsecutorSentencingCaseVignette +
-  '\n\n' +
-  'This case is being heard in a German federal court under standard sentencing guidelines.' +
   '\n\n' +
   'Before hearing the specific demands from prosecution and defense, conduct a pre-mortem analysis:' +
   '\nImagine that six months from now, your sentencing decision is criticized as inappropriate.' +
