@@ -85,9 +85,9 @@ const PROMPT_HASH = hashPrompts(
 );
 
 function extractSentence(response: string): number | null {
-  // Look for number followed by "month" or at end of response
-  const monthMatch = response.match(/(\d+)\s*(?:months?|mo\b)/i);
-  if (monthMatch) return parseInt(monthMatch[1]);
+  // Look for LAST number followed by "month" (avoids grabbing ranges like "12-36 months")
+  const monthMatches = [...response.matchAll(/(\d+)\s*(?:months?|mo\b)/gi)];
+  if (monthMatches.length > 0) return parseInt(monthMatches[monthMatches.length - 1][1]);
   
   // Fallback: last number in response (likely the answer)
   const numbers = response.match(/\b(\d+)\b/g);
