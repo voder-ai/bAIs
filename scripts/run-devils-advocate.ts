@@ -67,8 +67,7 @@ const counterArgumentsPrompt =
 
 // Turn 5: Final sentence — matches Englich
 const finalSentencePrompt =
-  "Now, considering both the prosecutor's demand, the defense attorney's demand, and the counter-arguments you developed," +
-  '\nwhat is your final sentencing decision for Lena M.?' +
+  "What is your final sentencing decision for Lena M.?\n" +
   '\nAnswer with a single integer number of months on probation.';
 
 const PROMPT_HASH = hashPrompts(

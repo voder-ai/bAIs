@@ -57,8 +57,7 @@ const defenseAttorneyQuestion =
 
 // Turn 4: Final sentence
 const finalSentenceQuestion =
-  "Now, considering the typical sentencing range you identified, the prosecutor's demand, " +
-  "and the defense attorney's demand, what is your final sentencing decision for Lena M.?\n" +
+  "What is your final sentencing decision for Lena M.?\n" +
   'Answer with a single integer number of months on probation.';
 
 const PROMPT_HASH = hashPrompts(
