@@ -32,8 +32,13 @@ export async function callOpenRouter(
   apiKey: string, 
   model: string, 
   messages: Message[], 
-  temperature = 0.7
+  temperature = 0.7,
+  providerOrder?: string[]
 ): Promise<{ content: string; actualModel: string }> {
+  const body: Record<string, unknown> = { model, messages, temperature };
+  if (providerOrder?.length) {
+    body.provider = { order: providerOrder };
+  }
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: { 
@@ -41,7 +46,7 @@ export async function callOpenRouter(
       'Content-Type': 'application/json', 
       'HTTP-Referer': 'https://github.com/voder-ai/bAIs' 
     },
-    body: JSON.stringify({ model, messages, temperature }),
+    body: JSON.stringify(body),
   });
   if (!response.ok) {
     const text = await response.text();

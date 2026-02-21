@@ -5,28 +5,31 @@
 ## Raw Patterns (No Interpretation)
 
 ### Pattern A: Anchor-Tracking (shifts toward anchor)
-| Model | No-Anchor | Low (3mo) | High (9mo) | High (24mo) |
-|-------|-----------|-----------|------------|-------------|
-| GPT-4o | 24.4 | 4.2 | 9.4 | 24.0 |
-| GPT-5.2 | 32.1 | 7.5 | 10.5 | 28.2 |
-| Opus 4.5 | 21.2 | 7.0 | 10.2 | 18.0 |
-| MiniMax | 11.6 | 4.3 | 8.7 | 19.8 |
-| o3-mini | 12.0 | 4.2 | 9.8 | 33.0 |
-| o1 | 11.9 | 5.5 | 10.2 | 19.5 |
+
+| Model    | No-Anchor | Low (3mo) | High (9mo) | High (24mo) |
+| -------- | --------- | --------- | ---------- | ----------- |
+| GPT-4o   | 24.4      | 4.2       | 9.4        | 24.0        |
+| GPT-5.2  | 32.1      | 7.5       | 10.5       | 28.2        |
+| Opus 4.5 | 21.2      | 7.0       | 10.2       | 18.0        |
+| MiniMax  | 11.6      | 4.3       | 8.7        | 19.8        |
+| o3-mini  | 12.0      | 4.2       | 9.8        | 33.0        |
+| o1       | 11.9      | 5.5       | 10.2       | 19.5        |
 
 **Observation:** Responses shift toward anchor direction. Higher anchor = higher response.
 
 ### Pattern B: Anchor-Insensitive (same response regardless)
-| Model | No-Anchor | Low (3mo) | High (9mo) | High (24mo) |
-|-------|-----------|-----------|------------|-------------|
-| Opus 4.0 | - | 6.0 | 6.0 | - |
-| Opus 4.6 | - | 7.0 | 6.6 | 12.0 |
-| Mistral Small 3.1 | - | 6.0 | 6.0 | - |
-| Sonnet 4 (dated) | - | 5.7 | 6.0 | - |
+
+| Model             | No-Anchor | Low (3mo) | High (9mo) | High (24mo) |
+| ----------------- | --------- | --------- | ---------- | ----------- |
+| Opus 4.0          | -         | 6.0       | 6.0        | -           |
+| Opus 4.6          | -         | 7.0       | 6.6        | 12.0        |
+| Mistral Small 3.1 | -         | 6.0       | 6.0        | -           |
+| Sonnet 4 (dated)  | -         | 5.7       | 6.0        | -           |
 
 **Observation:** Response is ~6mo regardless of anchor.
 
 ### Pattern C: Near-Compliance (copies anchor closely)
+
 Some GPT-4o runs show Low=3.0, High=9.0 (copies exactly).
 Some Haiku 4.5 runs show Low=3.3, High=7.0.
 
@@ -64,14 +67,17 @@ Some Haiku 4.5 runs show Low=3.3, High=7.0.
 ## Honest Reframe Options
 
 ### Option 1: Susceptibility Spectrum
+
 - Immune (Opus 4.6) → Weak → Moderate → Strong → Compliance (GPT-4o Residential)
 - Single dimension, no distinct "mechanisms"
 
 ### Option 2: Two Categories
+
 - **Anchor-Sensitive:** Responds to anchor presence (varying degrees)
 - **Anchor-Immune:** Ignores anchors (~6mo fixed response)
 
 ### Option 3: Keep Three, But Reframe
+
 - **Immune:** No response to anchors
 - **Susceptible:** Shifts toward anchor (varying degrees)
 - **Compliance:** Copies anchor exactly (may be extreme susceptibility)

@@ -7,29 +7,29 @@
 
 **KEY FINDING:** Sibony-style disclosure debiasing ("randomly determined" disclaimer) shows MODEL-FAMILY-DEPENDENT effects.
 
-| Response Type | Models | Effect |
-|---------------|--------|--------|
+| Response Type       | Models                                       | Effect         |
+| ------------------- | -------------------------------------------- | -------------- |
 | **Strong Positive** | Anthropic (Opus, Haiku, Sonnet), Hermes 405B | +35% to +97.5% |
-| **Null Effect** | OpenAI instruction-tuned (GPT-4o, o3-mini) | 0% |
-| **BACKFIRES** | OpenAI reasoning (o1, GPT-5.2) | -14% to -28% |
+| **Null Effect**     | OpenAI instruction-tuned (GPT-4o, o3-mini)   | 0%             |
+| **BACKFIRES**       | OpenAI reasoning (o1, GPT-5.2)               | -14% to -28%   |
 
 ## Complete Results Table
 
-| Model | Family | Baseline | Anchor | Simplified | Disclosure | Debiasing |
-|-------|--------|----------|--------|------------|------------|-----------|
-| **Strong Responders** | | | | | | |
-| Haiku 4.5 | Anthropic | 35.2mo | 67mo | 67.0mo | 36.0mo | **+97.5%** |
-| Hermes 405B | Open-source | 12.0mo | 21mo | 23.4mo | 12.6mo | **+95%** |
-| Opus 4.5 | Anthropic | 22.8mo | 43mo | 43.0mo | 24.0mo | **+94%** |
-| Opus 4.6 | Anthropic | 18.0mo | 33mo | 33.0mo | 24.0mo | **+60%** |
-| Haiku 3.5 | Anthropic | 32.4mo | 62mo | 54.0mo | 45.6mo | **+39%** |
-| Sonnet 4.5 | Anthropic | 23.2mo | 43mo | 43.0mo | 36.0mo | **+35%** |
-| **Non-Responders** | | | | | | |
-| GPT-4o | OpenAI | 24.0mo | 45mo | 45.0mo | 45.0mo | **0%** |
-| o3-mini | OpenAI | 12.0mo | 21mo | 21.1mo | 21.1mo | **0%** |
-| **Inverse Responders** | | | | | | |
-| GPT-5.2 | OpenAI | 24.0mo | 45mo | 45.0mo | 48.0mo | **-14%** |
-| o1 | OpenAI | 12.0mo | 21mo | 21.3mo | 23.9mo | **-28%** |
+| Model                  | Family      | Baseline | Anchor | Simplified | Disclosure | Debiasing  |
+| ---------------------- | ----------- | -------- | ------ | ---------- | ---------- | ---------- |
+| **Strong Responders**  |             |          |        |            |            |            |
+| Haiku 4.5              | Anthropic   | 35.2mo   | 67mo   | 67.0mo     | 36.0mo     | **+97.5%** |
+| Hermes 405B            | Open-source | 12.0mo   | 21mo   | 23.4mo     | 12.6mo     | **+95%**   |
+| Opus 4.5               | Anthropic   | 22.8mo   | 43mo   | 43.0mo     | 24.0mo     | **+94%**   |
+| Opus 4.6               | Anthropic   | 18.0mo   | 33mo   | 33.0mo     | 24.0mo     | **+60%**   |
+| Haiku 3.5              | Anthropic   | 32.4mo   | 62mo   | 54.0mo     | 45.6mo     | **+39%**   |
+| Sonnet 4.5             | Anthropic   | 23.2mo   | 43mo   | 43.0mo     | 36.0mo     | **+35%**   |
+| **Non-Responders**     |             |          |        |            |            |            |
+| GPT-4o                 | OpenAI      | 24.0mo   | 45mo   | 45.0mo     | 45.0mo     | **0%**     |
+| o3-mini                | OpenAI      | 12.0mo   | 21mo   | 21.1mo     | 21.1mo     | **0%**     |
+| **Inverse Responders** |             |          |        |            |            |            |
+| GPT-5.2                | OpenAI      | 24.0mo   | 45mo   | 45.0mo     | 48.0mo     | **-14%**   |
+| o1                     | OpenAI      | 12.0mo   | 21mo   | 21.3mo     | 23.9mo     | **-28%**   |
 
 ## Interpretation
 
@@ -38,12 +38,14 @@
 Anthropic models appear to treat the "randomly determined" disclosure as a **relevance signal** — if the anchor is explicitly stated to be arbitrary, the model appropriately reduces its influence on judgment.
 
 This aligns with:
+
 - RLHF training that rewards truthful, calibrated responses
 - Constitutional AI principles about not being misled by irrelevant information
 
 ### Why Disclosure Fails for OpenAI Instruction-Tuned
 
 GPT-4o and o3-mini show **compliance behavior** — they copy the anchor value exactly regardless of disclosure. The disclosure doesn't override the compliance mechanism because:
+
 - These models are optimized to follow instructions literally
 - The anchor appears in the instruction, so it's "followed"
 - Disclosure is processed but doesn't change the compliance priority

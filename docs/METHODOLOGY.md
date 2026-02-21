@@ -14,23 +14,23 @@ This ensures equal distance from baseline in both directions.
 
 ## Verified Baselines (2026-02-19)
 
-| Model | Baseline | Low Anchor | High Anchor | Source File |
-|-------|----------|------------|-------------|-------------|
-| **Anthropic** | | | | |
-| Opus 4.5 | 22.8mo | 3mo | **43mo** | opus-45-no-anchor.jsonl |
-| Opus 4.6 | 18.0mo | 3mo | **33mo** | opus-46-no-anchor.jsonl |
-| Sonnet 4.5 | 23.2mo | 3mo | **43mo** | sonnet-45-no-anchor.jsonl |
-| Haiku 4.5 | 35.2mo | 3mo | **67mo** | haiku-45-no-anchor.jsonl |
-| Haiku 3.5 | 32.4mo | 3mo | **62mo** | haiku-35-no-anchor.jsonl |
-| **OpenAI** | | | | |
-| GPT-4o | 24.0mo | 3mo | **45mo** | gpt4o-vultr-temp00-variation.jsonl |
-| GPT-5.2 | 24.0mo | 3mo | **45mo** | gpt52-no-anchor-temp0.jsonl |
-| **OpenRouter** | | | | |
-| o1 | 12.0mo | 3mo | **21mo** | o1-no-anchor-control.jsonl |
-| o3-mini | 12.0mo | 3mo | **21mo** | o3-mini-no-anchor-control.jsonl |
-| Llama 3.3 | 12.0mo | 3mo | **21mo** | llama33-no-anchor-baseline.jsonl |
-| Hermes 405B | 12.0mo | 3mo | **21mo** | hermes405b-no-anchor-control.jsonl |
-| MiniMax | ~12mo | 3mo | **21mo** | minimax-m25-no-anchor-control.jsonl |
+| Model          | Baseline | Low Anchor | High Anchor | Source File                         |
+| -------------- | -------- | ---------- | ----------- | ----------------------------------- |
+| **Anthropic**  |          |            |             |                                     |
+| Opus 4.5       | 22.8mo   | 3mo        | **43mo**    | opus-45-no-anchor.jsonl             |
+| Opus 4.6       | 18.0mo   | 3mo        | **33mo**    | opus-46-no-anchor.jsonl             |
+| Sonnet 4.5     | 23.2mo   | 3mo        | **43mo**    | sonnet-45-no-anchor.jsonl           |
+| Haiku 4.5      | 35.2mo   | 3mo        | **67mo**    | haiku-45-no-anchor.jsonl            |
+| Haiku 3.5      | 32.4mo   | 3mo        | **62mo**    | haiku-35-no-anchor.jsonl            |
+| **OpenAI**     |          |            |             |                                     |
+| GPT-4o         | 24.0mo   | 3mo        | **45mo**    | gpt4o-vultr-temp00-variation.jsonl  |
+| GPT-5.2        | 24.0mo   | 3mo        | **45mo**    | gpt52-no-anchor-temp0.jsonl         |
+| **OpenRouter** |          |            |             |                                     |
+| o1             | 12.0mo   | 3mo        | **21mo**    | o1-no-anchor-control.jsonl          |
+| o3-mini        | 12.0mo   | 3mo        | **21mo**    | o3-mini-no-anchor-control.jsonl     |
+| Llama 3.3      | 12.0mo   | 3mo        | **21mo**    | llama33-no-anchor-baseline.jsonl    |
+| Hermes 405B    | 12.0mo   | 3mo        | **21mo**    | hermes405b-no-anchor-control.jsonl  |
+| MiniMax        | ~12mo    | 3mo        | **21mo**    | minimax-m25-no-anchor-control.jsonl |
 
 ---
 
@@ -42,6 +42,7 @@ Different result files use different JSON paths:
 - `.result.sentenceMonths` — nested path (o1, o3-mini, llama, etc.)
 
 **ALWAYS check the JSON structure before calculating means:**
+
 ```bash
 head -1 file.jsonl | jq 'keys'
 ```
@@ -64,11 +65,13 @@ Before running ANY experiment:
 ## Debiasing Techniques
 
 ### 1. Disclosure (Sibony-style)
+
 - Add "randomly determined" to anchor description
 - Keeps task structure intact
 - Effect: neutralizes anchor influence
 
 ### 2. SACD (Self-Adaptive Cognitive Debiasing)
+
 - Multi-turn: identify biases, rewrite prompt, then judge
 - Changes task structure significantly
 - Effect: removes anchor but may introduce variance

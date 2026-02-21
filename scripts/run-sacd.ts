@@ -2,8 +2,8 @@
 /**
  * SACD Debiasing — Self-Administered Cognitive Debiasing
  * 
- * Usage: npx tsx scripts/run-sacd.ts <model-id> <anchor> <temperature> [n=30]
- * Example: npx tsx scripts/run-sacd.ts anthropic/claude-opus-4.6 9 0.7 30
+ * Usage: npx tsx scripts/run-sacd.ts <model-id> <anchor> <temperature> [n=30] [provider]
+ * Example: npx tsx scripts/run-sacd.ts anthropic/claude-opus-4.6 9 0.7 30 SambaNova
  * 
  * Output: results/sacd-<anchor>mo-<model-short>-t<temp>.jsonl
  */
@@ -15,6 +15,8 @@ const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
 const TEMP = parseFloat(process.argv[4]);
 const N_TRIALS = parseInt(process.argv[5] || '30');
+const PROVIDER = process.argv[6]; // Optional: e.g., "SambaNova", "Fireworks"
+const PROVIDER_ORDER = PROVIDER ? [PROVIDER] : undefined;
 
 if (!MODEL || !ANCHOR || isNaN(TEMP)) {
   console.error('Usage: npx tsx scripts/run-sacd.ts <model-id> <anchor> <temperature> [n=30]');
@@ -63,16 +65,16 @@ async function runTrial(apiKey: string, index: number) {
   const messages: Message[] = [];
   
   messages.push({ role: 'user', content: initialPrompt(ANCHOR) });
-  let { content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP);
+  let { content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP, PROVIDER_ORDER);
   messages.push({ role: 'assistant', content });
   const initial = extractSentence(content);
   
   messages.push({ role: 'user', content: biasDetectionPrompt });
-  ({ content } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
+  ({ content } = await callOpenRouter(apiKey, MODEL, messages, TEMP, PROVIDER_ORDER));
   messages.push({ role: 'assistant', content });
   
   messages.push({ role: 'user', content: debiasedPrompt });
-  ({ content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
+  ({ content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP, PROVIDER_ORDER));
   const debiased = extractSentence(content);
   
   const record = {
@@ -100,6 +102,7 @@ async function main() {
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo`);
   console.log(`Temperature: ${TEMP}`);
+  console.log(`Provider: ${PROVIDER || 'default'}`);
   console.log(`Prompt Hash: ${PROMPT_HASH}`);
   console.log(`Output: ${RESULTS_FILE}\n`);
   

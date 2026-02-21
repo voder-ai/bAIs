@@ -8,20 +8,20 @@ Self-Administered Cognitive Debiasing (SACD) is a multi-turn prompting technique
 
 Table X presents SACD debiasing effectiveness across model families.
 
-| Model | Family | SACD Mean | Baseline | Anchor | Debiasing Effect |
-|-------|--------|-----------|----------|--------|------------------|
-| Opus 4.5 | Anthropic | 23.6mo | 22mo | 43mo | +100% (baseline) |
-| Opus 4.6 | Anthropic | 18.0mo | 18mo | 33mo | +100% (baseline) |
-| Sonnet 4.5 | Anthropic | 26.6mo | 22mo | 43mo | +81% (partial) |
-| Haiku 4.5 | Anthropic | 26.7mo | 34mo | 67mo | −22% (over-correct) |
-| Hermes 405B | Open | 14.6mo | 12mo | 21mo | +71% (partial) |
-| Llama 3.3 | Open | 18.0mo | 12mo | 21mo | +33% (partial) |
-| o3-mini | OpenAI | 20.9mo | 12mo | 21mo | +1% (resistant) |
-| GPT-4o | OpenAI | 7.2mo | 24mo | 45mo | −70% (catastrophic) |
-| GPT-5.2 | OpenAI | 4.0mo | 24mo | 45mo | −83% (catastrophic) |
-| MiniMax | Commercial | 13.7mo | 12mo | 21mo | +81% (unstable) |
+| Model       | Family     | SACD Mean | Baseline | Anchor | Debiasing Effect    |
+| ----------- | ---------- | --------- | -------- | ------ | ------------------- |
+| Opus 4.5    | Anthropic  | 23.6mo    | 22mo     | 43mo   | +100% (baseline)    |
+| Opus 4.6    | Anthropic  | 18.0mo    | 18mo     | 33mo   | +100% (baseline)    |
+| Sonnet 4.5  | Anthropic  | 26.6mo    | 22mo     | 43mo   | +81% (partial)      |
+| Haiku 4.5   | Anthropic  | 26.7mo    | 34mo     | 67mo   | −22% (over-correct) |
+| Hermes 405B | Open       | 14.6mo    | 12mo     | 21mo   | +71% (partial)      |
+| Llama 3.3   | Open       | 18.0mo    | 12mo     | 21mo   | +33% (partial)      |
+| o3-mini     | OpenAI     | 20.9mo    | 12mo     | 21mo   | +1% (resistant)     |
+| GPT-4o      | OpenAI     | 7.2mo     | 24mo     | 45mo   | −70% (catastrophic) |
+| GPT-5.2     | OpenAI     | 4.0mo     | 24mo     | 45mo   | −83% (catastrophic) |
+| MiniMax     | Commercial | 13.7mo    | 12mo     | 21mo   | +81% (unstable)     |
 
-*Note: Debiasing effect calculated as reduction from anchor toward baseline. Negative values indicate responses below baseline. All experiments n=30.*
+_Note: Debiasing effect calculated as reduction from anchor toward baseline. Negative values indicate responses below baseline. All experiments n=30._
 
 ### 4.X.2 Five Failure Modes
 
@@ -53,7 +53,7 @@ MiniMax shows bimodal behavior: some trials over-correct to 0-6 months while oth
 
 The GPT-5.2 result warrants special attention. With a mean sentence of 4.0 months against a 24-month baseline and 45-month anchor, SACD produces outcomes **83% worse than no intervention**. Multiple trials returned 0-month sentences—effectively recommending no prison time for a 12th-offense shoplifter.
 
-Critically, GPT-5.2 shows *more* extreme over-correction than GPT-4o (83% vs 70% below baseline). This contradicts the intuition that newer models would be more robust. Practitioners assuming "newer = better" would be especially vulnerable to this failure mode.
+Critically, GPT-5.2 shows _more_ extreme over-correction than GPT-4o (83% vs 70% below baseline). This contradicts the intuition that newer models would be more robust. Practitioners assuming "newer = better" would be especially vulnerable to this failure mode.
 
 ### 4.X.4 Implications
 

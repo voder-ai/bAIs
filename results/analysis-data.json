@@ -15,11 +15,7 @@
       "o3",
       "o4-mini"
     ],
-    "temperatures": [
-      0,
-      0.7,
-      1
-    ]
+    "temperatures": [0, 0.7, 1]
   },
   "baselines": [
     {
