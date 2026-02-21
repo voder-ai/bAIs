@@ -72,6 +72,16 @@
 | **devils-advocate-low** | `run-devils-advocate.ts` | baseline / 2 |
 | **devils-advocate-high** | `run-devils-advocate.ts` | baseline × 1.5 |
 
+### Token-Matched Random Control (2 conditions)
+| Condition | Script | Anchor |
+|-----------|--------|--------|
+| **random-control-low** | `run-random-control.ts` | baseline / 2 |
+| **random-control-high** | `run-random-control.ts` | baseline × 1.5 |
+
+**Purpose:** Isolate content effects from length effects. Same token count as SACD debiasing prompt, but random/irrelevant elaboration instead of actual debiasing content.
+- If random control shows same bias reduction as SACD → length/distraction was the factor
+- If SACD outperforms random → debiasing content matters
+
 ---
 
 ## Experiment Design
@@ -99,19 +109,31 @@ results/
 
 ## Totals
 
-- **11 models × 11 conditions × 30 trials × 3 temps = 10,890 trials**
+- **11 models × 13 conditions × 30 trials × 3 temps = 12,870 trials**
+
+| Phase | Conditions | Trials |
+|-------|-----------|--------|
+| Phase 1: Baselines | 1 | 990 |
+| Phase 2: Anchors | 2 | 1,980 |
+| Phase 3: SACD | 2 | 1,980 |
+| Phase 4: Outside View | 2 | 1,980 |
+| Phase 5: Pre-mortem | 2 | 1,980 |
+| Phase 6: Devil's Advocate | 2 | 1,980 |
+| Phase 7: Random Control | 2 | 1,980 |
+| **Total** | **13** | **12,870** |
 
 ---
 
 ## Execution Order
 
-1. **Phase 1: Baselines** — Run all 11 models at all 3 temps (990 trials)
-2. **Calculate anchors** — Average baselines across temps → low/high per model
-3. **Phase 2: Anchor conditions** — Low + high at all temps (1,980 trials)
-4. **Phase 3: SACD** — Low + high at all temps (1,980 trials)
-5. **Phase 4: Outside View** — Low + high at all temps (1,980 trials)
-6. **Phase 5: Pre-mortem** — Low + high at all temps (1,980 trials)
-7. **Phase 6: Devil's Advocate** — Low + high at all temps (1,980 trials)
+1. **Phase 1: Baselines** — Run all 11 models at all 3 temps (990 trials) ✅
+2. **Calculate anchors** — Average baselines across temps → low/high per model ✅
+3. **Phase 2: Anchor conditions** — Low + high at all temps (1,980 trials) ✅
+4. **Phase 3: SACD** — Low + high at all temps (1,980 trials) 🔄
+5. **Phase 4: Outside View** — Low + high at all temps (1,980 trials) ⏳
+6. **Phase 5: Pre-mortem** — Low + high at all temps (1,980 trials) ⏳
+7. **Phase 6: Devil's Advocate** — Low + high at all temps (1,980 trials) ⏳
+8. **Phase 7: Random Control** — Token-matched random elaboration (1,980 trials) ⏳
 
 ---
 
@@ -172,6 +194,12 @@ results/
 
 ### Next Steps
 
-- ⏳ Phase 3 open source SACD: continuing (~140h ETA)
-- 📝 Paper analysis and writing (data sufficient for publication)
-- ❌ Phases 4-6 (Sibony techniques): Deferred
+1. ⏳ **Phase 3 SACD completion** — MiniMax running on Mac
+2. 🔜 **Phase 4: Outside View** — Sibony technique #1 (1,980 trials)
+3. 🔜 **Phase 5: Pre-mortem** — Sibony technique #2 (1,980 trials)
+4. 🔜 **Phase 6: Devil's Advocate** — Sibony technique #3 (1,980 trials)
+5. 🔜 **Phase 7: Random Control** — Token-matched control (1,980 trials)
+6. 📝 **Paper integration** — Update with full debiasing comparison
+
+**Remaining trials:** ~7,920 (Phases 4-7)
+**Provider optimization:** Use high-throughput providers (SambaNova 84tps, Fireworks) for open source models
