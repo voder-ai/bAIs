@@ -2,30 +2,32 @@
 /**
  * Calculate Anchors from Baseline Results
  * 
- * Reads baseline JSONL files and calculates:
- * - Mean baseline per model
+ * Reads baseline JSONL files across ALL temperatures and calculates:
+ * - Mean baseline per model (averaged across temps)
  * - Low anchor = baseline / 2
  * - High anchor = baseline × 1.5
  * 
+ * Option B approach: Same anchors for all temps (enables clean temp comparison)
+ * 
  * Usage: npx tsx scripts/calculate-anchors.ts
  * 
- * Output: Prints anchor values and updates MANIFEST.md
+ * Output: Prints anchor values and saves to results/anchor-values.json
  */
 
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
 
 interface BaselineResult {
   model: string;
+  temperature: number;
   sentenceMonths: number;
 }
 
 interface ModelStats {
   model: string;
-  n: number;
-  mean: number;
-  median: number;
-  stdDev: number;
+  nTotal: number;
+  nPerTemp: { [temp: string]: number };
+  meanPerTemp: { [temp: string]: number };
+  meanOverall: number;
   lowAnchor: number;
   highAnchor: number;
 }
@@ -39,95 +41,113 @@ function parseJsonl(filePath: string): BaselineResult[] {
     .map(line => JSON.parse(line));
 }
 
-function calculateStats(values: number[]): { mean: number; median: number; stdDev: number } {
-  const n = values.length;
-  const mean = values.reduce((a, b) => a + b, 0) / n;
-  
-  const sorted = [...values].sort((a, b) => a - b);
-  const median = n % 2 === 0 
-    ? (sorted[n/2 - 1] + sorted[n/2]) / 2 
-    : sorted[Math.floor(n/2)];
-  
-  const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / n;
-  const stdDev = Math.sqrt(variance);
-  
-  return { mean, median, stdDev };
-}
-
 function main() {
-  const baselineDir = 'results/baseline';
+  const resultsDir = 'results';
   
-  if (!existsSync(baselineDir)) {
-    console.error('No baseline results found. Run baselines first.');
-    console.error('Expected directory: results/baseline/');
+  if (!existsSync(resultsDir)) {
+    console.error('No results directory found.');
     process.exit(1);
   }
   
-  const files = readdirSync(baselineDir).filter(f => f.endsWith('.jsonl'));
+  // Find all baseline files (pattern: baseline-<model>-t<temp>.jsonl)
+  const files = readdirSync(resultsDir).filter(f => f.startsWith('baseline-') && f.endsWith('.jsonl'));
   
   if (files.length === 0) {
-    console.error('No baseline JSONL files found in results/baseline/');
+    console.error('No baseline JSONL files found.');
+    console.error('Expected pattern: results/baseline-<model>-t<temp>.jsonl');
     process.exit(1);
   }
   
-  console.log('=== Baseline Analysis & Anchor Calculation ===\n');
+  console.log('=== Baseline Analysis & Anchor Calculation ===');
+  console.log('(Option B: Averaging across temps for same anchors)\n');
+  
+  // Group results by model
+  const byModel: { [model: string]: BaselineResult[] } = {};
+  
+  for (const file of files) {
+    const filePath = `${resultsDir}/${file}`;
+    const results = parseJsonl(filePath);
+    
+    for (const r of results) {
+      if (r.sentenceMonths === null || isNaN(r.sentenceMonths)) continue;
+      if (!byModel[r.model]) byModel[r.model] = [];
+      byModel[r.model].push(r);
+    }
+  }
   
   const allStats: ModelStats[] = [];
   
-  for (const file of files) {
-    const filePath = join(baselineDir, file);
-    const results = parseJsonl(filePath);
+  for (const model of Object.keys(byModel).sort()) {
+    const results = byModel[model];
     
-    if (results.length === 0) continue;
+    // Group by temp
+    const byTemp: { [temp: string]: number[] } = {};
+    for (const r of results) {
+      const tempKey = r.temperature.toString();
+      if (!byTemp[tempKey]) byTemp[tempKey] = [];
+      byTemp[tempKey].push(r.sentenceMonths);
+    }
     
-    const model = results[0].model;
-    const values = results.map(r => r.sentenceMonths).filter(v => v !== null && !isNaN(v));
+    // Calculate mean per temp
+    const meanPerTemp: { [temp: string]: number } = {};
+    const nPerTemp: { [temp: string]: number } = {};
+    for (const [temp, values] of Object.entries(byTemp)) {
+      nPerTemp[temp] = values.length;
+      meanPerTemp[temp] = Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10;
+    }
     
-    if (values.length === 0) continue;
+    // Calculate overall mean (average of temp means for equal weighting)
+    const tempMeans = Object.values(meanPerTemp);
+    const meanOverall = Math.round((tempMeans.reduce((a, b) => a + b, 0) / tempMeans.length) * 10) / 10;
     
-    const { mean, median, stdDev } = calculateStats(values);
-    
-    // Calculate proportional anchors
-    const lowAnchor = Math.round(mean / 2);
-    const highAnchor = Math.round(mean * 1.5);
+    // Calculate proportional anchors from overall mean
+    const lowAnchor = Math.round(meanOverall / 2);
+    const highAnchor = Math.round(meanOverall * 1.5);
     
     const stats: ModelStats = {
       model,
-      n: values.length,
-      mean: Math.round(mean * 10) / 10,
-      median,
-      stdDev: Math.round(stdDev * 10) / 10,
+      nTotal: results.length,
+      nPerTemp,
+      meanPerTemp,
+      meanOverall,
       lowAnchor,
       highAnchor,
     };
     
     allStats.push(stats);
     
-    console.log(`${model}`);
-    console.log(`  n=${stats.n} | mean=${stats.mean}mo | median=${stats.median}mo | σ=${stats.stdDev}`);
-    console.log(`  → Low anchor: ${stats.lowAnchor}mo | High anchor: ${stats.highAnchor}mo`);
+    const shortModel = model.split('/').pop() || model;
+    console.log(`${shortModel}`);
+    for (const [temp, mean] of Object.entries(meanPerTemp)) {
+      console.log(`  temp=${temp}: n=${nPerTemp[temp]} | mean=${mean}mo`);
+    }
+    console.log(`  → Overall mean: ${meanOverall}mo`);
+    console.log(`  → Anchors: low=${lowAnchor}mo | high=${highAnchor}mo`);
     console.log('');
   }
   
-  // Print summary table for easy copy-paste
+  // Print summary table
   console.log('\n=== Summary Table ===\n');
   console.log('| Model | n | Baseline | Low | High |');
   console.log('|-------|---|----------|-----|------|');
   for (const s of allStats) {
     const shortModel = s.model.split('/').pop() || s.model;
-    console.log(`| ${shortModel} | ${s.n} | ${s.mean}mo | ${s.lowAnchor}mo | ${s.highAnchor}mo |`);
+    console.log(`| ${shortModel} | ${s.nTotal} | ${s.meanOverall}mo | ${s.lowAnchor}mo | ${s.highAnchor}mo |`);
   }
   
-  // Print commands for next phase
+  // Print commands for Phase 2 (include all temps)
   console.log('\n=== Commands for Phase 2 ===\n');
+  const temps = ['0', '0.7', '1'];
   for (const s of allStats) {
-    console.log(`# ${s.model}`);
-    console.log(`npx tsx scripts/run-low-anchor.ts ${s.model} ${s.lowAnchor}`);
-    console.log(`npx tsx scripts/run-high-anchor.ts ${s.model} ${s.highAnchor}`);
+    console.log(`# ${s.model} (low=${s.lowAnchor}mo, high=${s.highAnchor}mo)`);
+    for (const t of temps) {
+      console.log(`npx tsx scripts/run-low-anchor.ts ${s.model} ${s.lowAnchor} ${t}`);
+      console.log(`npx tsx scripts/run-high-anchor.ts ${s.model} ${s.highAnchor} ${t}`);
+    }
     console.log('');
   }
   
-  // Save to JSON for programmatic use
+  // Save to JSON
   const outputPath = 'results/anchor-values.json';
   writeFileSync(outputPath, JSON.stringify(allStats, null, 2));
   console.log(`Anchor values saved to: ${outputPath}`);

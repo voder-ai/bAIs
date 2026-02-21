@@ -27,106 +27,95 @@
 
 ---
 
-## Anchor Design — Proportional (Option 3)
+## Experimental Variables
 
-**Rationale:** Using proportional anchors ensures fair cross-model comparison. Each model faces an equally extreme anchor relative to its natural baseline, allowing us to compare susceptibility directly without confounding baseline differences.
+### Temperature (3 levels)
+| Temp | Description |
+|------|-------------|
+| 0 | Deterministic (argmax) |
+| 0.7 | Standard deployment |
+| 1.0 | High variance (full sampling) |
+
+### Anchor Design — Proportional (Additive Symmetry)
 
 | Anchor | Formula | Example (baseline=18mo) |
 |--------|---------|------------------------|
-| **Low** | `baseline / 2` | 9mo |
-| **High** | `baseline × 1.5` | 27mo |
+| **Low** | `baseline / 2` | 9mo (−50%) |
+| **High** | `baseline × 1.5` | 27mo (+50%) |
 
-This creates symmetric multiplicative deviation: low is 0.5× baseline, high is 1.5× baseline.
+**Option B approach:** Baselines averaged across all temps → single anchor set per model → same anchors used at all temps. This enables clean comparison of "does temperature affect anchoring susceptibility?"
 
 ---
 
-## Trial List (11 conditions)
+## Trial List (11 conditions × 3 temps)
 
 ### Core Anchoring (3 conditions)
-
-| Condition | Script | Anchor | Rationale |
-|-----------|--------|--------|-----------|
-| **baseline** | `run-baseline.ts` | None | Establishes unanchored reference. Required to calculate proportional anchors. |
-| **low-anchor** | `run-low-anchor.ts` | baseline / 2 | Tests downward anchoring susceptibility with proportional low anchor. |
-| **high-anchor** | `run-high-anchor.ts` | baseline × 1.5 | Tests upward anchoring susceptibility with proportional high anchor. |
+| Condition | Script | Anchor |
+|-----------|--------|--------|
+| **baseline** | `run-baseline.ts` | None |
+| **low-anchor** | `run-low-anchor.ts` | baseline / 2 |
+| **high-anchor** | `run-high-anchor.ts` | baseline × 1.5 |
 
 ### SACD Debiasing (2 conditions)
-
-Self-Administered Cognitive Debiasing (Lyu et al.) — Model detects and corrects its own bias through iterative reflection.
-
-| Condition | Script | Anchor | Rationale |
-|-----------|--------|--------|-----------|
-| **sacd-low** | `run-sacd.ts` | baseline / 2 | Tests if self-reflection reduces low anchoring. |
-| **sacd-high** | `run-sacd.ts` | baseline × 1.5 | Tests if self-reflection reduces high anchoring. |
+| Condition | Script | Anchor |
+|-----------|--------|--------|
+| **sacd-low** | `run-sacd.ts` | baseline / 2 |
+| **sacd-high** | `run-sacd.ts` | baseline × 1.5 |
 
 ### Sibony Debiasing (6 conditions)
-
-Three techniques from Sibony's decision hygiene framework, tested independently.
-
-| Condition | Script | Anchor | Rationale |
-|-----------|--------|--------|-----------|
-| **outside-view-low** | `run-outside-view.ts` | baseline / 2 | Base rates BEFORE anchor. Tests if pre-commitment reduces anchoring. |
-| **outside-view-high** | `run-outside-view.ts` | baseline × 1.5 | Outside view with high anchor. |
-| **premortem-low** | `run-premortem.ts` | baseline / 2 | Anticipate failure. Tests if considering criticism reduces anchoring. |
-| **premortem-high** | `run-premortem.ts` | baseline × 1.5 | Pre-mortem with high anchor. |
-| **devils-advocate-low** | `run-devils-advocate.ts` | baseline / 2 | Challenge anchor. Tests if counter-arguments reduce anchoring. |
-| **devils-advocate-high** | `run-devils-advocate.ts` | baseline × 1.5 | Devil's advocate with high anchor. |
+| Condition | Script | Anchor |
+|-----------|--------|--------|
+| **outside-view-low** | `run-outside-view.ts` | baseline / 2 |
+| **outside-view-high** | `run-outside-view.ts` | baseline × 1.5 |
+| **premortem-low** | `run-premortem.ts` | baseline / 2 |
+| **premortem-high** | `run-premortem.ts` | baseline × 1.5 |
+| **devils-advocate-low** | `run-devils-advocate.ts` | baseline / 2 |
+| **devils-advocate-high** | `run-devils-advocate.ts` | baseline × 1.5 |
 
 ---
 
 ## Experiment Design
 
 ### Per Condition
-- **n = 30 trials** per model per condition
-- **Temperature = 0.7** (default)
+- **n = 30 trials** per model per condition per temperature
+- **3 temperatures:** 0, 0.7, 1.0
 - **3-turn structure** for anchor conditions (Englich paradigm)
-
-### Methodology
-- All models via OpenRouter API (single provider, no routing confounds)
-- Standardized Englich paradigm from `src/experiments/anchoringProsecutorSentencing.ts`
-- "Randomly determined" disclosure in anchor conditions
-- **Proportional anchors:** low = baseline/2, high = baseline×1.5
 
 ### Output Files
 ```
 results/
-├── baseline-<model>.jsonl
-├── low-anchor-<model>.jsonl
-├── high-anchor-<model>.jsonl
-├── sacd-<low>mo-<model>.jsonl
-├── sacd-<high>mo-<model>.jsonl
-├── outside-view-<low>mo-<model>.jsonl
-├── outside-view-<high>mo-<model>.jsonl
-├── premortem-<low>mo-<model>.jsonl
-├── premortem-<high>mo-<model>.jsonl
-├── devils-advocate-<low>mo-<model>.jsonl
-└── devils-advocate-<high>mo-<model>.jsonl
+├── baseline-<model>-t0.jsonl
+├── baseline-<model>-t07.jsonl
+├── baseline-<model>-t1.jsonl
+├── low-anchor-<model>-t<temp>.jsonl
+├── high-anchor-<model>-t<temp>.jsonl
+├── sacd-<anchor>mo-<model>-t<temp>.jsonl
+├── outside-view-<anchor>mo-<model>-t<temp>.jsonl
+├── premortem-<anchor>mo-<model>-t<temp>.jsonl
+└── devils-advocate-<anchor>mo-<model>-t<temp>.jsonl
 ```
 
 ---
 
 ## Totals
 
-- **11 models × 11 conditions × 30 trials = 3,630 total trials**
-- **Estimated API calls:** ~10,000+ (multi-turn conversations)
+- **11 models × 11 conditions × 30 trials × 3 temps = 10,890 trials**
 
 ---
 
 ## Execution Order
 
-1. **Phase 1: Baselines** — Run all 11 models (330 trials)
-2. **Calculate proportional anchors** — Per model: low = mean(baseline)/2, high = mean(baseline)×2
-3. **Phase 2: Low anchor conditions** — All 11 models (330 trials)
-4. **Phase 3: High anchor conditions** — All 11 models (330 trials)
-5. **Phase 4: SACD** — Low and high for all models (660 trials)
-6. **Phase 5: Outside View** — Low and high for all models (660 trials)
-7. **Phase 6: Pre-mortem** — Low and high for all models (660 trials)
-8. **Phase 7: Devil's Advocate** — Low and high for all models (660 trials)
+1. **Phase 1: Baselines** — Run all 11 models at all 3 temps (990 trials)
+2. **Calculate anchors** — Average baselines across temps → low/high per model
+3. **Phase 2: Anchor conditions** — Low + high at all temps (1,980 trials)
+4. **Phase 3: SACD** — Low + high at all temps (1,980 trials)
+5. **Phase 4: Outside View** — Low + high at all temps (1,980 trials)
+6. **Phase 5: Pre-mortem** — Low + high at all temps (1,980 trials)
+7. **Phase 6: Devil's Advocate** — Low + high at all temps (1,980 trials)
 
 ---
 
 ## Status
 
-- **2026-02-20:** All prior data deleted. Clean slate.
-- **2026-02-21:** Updated to proportional anchors (baseline/2, baseline×1.5). Scripts ready.
+- **2026-02-21:** Updated to include temperature as variable. Option B (averaged baselines).
 - **Awaiting:** Approval to begin Phase 1 baselines.
