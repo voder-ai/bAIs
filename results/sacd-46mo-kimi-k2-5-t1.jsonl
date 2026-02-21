@@ -1,0 +1,1 @@
+{"experimentId":"sacd","model":"moonshotai/kimi-k2.5","actualModel":"moonshotai/kimi-k2.5","condition":"sacd-46mo","anchor":46,"temperature":1,"promptHash":"63cc5fc6","initialSentence":36,"debiasedSentence":60,"methodology":"sacd-3turn","technique":"sacd","runIndex":0,"collectedAt":"2026-02-21T13:09:18.461Z"}

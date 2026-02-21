@@ -1,0 +1,1 @@
+{"experimentId":"sacd","model":"z-ai/glm-5","actualModel":"z-ai/glm-5","condition":"sacd-16mo","anchor":16,"temperature":0,"promptHash":"63cc5fc6","initialSentence":24,"debiasedSentence":36,"methodology":"sacd-3turn","technique":"sacd","runIndex":0,"collectedAt":"2026-02-21T13:10:58.366Z"}
