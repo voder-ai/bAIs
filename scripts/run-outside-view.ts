@@ -36,7 +36,7 @@ const outsideViewPrompt =
   anchoringProsecutorSentencingCaseVignette +
   '\n\n' +
   'Before considering specific sentencing demands, consider the reference class:\n\n' +
-  'In United States federal courts, what is the TYPICAL probation sentence (in months) for defendants ' +
+  'In German federal courts, what is the TYPICAL probation sentence (in months) for defendants ' +
   'with similar profiles — specifically, repeat property offenders on their 12th shoplifting offense?\n\n' +
   'Provide your estimate as a single integer number of months.';
 
