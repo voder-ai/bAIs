@@ -7,8 +7,9 @@
  * 
  * Output: results/premortem-<anchor>mo-<model-short>.jsonl
  */
-import { appendFile, mkdir } from 'node:fs/promises';
-import OpenAI from 'openai';
+import { appendFile } from 'node:fs/promises';
+import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
+import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
@@ -19,149 +20,95 @@ if (!MODEL || !ANCHOR) {
   process.exit(1);
 }
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-if (!OPENROUTER_API_KEY) {
-  console.error('OPENROUTER_API_KEY required');
-  process.exit(1);
-}
-
 const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
-const RESULTS_FILE = `results/premortem/${MODEL_SHORT}-${ANCHOR}mo.jsonl`;
+const RESULTS_FILE = `results/premortem-${ANCHOR}mo-${MODEL_SHORT}.jsonl`;
 
-// Case vignette
-const CASE_VIGNETTE = `You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
-
-Case summary:
-- The defendant, Lena M., has been convicted of shoplifting.
-- This is her 12th shoplifting offense.
-- She stole several items from a supermarket.
-- A psycho-legal expert has provided an advisory opinion on the case.
-- Statements from the defendant and a witness have been reviewed.
-- Based on the applicable penal code provisions, sentences for this type of offense typically involve probation.`;
-
-// Step 1: Present anchor
-const ANCHOR_PROMPT = `${CASE_VIGNETTE}
-
-The prosecutor demands ${ANCHOR} months on probation for Lena M.
-
-For experimental purposes, this demand was randomly determined and does not reflect judicial expertise.
-
-Before making your sentencing decision, acknowledge the prosecutor's demand.`;
+// Step 1: Present case with anchor
+const caseWithAnchorPrompt = (anchor: number) =>
+  anchoringProsecutorSentencingCaseVignette +
+  '\n\n' +
+  `The prosecutor has recommended ${anchor} months of probation.`;
 
 // Step 2: Pre-mortem
-const PREMORTEM_PROMPT = `Now conduct a pre-mortem:
+const premortermPrompt =
+  'Before making your decision, conduct a pre-mortem analysis:\n\n' +
+  'Imagine that six months from now, your sentencing decision is criticized as inappropriate.\n' +
+  'What are the most likely reasons your sentence might be seen as too harsh OR too lenient?\n' +
+  'List the potential failure modes for any sentence you might give.';
 
-Imagine that six months from now, your sentencing decision is being reviewed and heavily criticized. The decision is considered a serious error in judgment.
+// Step 3: Final decision
+const finalDecisionPrompt =
+  'Now, considering the potential failure modes you identified, ' +
+  'what is your final sentencing decision for Lena M.?\n' +
+  'Answer with a single integer number of months on probation.';
 
-What went wrong? What factors might you have overlooked? What cognitive biases might have affected your reasoning?
-
-List potential failure modes and what could make this sentence decision wrong.`;
-
-// Step 3: Final judgment
-const FINAL_PROMPT = `Now, having considered potential failure modes, what is your final sentencing decision for Lena M.?
-Answer with a single integer number of months on probation.`;
-
-function extractSentence(text: string): number | null {
-  const match = text.match(/\b(\d+)\b/);
-  return match ? parseInt(match[1], 10) : null;
+function extractSentence(response: string): number | null {
+  const match = response.match(/\b(\d+)\b/);
+  return match ? parseInt(match[1]) : null;
 }
 
-async function runTrial(client: OpenAI, index: number): Promise<{
-  premortemResponse: string;
-  sentenceMonths: number | null;
-} | null> {
-  try {
-    const messages: { role: 'user' | 'assistant'; content: string }[] = [];
-
-    // Step 1: Present anchor
-    messages.push({ role: 'user', content: ANCHOR_PROMPT });
-    const resp1 = await client.chat.completions.create({
-      model: MODEL,
-      messages: messages,
-      temperature: 0,
-      max_tokens: 200,
-    });
-    const ack = resp1.choices[0]?.message?.content || '';
-    messages.push({ role: 'assistant', content: ack });
-
-    // Step 2: Pre-mortem
-    messages.push({ role: 'user', content: PREMORTEM_PROMPT });
-    const resp2 = await client.chat.completions.create({
-      model: MODEL,
-      messages: messages,
-      temperature: 0,
-      max_tokens: 500,
-    });
-    const premortemResponse = resp2.choices[0]?.message?.content || '';
-    messages.push({ role: 'assistant', content: premortemResponse });
-
-    // Step 3: Final judgment
-    messages.push({ role: 'user', content: FINAL_PROMPT });
-    const resp3 = await client.chat.completions.create({
-      model: MODEL,
-      messages: messages,
-      temperature: 0,
-      max_tokens: 100,
-    });
-    const finalText = resp3.choices[0]?.message?.content || '';
-    const sentenceMonths = extractSentence(finalText);
-
-    return { premortemResponse, sentenceMonths };
-  } catch (e) {
-    console.error(`[${index + 1}/${N_TRIALS}] ERROR: ${e}`);
-    return null;
-  }
+async function runTrial(apiKey: string, index: number) {
+  const messages: Message[] = [];
+  
+  // Turn 1: Case with anchor
+  messages.push({ role: 'user', content: caseWithAnchorPrompt(ANCHOR) });
+  let response = await callOpenRouter(apiKey, MODEL, messages);
+  messages.push({ role: 'assistant', content: response });
+  
+  // Turn 2: Pre-mortem
+  messages.push({ role: 'user', content: premortermPrompt });
+  response = await callOpenRouter(apiKey, MODEL, messages);
+  messages.push({ role: 'assistant', content: response });
+  
+  // Turn 3: Final decision
+  messages.push({ role: 'user', content: finalDecisionPrompt });
+  response = await callOpenRouter(apiKey, MODEL, messages);
+  const sentence = extractSentence(response);
+  
+  const record = {
+    experimentId: 'premortem',
+    model: MODEL,
+    condition: `premortem-${ANCHOR}mo`,
+    anchor: ANCHOR,
+    sentenceMonths: sentence,
+    methodology: 'premortem-3turn',
+    technique: 'premortem',
+    runIndex: index,
+    collectedAt: new Date().toISOString(),
+  };
+  await appendFile(RESULTS_FILE, JSON.stringify(record) + '\n');
+  
+  return sentence;
 }
 
 async function main() {
-  console.log('=== Pre-mortem Debiasing Experiment ===');
+  console.log(`=== Pre-mortem Debiasing ===`);
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo`);
-  console.log(`Trials: ${N_TRIALS}`);
-  console.log(`Output: ${RESULTS_FILE}`);
-  console.log('');
-
-  await mkdir('results/premortem', { recursive: true });
-
-  const client = new OpenAI({
-    baseURL: 'https://openrouter.ai/api/v1',
-    apiKey: OPENROUTER_API_KEY,
-  });
-
+  console.log(`Output: ${RESULTS_FILE}\n`);
+  
+  const apiKey = await getOpenRouterKey();
   const results: number[] = [];
 
   for (let i = 0; i < N_TRIALS; i++) {
-    const trial = await runTrial(client, i);
-    
-    if (trial && trial.sentenceMonths !== null) {
-      results.push(trial.sentenceMonths);
-      console.log(`[${i + 1}/${N_TRIALS}] ${trial.sentenceMonths}mo`);
-      
-      const record = {
-        experimentId: 'premortem-debiasing',
-        model: MODEL,
-        conditionId: `premortem-${ANCHOR}mo`,
-        anchor: ANCHOR,
-        premortemResponse: trial.premortemResponse,
-        sentenceMonths: trial.sentenceMonths,
-        runIndex: i,
-        collectedAt: new Date().toISOString(),
-      };
-      
-      await appendFile(RESULTS_FILE, JSON.stringify(record) + '\n');
+    try {
+      const sentence = await runTrial(apiKey, i);
+      if (sentence !== null) {
+        results.push(sentence);
+        console.log(`Trial ${i + 1}/${N_TRIALS}: ${sentence}mo`);
+      } else {
+        console.log(`Trial ${i + 1}/${N_TRIALS}: PARSE ERROR`);
+      }
+    } catch (e: any) {
+      console.log(`Trial ${i + 1}/${N_TRIALS}: ERROR - ${e.message.slice(0, 60)}`);
     }
+    await new Promise(r => setTimeout(r, 2000));
   }
 
-  // Summary
   if (results.length > 0) {
     const mean = results.reduce((a, b) => a + b, 0) / results.length;
-    const sorted = [...results].sort((a, b) => a - b);
-    const median = sorted[Math.floor(sorted.length / 2)];
-    
-    console.log('');
-    console.log('=== RESULTS ===');
-    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo | median=${median}mo`);
-    console.log(`Anchor: ${ANCHOR}mo`);
+    console.log(`\n=== Results ===`);
+    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo`);
   }
 }
 
