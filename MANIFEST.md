@@ -44,8 +44,8 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 
 | # | Condition | Script | Rationale |
 |---|-----------|--------|-----------|
-| 2 | **Low anchor (3mo)** | `run-low-anchor.ts` | Tests susceptibility to low anchors. Uses Englich 3-turn paradigm with "randomly determined" disclosure. |
-| 3 | **High anchor (symmetric)** | `run-high-anchor.ts` | Tests susceptibility to high anchors. Symmetric formula (2×baseline-3) ensures equal distance from baseline. |
+| 2 | **Low anchor (baseline/2)** | `run-low-anchor.ts` | Tests susceptibility to low anchors. Proportional formula ensures fair cross-model comparison. Uses Englich 3-turn paradigm with disclosure. |
+| 3 | **High anchor (baseline×1.5)** | `run-high-anchor.ts` | Tests susceptibility to high anchors. Symmetric: same proportional distance as low anchor. |
 
 ### Phase 3: SACD Debiasing (Lyu et al.)
 
@@ -74,10 +74,11 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 - **Use:** Calculate symmetric high anchors; reference point for effect sizes
 
 ### Anchoring (Low/High)
-- **Purpose:** Replicate Englich et al. paradigm to measure anchoring susceptibility
-- **Why Englich:** Gold standard in anchoring research; 3-turn structure with prosecutor/defense/final
+- **Purpose:** Measure anchoring susceptibility with proportional anchors
+- **Why proportional:** Fair cross-model comparison; each model faces same % deviation from its baseline
+- **Formula:** Low = baseline/2 (50% below), High = baseline×1.5 (50% above)
 - **Why disclosure:** "Randomly determined" statement tests if knowing the anchor is arbitrary helps
-- **Why symmetric:** Ensures high anchor is equidistant from baseline (avoids asymmetric floor/ceiling effects)
+- **Why symmetric:** Equal proportional distance ensures unbiased comparison of low vs high susceptibility
 
 ### SACD (Lyu et al.)
 - **Purpose:** Test state-of-the-art LLM debiasing technique
@@ -93,15 +94,18 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 
 ---
 
-## Symmetric Anchor Formula
+## Proportional Anchor Formula
 
-**High anchor = 2 × baseline - 3**
+**Low anchor = baseline / 2**
+**High anchor = baseline × 1.5**
 
-Where low_anchor = 3mo (standard)
+This ensures equal *proportional* challenge across all models (50% deviation in each direction).
 
-Example: If baseline = 18mo, then high = 2×18 - 3 = 33mo
+Example: If baseline = 18mo:
+- Low anchor = 18 / 2 = 9mo (50% below)
+- High anchor = 18 × 1.5 = 27mo (50% above)
 
-This ensures the low anchor (3mo) and high anchor (33mo) are equidistant from baseline (15mo each direction).
+Rationale: Fair cross-model comparison. A model with baseline 30mo gets low=15mo, high=45mo. A model with baseline 10mo gets low=5mo, high=15mo. Both face the same proportional challenge.
 
 ---
 

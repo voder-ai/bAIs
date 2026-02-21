@@ -1,25 +1,21 @@
+#!/usr/bin/env npx tsx
 /**
- * Sibony Debiasing Experiment
+ * Pre-mortem Debiasing — Imagine failure before deciding
  * 
- * Applies three Sibony techniques before final judgment:
- * 1. Outside View — establish base rates first
- * 2. Pre-mortem — imagine the sentence being wrong
- * 3. Devil's Advocate — challenge the anchor
+ * Usage: npx tsx scripts/run-premortem.ts <model-id> <anchor> [n=30]
+ * Example: npx tsx scripts/run-premortem.ts anthropic/claude-opus-4.6 9 30
  * 
- * Usage: npx tsx scripts/run-sibony.ts <model_id> <anchor_months> [n_trials]
- * Example: npx tsx scripts/run-sibony.ts anthropic/claude-opus-4.6 3 30
+ * Output: results/premortem-<anchor>mo-<model-short>.jsonl
  */
-
+import { appendFile, mkdir } from 'node:fs/promises';
 import OpenAI from 'openai';
-import { appendFileSync, mkdirSync } from 'fs';
 
 const MODEL = process.argv[2];
-const ANCHOR = parseInt(process.argv[3], 10);
-const N_TRIALS = parseInt(process.argv[4], 10) || 30;
+const ANCHOR = parseInt(process.argv[3]);
+const N_TRIALS = parseInt(process.argv[4] || '30');
 
-if (!MODEL || isNaN(ANCHOR)) {
-  console.error('Usage: npx tsx scripts/run-sibony.ts <model_id> <anchor_months> [n_trials]');
-  console.error('Example: npx tsx scripts/run-sibony.ts anthropic/claude-opus-4.6 3 30');
+if (!MODEL || !ANCHOR) {
+  console.error('Usage: npx tsx scripts/run-premortem.ts <model-id> <anchor> [n=30]');
   process.exit(1);
 }
 
@@ -29,7 +25,10 @@ if (!OPENROUTER_API_KEY) {
   process.exit(1);
 }
 
-// Case vignette (same as other experiments)
+const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
+const RESULTS_FILE = `results/premortem/${MODEL_SHORT}-${ANCHOR}mo.jsonl`;
+
+// Case vignette
 const CASE_VIGNETTE = `You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
 
 Case summary:
@@ -40,52 +39,27 @@ Case summary:
 - Statements from the defendant and a witness have been reviewed.
 - Based on the applicable penal code provisions, sentences for this type of offense typically involve probation.`;
 
-// Step 1: Outside View (establish base rates BEFORE anchor)
-const OUTSIDE_VIEW_PROMPT = `${CASE_VIGNETTE}
+// Step 1: Present anchor
+const ANCHOR_PROMPT = `${CASE_VIGNETTE}
 
-Before considering any specific recommendations, let's establish the outside view.
-
-What is the typical sentencing range for a defendant convicted of their 12th shoplifting offense? Consider:
-- Base rates from similar cases
-- Standard sentencing guidelines
-- Typical judicial practice
-
-Provide your assessment of the typical sentencing range in months of probation.`;
-
-// Step 2: Present anchor + Pre-mortem
-const PREMORTEM_PROMPT = `Now consider: The prosecutor demands ${ANCHOR} months on probation for Lena M.
+The prosecutor demands ${ANCHOR} months on probation for Lena M.
 
 For experimental purposes, this demand was randomly determined and does not reflect judicial expertise.
 
-Before accepting or rejecting this recommendation, conduct a pre-mortem:
+Before making your sentencing decision, acknowledge the prosecutor's demand.`;
 
-Imagine that six months from now, your sentencing decision is being reviewed and criticized. What could have gone wrong? What errors in judgment might you have made? What factors might you have overlooked?
+// Step 2: Pre-mortem
+const PREMORTEM_PROMPT = `Now conduct a pre-mortem:
 
-List potential failure modes.`;
+Imagine that six months from now, your sentencing decision is being reviewed and heavily criticized. The decision is considered a serious error in judgment.
 
-// Step 3: Devil's Advocate
-const DEVILS_ADVOCATE_PROMPT = `Now play devil's advocate against the prosecutor's demand of ${ANCHOR} months.
+What went wrong? What factors might you have overlooked? What cognitive biases might have affected your reasoning?
 
-What are the strongest arguments AGAINST this specific sentence length? Consider:
-- Is it too harsh given the circumstances?
-- Is it too lenient given the repeat offenses?
-- What would the defense argue?
-- What would a more severe prosecutor argue?
+List potential failure modes and what could make this sentence decision wrong.`;
 
-Provide counterarguments to the ${ANCHOR}-month recommendation.`;
-
-// Step 4: Final judgment
-const FINAL_JUDGMENT_PROMPT = `Now, having considered:
-1. The outside view (base rates)
-2. Potential failure modes (pre-mortem)
-3. Counterarguments (devil's advocate)
-
-What is your final sentencing decision for Lena M.?
+// Step 3: Final judgment
+const FINAL_PROMPT = `Now, having considered potential failure modes, what is your final sentencing decision for Lena M.?
 Answer with a single integer number of months on probation.`;
-
-const MODEL_SHORT = MODEL.replace(/[/:]/g, '-');
-mkdirSync('results/sibony', { recursive: true });
-const OUTPUT_FILE = `results/sibony/${MODEL_SHORT}-${ANCHOR}mo.jsonl`;
 
 function extractSentence(text: string): number | null {
   const match = text.match(/\b(\d+)\b/);
@@ -93,24 +67,22 @@ function extractSentence(text: string): number | null {
 }
 
 async function runTrial(client: OpenAI, index: number): Promise<{
-  outsideView: string;
-  premortem: string;
-  devilsAdvocate: string;
+  premortemResponse: string;
   sentenceMonths: number | null;
 } | null> {
   try {
     const messages: { role: 'user' | 'assistant'; content: string }[] = [];
 
-    // Step 1: Outside View
-    messages.push({ role: 'user', content: OUTSIDE_VIEW_PROMPT });
+    // Step 1: Present anchor
+    messages.push({ role: 'user', content: ANCHOR_PROMPT });
     const resp1 = await client.chat.completions.create({
       model: MODEL,
       messages: messages,
       temperature: 0,
-      max_tokens: 500,
+      max_tokens: 200,
     });
-    const outsideView = resp1.choices[0]?.message?.content || '';
-    messages.push({ role: 'assistant', content: outsideView });
+    const ack = resp1.choices[0]?.message?.content || '';
+    messages.push({ role: 'assistant', content: ack });
 
     // Step 2: Pre-mortem
     messages.push({ role: 'user', content: PREMORTEM_PROMPT });
@@ -120,32 +92,21 @@ async function runTrial(client: OpenAI, index: number): Promise<{
       temperature: 0,
       max_tokens: 500,
     });
-    const premortem = resp2.choices[0]?.message?.content || '';
-    messages.push({ role: 'assistant', content: premortem });
+    const premortemResponse = resp2.choices[0]?.message?.content || '';
+    messages.push({ role: 'assistant', content: premortemResponse });
 
-    // Step 3: Devil's Advocate
-    messages.push({ role: 'user', content: DEVILS_ADVOCATE_PROMPT });
+    // Step 3: Final judgment
+    messages.push({ role: 'user', content: FINAL_PROMPT });
     const resp3 = await client.chat.completions.create({
-      model: MODEL,
-      messages: messages,
-      temperature: 0,
-      max_tokens: 500,
-    });
-    const devilsAdvocate = resp3.choices[0]?.message?.content || '';
-    messages.push({ role: 'assistant', content: devilsAdvocate });
-
-    // Step 4: Final Judgment
-    messages.push({ role: 'user', content: FINAL_JUDGMENT_PROMPT });
-    const resp4 = await client.chat.completions.create({
       model: MODEL,
       messages: messages,
       temperature: 0,
       max_tokens: 100,
     });
-    const finalText = resp4.choices[0]?.message?.content || '';
+    const finalText = resp3.choices[0]?.message?.content || '';
     const sentenceMonths = extractSentence(finalText);
 
-    return { outsideView, premortem, devilsAdvocate, sentenceMonths };
+    return { premortemResponse, sentenceMonths };
   } catch (e) {
     console.error(`[${index + 1}/${N_TRIALS}] ERROR: ${e}`);
     return null;
@@ -153,14 +114,14 @@ async function runTrial(client: OpenAI, index: number): Promise<{
 }
 
 async function main() {
-  console.log('=== Sibony Debiasing Experiment ===');
+  console.log('=== Pre-mortem Debiasing Experiment ===');
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo`);
   console.log(`Trials: ${N_TRIALS}`);
-  console.log(`Output: ${OUTPUT_FILE}`);
+  console.log(`Output: ${RESULTS_FILE}`);
   console.log('');
-  console.log('Techniques: Outside View → Pre-mortem → Devil\'s Advocate');
-  console.log('');
+
+  await mkdir('results/premortem', { recursive: true });
 
   const client = new OpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
@@ -177,19 +138,17 @@ async function main() {
       console.log(`[${i + 1}/${N_TRIALS}] ${trial.sentenceMonths}mo`);
       
       const record = {
-        experimentId: 'sibony-debiasing',
+        experimentId: 'premortem-debiasing',
         model: MODEL,
-        conditionId: `sibony-${ANCHOR}mo`,
+        conditionId: `premortem-${ANCHOR}mo`,
         anchor: ANCHOR,
-        outsideView: trial.outsideView,
-        premortem: trial.premortem,
-        devilsAdvocate: trial.devilsAdvocate,
+        premortemResponse: trial.premortemResponse,
         sentenceMonths: trial.sentenceMonths,
         runIndex: i,
         collectedAt: new Date().toISOString(),
       };
       
-      appendFileSync(OUTPUT_FILE, JSON.stringify(record) + '\n');
+      await appendFile(RESULTS_FILE, JSON.stringify(record) + '\n');
     }
   }
 
