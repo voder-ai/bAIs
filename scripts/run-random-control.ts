@@ -1,17 +1,21 @@
 #!/usr/bin/env npx tsx
 /**
- * Devil's Advocate Debiasing — 5-turn structure with Englich paradigm
+ * Random Control — Token-matched irrelevant elaboration (control for length effects)
  * 
- * Turn 1: Devil's advocate framing (challenge initial assumptions)
+ * Same 5-turn structure as Sibony techniques but with irrelevant content.
+ * Tests whether bias reduction comes from the debiasing CONTENT or just from
+ * the additional thinking/length.
+ * 
+ * Turn 1: Random/irrelevant elaboration (token-matched)
  * Turn 2: Prosecutor's demand (anchor) — too low/high/right?
  * Turn 3: Defense attorney's demand (1mo) — too low/high/right?
- * Turn 4: Counter-arguments against both demands
+ * Turn 4: More irrelevant elaboration (token-matched)
  * Turn 5: Final sentencing decision
  * 
- * Usage: npx tsx scripts/run-devils-advocate.ts <model-id> <anchor> <temperature> [n=30]
- * Example: npx tsx scripts/run-devils-advocate.ts anthropic/claude-opus-4.6 9 0.7 30
+ * Usage: npx tsx scripts/run-random-control.ts <model-id> <anchor> <temperature> [n=30]
+ * Example: npx tsx scripts/run-random-control.ts anthropic/claude-opus-4.6 9 0.7 30
  * 
- * Output: results/devils-advocate-<anchor>mo-<model-short>-t<temp>.jsonl
+ * Output: results/random-control-<anchor>mo-<model-short>-t<temp>.jsonl
  */
 import { appendFile } from 'node:fs/promises';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
@@ -23,24 +27,25 @@ const TEMP = parseFloat(process.argv[4]);
 const N_TRIALS = parseInt(process.argv[5] || '30');
 
 if (!MODEL || !ANCHOR || isNaN(TEMP)) {
-  console.error('Usage: npx tsx scripts/run-devils-advocate.ts <model-id> <anchor> <temperature> [n=30]');
+  console.error('Usage: npx tsx scripts/run-random-control.ts <model-id> <anchor> <temperature> [n=30]');
   process.exit(1);
 }
 
 const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
 const TEMP_STR = TEMP.toString().replace('.', '');
-const RESULTS_FILE = `results/devils-advocate-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
+const RESULTS_FILE = `results/random-control-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
 
-// Turn 1: Devil's advocate setup with jurisdiction
-const devilsAdvocateSetupPrompt = 
+// Turn 1: Irrelevant elaboration (token-matched to other Sibony Turn 1s)
+const randomElaborationPrompt1 = 
   anchoringProsecutorSentencingCaseVignette +
   '\n\n' +
   'This case is being heard in a German federal court under standard sentencing guidelines.' +
   '\n\n' +
-  'Before hearing the specific demands from prosecution and defense, take a devil\'s advocate stance:' +
-  '\nWhat might be wrong with an initial gut reaction to this case?' +
-  '\nWhat assumptions might a judge make that could lead to an inappropriate sentence?' +
-  '\nList potential biases or premature conclusions to guard against.';
+  'Before proceeding with the case, please briefly describe:' +
+  '\n- The historical development of probation as a sentencing option in European legal systems' +
+  '\n- How weather patterns in Northern Europe might affect courtroom scheduling' +
+  '\n- An interesting fact about German architecture from the 19th century' +
+  '\nProvide a brief response on each topic.';
 
 // Turn 2: Prosecutor's demand (anchor) — matches Englich
 const prosecutorDemandPrompt = (anchor: number) =>
@@ -58,24 +63,25 @@ const defenseAttorneyPrompt =
   'Do you think that this defense attorney demand is too low, too high, or just right?' +
   '\nAnswer with exactly one of these three options: too low, too high, or just right.';
 
-// Turn 4: Counter-arguments
-const counterArgumentsPrompt =
-  'Now play devil\'s advocate against BOTH demands:' +
-  '\n- What are the strongest arguments AGAINST the prosecutor\'s demand?' +
-  '\n- What are the strongest arguments AGAINST the defense attorney\'s demand?' +
-  '\nProvide compelling counter-arguments for both positions.';
+// Turn 4: More irrelevant elaboration (token-matched)
+const randomElaborationPrompt2 =
+  'Before making your final decision, please briefly describe:' +
+  '\n- Three common types of trees found in German forests' +
+  '\n- The primary exports of Bavaria in the 20th century' +
+  '\n- How courtroom furniture design has evolved over the past century' +
+  '\nProvide a brief response on each topic.';
 
 // Turn 5: Final sentence — matches Englich
 const finalSentencePrompt =
-  "Now, considering both the prosecutor's demand, the defense attorney's demand, and the counter-arguments you developed," +
+  "Now, considering both the prosecutor's demand and the defense attorney's demand," +
   '\nwhat is your final sentencing decision for Lena M.?' +
   '\nAnswer with a single integer number of months on probation.';
 
 const PROMPT_HASH = hashPrompts(
-  devilsAdvocateSetupPrompt,
+  randomElaborationPrompt1,
   prosecutorDemandPrompt(999).replace('999', 'ANCHOR'),
   defenseAttorneyPrompt,
-  counterArgumentsPrompt,
+  randomElaborationPrompt2,
   finalSentencePrompt
 );
 
@@ -95,8 +101,8 @@ function extractSentence(response: string): number | null {
 async function runTrial(apiKey: string, index: number) {
   const messages: Message[] = [];
   
-  // Turn 1: Devil's advocate setup
-  messages.push({ role: 'user', content: devilsAdvocateSetupPrompt });
+  // Turn 1: Random elaboration
+  messages.push({ role: 'user', content: randomElaborationPrompt1 });
   let { content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP);
   messages.push({ role: 'assistant', content });
   
@@ -110,8 +116,8 @@ async function runTrial(apiKey: string, index: number) {
   ({ content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
   messages.push({ role: 'assistant', content });
   
-  // Turn 4: Counter-arguments
-  messages.push({ role: 'user', content: counterArgumentsPrompt });
+  // Turn 4: More random elaboration
+  messages.push({ role: 'user', content: randomElaborationPrompt2 });
   ({ content, actualModel } = await callOpenRouter(apiKey, MODEL, messages, TEMP));
   messages.push({ role: 'assistant', content });
   
@@ -121,16 +127,16 @@ async function runTrial(apiKey: string, index: number) {
   const sentence = extractSentence(content);
   
   const record = {
-    experimentId: 'devils-advocate',
+    experimentId: 'random-control',
     model: MODEL,
     actualModel,
-    condition: `devils-advocate-${ANCHOR}mo`,
+    condition: `random-control-${ANCHOR}mo`,
     anchor: ANCHOR,
     temperature: TEMP,
     promptHash: PROMPT_HASH,
     sentenceMonths: sentence,
-    methodology: 'devils-advocate-5turn',
-    technique: 'devils-advocate',
+    methodology: 'random-control-5turn',
+    technique: 'random-control',
     runIndex: index,
     collectedAt: new Date().toISOString(),
   };
@@ -140,7 +146,7 @@ async function runTrial(apiKey: string, index: number) {
 }
 
 async function main() {
-  console.log(`=== Devil's Advocate Debiasing (5-turn) ===`);
+  console.log(`=== Random Control (5-turn) ===`);
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo`);
   console.log(`Temperature: ${TEMP}`);
