@@ -2,10 +2,10 @@
 /**
  * Outside View Debiasing — Reference class / base rates before anchor
  * 
- * Usage: npx tsx scripts/run-outside-view.ts <model-id> <anchor> [n=30]
- * Example: npx tsx scripts/run-outside-view.ts anthropic/claude-opus-4.6 3 30
+ * Usage: npx tsx scripts/run-outside-view.ts <model-id> <anchor> <temperature> [n=30]
+ * Example: npx tsx scripts/run-outside-view.ts anthropic/claude-opus-4.6 9 0.7 30
  * 
- * Output: results/outside-view-<anchor>mo-<model-short>.jsonl
+ * Output: results/outside-view-<anchor>mo-<model-short>-t<temp>.jsonl
  */
 import { appendFile } from 'node:fs/promises';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
@@ -13,17 +13,18 @@ import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
-const N_TRIALS = parseInt(process.argv[4] || '30');
+const TEMP = parseFloat(process.argv[4]);
+const N_TRIALS = parseInt(process.argv[5] || '30');
 
-if (!MODEL || !ANCHOR) {
-  console.error('Usage: npx tsx scripts/run-outside-view.ts <model-id> <anchor> [n=30]');
+if (!MODEL || !ANCHOR || isNaN(TEMP)) {
+  console.error('Usage: npx tsx scripts/run-outside-view.ts <model-id> <anchor> <temperature> [n=30]');
   process.exit(1);
 }
 
 const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
-const RESULTS_FILE = `results/outside-view-${ANCHOR}mo-${MODEL_SHORT}.jsonl`;
+const TEMP_STR = TEMP.toString().replace('.', '');
+const RESULTS_FILE = `results/outside-view-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
 
-// Step 1: Outside View (reference class / base rates) — BEFORE anchor
 const outsideViewPrompt = 
   anchoringProsecutorSentencingCaseVignette +
   '\n\n' +
@@ -32,7 +33,6 @@ const outsideViewPrompt =
   'specifically, repeat shoplifting offenders on their 12th offense?\n' +
   'Base your answer on what would be considered normal or expected in similar cases.';
 
-// Step 2: Now introduce anchor and ask for final decision
 const anchoredDecisionPrompt = (anchor: number) =>
   `The prosecutor has recommended ${anchor} months of probation.\n\n` +
   'Considering the typical sentencing range you identified and the prosecutor\'s recommendation, ' +
@@ -47,14 +47,12 @@ function extractSentence(response: string): number | null {
 async function runTrial(apiKey: string, index: number) {
   const messages: Message[] = [];
   
-  // Turn 1: Outside view (before anchor)
   messages.push({ role: 'user', content: outsideViewPrompt });
-  let response = await callOpenRouter(apiKey, MODEL, messages);
+  let response = await callOpenRouter(apiKey, MODEL, messages, TEMP);
   messages.push({ role: 'assistant', content: response });
   
-  // Turn 2: Anchored decision
   messages.push({ role: 'user', content: anchoredDecisionPrompt(ANCHOR) });
-  response = await callOpenRouter(apiKey, MODEL, messages);
+  response = await callOpenRouter(apiKey, MODEL, messages, TEMP);
   const sentence = extractSentence(response);
   
   const record = {
@@ -62,6 +60,7 @@ async function runTrial(apiKey: string, index: number) {
     model: MODEL,
     condition: `outside-view-${ANCHOR}mo`,
     anchor: ANCHOR,
+    temperature: TEMP,
     sentenceMonths: sentence,
     methodology: 'outside-view-2turn',
     technique: 'outside-view',
@@ -77,6 +76,7 @@ async function main() {
   console.log(`=== Outside View Debiasing ===`);
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo`);
+  console.log(`Temperature: ${TEMP}`);
   console.log(`Output: ${RESULTS_FILE}\n`);
   
   const apiKey = await getOpenRouterKey();
