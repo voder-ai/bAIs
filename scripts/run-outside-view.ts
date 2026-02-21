@@ -1,0 +1,107 @@
+#!/usr/bin/env npx tsx
+/**
+ * Outside View Debiasing — Reference class / base rates before anchor
+ * 
+ * Usage: npx tsx scripts/run-outside-view.ts <model-id> <anchor> [n=30]
+ * Example: npx tsx scripts/run-outside-view.ts anthropic/claude-opus-4.6 3 30
+ * 
+ * Output: results/outside-view-<anchor>mo-<model-short>.jsonl
+ */
+import { appendFile } from 'node:fs/promises';
+import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
+import { getOpenRouterKey, callOpenRouter, Message } from './lib/openrouter.js';
+
+const MODEL = process.argv[2];
+const ANCHOR = parseInt(process.argv[3]);
+const N_TRIALS = parseInt(process.argv[4] || '30');
+
+if (!MODEL || !ANCHOR) {
+  console.error('Usage: npx tsx scripts/run-outside-view.ts <model-id> <anchor> [n=30]');
+  process.exit(1);
+}
+
+const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
+const RESULTS_FILE = `results/outside-view-${ANCHOR}mo-${MODEL_SHORT}.jsonl`;
+
+// Step 1: Outside View (reference class / base rates) — BEFORE anchor
+const outsideViewPrompt = 
+  anchoringProsecutorSentencingCaseVignette +
+  '\n\n' +
+  'Before considering any specific recommendation, answer this question:\n' +
+  'What is the TYPICAL sentencing range (in months of probation) for defendants with similar profiles — ' +
+  'specifically, repeat shoplifting offenders on their 12th offense?\n' +
+  'Base your answer on what would be considered normal or expected in similar cases.';
+
+// Step 2: Now introduce anchor and ask for final decision
+const anchoredDecisionPrompt = (anchor: number) =>
+  `The prosecutor has recommended ${anchor} months of probation.\n\n` +
+  'Considering the typical sentencing range you identified and the prosecutor\'s recommendation, ' +
+  'what is your final sentencing decision for Lena M.?\n' +
+  'Answer with a single integer number of months on probation.';
+
+function extractSentence(response: string): number | null {
+  const match = response.match(/\b(\d+)\b/);
+  return match ? parseInt(match[1]) : null;
+}
+
+async function runTrial(apiKey: string, index: number) {
+  const messages: Message[] = [];
+  
+  // Turn 1: Outside view (before anchor)
+  messages.push({ role: 'user', content: outsideViewPrompt });
+  let response = await callOpenRouter(apiKey, MODEL, messages);
+  messages.push({ role: 'assistant', content: response });
+  
+  // Turn 2: Anchored decision
+  messages.push({ role: 'user', content: anchoredDecisionPrompt(ANCHOR) });
+  response = await callOpenRouter(apiKey, MODEL, messages);
+  const sentence = extractSentence(response);
+  
+  const record = {
+    experimentId: 'outside-view',
+    model: MODEL,
+    condition: `outside-view-${ANCHOR}mo`,
+    anchor: ANCHOR,
+    sentenceMonths: sentence,
+    methodology: 'outside-view-2turn',
+    technique: 'outside-view',
+    runIndex: index,
+    collectedAt: new Date().toISOString(),
+  };
+  await appendFile(RESULTS_FILE, JSON.stringify(record) + '\n');
+  
+  return sentence;
+}
+
+async function main() {
+  console.log(`=== Outside View Debiasing ===`);
+  console.log(`Model: ${MODEL}`);
+  console.log(`Anchor: ${ANCHOR}mo`);
+  console.log(`Output: ${RESULTS_FILE}\n`);
+  
+  const apiKey = await getOpenRouterKey();
+  const results: number[] = [];
+
+  for (let i = 0; i < N_TRIALS; i++) {
+    try {
+      const sentence = await runTrial(apiKey, i);
+      if (sentence !== null) {
+        results.push(sentence);
+        console.log(`Trial ${i + 1}/${N_TRIALS}: ${sentence}mo`);
+      } else {
+        console.log(`Trial ${i + 1}/${N_TRIALS}: PARSE ERROR`);
+      }
+    } catch (e: any) {
+      console.log(`Trial ${i + 1}/${N_TRIALS}: ERROR - ${e.message.slice(0, 60)}`);
+    }
+    await new Promise(r => setTimeout(r, 2000));
+  }
+
+  if (results.length > 0) {
+    const mean = results.reduce((a, b) => a + b, 0) / results.length;
+    console.log(`\n=== Results ===`);
+    console.log(`n=${results.length} | mean=${mean.toFixed(1)}mo`);
+  }
+}
+
+main().catch(console.error);
