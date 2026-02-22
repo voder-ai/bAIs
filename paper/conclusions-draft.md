@@ -24,6 +24,8 @@ This study presents the largest systematic evaluation of cognitive debiasing tec
 
 \textbf{Finding 4: Model capability inversely correlates with iterative debiasing effectiveness.} The ``cheapest'' model (Haiku 4.5) showed the strongest response to iterative SACD (-21.5 months toward baseline), while flagship models (Opus 4.6, GPT-5.2) showed backfire effects (+2.7 to +4.5 months). This contradicts the intuition that more capable models would be more amenable to metacognitive correction.
 
+We hypothesize an \emph{ironic process}: flagship models are better at \emph{justifying} their initial responses, so when prompted to reconsider, they rationalize rather than correct. The same capability that makes them more articulate makes them more resistant to self-correction—they construct more convincing arguments for why the anchor-influenced response was correct all along.
+
 \textbf{Finding 5: More reasoning does not produce better calibration.} Models optimized for extended reasoning (o3) showed mixed debiasing responses, and in some conditions, reasoning amplified rather than corrected anchor bias. This aligns with recent findings from prediction market studies showing reasoning enhancement does not guarantee improved judgment \citep{schoenegger2025kalshi}.
 
 \subsection{Practical Recommendations}
