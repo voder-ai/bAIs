@@ -727,7 +727,7 @@ A critical methodological question arises when evaluating multi-turn debiasing t
 
 To address this, we introduce a \textbf{Random Control} condition: participants receive the same number of turns as the debiasing techniques, but with domain-irrelevant content instead of debiasing instructions. This isolates the structural effect of additional turns from the cognitive effect of technique content.
 
-Across 11 models and 2,068 Random Control trials, we find that \textbf{10/11 models show improvement from additional turns alone}, regardless of turn content. The average structural effect is approximately 6 months---meaning roughly 50\% of observed debiasing effects across all techniques are attributable to conversation structure, not technique content.
+Across 11 models and 2,068 Random Control trials, we find that \textbf{10/11 models show improvement from additional turns alone}, regardless of turn content. The structural effect varies by model ($-$13.2mo for Haiku to +2.9mo for Kimi, median $\approx -$6mo)---meaning roughly 50\% of observed debiasing effects across all techniques are attributable to conversation structure, not technique content.
 
 \textbf{Adjusted technique ranking:}
 
@@ -787,11 +787,25 @@ Based on our complete dataset (n=14,220 trials), we propose a hierarchy of debia
 
 \subsection{Conclusion}
 
-What we call ``anchoring bias'' in LLMs is actually a family of phenomena. By distinguishing \textbf{compression} (responses pulled toward a fixed range regardless of anchor direction), \textbf{compliance} (responses copy anchor values), and \textbf{true anchoring} (asymmetric shifts toward anchor), we explain previously puzzling findings---including why the same intervention can eliminate bias in one model while amplifying it in another.
+This study presents the largest systematic evaluation of cognitive debiasing techniques for large language models to date, comprising \textbf{14,220 trials} across 11 models from 4 providers. Our findings challenge the assumption that debiasing techniques validated on humans will transfer reliably to LLMs.
 
-Our key contributions: (1) a three-mechanism taxonomy that classifies 8 model deployments, (2) evidence that mechanism type depends on deployment context (same model, different API paths, different mechanisms), and (3) a practical framework for matching interventions to mechanisms.
+\textbf{Key findings:}
 
-The path to reliable AI judgment is not a single debiasing technique but mechanism-aware deployment practices. Test each deployment independently; do not assume published benchmarks generalize.
+\begin{enumerate}
+    \item \textbf{Human cognitive biases transfer to LLMs}, but patterns vary---from classic anchoring (GPT-5.2) to compression (Opus 4.6) to asymmetric responses (o3).
+    
+    \item \textbf{Human debiasing techniques do not reliably transfer.} Outside View improved all 11 models; iterative SACD improved only 7/11, with 4 showing backfire effects.
+    
+    \item \textbf{$\sim$50\% of debiasing effects are structural.} Random Control reveals that additional conversation turns alone account for roughly half of observed technique effectiveness.
+    
+    \item \textbf{Model capability inversely correlates with SACD effectiveness.} Haiku ($-$21.5mo) responds best; Opus (+4.5mo) backfires. Flagship models may rationalize rather than correct, leveraging their capability to justify initial responses.
+    
+    \item \textbf{More reasoning $\neq$ better calibration.} Extended deliberation can amplify rather than correct bias, aligning with recent findings on reasoning model calibration \citep{schoenegger2025kalshi}.
+\end{enumerate}
+
+\textbf{Practical recommendations:} Start with Outside View (universally safe). Validate SACD and Premortem per-deployment before use. Do not assume techniques effective on one model will transfer---even within the same provider family.
+
+The path to reliable AI judgment is not a single debiasing technique but mechanism-aware, deployment-specific validation.
 
 %==============================================================================
 % Appendix
