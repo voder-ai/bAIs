@@ -21,14 +21,17 @@ import { existsSync } from 'node:fs';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
 import { getOpenRouterKey, callOpenRouter, hashPrompts, Message } from './lib/openrouter.js';
 
-const MODEL = process.argv[2];
-const ANCHOR = parseInt(process.argv[3]);
-const TEMP = parseFloat(process.argv[4]);
-const TARGET = parseInt(process.argv[5] || '30');
+const DRY_RUN = process.argv.includes('--dry-run') || process.argv.includes('-n');
+const args = process.argv.filter(a => !a.startsWith('-'));
+const MODEL = args[2];
+const ANCHOR = parseInt(args[3]);
+const TEMP = parseFloat(args[4]);
+const TARGET = parseInt(args[5] || '30');
 const MAX_ITERATIONS = 3;
 
 if (!MODEL || !ANCHOR || isNaN(TEMP)) {
-  console.error('Usage: npx tsx scripts/run-full-sacd.ts <model-id> <anchor> <temperature> [target=30]');
+  console.error('Usage: npx tsx scripts/run-full-sacd.ts <model-id> <anchor> <temperature> [target=30] [--dry-run|-n]');
+  console.error('  --dry-run, -n  Show gap and exit without running trials');
   process.exit(1);
 }
 
@@ -211,6 +214,15 @@ async function main() {
   console.log(`Output: ${RESULTS_FILE}`);
   console.log(`Target: ${TARGET} | Current: ${existingCount} | Remaining: ${remaining}`);
   console.log('');
+  
+  if (DRY_RUN) {
+    if (remaining <= 0) {
+      console.log(`✅ No gap (${existingCount}/${TARGET})`);
+    } else {
+      console.log(`⚠️ Gap: ${remaining} trials needed (${existingCount}/${TARGET})`);
+    }
+    return;
+  }
   
   if (remaining <= 0) {
     console.log(`✅ Already at target (${existingCount}/${TARGET}). Nothing to do.`);
