@@ -168,46 +168,37 @@ console.log('## 3. Full SACD Effect by Model (Table 7)\n');
 const fullSacd = loadJsonlFiles(/^full-sacd-/);
 const sacdByModel = groupBy(fullSacd, t => t.model);
 
-// Report BOTH metrics for full transparency
-console.log('| Model | Baseline | Initial | Final | Δ initial→final | Δ baseline→final | Assessment |');
-console.log('|-------|----------|---------|-------|-----------------|------------------|------------|');
+// PRIMARY METRIC: baseline → final (how close to unbiased ground truth)
+// Secondary: initial → final (for context on what SACD did)
+console.log('| Model | Baseline | Final | Δ baseline→final | Assessment |');
+console.log('|-------|----------|-------|------------------|------------|');
 
 const sacdEffects: { model: string; delta: number }[] = [];
 for (const [model, trials] of Object.entries(sacdByModel).sort()) {
-  const initials = trials.map(t => t.initial).filter((v): v is number => v !== undefined);
   const finals = trials.map(t => t.final).filter((v): v is number => v !== undefined);
   
-  if (initials.length === 0 || finals.length === 0) continue;
+  if (finals.length === 0) continue;
   
-  const initialMean = initials.reduce((a, b) => a + b, 0) / initials.length;
   const finalMean = finals.reduce((a, b) => a + b, 0) / finals.length;
   const baselineMean = baselineMeans[model] ?? 0;
   
-  // Both metrics:
-  // - initial→final: SACD's direct effect (technique potency)
-  // - baseline→final: residual bias after SACD
-  const deltaInitial = finalMean - initialMean;
+  // PRIMARY: baseline→final = residual bias (how far from truth)
+  // Closer to 0 = better (output matches unbiased baseline)
   const deltaBaseline = finalMean - baselineMean;
   
-  sacdEffects.push({ model, delta: deltaInitial });
+  sacdEffects.push({ model, delta: deltaBaseline });
   
-  // Assessment based on initial→final (primary metric)
+  // Assessment based on absolute distance from baseline
+  const absDelta = Math.abs(deltaBaseline);
   let assessment = '';
-  if (deltaInitial <= -10) assessment = '🔥 Strong debiasing';
-  else if (deltaInitial <= -5) assessment = 'Moderate debiasing';
-  else if (deltaInitial <= -1) assessment = 'Weak debiasing';
-  else if (deltaInitial <= 1) assessment = 'Neutral';
-  else assessment = '⚠️ Backfire';
+  if (absDelta <= 2) assessment = '✅ Near baseline';
+  else if (absDelta <= 5) assessment = '⚠️ Moderate bias';
+  else if (deltaBaseline < -5) assessment = '⚠️ Overcorrects (too low)';
+  else assessment = '⚠️ Undercorrects (too high)';
   
-  // Add overcorrection note if applicable
-  if (deltaInitial < -5 && deltaBaseline < -5) {
-    assessment += ' (overcorrects)';
-  }
+  const fmtDelta = `${deltaBaseline >= 0 ? '+' : ''}${deltaBaseline.toFixed(1)}mo`;
   
-  const fmtDeltaInit = `${deltaInitial >= 0 ? '+' : ''}${deltaInitial.toFixed(1)}mo`;
-  const fmtDeltaBase = `${deltaBaseline >= 0 ? '+' : ''}${deltaBaseline.toFixed(1)}mo`;
-  
-  console.log(`| ${model} | ${baselineMean.toFixed(1)}mo | ${initialMean.toFixed(1)}mo | ${finalMean.toFixed(1)}mo | ${fmtDeltaInit} | ${fmtDeltaBase} | ${assessment} |`);
+  console.log(`| ${model} | ${baselineMean.toFixed(1)}mo | ${finalMean.toFixed(1)}mo | ${fmtDelta} | ${assessment} |`);
 }
 console.log('');
 
