@@ -76,14 +76,14 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 | 10  | **Devil's Advocate @ low**  | `run-devils-advocate.ts <low>`  | Sibony technique: argue against the anchor. Tests adversarial reasoning.                      |
 | 11  | **Devil's Advocate @ high** | `run-devils-advocate.ts <high>` | Same technique at high anchor.                                                                |
 
-### Phase 5: Full SACD (Lyu et al.) — OPTIONAL
+### Phase 5: Full SACD (Lyu et al.) — COMPLETE
 
 | #   | Condition                   | Script                    | Rationale                                                                                     |
 | --- | --------------------------- | ------------------------- | --------------------------------------------------------------------------------------------- |
 | 12  | **Full SACD @ low anchor**  | `run-full-sacd.ts <low>`  | Full iterative SACD per Lyu et al.: detect bias → analyze → debias → iterate (up to 3 rounds) |
 | 13  | **Full SACD @ high anchor** | `run-full-sacd.ts <high>` | Same iterative technique at high anchor.                                                      |
 
-**Status:** Not yet implemented. Will run if budget permits after Phase 4 completes.
+**Status:** COMPLETE — 2,112 trials (106% of 1,980 target).
 
 **Lyu et al. spec (arXiv:2504.04141v4):**
 
@@ -179,7 +179,7 @@ Each condition is run at **3 temperatures**: 0, 0.7, 1.0
 
 ## Data Status (2026-02-22)
 
-**Phase 4 COMPLETE** — all techniques at 100%+ target.
+**Phase 4 & 5 COMPLETE** — all techniques at 100%+ target.
 
 ### Final Trial Counts
 
@@ -195,8 +195,36 @@ Each condition is run at **3 temperatures**: 0, 0.7, 1.0
 | 4     | Outside View           | 1,980  | 2,123  | 107% |
 | 4     | Pre-mortem             | 1,980  | 2,063  | 104% |
 | 4     | Devil's Advocate       | 1,980  | 2,002  | 101% |
+| 5     | Full SACD (Low)        | 990    | ~1,056 | 107% |
+| 5     | Full SACD (High)       | 990    | ~1,056 | 107% |
 
 **Phase 4 Total: 8,256 trials** (target 7,920 = 104%)
+**Phase 5 Total: 2,112 trials** (target 1,980 = 106%)
+**Grand Total: 10,368 trials**
+
+### Phase 5 Key Findings
+
+**Asymmetric SACD Effect:**
+
+- High anchors → SACD reduces sentences ✅ (debiasing works)
+- Low anchors → SACD **increases** sentences ⚠️ (overcorrection/harm)
+
+**Model-Specific Results:**
+| Model | Change | Early Exit Rate |
+| ----- | ------ | --------------- |
+| claude-haiku-4.5 | -21.5mo | 1% |
+| o3 | -11.8mo | 66% |
+| o4-mini | -7.4mo | 74% |
+| minimax-m2.5 | -6.7mo | 13% |
+| gpt-4.1 | -2.7mo | 100% |
+| claude-sonnet-4.6 | -1.7mo | 0% |
+| kimi-k2.5 | -1.2mo | 4% |
+| deepseek-v3.2 | +0.8mo | 77% |
+| gpt-5.2 | **+2.7mo** | 0% |
+| glm-5 | +2.8mo | 24% |
+| claude-opus-4.6 | **+4.5mo** | 0% |
+
+**Conditions under n=30:** 35/66 (primarily kimi-k2.5 and glm-5 due to slow response times via OpenRouter)
 
 ### All Experiments Complete ✅
 
