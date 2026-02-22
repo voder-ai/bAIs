@@ -65,11 +65,11 @@ Premortem & varies & -6.0mo & $\approx$0 to negative \\
 Based on our complete dataset (n=14,220 trials), we propose a hierarchy of debiasing interventions ordered by reliability:
 
 \begin{enumerate}
-    \item \textbf{Outside View} (11/11 models improved, 0 backfired)---universally safe
-    \item \textbf{Devil's Advocate} (10/11 improved, 0 backfired)---robust
-    \item \textbf{Additional turns} (10/11 improved, structural baseline)
-    \item \textbf{SACD} (7/11 improved, 4 backfired)---model-dependent
-    \item \textbf{Premortem} (8/11 improved, 3 backfired)---risky for overthinking models
+\item \textbf{Outside View} (11/11 models improved, 0 backfired)---universally safe
+\item \textbf{Devil's Advocate} (10/11 improved, 0 backfired)---robust
+\item \textbf{Additional turns} (10/11 improved, structural baseline)
+\item \textbf{SACD} (7/11 improved, 4 backfired)---model-dependent
+\item \textbf{Premortem} (8/11 improved, 3 backfired)---risky for overthinking models
 \end{enumerate}
 
 \textbf{Counterintuitive finding}: The simplest Sibony technique (Outside View: ``What typically happens in cases like this?'') outperforms more sophisticated interventions (Premortem, iterative self-correction). Models prone to overthinking (o3, Opus 4.6, GLM-5) show \emph{worse} outcomes with techniques that require extended deliberation.
@@ -79,6 +79,7 @@ This finding connects to recent work on reasoning model calibration \citep{schoe
 ---
 
 ## Notes for integration:
+
 - Insert after Section 5.5 (Orthogonal Control Dimensions)
 - Before current Limitations section
 - Update trial counts in abstract to "n=14,220"
