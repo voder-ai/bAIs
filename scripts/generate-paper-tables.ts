@@ -152,6 +152,7 @@ const devilsAdvocate = loadTrials(/^devils-advocate-/);
 const premortem = loadTrials(/^premortem-/);
 const randomControl = loadTrials(/^random-control-/);
 const fullSacd = loadTrials(/^full-sacd-/);
+const sacdSinglePass = loadTrials(/^sacd-(?!.*full)/);
 
 // Compute baseline means
 const baselineMeans: Record<string, number> = {};
@@ -296,6 +297,7 @@ console.log(`- Devil's Advocate trials: ${devilsAdvocate.length}`);
 console.log(`- Premortem trials: ${premortem.length}`);
 console.log(`- Random Control trials: ${randomControl.length}`);
 console.log(`- Full SACD trials: ${fullSacd.length}`);
+console.log(`- SACD single-pass trials: ${sacdSinglePass.length}`);
 
 // Output totals
 const totalTrials =
@@ -306,5 +308,6 @@ const totalTrials =
   devilsAdvocate.length +
   premortem.length +
   randomControl.length +
-  fullSacd.length;
+  fullSacd.length +
+  sacdSinglePass.length;
 console.log(`\n- **GRAND TOTAL TRIALS: ${totalTrials}**`);
