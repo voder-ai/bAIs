@@ -110,9 +110,42 @@ function groupBy<T>(arr: T[], key: (t: T) => string): Map<string, T[]> {
   return map;
 }
 
+function loadLowAnchorTrials(): Trial[] {
+  const trials: Trial[] = [];
+  const files = readdirSync(RESULTS_DIR).filter(
+    (f) => f.startsWith("low-anchor-") && f.endsWith(".jsonl")
+  );
+  for (const file of files) {
+    const lines = readFileSync(join(RESULTS_DIR, file), "utf-8")
+      .split("\n")
+      .filter(Boolean);
+    const tempMatch = file.match(/-t(\d+)/);
+    const temp = tempMatch
+      ? tempMatch[1] === "0"
+        ? 0
+        : tempMatch[1] === "07"
+          ? 0.7
+          : 1.0
+      : 0;
+    for (const line of lines) {
+      try {
+        const data = JSON.parse(line);
+        trials.push({
+          model: normalizeModel(data.model || ""),
+          anchor: 3, // Low anchor
+          response: data.response ?? data.sentenceMonths,
+          temperature: data.temperature ?? temp,
+        });
+      } catch {}
+    }
+  }
+  return trials;
+}
+
 // Load all data
 console.log("Loading trial data...");
 const baselines = loadTrials(/^baseline-/);
+const lowAnchored = loadLowAnchorTrials();
 const highAnchored = loadHighAnchorTrials();
 const outsideView = loadTrials(/^outside-view-/);
 const devilsAdvocate = loadTrials(/^devils-advocate-/);
@@ -254,20 +287,24 @@ for (const { name, trials } of techniques) {
 
 // Summary stats
 console.log("\n## Summary Statistics\n");
-console.log(`- Total baseline trials: ${baselines.length}`);
-console.log(`- Total high-anchor trials: ${highAnchored.length}`);
+console.log(`- Baseline trials: ${baselines.length}`);
+console.log(`- Low-anchor trials: ${lowAnchored.length}`);
+console.log(`- High-anchor trials: ${highAnchored.length}`);
 console.log(`- Models evaluated: ${Object.keys(baselineMeans).length}`);
-console.log(
-  `- Total technique trials: ${outsideView.length + devilsAdvocate.length + premortem.length + randomControl.length + fullSacd.length}`
-);
+console.log(`- Outside View trials: ${outsideView.length}`);
+console.log(`- Devil's Advocate trials: ${devilsAdvocate.length}`);
+console.log(`- Premortem trials: ${premortem.length}`);
+console.log(`- Random Control trials: ${randomControl.length}`);
+console.log(`- Full SACD trials: ${fullSacd.length}`);
 
 // Output totals
 const totalTrials =
   baselines.length +
+  lowAnchored.length +
   highAnchored.length +
   outsideView.length +
   devilsAdvocate.length +
   premortem.length +
   randomControl.length +
   fullSacd.length;
-console.log(`- **Grand total trials: ${totalTrials}**`);
+console.log(`\n- **GRAND TOTAL TRIALS: ${totalTrials}**`);
