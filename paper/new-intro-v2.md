@@ -4,7 +4,7 @@
 
 When large language models make judgments, do debiasing techniques actually help—or do they just move errors in a different direction?
 
-We report findings from the largest systematic evaluation of LLM debiasing techniques to date (14,994 trials across 11 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques *reduce susceptibility* to anchors, but whether they bring outputs *closer to ground truth*.
+We report findings from the largest systematic evaluation of LLM debiasing techniques to date (13,800 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques *reduce susceptibility* to anchors, but whether they bring outputs *closer to ground truth*.
 
 This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions—if the gap shrinks, the technique "works." But this metric misses a critical failure mode: **overcorrection**. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show "reduced susceptibility" while actually *increasing* distance from truth.
 
@@ -24,7 +24,7 @@ Using this metric, we discover rankings that invert conventional wisdom:
 **Standard metric (susceptibility):** All techniques appear roughly equivalent—most reduce the high-low gap.
 
 **Calibration metric:** Clear hierarchy emerges:
-1. **Random Control** (10/11 models calibrated) — extra conversation turns with no debiasing content
+1. **Random Control** (10/10 models calibrated) — extra conversation turns with no debiasing content
 2. **Premortem / Full SACD** (9/11) — self-reflection techniques  
 3. **Devil's Advocate** (7/11) — argumentation
 4. **Outside View** (4/11) — reference class reasoning
@@ -51,7 +51,7 @@ This has immediate practical implications:
 
 3. **Temperature × technique interaction effects** — first systematic analysis of temperature's role in debiasing.
 
-4. **14,994 trials across 11 models** — the largest LLM debiasing evaluation to date.
+4. **13,800 trials across 10 models** — the largest LLM debiasing evaluation to date.
 
 ## Paper Structure
 

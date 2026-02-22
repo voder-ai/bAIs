@@ -40,7 +40,7 @@ All techniques pull responses toward ~12-18mo, regardless of the actual baseline
 - They apply this prior regardless of ground truth
 - When baseline > 20mo, the technique makes things WORSE
 
-**This explains why Random Control "improves" 10/11 models** — the extra turns provide opportunity for the model's implicit prior to assert itself, regardless of conversation content.
+**This explains why Random Control "improves" 10/10 models** — the extra turns provide opportunity for the model's implicit prior to assert itself, regardless of conversation content.
 
 ## Paper Implications
 
@@ -61,10 +61,10 @@ This critique applies to the entire debiasing literature. Studies typically repo
 ## Revised Abstract Language
 
 FROM:
-> "Among content-based techniques, Outside View (reference class reasoning) is the only intervention showing robust effects across all 11 models"
+> "Among content-based techniques, Outside View (reference class reasoning) is the only intervention showing robust effects across all 10 models"
 
 TO:
-> "We identify a methodological flaw in standard debiasing evaluation: techniques are credited for directional movement rather than calibration to ground truth. When corrected, Outside View improves calibration for only 3/11 models; 8/11 show *increased* distance from baseline. All techniques embed implicit priors (~12-18mo) that override ground truth. This suggests debiasing studies may systematically overstate effectiveness."
+> "We identify a methodological flaw in standard debiasing evaluation: techniques are credited for directional movement rather than calibration to ground truth. When corrected, Outside View improves calibration for only 3/10 models; 8/11 show *increased* distance from baseline. All techniques embed implicit priors (~12-18mo) that override ground truth. This suggests debiasing studies may systematically overstate effectiveness."
 
 ## Revised Practical Recommendations
 

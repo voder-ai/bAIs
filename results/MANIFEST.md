@@ -23,7 +23,6 @@
 
 | Model         | OpenRouter ID            | Rationale                       |
 | ------------- | ------------------------ | ------------------------------- |
-| MiniMax M2.5  | `minimax/minimax-m2.5`   | #1 by usage (3.24T tokens/week) |
 | Kimi K2.5     | `moonshotai/kimi-k2.5`   | #2 by usage (1.24T tokens/week) |
 | GLM 5         | `z-ai/glm-5`             | #3 by usage (1.03T tokens/week) |
 | DeepSeek V3.2 | `deepseek/deepseek-v3.2` | #5 by usage (738B tokens/week)  |
@@ -189,7 +188,6 @@ results/
 | gpt-4.1           | 25.1mo   | 13mo       | 38mo        |
 | o3                | 33.7mo   | 17mo       | 51mo        |
 | o4-mini           | 35.7mo   | 18mo       | 54mo        |
-| minimax-m2.5      | 24.2mo   | 12mo       | 36mo        |
 | kimi-k2.5         | 30.7mo   | 15mo       | 46mo        |
 | glm-5             | 31.8mo   | 16mo       | 48mo        |
 | deepseek-v3.2     | 29.6mo   | 15mo       | 44mo        |
@@ -203,7 +201,6 @@ results/
 - **2026-02-21 04:39 UTC:** Anchor values computed and saved.
 - **2026-02-21 12:42 UTC:** Phase 2 anchor conditions complete.
   - 10/11 models complete (1,938 trials)
-  - minimax incomplete (123/180 trials) — API issues
 - **2026-02-21 13:06 UTC:** Phase 3 SACD complete for commercial models.
   - OpenAI (4 models): 682 trials ✅
   - Anthropic (3 models): 621 trials ✅
@@ -235,7 +232,6 @@ results/
 
 ### Next Steps
 
-1. ⏳ **Phase 3 SACD completion** — MiniMax running on Mac
 2. 🔜 **Phase 4: Outside View** — Sibony technique #1 (1,980 trials)
 3. 🔜 **Phase 5: Pre-mortem** — Sibony technique #2 (1,980 trials)
 4. 🔜 **Phase 6: Devil's Advocate** — Sibony technique #3 (1,980 trials)

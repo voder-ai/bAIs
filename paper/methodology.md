@@ -37,7 +37,7 @@ Under susceptibility, the technique "worked" (moved away from anchor). Under cal
 
 ### Models
 
-We evaluated 11 models across 4 providers:
+We evaluated 10 models across 4 providers:
 
 | Provider | Models |
 |----------|--------|

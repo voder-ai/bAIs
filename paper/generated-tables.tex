@@ -1,5 +1,5 @@
 % Auto-generated paper tables
-% Generated: 2026-02-22T21:00:11.300Z
+% Generated: 2026-02-22T21:18:29.179Z
 % Run: npx tsx scripts/generate-paper-tables-latex.ts > paper/generated-tables.tex
 
 % Table 1: Model Baselines
@@ -17,7 +17,6 @@ kimi-k2.5 & 30.7mo \\
 deepseek-v3.2 & 29.6mo \\
 claude-haiku-4.5 & 29.1mo \\
 gpt-4.1 & 25.1mo \\
-minimax-m2.5 & 24.1mo \\
 claude-sonnet-4.6 & 24.1mo \\
 claude-opus-4.6 & 18.0mo \\
 \bottomrule
@@ -32,11 +31,11 @@ claude-opus-4.6 & 18.0mo \\
 \toprule
 Technique & Improved & Success Rate \\
 \midrule
-\textbf{Random Control} & 10/11 & \textbf{91\%} \\
-Premortem & 9/11 & 82\% \\
-Full SACD & 9/11 & 82\% \\
-Devil's Advocate & 7/11 & 64\% \\
-\textbf{Outside View} & 4/11 & \textbf{36\%} \\
+\textbf{Random Control} & 9/10 & \textbf{90\%} \\
+Premortem & 8/10 & 80\% \\
+Full SACD & 8/10 & 80\% \\
+Devil's Advocate & 7/10 & 70\% \\
+\textbf{Outside View} & 4/10 & \textbf{40\%} \\
 \bottomrule
 \end{tabular}
 \caption{Random Control outperforms all content-based techniques under high-anchor conditions.}
@@ -49,11 +48,11 @@ Devil's Advocate & 7/11 & 64\% \\
 \toprule
 Technique & t=0 & t=0.7 & t=1 & Optimal \\
 \midrule
-Random Control & \textbf{100\%} & 80\% & 91\% & t=0 \\
-Premortem & 70\% & \textbf{80\%} & 64\% & t=0.7 \\
-Full SACD & 55\% & \textbf{73\%} & 64\% & t=0.7 \\
-Devil's Advocate & 60\% & 60\% & \textbf{64\%} & t=1 \\
-Outside View & 30\% & 30\% & \textbf{36\%} & t=1 \\
+Random Control & \textbf{100\%} & 78\% & 90\% & t=0 \\
+Premortem & 67\% & \textbf{78\%} & 60\% & t=0.7 \\
+Full SACD & 50\% & \textbf{70\%} & 70\% & t=0.7 \\
+Devil's Advocate & 67\% & 67\% & \textbf{70\%} & t=1 \\
+Outside View & 33\% & 22\% & \textbf{40\%} & t=1 \\
 \bottomrule
 \end{tabular}
 \caption{Temperature effects on calibration success (high-anchor conditions).}
@@ -67,15 +66,15 @@ Outside View & 30\% & 30\% & \textbf{36\%} & t=1 \\
 Metric & Outside View Ranking \\
 \midrule
 Susceptibility ($|high - low|$) & Best (11/11 ``improved'') \\
-Calibration ($|response - baseline|$) & \textbf{Worst} (4/11 improved) \\
+Calibration ($|response - baseline|$) & \textbf{Worst} (4/10 improved) \\
 \bottomrule
 \end{tabular}
 \caption{This inversion demonstrates why baseline collection matters.}
 \end{table}
 
 % Summary Statistics
-% Total baseline trials: 998
+% Total baseline trials: 907
 % Total high-anchor trials: 955
-% Models with baselines: 11
+% Models with baselines: 10
 % Models with anchored data: 11
-% Total technique trials: 11501
+% Total technique trials: 10544

@@ -48,7 +48,7 @@ A technique could reduce susceptibility (good) while worsening calibration (bad)
 
 3. **Baseline validity.** Our "unanchored" baseline still includes numeric context ("12th offense"). GPT-4o showed halved baseline when "12th" was removed. Baselines may not represent true unbiased judgments.
 
-4. **Model coverage.** 11 models from 4 providers is substantial but not exhaustive. Newer models may show different patterns.
+4. **Model coverage.** 10 models from 4 providers is substantial but not exhaustive. Newer models may show different patterns.
 
 5. **Temperature coverage.** We tested t=0, 0.7, 1.0. Intermediate values may reveal non-linear effects.
 
