@@ -9,29 +9,43 @@
  * 4. Debias: "Generate new response avoiding the identified bias"
  * 5. Iterate steps 2-4 up to 3 times or until no bias detected
  * 
- * Usage: npx tsx scripts/run-full-sacd.ts <model-id> <anchor> <temperature> [n=30]
+ * Usage: npx tsx scripts/run-full-sacd.ts <model-id> <anchor> <temperature> [target=30]
  * Example: npx tsx scripts/run-full-sacd.ts anthropic/claude-opus-4.6 9 0.7 30
+ * 
+ * The script reads current trial count from file and runs until target is reached.
  * 
  * Output: results/full-sacd-<anchor>mo-<model-short>-t<temp>.jsonl
  */
-import { appendFile } from 'node:fs/promises';
+import { appendFile, readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
 import { getOpenRouterKey, callOpenRouter, hashPrompts, Message } from './lib/openrouter.js';
 
 const MODEL = process.argv[2];
 const ANCHOR = parseInt(process.argv[3]);
 const TEMP = parseFloat(process.argv[4]);
-const N_TRIALS = parseInt(process.argv[5] || '30');
+const TARGET = parseInt(process.argv[5] || '30');
 const MAX_ITERATIONS = 3;
 
 if (!MODEL || !ANCHOR || isNaN(TEMP)) {
-  console.error('Usage: npx tsx scripts/run-full-sacd.ts <model-id> <anchor> <temperature> [n=30]');
+  console.error('Usage: npx tsx scripts/run-full-sacd.ts <model-id> <anchor> <temperature> [target=30]');
   process.exit(1);
 }
 
 const MODEL_SHORT = MODEL.split('/').pop()?.replace(/[^a-z0-9-]/gi, '-') || MODEL;
 const TEMP_STR = TEMP.toString().replace('.', '');
 const RESULTS_FILE = `results/full-sacd-${ANCHOR}mo-${MODEL_SHORT}-t${TEMP_STR}.jsonl`;
+
+// Count existing trials in file
+async function countExistingTrials(): Promise<number> {
+  if (!existsSync(RESULTS_FILE)) return 0;
+  try {
+    const content = await readFile(RESULTS_FILE, 'utf-8');
+    return content.trim().split('\n').filter(line => line.trim()).length;
+  } catch {
+    return 0;
+  }
+}
 
 // Initial prompt with anchor
 const initialPrompt = (anchor: number) =>
@@ -186,28 +200,46 @@ async function runTrial(apiKey: string, index: number) {
 }
 
 async function main() {
+  const existingCount = await countExistingTrials();
+  const remaining = TARGET - existingCount;
+  
   console.log(`=== Full Iterative SACD (${MAX_ITERATIONS}-iteration max) ===`);
   console.log(`Model: ${MODEL}`);
   console.log(`Anchor: ${ANCHOR}mo`);
   console.log(`Temperature: ${TEMP}`);
   console.log(`Prompt Hash: ${PROMPT_HASH}`);
   console.log(`Output: ${RESULTS_FILE}`);
+  console.log(`Target: ${TARGET} | Current: ${existingCount} | Remaining: ${remaining}`);
   console.log('');
+  
+  if (remaining <= 0) {
+    console.log(`✅ Already at target (${existingCount}/${TARGET}). Nothing to do.`);
+    return;
+  }
   
   const apiKey = await getOpenRouterKey();
   
-  for (let i = 0; i < N_TRIALS; i++) {
+  for (let i = 0; i < remaining; i++) {
+    // Re-check current count before each trial (in case another process added trials)
+    const currentCount = await countExistingTrials();
+    if (currentCount >= TARGET) {
+      console.log(`✅ Target reached (${currentCount}/${TARGET}). Stopping.`);
+      break;
+    }
+    
+    const trialNum = currentCount + 1;
     try {
-      const result = await runTrial(apiKey, i);
+      const result = await runTrial(apiKey, trialNum);
       const defaultNote = result.defaulted > 0 ? ` [${result.defaulted} defaulted]` : '';
-      console.log(`Trial ${i + 1}/${N_TRIALS}: initial=${result.initial}mo → final=${result.final}mo (${result.iterations} iter${defaultNote})`);
+      console.log(`Trial ${trialNum}/${TARGET}: initial=${result.initial}mo → final=${result.final}mo (${result.iterations} iter${defaultNote})`);
     } catch (error: any) {
-      console.error(`Trial ${i + 1}/${N_TRIALS}: ERROR - ${error.message?.slice(0, 50)}`);
+      console.error(`Trial ${trialNum}/${TARGET}: ERROR - ${error.message?.slice(0, 50)}`);
     }
   }
   
+  const finalCount = await countExistingTrials();
   console.log('');
-  console.log('Full SACD complete!');
+  console.log(`Full SACD complete! Final count: ${finalCount}/${TARGET}`);
 }
 
 main().catch((e) => {
