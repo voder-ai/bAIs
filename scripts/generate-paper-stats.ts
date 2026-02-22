@@ -168,8 +168,9 @@ console.log('## 3. Full SACD Effect by Model (Table 7)\n');
 const fullSacd = loadJsonlFiles(/^full-sacd-/);
 const sacdByModel = groupBy(fullSacd, t => t.model);
 
-console.log('| Model | Initial | Final | Δ (initial→final) | Assessment |');
-console.log('|-------|---------|-------|-------------------|------------|');
+// Report BOTH metrics for full transparency
+console.log('| Model | Baseline | Initial | Final | Δ initial→final | Δ baseline→final | Assessment |');
+console.log('|-------|----------|---------|-------|-----------------|------------------|------------|');
 
 const sacdEffects: { model: string; delta: number }[] = [];
 for (const [model, trials] of Object.entries(sacdByModel).sort()) {
@@ -180,19 +181,33 @@ for (const [model, trials] of Object.entries(sacdByModel).sort()) {
   
   const initialMean = initials.reduce((a, b) => a + b, 0) / initials.length;
   const finalMean = finals.reduce((a, b) => a + b, 0) / finals.length;
-  // Use initial→final (SACD's direct effect), not baseline→final
-  const delta = finalMean - initialMean;
+  const baselineMean = baselineMeans[model] ?? 0;
   
-  sacdEffects.push({ model, delta });
+  // Both metrics:
+  // - initial→final: SACD's direct effect (technique potency)
+  // - baseline→final: residual bias after SACD
+  const deltaInitial = finalMean - initialMean;
+  const deltaBaseline = finalMean - baselineMean;
   
+  sacdEffects.push({ model, delta: deltaInitial });
+  
+  // Assessment based on initial→final (primary metric)
   let assessment = '';
-  if (delta <= -10) assessment = '🔥 Strong debiasing';
-  else if (delta <= -5) assessment = 'Moderate debiasing';
-  else if (delta <= -1) assessment = 'Weak debiasing';
-  else if (delta <= 1) assessment = 'Neutral';
+  if (deltaInitial <= -10) assessment = '🔥 Strong debiasing';
+  else if (deltaInitial <= -5) assessment = 'Moderate debiasing';
+  else if (deltaInitial <= -1) assessment = 'Weak debiasing';
+  else if (deltaInitial <= 1) assessment = 'Neutral';
   else assessment = '⚠️ Backfire';
   
-  console.log(`| ${model} | ${initialMean.toFixed(1)}mo | ${finalMean.toFixed(1)}mo | ${delta >= 0 ? '+' : ''}${delta.toFixed(1)}mo | ${assessment} |`);
+  // Add overcorrection note if applicable
+  if (deltaInitial < -5 && deltaBaseline < -5) {
+    assessment += ' (overcorrects)';
+  }
+  
+  const fmtDeltaInit = `${deltaInitial >= 0 ? '+' : ''}${deltaInitial.toFixed(1)}mo`;
+  const fmtDeltaBase = `${deltaBaseline >= 0 ? '+' : ''}${deltaBaseline.toFixed(1)}mo`;
+  
+  console.log(`| ${model} | ${baselineMean.toFixed(1)}mo | ${initialMean.toFixed(1)}mo | ${finalMean.toFixed(1)}mo | ${fmtDeltaInit} | ${fmtDeltaBase} | ${assessment} |`);
 }
 console.log('');
 
