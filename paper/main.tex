@@ -32,7 +32,7 @@
 \begin{abstract}
 Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
 
-We introduce \textbf{calibration to baseline} as a complementary metric. By collecting unanchored responses (n=1,001 across 10 models), we can measure whether techniques bring outputs closer to ground truth, not just away from anchors. Using this metric across 13,800 trials, we discover rankings that invert conventional wisdom:
+We introduce \textbf{calibration to baseline} as a complementary metric. By collecting unanchored responses (n=1,001 across 10 models), we can measure whether techniques bring outputs closer to ground truth, not just away from anchors. Using this metric across 14,994 trials, we discover rankings that invert conventional wisdom:
 
 \begin{itemize}
     \item \textbf{Random Control} (extra turns, no debiasing content): 91\% of models improved
@@ -51,7 +51,7 @@ Without baseline collection, we would have concluded Outside View was universall
 
 When large language models make judgments, do debiasing techniques actually help---or do they just move errors in a different direction?
 
-We report findings from the largest systematic evaluation of LLM debiasing techniques to date (13,800 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to ground truth}.
+We report findings from the largest systematic evaluation of LLM debiasing techniques to date (14,994 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to ground truth}.
 
 This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions---if the gap shrinks, the technique ``works.'' But this metric misses a critical failure mode: \textbf{overcorrection}. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show ``reduced susceptibility'' while actually \textit{increasing} distance from truth.
 
@@ -105,7 +105,7 @@ This has immediate practical implications:
     
     \item \textbf{Temperature $\times$ technique interaction effects}---first systematic analysis of temperature's role in debiasing.
     
-    \item \textbf{13,800 trials across 10 models}---the largest LLM debiasing evaluation to date.
+    \item \textbf{14,994 trials across 10 models}---the largest LLM debiasing evaluation to date.
 \end{enumerate}
 
 %==============================================================================
@@ -210,7 +210,7 @@ Provider & Models \\
 Anthropic & Claude Haiku 4.5, Sonnet 4.6, Opus 4.6 \\
 OpenAI & GPT-4.1, GPT-5.2, o3, o4-mini \\
 DeepSeek & DeepSeek-v3.2 \\
-Others & Kimi-k2.5, GLM-5 \\
+Others & Kimi-k2.5, GLM-5, MiniMax-m2.5 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -248,7 +248,7 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
 \subsubsection{Trial Counts}
 
 \begin{itemize}
-    \item \textbf{Total trials}: 13,800
+    \item \textbf{Total trials}: $\sim$14,100
     \item \textbf{Per model-technique-temperature}: 20--50 trials
     \item \textbf{Baseline trials per model}: 91
 \end{itemize}
@@ -288,6 +288,7 @@ DeepSeek-v3.2 & 29.6mo \\
 Haiku 4.5 & 29.1mo \\
 GPT-4.1 & 25.1mo \\
 Sonnet 4.6 & 24.1mo \\
+MiniMax-m2.5 & 24.1mo \\
 Opus 4.6 & 18.0mo \\
 \bottomrule
 \end{tabular}

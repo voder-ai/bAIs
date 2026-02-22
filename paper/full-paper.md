@@ -2,7 +2,7 @@
 
 Large language models exhibit anchoring bias—disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs. low anchor conditions; a technique "works" if it reduces this gap. We identify a critical limitation: this metric misses **overcorrection**, where techniques move responses away from anchors but past the unbiased answer.
 
-We introduce **calibration to baseline** as a complementary metric. By collecting unanchored responses (n=1,001 across 10 models), we can measure whether techniques bring outputs closer to ground truth, not just away from anchors. Using this metric across 13,800 trials, we discover rankings that invert conventional wisdom:
+We introduce **calibration to baseline** as a complementary metric. By collecting unanchored responses (n=1,001 across 10 models), we can measure whether techniques bring outputs closer to ground truth, not just away from anchors. Using this metric across 14,994 trials, we discover rankings that invert conventional wisdom:
 
 - **Random Control** (extra turns, no debiasing content): 91% of models improved
 - **Self-reflection techniques** (Premortem, SACD): 82%
@@ -20,7 +20,7 @@ Without baseline collection, we would have concluded Outside View was universall
 
 When large language models make judgments, do debiasing techniques actually help—or do they just move errors in a different direction?
 
-We report findings from the largest systematic evaluation of LLM debiasing techniques to date (13,800 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques *reduce susceptibility* to anchors, but whether they bring outputs *closer to ground truth*.
+We report findings from the largest systematic evaluation of LLM debiasing techniques to date (14,994 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques *reduce susceptibility* to anchors, but whether they bring outputs *closer to ground truth*.
 
 This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions—if the gap shrinks, the technique "works." But this metric misses a critical failure mode: **overcorrection**. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show "reduced susceptibility" while actually *increasing* distance from truth.
 
@@ -67,7 +67,7 @@ This has immediate practical implications:
 
 3. **Temperature × technique interaction effects** — first systematic analysis of temperature's role in debiasing.
 
-4. **13,800 trials across 10 models** — the largest LLM debiasing evaluation to date.
+4. **14,994 trials across 10 models** — the largest LLM debiasing evaluation to date.
 
 ## Paper Structure
 
