@@ -1,0 +1,81 @@
+% Auto-generated paper tables
+% Generated: 2026-02-22T21:00:11.300Z
+% Run: npx tsx scripts/generate-paper-tables-latex.ts > paper/generated-tables.tex
+
+% Table 1: Model Baselines
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+Model & Baseline Mean \\
+\midrule
+o4-mini & 35.7mo \\
+o3 & 33.7mo \\
+glm-5 & 31.8mo \\
+gpt-5.2 & 31.8mo \\
+kimi-k2.5 & 30.7mo \\
+deepseek-v3.2 & 29.6mo \\
+claude-haiku-4.5 & 29.1mo \\
+gpt-4.1 & 25.1mo \\
+minimax-m2.5 & 24.1mo \\
+claude-sonnet-4.6 & 24.1mo \\
+claude-opus-4.6 & 18.0mo \\
+\bottomrule
+\end{tabular}
+\caption{Model baselines range from 18.0mo to 35.7mo.}
+\end{table}
+
+% Table 2: Technique Effectiveness (High Anchor)
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Technique & Improved & Success Rate \\
+\midrule
+\textbf{Random Control} & 10/11 & \textbf{91\%} \\
+Premortem & 9/11 & 82\% \\
+Full SACD & 9/11 & 82\% \\
+Devil's Advocate & 7/11 & 64\% \\
+\textbf{Outside View} & 4/11 & \textbf{36\%} \\
+\bottomrule
+\end{tabular}
+\caption{Random Control outperforms all content-based techniques under high-anchor conditions.}
+\end{table}
+
+% Table 3: Temperature × Technique Interaction
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Technique & t=0 & t=0.7 & t=1 & Optimal \\
+\midrule
+Random Control & \textbf{100\%} & 80\% & 91\% & t=0 \\
+Premortem & 70\% & \textbf{80\%} & 64\% & t=0.7 \\
+Full SACD & 55\% & \textbf{73\%} & 64\% & t=0.7 \\
+Devil's Advocate & 60\% & 60\% & \textbf{64\%} & t=1 \\
+Outside View & 30\% & 30\% & \textbf{36\%} & t=1 \\
+\bottomrule
+\end{tabular}
+\caption{Temperature effects on calibration success (high-anchor conditions).}
+\end{table}
+
+% Table 4: Susceptibility vs Calibration Comparison
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+Metric & Outside View Ranking \\
+\midrule
+Susceptibility ($|high - low|$) & Best (11/11 ``improved'') \\
+Calibration ($|response - baseline|$) & \textbf{Worst} (4/11 improved) \\
+\bottomrule
+\end{tabular}
+\caption{This inversion demonstrates why baseline collection matters.}
+\end{table}
+
+% Summary Statistics
+% Total baseline trials: 998
+% Total high-anchor trials: 955
+% Models with baselines: 11
+% Models with anchored data: 11
+% Total technique trials: 11501
