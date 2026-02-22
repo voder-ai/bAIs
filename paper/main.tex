@@ -32,7 +32,7 @@
 \begin{abstract}
 How do large language models (LLMs) respond to numeric context in judgment tasks? Prior work assumes LLMs exhibit a single anchoring phenomenon---adjusting estimates toward arbitrary reference points. We find the reality is more complex.
 
-Testing 11 model deployments across 4 providers on judicial sentencing scenarios (n=1,800+ trials), we identify \textbf{three distinct behavioral patterns} by which LLMs respond to numeric context (we use ``mechanisms'' as shorthand throughout, though these are observational patterns rather than mechanistic explanations):
+Testing 11 models across 4 providers on judicial sentencing scenarios (\textbf{n=14,220 trials}), we identify \textbf{three distinct behavioral patterns} by which LLMs respond to numeric context (we use ``mechanisms'' as shorthand throughout, though these are observational patterns rather than mechanistic explanations):
 
 \textbf{1. Compression}: Models compress responses toward a middle range regardless of anchor direction. Without any anchor, these models produce high sentences (10--14 months); with ANY anchor---high or low---responses compress to 3--11 months. Both anchors shift responses DOWN from baseline. (Opus 4.5, Llama 3.3, o3-mini, MiniMax)
 
@@ -46,7 +46,9 @@ This taxonomy explains previously puzzling findings: why SACD (Self-Aware Cognit
 
 \textbf{Extended range testing}: With anchors \emph{above} baseline (24 months), models show distinct susceptibility patterns: strong amplifiers (o3-mini produces 33mo, GPT-5.2 produces 28mo---both exceeding the 24mo anchor), partial susceptibility (Opus 4.5), weak effect (o1, Llama 3.3), and consistent compression (Opus 4.6, Hermes 405B compress to $\sim$6--12mo regardless of anchor). Critically, Opus 4.5$\rightarrow$4.6 changed patterns---debiasing validation must be repeated per model VERSION.
 
-\textbf{Practical implication}: Before applying debiasing, identify which mechanism your deployment exhibits. We provide a decision framework and deployment checklist.
+\textbf{Methodological contribution}: We introduce Random Control---token-matched irrelevant elaboration---to decompose debiasing effects into structural (additional turns) and content (technique-specific) components. Approximately 50\% of observed debiasing effects are attributable to conversation structure alone. Among content-based techniques, Outside View (reference class reasoning) is the only intervention showing robust effects across all 11 models; iterative SACD and Premortem backfire on models prone to overthinking (o3, Opus 4.6, GLM-5).
+
+\textbf{Practical implication}: Before applying debiasing, identify which mechanism your deployment exhibits. Outside View is universally safe; iterative techniques require empirical validation. We provide a decision framework and deployment checklist.
 \end{abstract}
 
 %==============================================================================
@@ -685,6 +687,60 @@ High & \$150k & \$142,000 \\
 \end{table}
 
 The \$12,167 difference between conditions demonstrates anchoring effects generalize across domains. Both responses fall between the anchors, consistent with the susceptible pattern observed in sentencing.
+
+\subsection{Decomposing Debiasing Effects: Structure vs. Content}
+\label{sec:decomposition}
+
+A critical methodological question arises when evaluating multi-turn debiasing techniques: how much of the observed improvement is due to the technique's \emph{content} versus the mere \emph{structure} of additional conversation turns?
+
+To address this, we introduce a \textbf{Random Control} condition: participants receive the same number of turns as the debiasing techniques, but with domain-irrelevant content instead of debiasing instructions. This isolates the structural effect of additional turns from the cognitive effect of technique content.
+
+Across 11 models and 2,068 Random Control trials, we find that \textbf{10/11 models show improvement from additional turns alone}, regardless of turn content. The average structural effect is approximately 6 months---meaning roughly 50\% of observed debiasing effects across all techniques are attributable to conversation structure, not technique content.
+
+\textbf{Adjusted technique ranking:}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Technique & Improved & Backfired & Raw $\Delta$ & Net Content Effect \\
+\midrule
+Outside View & 11/11 & 0 & -12.7mo & \textbf{-6.7mo} \\
+Devil's Advocate & 10/11 & 0 & -8.2mo & -2.2mo \\
+Random Control & 10/11 & 1 & -6.0mo & --- (baseline) \\
+Premortem & 8/11 & 3 & varies & $\approx$0 to negative \\
+Full SACD & 7/11 & 4 & varies & model-dependent \\
+\bottomrule
+\end{tabular}
+\caption{Technique effectiveness after Random Control decomposition. Outside View shows robust content effects beyond structural baseline.}
+\label{tab:technique-decomposition}
+\end{table}
+
+\textbf{Key findings:}
+
+\begin{enumerate}
+    \item \textbf{Outside View is universally safe.} All 11 models improved, with genuine content effects ($\sim$6.7mo) beyond structural baseline.
+    
+    \item \textbf{Premortem and SACD can backfire.} These techniques cause 3--4 models to produce \emph{worse} outcomes than baseline. The technique content actively overcomes the positive structural effect, producing net negative outcomes.
+    
+    \item \textbf{Flagship models show SACD backfire.} Opus 4.6 (+4.5mo), GPT-5.2 (+2.7mo), and GLM-5 (+2.8mo) all produce worse outcomes under iterative SACD---contradicting the intuition that ``more capable'' models would be more amenable to metacognitive debiasing.
+\end{enumerate}
+
+This finding connects to recent work on reasoning model calibration \citep{schoenegger2025kalshi}, which found that GPT-5.2 with extended reasoning showed 3.3$\times$ \emph{worse} calibration than Opus. More thinking does not automatically produce better judgment.
+
+\subsubsection{Hierarchy of Safe Interventions}
+
+Based on our complete dataset (n=14,220 trials), we propose a hierarchy of debiasing interventions ordered by reliability:
+
+\begin{enumerate}
+    \item \textbf{Outside View} (11/11 improved, 0 backfired)---universally safe
+    \item \textbf{Devil's Advocate} (10/11 improved, 0 backfired)---robust
+    \item \textbf{Additional turns} (10/11 improved)---structural baseline
+    \item \textbf{SACD} (7/11 improved, 4 backfired)---model-dependent
+    \item \textbf{Premortem} (8/11 improved, 3 backfired)---risky for overthinking models
+\end{enumerate}
+
+\textbf{Counterintuitive finding}: The simplest Sibony technique (Outside View: ``What typically happens in cases like this?'') outperforms more sophisticated interventions. Models prone to overthinking (o3, Opus 4.6, GLM-5) show \emph{worse} outcomes with techniques requiring extended deliberation.
 
 \subsection{Limitations}
 
