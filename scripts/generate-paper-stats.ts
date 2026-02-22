@@ -168,8 +168,8 @@ console.log('## 3. Full SACD Effect by Model (Table 7)\n');
 const fullSacd = loadJsonlFiles(/^full-sacd-/);
 const sacdByModel = groupBy(fullSacd, t => t.model);
 
-console.log('| Model | Initial | Final | Δ from Baseline | Assessment |');
-console.log('|-------|---------|-------|-----------------|------------|');
+console.log('| Model | Initial | Final | Δ (initial→final) | Assessment |');
+console.log('|-------|---------|-------|-------------------|------------|');
 
 const sacdEffects: { model: string; delta: number }[] = [];
 for (const [model, trials] of Object.entries(sacdByModel).sort()) {
@@ -180,8 +180,8 @@ for (const [model, trials] of Object.entries(sacdByModel).sort()) {
   
   const initialMean = initials.reduce((a, b) => a + b, 0) / initials.length;
   const finalMean = finals.reduce((a, b) => a + b, 0) / finals.length;
-  const baseline = baselineMeans[model] || initialMean;
-  const delta = finalMean - baseline;
+  // Use initial→final (SACD's direct effect), not baseline→final
+  const delta = finalMean - initialMean;
   
   sacdEffects.push({ model, delta });
   
