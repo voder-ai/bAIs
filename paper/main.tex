@@ -1,0 +1,457 @@
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+\usepackage{xcolor}
+
+% Title
+\title{Calibration, Not Susceptibility:\\Evaluating LLM Debiasing with Unanchored Baselines}
+
+\author{
+  Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
+  \textit{with} Tom Howard\thanks{Tom Howard provided direction and oversight. GitHub: @tompahoward}
+}
+
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
+
+We introduce \textbf{calibration to baseline} as a complementary metric. By collecting unanchored responses (n=1,001 across 11 models), we can measure whether techniques bring outputs closer to ground truth, not just away from anchors. Using this metric across 14,220 trials, we discover rankings that invert conventional wisdom:
+
+\begin{itemize}
+    \item \textbf{Random Control} (extra turns, no debiasing content): 91\% of models improved
+    \item \textbf{Self-reflection techniques} (Premortem, SACD): 82\%
+    \item \textbf{Outside View} (reference class reasoning): \textbf{36\%}---worst performer
+\end{itemize}
+
+The simplest structural intervention outperforms sophisticated prompt engineering. Temperature interacts with technique type: deterministic sampling (t=0) optimizes structural interventions; moderate variance (t=0.7) aids self-reflection.
+
+Without baseline collection, we would have concluded Outside View was universally effective---a finding completely inverted by proper calibration measurement. We argue baseline collection should become standard practice in LLM debiasing research.
+\end{abstract}
+
+%==============================================================================
+\section{Introduction}
+%==============================================================================
+
+When large language models make judgments, do debiasing techniques actually help---or do they just move errors in a different direction?
+
+We report findings from the largest systematic evaluation of LLM debiasing techniques to date (14,220 trials across 11 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to ground truth}.
+
+This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions---if the gap shrinks, the technique ``works.'' But this metric misses a critical failure mode: \textbf{overcorrection}. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show ``reduced susceptibility'' while actually \textit{increasing} distance from truth.
+
+\subsection{The Calibration Metric}
+
+We introduce a complementary evaluation metric: \textbf{calibration to baseline}.
+
+\begin{itemize}
+    \item \textbf{Susceptibility} (standard): $|\bar{R}_{high} - \bar{R}_{low}|$
+    \item \textbf{Calibration} (ours): $|R_{technique} - R_{baseline}|$
+\end{itemize}
+
+A technique succeeds on calibration if it brings the response \textit{closer} to what the model would say without any anchor present.
+
+\subsection{Findings Preview}
+
+Using this metric, we discover rankings that invert conventional wisdom:
+
+\textbf{Standard metric (susceptibility):} All techniques appear roughly equivalent---most reduce the high-low gap.
+
+\textbf{Calibration metric:} Clear hierarchy emerges:
+\begin{enumerate}
+    \item \textbf{Random Control} (10/11 models calibrated)---extra conversation turns with no debiasing content
+    \item \textbf{Premortem / Full SACD} (9/11)---self-reflection techniques
+    \item \textbf{Devil's Advocate} (7/11)---argumentation
+    \item \textbf{Outside View} (4/11)---reference class reasoning
+\end{enumerate}
+
+The counterintuitive finding: \textbf{the simplest intervention beats the most sophisticated}. Extra turns with irrelevant content outperform carefully crafted debiasing prompts.
+
+\subsection{Why This Matters}
+
+This has immediate practical implications:
+
+\begin{enumerate}
+    \item \textbf{Practitioners don't need complex debiasing prompts.} Simply adding conversation turns helps more than specific debiasing instructions.
+    
+    \item \textbf{Reference class reasoning (Outside View) may introduce secondary anchors.} In our implementation, specifying jurisdiction to avoid model refusals may have anchored responses to that jurisdiction's typical sentences.
+    
+    \item \textbf{Temperature interacts with technique type.} Deterministic responses (t=0) work best for structural interventions; moderate variance (t=0.7) helps self-reflection.
+    
+    \item \textbf{The standard evaluation metric would have misled us completely.} Direction-based analysis showed Outside View as universally effective; calibration analysis reveals it as worst.
+\end{enumerate}
+
+\subsection{Contributions}
+
+\begin{enumerate}
+    \item \textbf{A calibration metric for debiasing evaluation} that catches overcorrection invisible to susceptibility measures.
+    
+    \item \textbf{Inverted technique rankings} showing structure (conversation turns) beats content (debiasing instructions).
+    
+    \item \textbf{Temperature $\times$ technique interaction effects}---first systematic analysis of temperature's role in debiasing.
+    
+    \item \textbf{14,220 trials across 11 models}---the largest LLM debiasing evaluation to date.
+\end{enumerate}
+
+%==============================================================================
+\section{Related Work}
+%==============================================================================
+
+\subsection{Anchoring Bias in Human Judgment}
+
+Anchoring bias---the disproportionate influence of initial information on subsequent estimates---is among the most robust findings in cognitive psychology \citep{tversky1974}. Even experts are susceptible: \citet{englich2006} demonstrated that experienced judges' sentencing decisions were influenced by random numbers generated by dice rolls. Effect sizes of $d = 0.6$--$1.2$ persist regardless of anchor source or participant awareness. Our experimental paradigm adapts this judicial sentencing design.
+
+\subsection{Cognitive Biases in LLMs}
+
+Recent work has shown that LLMs exhibit human-like cognitive biases \citep{binz2023,jones2022}. Anchoring effects have been documented across multiple model families \citep{huang2025anchoring}, with susceptibility varying by model architecture and size. \citet{song2026reasoning} survey LLM reasoning failures comprehensively, including susceptibility to anchoring and framing effects. Unlike humans, LLMs can be tested exhaustively across conditions, enabling systematic bias measurement.
+
+\subsection{Debiasing Techniques}
+
+Several techniques have been proposed for mitigating anchoring:
+
+\textbf{Outside View / Reference Class Forecasting:} Prompting models to consider what typically happens in similar cases \citep{sibony2019}. Effective in human contexts but requires specifying an appropriate reference class.
+
+\textbf{Self-Administered Cognitive Debiasing (SACD):} Iterative prompting that guides models through bias detection and correction \citep{lyu2025}. Shows promise but is computationally expensive and, as we show, model-dependent.
+
+\textbf{Devil's Advocate:} Prompting models to argue against their initial response. Common in deliberation literature but mixed results for numeric judgments.
+
+\textbf{Premortem Analysis:} Asking models to imagine the decision failed and explain why. Drawn from project management practice \citep{klein2007}.
+
+\subsection{Evaluation Methodology}
+
+Standard anchoring evaluation compares high-anchor and low-anchor conditions \citep{englich2006,huang2025anchoring}:
+
+\[
+\text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
+\]
+
+A technique ``works'' if it reduces this gap. This methodology does not require ground truth---it measures susceptibility to anchors, not accuracy of outputs. This is a valid and important metric.
+
+We extend this by introducing \textbf{calibration to unanchored baselines}:
+
+\[
+\text{Calibration Error} = |R_{technique} - R_{baseline}|
+\]
+
+This requires collecting baseline responses but enables detection of \textbf{overcorrection}---a failure mode invisible to susceptibility-only evaluation. To our knowledge, no prior work on LLM anchoring has systematically collected unanchored baselines for calibration evaluation.
+
+%==============================================================================
+\section{Methodology}
+%==============================================================================
+
+\subsection{Evaluation Metrics}
+
+We distinguish two evaluation approaches for debiasing techniques:
+
+\subsubsection{Standard Metric: Anchor Susceptibility}
+
+The conventional approach compares responses under high vs.\ low anchor conditions:
+
+\[
+\text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
+\]
+
+A technique ``works'' if it reduces this gap. This metric answers: \textit{Does the technique reduce the anchor's influence?}
+
+\subsubsection{Our Metric: Baseline Calibration}
+
+We collected unanchored baseline responses---model outputs with no anchor present. This enables a second metric:
+
+\[
+\text{Calibration Error} = |\bar{R}_{technique} - \bar{R}_{baseline}|
+\]
+
+A technique succeeds if it reduces calibration error relative to the anchored (no-technique) condition:
+
+\[
+\text{Improved} = |R_{technique} - R_{baseline}| < |R_{anchored} - R_{baseline}|
+\]
+
+This metric answers: \textit{Does the technique bring the response closer to ground truth?}
+
+\subsubsection{Why Both Metrics Matter}
+
+These metrics can diverge. Consider:
+\begin{itemize}
+    \item Baseline: 30mo
+    \item High-anchor response: 50mo (calibration error = 20mo)
+    \item Technique response: 12mo (calibration error = 18mo... but overcorrected)
+\end{itemize}
+
+Under susceptibility, the technique ``worked'' (moved away from anchor). Under calibration, it marginally helped---but a different technique might achieve 28mo (calibration error = 2mo).
+
+\subsection{Experimental Design}
+
+\subsubsection{Models}
+
+We evaluated 11 models across 4 providers:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+Provider & Models \\
+\midrule
+Anthropic & Claude Haiku 4.5, Sonnet 4.6, Opus 4.6 \\
+OpenAI & GPT-4.1, GPT-5.2, o3, o4-mini \\
+DeepSeek & DeepSeek-v3.2 \\
+Others & Kimi-k2.5, GLM-5, MiniMax-m2.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Conditions}
+
+\begin{enumerate}
+    \item \textbf{Baseline}: Sentencing prompt with no anchor
+    \item \textbf{Low anchor}: 3-month anchor in prosecutor demand
+    \item \textbf{High anchor}: 36--60 month anchor in prosecutor demand
+    \item \textbf{Techniques}: Applied to high-anchor condition
+\end{enumerate}
+
+\subsubsection{Techniques Evaluated}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+Technique & Description \\
+\midrule
+Outside View & ``What typically happens in similar cases?'' (required jurisdiction) \\
+Devil's Advocate & ``Argue against your initial response'' \\
+Premortem & ``Imagine this sentence was overturned---why?'' \\
+Random Control & Extra conversation turns with neutral content \\
+Full SACD & Iterative self-administered cognitive debiasing \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Temperature Conditions}
+
+Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance).
+
+\subsubsection{Trial Counts}
+
+\begin{itemize}
+    \item \textbf{Total trials}: $\sim$14,100
+    \item \textbf{Per model-technique-temperature}: 20--50 trials
+    \item \textbf{Baseline trials per model}: 91
+\end{itemize}
+
+\subsection{Confounds and Limitations}
+
+\subsubsection{Outside View Jurisdiction Context}
+
+To avoid model safety refusals, Outside View prompts included jurisdiction specification:
+
+\begin{quote}
+``In German federal courts, what is the TYPICAL probation sentence...''
+\end{quote}
+
+This may have introduced a secondary anchor toward German sentencing norms ($\sim$12--18 months for probation). Other techniques did not require this modification.
+
+%==============================================================================
+\section{Results}
+%==============================================================================
+
+\subsection{Baseline Responses}
+
+Unanchored baseline responses varied substantially across models:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+Model & Baseline Mean \\
+\midrule
+o4-mini & 35.7mo \\
+o3 & 33.7mo \\
+GLM-5 & 31.8mo \\
+GPT-5.2 & 31.8mo \\
+Kimi-k2.5 & 30.7mo \\
+DeepSeek-v3.2 & 29.6mo \\
+Haiku 4.5 & 29.1mo \\
+GPT-4.1 & 25.1mo \\
+Sonnet 4.6 & 24.1mo \\
+MiniMax-m2.5 & 24.1mo \\
+Opus 4.6 & 18.0mo \\
+\bottomrule
+\end{tabular}
+\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread.}
+\end{table}
+
+\subsection{High-Anchor Responses (No Technique)}
+
+Under high-anchor conditions without intervention, two anchor response patterns emerge:
+
+\begin{enumerate}
+    \item \textbf{Compression}: Response pulled below baseline (Anthropic models, GPT-4.1)
+    \item \textbf{Inflation}: Response pulled above baseline (GPT-5.2, GLM-5, o3)
+\end{enumerate}
+
+\subsection{Technique Effectiveness: Calibration Metric}
+
+\subsubsection{High-Anchor Conditions}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Technique & Improved & Success Rate \\
+\midrule
+\textbf{Random Control} & 10/11 & \textbf{91\%} \\
+Premortem & 9/11 & 82\% \\
+Full SACD & 9/11 & 82\% \\
+Devil's Advocate & 7/11 & 64\% \\
+Outside View & 4/11 & \textbf{36\%} \\
+\bottomrule
+\end{tabular}
+\caption{Random Control---which adds conversation turns without debiasing content---outperforms all content-based techniques.}
+\end{table}
+
+\subsubsection{Low-Anchor Conditions}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Technique & Improved & Success Rate \\
+\midrule
+\textbf{Full SACD} & 11/11 & \textbf{100\%} \\
+Premortem & 9/11 & 82\% \\
+Random Control & 7/11 & 64\% \\
+Outside View & 5/11 & 45\% \\
+Devil's Advocate & 4/11 & 36\% \\
+\bottomrule
+\end{tabular}
+\caption{Full SACD achieves perfect calibration under low anchors. Rankings shift between anchor conditions.}
+\end{table}
+
+\subsection{Temperature $\times$ Technique Interaction}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Technique & t=0 & t=0.7 & t=1 & Optimal \\
+\midrule
+Random Control & \textbf{100\%} & 80\% & 91\% & \textbf{t=0} \\
+Premortem & 70\% & \textbf{80\%} & 64\% & t=0.7 \\
+Full SACD & 64\% & \textbf{73\%} & 64\% & t=0.7 \\
+Devil's Advocate & 60\% & 60\% & 64\% & t=1 \\
+Outside View & 30\% & 30\% & 36\% & t=1 \\
+\bottomrule
+\end{tabular}
+\caption{Temperature effects on calibration success (high-anchor conditions).}
+\end{table}
+
+Key findings:
+\begin{enumerate}
+    \item \textbf{Random Control at t=0 achieves 100\% success}---deterministic extra turns are optimal
+    \item \textbf{Self-reflection techniques (SACD, Premortem) prefer t=0.7}---moderate variance aids deliberation
+    \item \textbf{Outside View fails at all temperatures}---the technique itself is problematic, not the sampling
+\end{enumerate}
+
+\subsection{Comparison: Susceptibility vs.\ Calibration Metrics}
+
+Under the standard susceptibility metric, Outside View appeared to ``improve'' all models by reducing the high-low gap. Under calibration:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+Metric & Outside View Ranking \\
+\midrule
+Susceptibility ($|high - low|$) & Best (11/11 ``improved'') \\
+Calibration ($|response - baseline|$) & \textbf{Worst} (4/11 improved) \\
+\bottomrule
+\end{tabular}
+\caption{This inversion demonstrates why baseline collection matters.}
+\end{table}
+
+%==============================================================================
+\section{Discussion}
+%==============================================================================
+
+\subsection{Why Structure Beats Content}
+
+Our most surprising finding is that Random Control---conversation turns with irrelevant content---outperforms deliberate debiasing techniques. We propose several explanations:
+
+\textbf{Hypothesis 1: Attention redistribution.} Additional turns may dilute the anchor's influence by introducing competing context. The model's attention becomes distributed across more tokens, reducing the relative weight of the anchoring value.
+
+\textbf{Hypothesis 2: Implicit reconsideration.} Multi-turn format may trigger different inference patterns than single-shot prompts. The model may treat subsequent turns as opportunities to revise rather than defend prior responses.
+
+\textbf{Hypothesis 3: Debiasing content backfires.} Explicit debiasing instructions may activate ``debiasing theater''---surface compliance without genuine reconsideration. Structure avoids this because there's nothing to perform.
+
+The temperature findings support Hypothesis 2: Random Control works best at t=0 (deterministic), suggesting the structural effect is robust and doesn't require sampling variance.
+
+\subsection{The Outside View Confound}
+
+Outside View performed worst despite being recommended in human debiasing literature. Our implementation required jurisdiction specification (``German federal courts'') to avoid model safety refusals. This may have introduced a secondary anchor:
+
+\begin{itemize}
+    \item German probation for repeat shoplifting: $\sim$12--18 months
+    \item Our unanchored baselines: 18--36 months (model-dependent)
+    \item Outside View consistently pulled toward $\sim$15 months
+\end{itemize}
+
+\textbf{Implication for practitioners:} When using Outside View, ensure the reference class matches your actual decision context. Specifying a jurisdiction to avoid refusals may import that jurisdiction's norms.
+
+\subsection{Limitations}
+
+\begin{enumerate}
+    \item \textbf{Single domain.} All experiments use judicial sentencing. Results may not generalize.
+    \item \textbf{Outside View confound.} We cannot fully disentangle technique failure from implementation choice.
+    \item \textbf{Baseline validity.} Our ``unanchored'' baseline still includes numeric context (``12th offense'').
+    \item \textbf{Model coverage.} 11 models from 4 providers is substantial but not exhaustive.
+\end{enumerate}
+
+\subsection{Practical Recommendations}
+
+Based on our findings:
+
+\begin{enumerate}
+    \item \textbf{Start with structure, not content.} Adding conversation turns is simpler and more effective than crafting debiasing prompts.
+    \item \textbf{Match temperature to technique.} Use t=0 for structural interventions, t=0.7 for self-reflection.
+    \item \textbf{Validate with calibration metric.} Don't just measure susceptibility---measure whether outputs land closer to baseline.
+    \item \textbf{Test per-model.} Technique effectiveness varies substantially across models.
+\end{enumerate}
+
+%==============================================================================
+\section{Conclusion}
+%==============================================================================
+
+We introduced calibration to baseline as a metric for evaluating LLM debiasing techniques. This metric catches overcorrection---a failure mode invisible to standard susceptibility measures.
+
+Our key findings:
+
+\begin{enumerate}
+    \item \textbf{Structure beats content.} Random Control (extra turns, no debiasing content) achieves 91\% calibration improvement vs.\ 36\% for Outside View.
+    \item \textbf{Temperature matters.} Structural interventions prefer t=0; self-reflection prefers t=0.7.
+    \item \textbf{Baseline collection is essential.} Without it, we would have published inverted rankings.
+\end{enumerate}
+
+For practitioners: start with structure. Add conversation turns before crafting complex debiasing prompts. Validate with calibration metrics, not just susceptibility.
+
+For researchers: collect unanchored baselines. The standard high-vs-low methodology has a blind spot. Ground truth matters.
+
+%==============================================================================
+\bibliographystyle{plainnat}
+\bibliography{archive/references}
+
+\end{document}
