@@ -1,0 +1,1 @@
+{"experimentId":"outside-view","model":"minimax/minimax-m2.5","actualModel":"minimax/minimax-m2.5","condition":"outside-view-12mo","anchor":12,"temperature":0.7,"promptHash":"ba2bee00","baseRateEstimate":24,"sentenceMonths":24,"methodology":"outside-view-4turn","technique":"outside-view","runIndex":0,"collectedAt":"2026-02-21T23:22:08.633Z"}

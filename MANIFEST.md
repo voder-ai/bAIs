@@ -47,12 +47,14 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 | 2   | **Low anchor (baseline/2)**    | `run-low-anchor.ts`  | Tests susceptibility to low anchors. Proportional formula ensures fair cross-model comparison. Uses Englich 3-turn paradigm with disclosure. |
 | 3   | **High anchor (baseline×1.5)** | `run-high-anchor.ts` | Tests susceptibility to high anchors. Symmetric: same proportional distance as low anchor.                                                   |
 
-### Phase 3: SACD Debiasing (Lyu et al.)
+### Phase 3: Self-Reflection Debiasing (Single-Pass)
 
-| #   | Condition              | Script               | Rationale                                                                                                 |
-| --- | ---------------------- | -------------------- | --------------------------------------------------------------------------------------------------------- |
-| 4   | **SACD @ low anchor**  | `run-sacd.ts <low>`  | Tests Lyu et al. Self-Adaptive Cognitive Debiasing. Iterative: detect bias → analyze → rewrite → execute. |
-| 5   | **SACD @ high anchor** | `run-sacd.ts <high>` | Same SACD method at high anchor. Tests if debiasing works for both directions.                            |
+| #   | Condition                         | Script               | Rationale                                                                                                               |
+| --- | --------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 4   | **Self-Reflection @ low anchor**  | `run-sacd.ts <low>`  | Single-pass debiasing: initial sentence → identify biases → debiased response. Tests if explicit bias reflection helps. |
+| 5   | **Self-Reflection @ high anchor** | `run-sacd.ts <high>` | Same technique at high anchor. Tests if debiasing works for both directions.                                            |
+
+**Note:** This is a simplified single-pass technique, NOT the full iterative SACD from Lyu et al. (which has up to 3 detect→analyze→debias iterations). Results show this single-pass approach backfires (-127% mean effect).
 
 ### Phase 3b: Random Elaboration Control (Reviewer-requested)
 
@@ -74,6 +76,23 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 | 10  | **Devil's Advocate @ low**  | `run-devils-advocate.ts <low>`  | Sibony technique: argue against the anchor. Tests adversarial reasoning.                      |
 | 11  | **Devil's Advocate @ high** | `run-devils-advocate.ts <high>` | Same technique at high anchor.                                                                |
 
+### Phase 5: Full SACD (Lyu et al.) — OPTIONAL
+
+| #   | Condition                   | Script                    | Rationale                                                                                     |
+| --- | --------------------------- | ------------------------- | --------------------------------------------------------------------------------------------- |
+| 12  | **Full SACD @ low anchor**  | `run-full-sacd.ts <low>`  | Full iterative SACD per Lyu et al.: detect bias → analyze → debias → iterate (up to 3 rounds) |
+| 13  | **Full SACD @ high anchor** | `run-full-sacd.ts <high>` | Same iterative technique at high anchor.                                                      |
+
+**Status:** Not yet implemented. Will run if budget permits after Phase 4 completes.
+
+**Lyu et al. spec (arXiv:2504.04141v4):**
+
+1. Generate initial response
+2. Detect: "Does this show cognitive bias?" (yes/no)
+3. Analyze: "What type of bias and how does it affect the response?"
+4. Debias: "Generate new response avoiding the identified bias"
+5. Iterate steps 2-4 up to 3 times or until no bias detected
+
 ---
 
 ## Why These Conditions?
@@ -91,11 +110,12 @@ All experiments run via **OpenRouter** — single API path to avoid routing conf
 - **Why disclosure:** "Randomly determined" statement tests if knowing the anchor is arbitrary helps
 - **Why symmetric:** Equal proportional distance ensures unbiased comparison of low vs high susceptibility
 
-### SACD (Lyu et al.)
+### Self-Reflection Debiasing (Single-Pass)
 
-- **Purpose:** Test state-of-the-art LLM debiasing technique
-- **Method:** Iterative self-correction (detect → analyze → rewrite → execute)
-- **Why include:** Most sophisticated published LLM debiasing approach (arXiv:2504.04141v4)
+- **Purpose:** Test if explicit bias reflection helps reduce anchoring
+- **Method:** Single-pass: initial sentence → identify biases → debiased response
+- **Finding:** Backfires in 15/16 conditions (-127% mean effect) — models overcorrect toward anchor
+- **Note:** NOT the full iterative SACD from Lyu et al. — see Phase 5 for that
 
 ### Sibony Techniques (Separate)
 
