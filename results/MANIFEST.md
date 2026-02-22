@@ -1,6 +1,6 @@
 # Results Manifest
 
-## Model List (11 models) — All via OpenRouter
+## Model List (10 models) — All via OpenRouter
 
 ### Anthropic (3)
 
@@ -147,7 +147,7 @@ results/
 
 ## Totals
 
-- **11 models × 13 conditions × 30 trials × 3 temps = 12,870 trials**
+- **10 models × 13 conditions × 30 trials × 3 temps = 12,870 trials**
 
 | Phase                     | Conditions | Trials     |
 | ------------------------- | ---------- | ---------- |
@@ -164,7 +164,7 @@ results/
 
 ## Execution Order
 
-1. **Phase 1: Baselines** — Run all 11 models at all 3 temps (990 trials) ✅
+1. **Phase 1: Baselines** — Run all 10 models at all 3 temps (990 trials) ✅
 2. **Calculate anchors** — Average baselines across temps → low/high per model ✅
 3. **Phase 2: Anchor conditions** — Low + high at all temps (1,980 trials) ✅
 4. **Phase 3: SACD** — Low + high at all temps (1,980 trials) 🔄
@@ -200,7 +200,7 @@ results/
 - **2026-02-21 04:38 UTC:** Phase 1 baselines complete (998 trials).
 - **2026-02-21 04:39 UTC:** Anchor values computed and saved.
 - **2026-02-21 12:42 UTC:** Phase 2 anchor conditions complete.
-  - 10/11 models complete (1,938 trials)
+  - 10/10 models complete (1,938 trials)
 - **2026-02-21 13:06 UTC:** Phase 3 SACD complete for commercial models.
   - OpenAI (4 models): 682 trials ✅
   - Anthropic (3 models): 621 trials ✅
