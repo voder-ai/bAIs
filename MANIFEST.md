@@ -177,26 +177,43 @@ Each condition is run at **3 temperatures**: 0, 0.7, 1.0
 
 ---
 
-## Data Status (2026-02-21)
+## Data Status (2026-02-22)
 
-**ALL PREVIOUS DATA DELETED** — complete reset due to methodology issues.
+**Phase 4 COMPLETE** — all techniques at 100%+ target.
 
-## Experiment Status
+### Final Trial Counts
 
-| Model             | Baseline | Low | High | SACD-L | SACD-H | OV-L | OV-H | PM-L | PM-H | DA-L | DA-H |
-| ----------------- | -------- | --- | ---- | ------ | ------ | ---- | ---- | ---- | ---- | ---- | ---- |
-| claude-opus-4.6   | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| claude-sonnet-4.6 | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| claude-haiku-4.5  | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| gpt-5.2           | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| gpt-4.1           | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| o3                | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| o4-mini           | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| minimax-m2.5      | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| kimi-k2.5         | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| glm-5             | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
-| deepseek-v3.2     | ⬜       | ⬜  | ⬜   | ⬜     | ⬜     | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   | ⬜   |
+| Phase | Technique              | Target | Actual | %    |
+| ----- | ---------------------- | ------ | ------ | ---- |
+| 1     | Baseline               | 990    | ~990   | 100% |
+| 2     | Low Anchor             | 990    | ~990   | 100% |
+| 2     | High Anchor            | 990    | ~990   | 100% |
+| 3     | Self-Reflection (Low)  | 990    | ~990   | 100% |
+| 3     | Self-Reflection (High) | 990    | ~990   | 100% |
+| 3b    | Random Control (Low)   | 990    | 1,034  | 104% |
+| 3b    | Random Control (High)  | 990    | 1,034  | 104% |
+| 4     | Outside View           | 1,980  | 2,123  | 107% |
+| 4     | Pre-mortem             | 1,980  | 2,063  | 104% |
+| 4     | Devil's Advocate       | 1,980  | 2,002  | 101% |
 
-Legend: OV=Outside View, PM=Pre-mortem, DA=Devil's Advocate, L=Low anchor, H=High anchor
+**Phase 4 Total: 8,256 trials** (target 7,920 = 104%)
 
-⬜ = Not started | 🔄 = In progress | ✅ = Complete (n≥30)
+### All Experiments Complete ✅
+
+| Model             | Baseline | Low | High | SACD-L | SACD-H | RC-L | RC-H | OV-L | OV-H | PM-L | PM-H | DA-L | DA-H |
+| ----------------- | -------- | --- | ---- | ------ | ------ | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| claude-opus-4.6   | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| claude-sonnet-4.6 | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| claude-haiku-4.5  | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| gpt-5.2           | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| gpt-4.1           | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| o3                | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| o4-mini           | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| minimax-m2.5      | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| kimi-k2.5         | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| glm-5             | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+| deepseek-v3.2     | ✅       | ✅  | ✅   | ✅     | ✅     | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   | ✅   |
+
+Legend: OV=Outside View, PM=Pre-mortem, DA=Devil's Advocate, RC=Random Control, L=Low anchor, H=High anchor
+
+✅ = Complete (n≥30 per temp)
