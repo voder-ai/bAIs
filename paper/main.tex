@@ -451,6 +451,38 @@ For compliance-exhibiting models (GPT-4o Residential), SACD eliminates complianc
 
 \textbf{Recommendation:} Test both techniques on your specific deployment. Do not assume one is universally superior.
 
+\subsection{Full Iterative SACD: Model-Dependent Responses}
+\label{sec:full-sacd}
+
+Following \citet{lyu2025}, we implemented full iterative SACD---multiple rounds of bias detection and correction until the model reports no further bias or reaches maximum iterations. Across 2,112 trials, we find dramatic model-dependency:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Model & $\Delta$ from Baseline & Assessment \\
+\midrule
+Haiku 4.5 & \textbf{$-$21.5mo} & Strong debiasing \\
+o3 & $-$11.8mo & Strong debiasing \\
+o4-mini & $-$7.4mo & Moderate debiasing \\
+MiniMax M2.5 & $-$6.7mo & Moderate debiasing \\
+GPT-4.1 & $-$2.7mo & Weak debiasing \\
+Sonnet 4.6 & $-$1.7mo & Minimal effect \\
+Kimi K2.5 & $-$1.2mo & Minimal effect \\
+DeepSeek V3.2 & +0.8mo & Neutral \\
+GPT-5.2 & \textbf{+2.7mo} & Backfire \\
+GLM-5 & +2.8mo & Backfire \\
+Opus 4.6 & \textbf{+4.5mo} & Backfire \\
+\bottomrule
+\end{tabular}
+\caption{Full SACD (iterative) effectiveness by model. Negative values indicate successful debiasing; positive values indicate the technique makes responses worse. n$\approx$190 per model.}
+\label{tab:full-sacd}
+\end{table}
+
+\textbf{Counterintuitive finding:} Model capability inversely correlates with SACD effectiveness. The cheapest model (Haiku) shows the strongest debiasing ($-$21.5mo), while flagship models (Opus 4.6, GPT-5.2) \emph{backfire}. This contradicts the intuition that more capable models would be more amenable to metacognitive debiasing.
+
+\textbf{Temperature modulates backfire:} For GLM-5, increasing temperature from 0 to 1.0 reduces the backfire effect by 3.7 months (36.5mo $\rightarrow$ 32.8mo). However, Opus 4.6 shows non-monotonic behavior where t=0.7 produces \emph{worse} outcomes than both t=0 and t=1. Fine-grained temperature analysis is left for future work.
+
 %==============================================================================
 \section{Deployment-Specific Variance}
 \label{sec:provider}
