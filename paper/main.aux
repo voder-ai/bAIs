@@ -19,7 +19,6 @@
 \citation{tversky1974}
 \citation{binz2023,jones2022}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Contributions}{2}{subsection.1.1}\protected@file@percent }
 \citation{tversky1974}
 \citation{englich2006}
 \citation{englich2006}
@@ -29,6 +28,7 @@
 \citation{huang2025anchoring}
 \citation{lyu2025}
 \citation{englich2006}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Contributions}{3}{subsection.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{3}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{3}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Experimental Paradigm}{3}{subsection.3.1}\protected@file@percent }
@@ -50,8 +50,8 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Mechanism 3: True Anchoring}{6}{subsection.4.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Mechanism Distribution}{6}{subsection.4.5}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Mechanism distribution across tested deployments}}{6}{table.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Implicit Numeric Context: The ``12th Offense'' Effect}{6}{subsection.4.6}\protected@file@percent }
 \citation{englich2006}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Implicit Numeric Context: The ``12th Offense'' Effect}{7}{subsection.4.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Extended Range: High Anchor (24mo) Testing}{7}{subsection.4.7}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces High anchor (24mo) reveals four-tier susceptibility. Models showing ``compression'' with low anchors show dramatically different responses to high anchors. $^\star $GPT-5.3: only 24mo anchor data collected.}}{7}{table.4}\protected@file@percent }
 \newlabel{tab:high-anchor}{{4}{7}{High anchor (24mo) reveals four-tier susceptibility. Models showing ``compression'' with low anchors show dramatically different responses to high anchors. $^\star $GPT-5.3: only 24mo anchor data collected}{table.4}{}}
@@ -70,53 +70,65 @@
 \@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Disclosure debiasing effectiveness by model. Debiasing = reduction in anchoring effect. Negative values indicate disclosure \emph  {increases} bias. n=20--30 per condition.}}{9}{table.8}\protected@file@percent }
 \newlabel{tab:disclosure}{{8}{9}{Disclosure debiasing effectiveness by model. Debiasing = reduction in anchoring effect. Negative values indicate disclosure \emph {increases} bias. n=20--30 per condition}{table.8}{}}
 \citation{englich2006}
+\citation{lyu2025}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.1}Implications for Experimental Design}{10}{subsubsection.5.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.2}SACD vs Disclosure Comparison}{10}{subsubsection.5.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Deployment-Specific Variance}{10}{section.6}\protected@file@percent }
-\newlabel{sec:provider}{{6}{10}{Deployment-Specific Variance}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}The Provider Variance Finding}{10}{subsection.6.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Same model, same API, different mechanisms}}{10}{table.9}\protected@file@percent }
-\citation{englich2006}
-\citation{englich2006}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Full Iterative SACD: Model-Dependent Responses}{10}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:full-sacd}{{5.4}{10}{Full Iterative SACD: Model-Dependent Responses}{subsection.5.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Full SACD (iterative) effectiveness by model. Negative values indicate successful debiasing; positive values indicate the technique makes responses worse. n$\approx $190 per model.}}{11}{table.9}\protected@file@percent }
+\newlabel{tab:full-sacd}{{9}{11}{Full SACD (iterative) effectiveness by model. Negative values indicate successful debiasing; positive values indicate the technique makes responses worse. n$\approx $190 per model}{table.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Deployment-Specific Variance}{11}{section.6}\protected@file@percent }
+\newlabel{sec:provider}{{6}{11}{Deployment-Specific Variance}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}The Provider Variance Finding}{11}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Same model, same API, different mechanisms}}{11}{table.10}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Implications}{11}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Evidence for Non-Model Factors}{11}{subsection.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion and Practical Guidelines}{11}{section.7}\protected@file@percent }
-\newlabel{sec:discussion}{{7}{11}{Discussion and Practical Guidelines}{section.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Summary of Findings}{11}{subsection.7.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Susceptibility patterns revealed by extended anchor range. ``Consistent compression'' models compress to $\sim $6--12mo regardless of anchor value, including high anchors.}}{11}{table.10}\protected@file@percent }
+\citation{englich2006}
+\citation{englich2006}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Evidence for Non-Model Factors}{12}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion and Practical Guidelines}{12}{section.7}\protected@file@percent }
+\newlabel{sec:discussion}{{7}{12}{Discussion and Practical Guidelines}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Summary of Findings}{12}{subsection.7.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Susceptibility patterns revealed by extended anchor range. ``Consistent compression'' models compress to $\sim $6--12mo regardless of anchor value, including high anchors.}}{12}{table.11}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Comparison to Human Anchoring}{12}{section*.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Recommendations for Practitioners}{12}{subsection.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Reasoning Models Do Not Escape Bias}{12}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Recommendations for Practitioners}{13}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Reasoning Models Do Not Escape Bias}{13}{subsection.7.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Multi-Turn Structure Can Introduce Bias}{13}{subsection.7.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Temperature and Debiasing: Orthogonal Controls}{13}{subsection.7.5}\protected@file@percent }
 \newlabel{sec:temperature}{{7.5}{13}{Temperature and Debiasing: Orthogonal Controls}{subsection.7.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Temperature variation results. Mean (SD) in months. n=30 per cell. Res.=Residential IP, DC=Datacenter IP. $\dagger $Direct Anthropic API; OpenRouter routing shows different baseline (24.0 vs 18.0), demonstrating deployment-specific behavior.}}{13}{table.11}\protected@file@percent }
-\newlabel{tab:temp-variation}{{11}{13}{Temperature variation results. Mean (SD) in months. n=30 per cell. Res.=Residential IP, DC=Datacenter IP. $\dagger $Direct Anthropic API; OpenRouter routing shows different baseline (24.0 vs 18.0), demonstrating deployment-specific behavior}{table.11}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Temperature variation results. Mean (SD) in months. n=30 per cell. Res.=Residential IP, DC=Datacenter IP. $\dagger $Direct Anthropic API; OpenRouter routing shows different baseline (24.0 vs 18.0), demonstrating deployment-specific behavior.}}{14}{table.12}\protected@file@percent }
+\newlabel{tab:temp-variation}{{12}{14}{Temperature variation results. Mean (SD) in months. n=30 per cell. Res.=Residential IP, DC=Datacenter IP. $\dagger $Direct Anthropic API; OpenRouter routing shows different baseline (24.0 vs 18.0), demonstrating deployment-specific behavior}{table.12}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {7.5.1}Orthogonal Control Dimensions}{14}{subsubsection.7.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.5.2}Prompt Sensitivity}{14}{subsubsection.7.5.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Mechanism classification is stable across prompt variants. n=10 per cell.}}{14}{table.12}\protected@file@percent }
-\newlabel{tab:prompt-sensitivity}{{12}{14}{Mechanism classification is stable across prompt variants. n=10 per cell}{table.12}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.5.3}Cross-Domain Validation: Salary Negotiation}{14}{subsubsection.7.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.5.2}Prompt Sensitivity}{15}{subsubsection.7.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Mechanism classification is stable across prompt variants. n=10 per cell.}}{15}{table.13}\protected@file@percent }
+\newlabel{tab:prompt-sensitivity}{{13}{15}{Mechanism classification is stable across prompt variants. n=10 per cell}{table.13}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.5.3}Cross-Domain Validation: Salary Negotiation}{15}{subsubsection.7.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Salary anchoring in GPT-5.2 (n=30 per condition)}}{15}{table.14}\protected@file@percent }
+\citation{schoenegger2025kalshi}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Decomposing Debiasing Effects: Structure vs. Content}{16}{subsection.7.6}\protected@file@percent }
+\newlabel{sec:decomposition}{{7.6}{16}{Decomposing Debiasing Effects: Structure vs. Content}{subsection.7.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Technique effectiveness after Random Control decomposition. Outside View shows robust content effects beyond structural baseline.}}{16}{table.15}\protected@file@percent }
+\newlabel{tab:technique-decomposition}{{15}{16}{Technique effectiveness after Random Control decomposition. Outside View shows robust content effects beyond structural baseline}{table.15}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.6.1}Hierarchy of Safe Interventions}{16}{subsubsection.7.6.1}\protected@file@percent }
 \citation{englich2006}
 \citation{englich2006}
-\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Salary anchoring in GPT-5.2 (n=30 per condition)}}{15}{table.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Limitations}{15}{subsection.7.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.7}Conclusion}{15}{subsection.7.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{16}{appendix.A}\protected@file@percent }
-\newlabel{app:prompts}{{A}{16}{Prompt Templates}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Baseline Prompt (Anchored Condition)}{16}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}No-Anchor Control}{16}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}SACD Prompt (Iterative Debiasing)}{16}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.7}Limitations}{17}{subsection.7.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.8}Conclusion}{17}{subsection.7.8}\protected@file@percent }
+\citation{schoenegger2025kalshi}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{18}{appendix.A}\protected@file@percent }
+\newlabel{app:prompts}{{A}{18}{Prompt Templates}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Baseline Prompt (Anchored Condition)}{18}{subsection.A.1}\protected@file@percent }
 \bibstyle{apalike}
 \bibdata{references}
 \bibcite{binz2023}{{1}{2023}{{Binz and Schulz}}{{}}}
 \bibcite{englich2006}{{2}{2006}{{Englich et~al.}}{{}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}No-Anchor Control}{19}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}SACD Prompt (Iterative Debiasing)}{19}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}API Parameters}{19}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Data Availability}{19}{appendix.B}\protected@file@percent }
 \bibcite{huang2025anchoring}{{3}{2025}{{Huang et~al.}}{{}}}
 \bibcite{jones2022}{{4}{2022}{{Jones and Steinhardt}}{{}}}
 \bibcite{lyu2025}{{5}{2025}{{Lyu et~al.}}{{}}}
 \bibcite{sibony2016}{{6}{2021}{{Sibony et~al.}}{{}}}
 \bibcite{song2026reasoning}{{7}{2026}{{Song et~al.}}{{}}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}API Parameters}{17}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {B}Data Availability}{17}{appendix.B}\protected@file@percent }
 \bibcite{tversky1974}{{8}{1974}{{Tversky and Kahneman}}{{}}}
-\gdef \@abspage@last{18}
+\gdef \@abspage@last{20}
