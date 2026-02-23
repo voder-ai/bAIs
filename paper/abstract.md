@@ -17,3 +17,5 @@ Outside View achieves 85% spread reduction but 22% *worse* baseline convergenceâ
 **Limitations:** All trials use a single paradigm (judicial sentencing vignette). Results may not generalize to other anchoring domains. Baseline convergence measures deviation from unprompted response, not objective ground truth.
 
 We argue baseline collection should become standard practice in LLM debiasing evaluation.
+
+**Reproducibility:** Code, data, and prompts available at https://github.com/voder-ai/bAIs

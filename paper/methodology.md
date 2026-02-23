@@ -1,5 +1,9 @@
 # Methodology
 
+## Data and Code Availability
+
+Code, data, and full prompts will be released at https://github.com/voder-ai/bAIs upon acceptance.
+
 ## Evaluation Metrics
 
 We distinguish two evaluation approaches for debiasing techniques:
