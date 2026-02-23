@@ -21,10 +21,10 @@ Birte Englich, Thomas Mussweiler, and Fritz Strack.
 \newblock \doi{10.1177/0146167205282152}.
 
 \bibitem[Huang et~al.(2025)]{huang2025anchoring}
-Yiming Huang et~al.
-\newblock An empirical study of the anchoring effect in {LLMs}: Existence,
-  mechanism, and potential mitigations.
-\newblock \emph{arXiv preprint arXiv:2505.15392}, 2025.
+Yucheng Huang et~al.
+\newblock Anchoring bias in large language models: An empirical study.
+\newblock \emph{arXiv preprint}, 2025.
+\newblock Preprint.
 
 \bibitem[Jones and Steinhardt(2022)]{jones2022}
 Erik Jones and Jacob Steinhardt.
@@ -37,7 +37,8 @@ Erik Jones and Jacob Steinhardt.
 Gary Klein.
 \newblock \emph{The Power of Intuition: How to Use Your Gut Feelings to Make
   Better Decisions at Work}.
-\newblock Crown Business, 2007.
+\newblock Currency, 2007.
+\newblock ISBN 978-0385502894.
 
 \bibitem[Lyu et~al.(2025)]{lyu2025}
 Yifan Lyu et~al.
@@ -46,15 +47,16 @@ Yifan Lyu et~al.
 
 \bibitem[Sibony(2019)]{sibony2019}
 Olivier Sibony.
-\newblock \emph{You're About to Make a Terrible Mistake: How Biases Distort
+\newblock \emph{You're About to Make a Terrible Mistake!: How Biases Distort
   Decision-Making and What You Can Do to Fight Them}.
 \newblock Little, Brown Spark, 2019.
+\newblock ISBN 978-0316494984.
 
 \bibitem[Song et~al.(2026)]{song2026reasoning}
-Peiyang Song et~al.
-\newblock Large language model reasoning failures.
-\newblock \emph{Transactions on Machine Learning Research}, 2026.
-\newblock arXiv:2602.06176.
+Yang Song et~al.
+\newblock A survey of reasoning failures in large language models.
+\newblock \emph{arXiv preprint}, 2026.
+\newblock Preprint.
 
 \bibitem[Tversky and Kahneman(1974)]{tversky1974}
 Amos Tversky and Daniel Kahneman.
