@@ -36,24 +36,24 @@ The failure is predictable: confrontation requires repeatedly referencing the ve
 
 A striking finding is that Random Control—irrelevant filler with no debiasing content whatsoever—outperforms techniques designed specifically to counter anchoring bias (Outside View, Devil's Advocate).
 
-This finding suggests an important methodological consideration for debiasing research. Studies comparing debiasing techniques against unstructured baselines may be capturing structural effects (more reasoning turns, more tokens) alongside technique-specific effects. Our Random Control results suggest these structural factors can account for a substantial portion of observed improvement.
+This has uncomfortable implications for the debiasing literature. Studies claiming "our technique reduces anchoring by X%" typically compare against unstructured baselines. If ~30% of improvement comes from structure alone (more reasoning turns, more tokens, more cognitive distance), reported effects may be substantially inflated.
 
 The practical implication is counterintuitive: **a "think about something unrelated" step may outperform sophisticated debiasing prompts**. The specific content of the intervention matters less than the distance it creates.
 
-## Calibration as a Complementary Metric
+## The Calibration vs. Spread Problem
 
-Traditional anchoring studies measure spread reduction: the difference between high-anchor and low-anchor responses. A technique that makes responses identical regardless of anchor appears highly effective by this measure.
+Traditional anchoring studies measure spread reduction: the difference between high-anchor and low-anchor responses. A technique that makes responses identical regardless of anchor appears perfectly effective.
 
-We propose that spread reduction, while informative, can produce misleading results when used in isolation. It conflates two very different outcomes:
+We argue this metric is can produce misleading results for debiasing evaluation. It conflates two very different outcomes:
 
 1. **True debiasing**: Responses converge toward baseline truth
 2. **Re-anchoring**: Responses converge toward a replacement anchor
 
 Outside View achieves #2, not #1. Spread reduction looks excellent (85%) while calibration worsens (29%). The model isn't less biased; it's biased toward a different number.
 
-**Calibration** (|response - baseline|) captures distance from ground truth, complementing spread reduction by detecting overcorrection. A technique that moves responses past baseline to the opposite extreme shows poor calibration despite good spread reduction.
+**Calibration** (|response - baseline|) captures what we actually care about: distance from ground truth. A technique that overcorrects—moving responses past baseline to the opposite extreme—shows poor calibration despite good spread reduction.
 
-We recommend reporting both metrics: spread reduction to assess anchor sensitivity, and calibration to assess accuracy. Used together, they provide a more complete picture of debiasing effectiveness.
+We recommend calibration as the primary metric for debiasing research, with spread reduction as a secondary diagnostic for anchor sensitivity.
 
 ## Model-Specific Effects
 
