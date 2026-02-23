@@ -22,6 +22,8 @@ Critically, premortem does not ask the model to generate a replacement estimate.
 
 **Outside View** (−22% baseline convergence, p<.001) exemplifies the danger of anchor replacement. By asking "what is the typical sentence for this type of offense?", Outside View prompts the model to generate its own base rate estimate—which then becomes a new anchor.
 
+**Important caveat:** Our Outside View prompts included jurisdiction specification ("German federal courts") to avoid safety refusals. This may have introduced a secondary anchor, potentially confounding results. The poor performance could reflect double-anchoring rather than pure mechanism failure. Our conclusions about Outside View specifically should be interpreted with caution.
+
 This explains the paradox in our spread analysis: Outside View achieves 85% reduction in the gap between high and low anchor responses (excellent by traditional metrics) while simultaneously moving responses *further* from baseline truth (poor calibration).
 
 The model isn't debiased; it's re-anchored to its own estimate. If that estimate is accurate, this helps. If not—as our data shows—it hurts. The technique trades external anchoring for internal anchoring, with the added risk of IKEA-effect overconfidence in self-generated values.

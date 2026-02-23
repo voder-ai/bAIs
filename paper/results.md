@@ -117,6 +117,16 @@ Outside View exemplifies why spread reduction alone can mislead:
 
 The technique eliminates sensitivity to the *external* anchor by replacing it with an *internal* estimate. Spread decreases because responses converge—but they converge toward the replacement anchor, not the unanchored baseline.
 
+### Jurisdiction Confound (Important Caveat)
+
+To avoid model safety refusals on sentencing tasks, Outside View prompts included jurisdiction specification ("In German federal courts, what is the typical sentence..."). This wording may have introduced a **secondary anchor**—German sentencing norms—potentially causing "double-anchoring" rather than debiasing.
+
+We cannot fully disentangle whether Outside View's poor performance reflects:
+1. The replacement mechanism itself (swapping external anchor for internal estimate), or
+2. The jurisdiction wording introducing a secondary anchor
+
+Future work should test Outside View with jurisdiction-neutral phrasing where model compliance permits. Our conclusions about Outside View should be interpreted with this confound in mind.
+
 ## Temperature Effects
 
 No consistent pattern emerged across models:
