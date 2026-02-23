@@ -1,13 +1,19 @@
 # Abstract
 
-Large language models exhibit anchoring bias—disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs. low anchor conditions; a technique "works" if it reduces this gap. We identify a critical limitation: this metric misses **overcorrection**, where techniques move responses away from anchors but past the unbiased answer.
+Large language models exhibit anchoring bias—disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs. low anchor conditions; a technique "works" if it reduces this spread. We identify a critical limitation: this metric misses **overcorrection**, where techniques move responses away from anchors but past the unanchored baseline.
 
-We introduce **calibration to baseline** as a complementary metric. By collecting unanchored responses (n=1,001 across 10 models), we can measure whether techniques bring outputs closer to ground truth, not just away from anchors. Using this metric across 14,994 trials, we discover rankings that invert conventional wisdom:
+We introduce **baseline convergence** as a complementary metric. By collecting unanchored responses across 10 models, we measure whether techniques bring outputs closer to the model's unprompted judgment—not just away from the anchor. Using this metric across **14,324 trials** with 5 debiasing techniques, we discover that rankings can invert conventional wisdom.
 
-- **Random Control** (extra turns, no debiasing content): 91% of models improved
-- **Self-reflection techniques** (Premortem, SACD): 82%
-- **Outside View** (reference class reasoning): **36%**—worst performer
+**Key findings** (Welch's t-test, α=0.05):
 
-The simplest structural intervention outperforms sophisticated prompt engineering. Temperature interacts with technique type: deterministic sampling (t=0) optimizes structural interventions; moderate variance (t=0.7) aids self-reflection.
+- **Full SACD** (iterative self-questioning): +24% convergence improvement (p<.001, d=0.41)
+- **Premortem**: +10% (p<.001, d=0.17)
+- **Random Control** (irrelevant elaboration): +9% (p<.001, d=0.15)
+- **Devil's Advocate**: +2% (**not significant**, p=.327)
+- **Outside View**: −22% (**worse** than no technique, p<.001)
 
-Without baseline collection, we would have concluded Outside View was universally effective—a finding completely inverted by proper calibration measurement. We argue baseline collection should become standard practice in LLM debiasing research.
+Outside View achieves 85% spread reduction but 22% *worse* baseline convergence—it replaces the external anchor with an internal one. Premortem and Random Control show no significant difference (p=.468), suggesting token distance from the anchor contributes to debiasing independently of technique content.
+
+**Limitations:** All trials use a single paradigm (judicial sentencing vignette). Results may not generalize to other anchoring domains. Baseline convergence measures deviation from unprompted response, not objective ground truth.
+
+We argue baseline collection should become standard practice in LLM debiasing evaluation.

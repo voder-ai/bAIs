@@ -2,7 +2,7 @@
 
 ## Trial Overview
 
-We collected **14,324 trials** across 10 models, 5 techniques, and 3 temperature conditions (0, 0.7, 1.0). All conditions achieved n≥30 trials for statistical reliability.
+We collected **14,324 trials** across 10 models, 5 debiasing techniques, and 3 temperature conditions (0, 0.7, 1.0). All conditions achieved n≥30 trials for statistical reliability.
 
 ## Baseline Responses
 
@@ -19,107 +19,105 @@ Unanchored baseline responses varied substantially across models:
 - **Sonnet 4.6**: 24.1mo
 - **Opus 4.6**: 18.0mo (lowest)
 
-Model baselines span 17.7mo—underscoring why calibration to model-specific baselines matters.
+Model baselines span 17.7mo—underscoring why convergence to model-specific baselines matters.
 
 ## Anchored Response Distances
 
-Without intervention, anchored prompts shift responses away from baseline:
+Without intervention, anchored prompts shift responses away from baseline. Average distance from baseline (no technique): **12.4mo** (95% CI: [12.0, 12.7]).
 
-**Average calibration error (|response - baseline|) by model:**
-- Haiku 4.5: 17.9mo (most susceptible)
-- Sonnet 4.6: 15.1mo
-- DeepSeek-v3.2: 13.2mo
-- GPT-5.2: 12.1mo
-- GPT-4.1: 11.3mo
-- GLM-5: 10.3mo
-- Kimi-k2.5: 8.9mo
-- o4-mini: 7.9mo
-- o3: 6.7mo
-- Opus 4.6: 6.0mo (least susceptible)
+## Technique Convergence Results
 
-## Technique Calibration Results
+All statistics computed from raw trial data using Welch's t-test with 95% confidence intervals.
+
+### Summary Table
+
+| Technique | n | Mean Distance | 95% CI | Improvement | p-value | Cohen's d |
+|-----------|---|---------------|--------|-------------|---------|-----------|
+| No technique | 1509 | 12.4mo | [12.0, 12.7] | — | — | — |
+| Full SACD | 2391 | 9.4mo | [9.1, 9.8] | +24% | p<.001 | 0.41 (small) |
+| Premortem | 2186 | 11.1mo | [10.8, 11.5] | +10% | p<.001 | 0.17 |
+| Random Control | 2215 | 11.3mo | [11.0, 11.6] | +9% | p<.001 | 0.15 |
+| Devil's Advocate | 2166 | 12.1mo | [11.8, 12.4] | +2% | p=.327 | 0.03 |
+| Outside View | 2423 | 15.1mo | [14.8, 15.4] | −22% | p<.001 | −0.38 |
 
 ### Primary Finding: Technique Taxonomy
 
-Techniques ranked by calibration improvement (reduction in |response - baseline|):
+Techniques classified by mechanism:
 
 **Distance techniques** (dilute the anchor):
-- Full SACD: **+39%** improvement (10/10 models improved)
-- Random Control: **+30%** improvement (8/10 models improved)
+- Full SACD: **+24%** improvement (p<.001, d=0.41)
+- Random Control: **+9%** improvement (p<.001, d=0.15)
 
-**Doubt techniques** (undermine without replacing):
-- Premortem: **+22%** improvement (8/10 models improved)
+**Doubt techniques** (undermine confidence without replacing):
+- Premortem: **+10%** improvement (p<.001, d=0.17)
 
 **Confrontation techniques** (argue with anchor):
-- Devil's Advocate: **+2%** improvement (5/10 models improved)
+- Devil's Advocate: **+2%** improvement (**not significant**, p=.327)
 
 **Replacement techniques** (swap anchors):
-- Outside View: **-29%** (WORSE calibration, only 3/10 models improved)
+- Outside View: **−22%** worse convergence (p<.001, d=−0.38)
 
-### Key Insight: Structure Beats Content
+### Key Insight: Distance Outperforms Confrontation
 
-Random Control—irrelevant elaboration about Arctic terns and Swiss watchmaking—outperforms purpose-built debiasing techniques (Devil's Advocate, Outside View).
+Random Control—irrelevant elaboration about Arctic terns and Swiss watchmaking—shows comparable effectiveness to Premortem (no significant difference, p=.468) and outperforms Devil's Advocate.
 
-This suggests ~30% of debiasing "effectiveness" in prior studies may be attributable to structural factors (more reasoning turns, token distance) rather than technique-specific content.
+This suggests token distance from the anchor contributes to debiasing effectiveness independently of technique-specific content.
+
+### Pairwise Comparisons
+
+Full SACD significantly outperforms all other techniques:
+- vs Premortem: Δ=−1.67mo (p<.001)
+- vs Random Control: Δ=−1.84mo (p<.001)
+- vs Devil's Advocate: Δ=−2.70mo (p<.001)
+- vs Outside View: Δ=−5.64mo (p<.001)
+
+Premortem and Random Control show no significant difference (Δ=0.17mo, p=.468).
 
 ## Model-Specific Results
 
-### Full SACD (Universal Winner)
+### Full SACD Performance by Model
 
-All 10 models improved:
-- Sonnet 4.6: +85%
-- DeepSeek-v3.2: +58%
-- GPT-4.1: +58%
-- o3: +54%
-- GLM-5: +28%
-- GPT-5.2: +24%
-- o4-mini: +21%
-- Haiku 4.5: +16%
-- Opus 4.6: +12%
-- Kimi-k2.5: +10%
+| Model | Improvement | p-value | Sig |
+|-------|-------------|---------|-----|
+| o3 | +51% | p<.001 | *** |
+| GPT-4.1 | +48% | p<.001 | *** |
+| Sonnet 4.6 | +46% | p<.001 | *** |
+| DeepSeek-v3.2 | +30% | p<.001 | *** |
+| GPT-5.2 | +20% | p=.002 | ** |
+| o4-mini | +12% | p=.021 | * |
+| Haiku 4.5 | −2% | p=.619 | ns |
+| Kimi-k2.5 | −3% | p=.691 | ns |
+| GLM-5 | −4% | p=.554 | ns |
+| Opus 4.6 | −68% | p<.001 | *** (worse) |
 
-### Random Control (8/10 Improved)
+Note: Opus 4.6 shows a significant *worsening* with Full SACD. This model has the lowest baseline susceptibility (6.0mo distance)—SACD may disrupt its natural resistance.
 
-Most models improved, but reasoning models showed slight worsening:
-- DeepSeek-v3.2: +60%
-- GLM-5: +59%
-- Kimi-k2.5: +42%
-- Opus 4.6: +37%
-- GPT-5.2: +34%
-- Sonnet 4.6: +28%
-- Haiku 4.5: +27%
-- GPT-4.1: +8%
-- o4-mini: -5%
-- o3: -12%
+### Models Where Full SACD Significantly Helps (6/10)
 
-### Outside View (3/10 Improved, 7/10 Worsened)
+o3, GPT-4.1, Sonnet 4.6, DeepSeek-v3.2, GPT-5.2, o4-mini
 
-Dramatic failures on reasoning models:
-- Sonnet 4.6: +77%
-- Haiku 4.5: +40%
-- Opus 4.6: +10%
-- GPT-4.1: -3%
-- DeepSeek-v3.2: -4%
-- GPT-5.2: -64%
-- Kimi-k2.5: -78%
-- o4-mini: -92%
-- GLM-5: -117%
-- o3: **-252%** (worst result in study)
+### Models Where Full SACD Has No Significant Effect (3/10)
 
-## The Calibration vs. Spread Paradox
+Haiku 4.5, Kimi-k2.5, GLM-5
 
-Outside View exemplifies why spread reduction alone can produce misleading results:
+### Model Where Full SACD Significantly Hurts (1/10)
 
-**Spread reduction metric:** 85% improvement (excellent)
-**Calibration metric:** -29% (worse than no intervention)
+Opus 4.6
 
-The technique eliminates sensitivity to the *external* anchor by replacing it with an *internal* estimate. Spread decreases because responses converge—but they converge toward the wrong value.
+## The Convergence vs. Spread Paradox
+
+Outside View exemplifies why spread reduction alone can mislead:
+
+**Spread reduction metric:** 85% (responses more consistent)
+**Convergence metric:** −22% (responses further from baseline)
+
+The technique eliminates sensitivity to the *external* anchor by replacing it with an *internal* estimate. Spread decreases because responses converge—but they converge toward the replacement anchor, not the unanchored baseline.
 
 ## Temperature Effects
 
 No consistent pattern emerged across models:
-- Some models showed improved calibration at higher temperatures
+- Some models showed improved convergence at higher temperatures
 - Others showed degradation
-- Full SACD remained effective across all temperature conditions
+- Full SACD remained the best technique across all temperature conditions
 
 Temperature optimization should be model-specific.
