@@ -44,7 +44,7 @@ We evaluated 10 models across 4 providers:
 | Anthropic | Claude Haiku 4.5, Sonnet 4.6, Opus 4.6 |
 | OpenAI | GPT-4.1, GPT-5.2, o3, o4-mini |
 | DeepSeek | DeepSeek-v3.2 |
-| Others | Kimi-k2.5, GLM-5, MiniMax-m2.5 |
+| Chinese | Kimi-k2.5 (Moonshot), GLM-5 (Zhipu) |
 
 ### Conditions
 
@@ -55,13 +55,20 @@ We evaluated 10 models across 4 providers:
 
 ### Techniques Evaluated
 
-| Technique | Description |
-|-----------|-------------|
-| Outside View | "What typically happens in similar cases?" (required jurisdiction context) |
-| Devil's Advocate | "Argue against your initial response" |
-| Premortem | "Imagine this sentence was overturned—why?" |
-| Random Control | Extra conversation turns with neutral content (no debiasing) |
-| Full SACD | Iterative self-administered cognitive debiasing (Lyu et al., 2025) |
+We classify debiasing techniques into four categories based on their mechanism:
+
+**Distance Techniques** (dilute the anchor through additional processing):
+- **Random Control**: Extra conversation turns with irrelevant content (NZ agriculture, Arctic terns). Tests whether improvement comes from structure vs. content.
+- **Full SACD**: Iterative self-administered cognitive debiasing (Lyu et al., 2025). Multiple rounds of self-questioning create processing distance from anchor.
+
+**Doubt Techniques** (undermine anchor confidence without generating replacement):
+- **Premortem**: "Imagine this sentence was overturned on appeal—why might that happen?" Generates reasons to doubt without committing to alternative numbers.
+
+**Replacement Techniques** (swap external anchor for internal estimate):
+- **Outside View**: "What typically happens in similar cases?" Asks model to generate base rate, which may become a new anchor.
+
+**Confrontation Techniques** (argue directly with anchor):
+- **Devil's Advocate**: "Argue against your initial response." Keeps anchor salient while generating counterarguments.
 
 ### Temperature Conditions
 
@@ -72,9 +79,12 @@ Each technique was tested at three temperatures:
 
 ### Trial Counts
 
-- **Total trials**: ~14,100
-- **Per model-technique-temperature**: 20-50 trials
-- **Baseline trials per model**: 91
+- **Total trials**: 14,324
+- **Per condition**: n≥30 trials (statistical power threshold)
+- **Baseline trials per model**: ~90
+- **Models**: 10
+- **Techniques**: 5
+- **Temperatures**: 3 (0, 0.7, 1.0)
 
 ## Confounds and Limitations
 
