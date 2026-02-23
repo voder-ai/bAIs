@@ -32,7 +32,7 @@
 \begin{abstract}
 Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
 
-We introduce \textbf{baseline convergence} as a complementary evaluation metric. By collecting baseline responses without explicit anchors (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment. This metric reveals \textit{overcorrection}---when techniques move responses away from anchors but past where the model would naturally respond. While there is no objective ``correct'' sentence, the baseline provides a meaningful reference for measuring technique effects. Using this metric across 13,799 trials, we find that technique effectiveness varies substantially:
+We propose \textbf{baseline convergence} as a complementary evaluation approach. By collecting baseline responses without explicit anchors (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment. This metric reveals \textit{overcorrection}---when techniques move responses away from anchors but past where the model would naturally respond. While there is no objective ``correct'' sentence, the baseline provides a meaningful reference for measuring technique effects. Using this metric across 13,799 trials, we find that technique effectiveness varies substantially:
 
 \begin{itemize}
     \item \textbf{Full SACD} (Self-Administered Cognitive Debiasing; iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
@@ -221,6 +221,8 @@ Premortem & 13.8mo & $+79\%$ & 11.1mo & $+10\%$ \\
 \end{table}
 
 \noindent \textit{Note:} Susceptibility $\Delta$ = reduction in high$-$low spread (negative = less susceptible). Convergence $\Delta$ = reduction in distance from baseline (positive = closer to baseline). $^\dagger$Outside View confounded by jurisdiction specification.
+
+\textbf{Why do SACD and Premortem increase spread while improving convergence?} These techniques pull responses toward the baseline from \textit{both} anchor directions. Under high anchors, this improves convergence. But under low anchors, responses that were already near-baseline get pulled further down, \textit{increasing} the high-low spread. The convergence metric captures that high-anchor responses moved closer to baseline; the susceptibility metric reflects the widened gap. Neither metric is ``correct''---they measure different properties.
 
 \subsection{Experimental Design}
 
@@ -486,7 +488,7 @@ Based on our findings in the judicial sentencing domain (generalization to other
 \section{Conclusion}
 %==============================================================================
 
-We introduced baseline convergence as a metric for evaluating LLM debiasing techniques. This metric catches overcorrection---a failure mode invisible to standard susceptibility measures.
+We demonstrated the value of collecting baseline responses when evaluating LLM debiasing techniques. Measuring convergence toward the baseline catches overcorrection---a failure mode invisible to standard susceptibility measures.
 
 Our key findings from 13,799 trials across 10 models:
 
