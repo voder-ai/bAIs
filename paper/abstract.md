@@ -4,7 +4,7 @@
 
 Large language models exhibit anchoring bias—disproportionate influence of initial numeric information on subsequent judgments. We study this phenomenon in the domain of **judicial sentencing reasoning**, where anchoring effects are well-documented in human judges. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs. low anchor conditions; a technique "works" if it reduces this spread. We identify a critical limitation: this metric misses **overcorrection**, where techniques move responses away from anchors but past the unanchored baseline.
 
-We introduce **baseline convergence** as a complementary metric. By collecting unanchored responses across 10 models, we measure whether techniques bring outputs closer to the model's unprompted judgment—not just away from the anchor. Using this metric across **14,324 trials** with 5 debiasing techniques, we discover that rankings can invert conventional wisdom.
+We introduce **baseline convergence** as the primary evaluation metric. By collecting unanchored responses across 10 models, we measure whether techniques bring outputs closer to the model's considered judgment absent arbitrary anchors—the correct target for debiasing. Using this metric across **14,324 trials** with 5 debiasing techniques, we discover that rankings can invert conventional wisdom.
 
 **Key findings** (Welch's t-test, α=0.05):
 
@@ -16,7 +16,7 @@ We introduce **baseline convergence** as a complementary metric. By collecting u
 
 Outside View achieves 85% spread reduction but 22% *worse* baseline convergence—it replaces the external anchor with an internal one. Premortem and Random Control show no significant difference (p=.468), suggesting token distance from the anchor contributes to debiasing independently of technique content.
 
-**Limitations:** All trials use judicial sentencing vignettes; results may not generalize to other anchoring domains (estimation, forecasting, negotiation). Outside View results are potentially confounded by jurisdiction wording. Baseline convergence measures deviation from unprompted response, not objective ground truth.
+**Limitations:** All trials use judicial sentencing vignettes; results may not generalize to other anchoring domains (estimation, forecasting, negotiation). Outside View results are potentially confounded by jurisdiction wording.
 
 We argue baseline collection should become standard practice in LLM debiasing evaluation.
 

@@ -53,7 +53,7 @@ We argue this metric can produce misleading results for debiasing evaluation. It
 
 Outside View achieves #2, not #1. Spread reduction looks excellent (85%) while baseline convergence worsens (22%). The model isn't less biased; it's biased toward a different number.
 
-**Baseline convergence** (|response - unanchored_baseline|) measures how close a debiased response comes to what the model would say without any anchor exposure. This is not "ground truth" in an absolute sense—the unanchored response is simply the model's unprompted judgment. However, it provides a meaningful reference point: if debiasing techniques move responses *away* from what the model would naturally conclude, they may be introducing new biases rather than removing old ones.
+**Baseline convergence** (|response - unanchored_baseline|) measures how close a debiased response comes to what the model would say without any anchor exposure. The unanchored response represents the model's considered judgment absent arbitrary external influence—this is what we *should* be aiming for. While no "objective truth" exists for hypothetical sentencing scenarios, the unanchored baseline is the correct target: it reflects the model's reasoning uncorrupted by irrelevant numeric primes. Techniques that move responses *away* from this baseline are introducing bias, not removing it.
 
 We recommend baseline convergence as the primary metric for debiasing evaluation. Spread reduction, while intuitive, can give misleading results when a technique overcorrects.
 

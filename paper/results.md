@@ -4,9 +4,9 @@
 
 We collected **14,324 trials** across 10 models, 5 debiasing techniques, and 3 temperature conditions (0, 0.7, 1.0). All conditions achieved n≥30 trials for statistical reliability.
 
-## Baseline Responses
+## Baseline Responses (The Correct Target)
 
-Unanchored baseline responses varied substantially across models:
+The unanchored baseline represents each model's considered judgment absent arbitrary external anchors—this is the response we should aim for. Baseline responses varied substantially across models:
 
 - **o4-mini**: 35.7mo (highest)
 - **o3**: 33.7mo
