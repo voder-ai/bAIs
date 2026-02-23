@@ -1,4 +1,4 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{11}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -12,6 +12,11 @@ Marcel Binz and Eric Schulz.
   (6):\penalty0 e2218523120, 2023.
 \newblock \doi{10.1073/pnas.2218523120}.
 
+\bibitem[Chen et~al.(2025)]{chen2025cognitive}
+Yifan Chen et~al.
+\newblock Cognitive biases in {LLM}-assisted software development.
+\newblock \emph{arXiv preprint arXiv:2601.08045}, 2025.
+
 \bibitem[Englich et~al.(2006)Englich, Mussweiler, and Strack]{englich2006}
 Birte Englich, Thomas Mussweiler, and Fritz Strack.
 \newblock Playing dice with criminal sentences: The influence of irrelevant
@@ -22,9 +27,9 @@ Birte Englich, Thomas Mussweiler, and Fritz Strack.
 
 \bibitem[Huang et~al.(2025)]{huang2025anchoring}
 Yucheng Huang et~al.
-\newblock Anchoring bias in large language models: An empirical study.
-\newblock \emph{arXiv preprint}, 2025.
-\newblock Preprint.
+\newblock An empirical study of the anchoring effect in {LLMs}: Existence,
+  mechanism, and potential mitigations.
+\newblock \emph{arXiv preprint arXiv:2505.15392}, 2025.
 
 \bibitem[Jones and Steinhardt(2022)]{jones2022}
 Erik Jones and Jacob Steinhardt.
@@ -40,6 +45,11 @@ Gary Klein.
 \newblock Currency, 2007.
 \newblock ISBN 978-0385502894.
 
+\bibitem[Lim et~al.(2026)]{lim2026deframe}
+Kahee Lim et~al.
+\newblock {DeFrame}: Debiasing large language models against framing effects.
+\newblock \emph{arXiv preprint arXiv:2602.04306}, 2026.
+
 \bibitem[Lyu et~al.(2025)]{lyu2025}
 Yifan Lyu et~al.
 \newblock Self-adaptive cognitive debiasing for large language models.
@@ -52,11 +62,11 @@ Olivier Sibony.
 \newblock Little, Brown Spark, 2019.
 \newblock ISBN 978-0316494984.
 
-\bibitem[Song et~al.(2026)]{song2026reasoning}
-Yang Song et~al.
-\newblock A survey of reasoning failures in large language models.
-\newblock \emph{arXiv preprint}, 2026.
-\newblock Preprint.
+\bibitem[Song et~al.(2026)Song, Han, and Goodman]{song2026reasoning}
+Peiyang Song, Pengrui Han, and Noah Goodman.
+\newblock Large language model reasoning failures.
+\newblock \emph{arXiv preprint arXiv:2602.06176}, 2026.
+\newblock TMLR 2026 Survey Certification.
 
 \bibitem[Tversky and Kahneman(1974)]{tversky1974}
 Amos Tversky and Daniel Kahneman.

@@ -227,6 +227,46 @@ Premortem & 13.8mo & $+79\%$ & 11.1mo & $+10\%$ \\
 
 \noindent \textit{Note:} Susceptibility $\Delta$ = reduction in high$-$low spread (negative = less susceptible). Convergence $\Delta$ = reduction in distance from baseline (positive = closer to baseline). $^\dagger$Outside View confounded by jurisdiction specification.
 
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=12pt,
+    width=0.95\columnwidth,
+    height=6cm,
+    ylabel={Change from No Technique (\%)},
+    ymin=-30,
+    ymax=40,
+    xtick=data,
+    symbolic x coords={Devil's Advocate, Random Control, Premortem, Full SACD},
+    xticklabel style={font=\small},
+    legend style={at={(0.5,1.02)}, anchor=south, legend columns=2, font=\small},
+    enlarge x limits=0.15,
+    axis lines*=left,
+    ymajorgrids=true,
+    grid style={dashed,gray!30},
+]
+\addplot[fill=orange!70, draw=black] coordinates {
+    (Devil's Advocate, -8)
+    (Random Control, 13)
+    (Premortem, 79)
+    (Full SACD, 36)
+};
+\addplot[fill=blue!60, draw=black] coordinates {
+    (Devil's Advocate, 2)
+    (Random Control, 9)
+    (Premortem, 10)
+    (Full SACD, 24)
+};
+\legend{Susceptibility (spread increase), Convergence (baseline approach)}
+\draw[dashed, gray] (axis cs:{[normalized]-0.5},0) -- (axis cs:{[normalized]4.5},0);
+\end{axis}
+\end{tikzpicture}
+\caption{Susceptibility vs.\ Convergence metrics diverge. Devil's Advocate appears best under susceptibility ($-8\%$ spread) but worst under convergence ($+2\%$). Full SACD shows the opposite: worst susceptibility ($+36\%$ spread) but best convergence ($+24\%$). The metrics capture different properties---neither is ``correct.''}
+\label{fig:metric-comparison}
+\end{figure}
+
 \textbf{Why do SACD and Premortem increase spread while improving convergence?} These techniques pull responses toward the baseline from \textit{both} anchor directions. Under high anchors, this improves convergence. But under low anchors, responses that were already near-baseline get pulled further down, \textit{increasing} the high-low spread. The convergence metric captures that high-anchor responses moved closer to baseline; the susceptibility metric reflects the widened gap. Neither metric is ``correct''---they measure different properties.
 
 \subsection{Experimental Design}
@@ -359,6 +399,37 @@ Opus 4.6 & 18.0mo & 0.0 \\
 \caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance (SD=0.0) at all temperatures, consistently responding with exactly 18 months. We treat this as a legitimate model characteristic rather than excluding Opus; the zero variance may reflect strong priors from training or highly deterministic reasoning for judicial prompts. Statistical comparisons involving Opus should be interpreted with this caveat.}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    bar width=8pt,
+    width=0.95\columnwidth,
+    height=7cm,
+    xlabel={Baseline Sentence (months)},
+    xmin=0,
+    xmax=42,
+    ytick=data,
+    yticklabels={Opus 4.6, Sonnet 4.6, GPT-4.1, Haiku 4.5, DeepSeek-v3.2, Kimi-k2.5, GPT-5.2, GLM-5, o3, o4-mini},
+    y dir=reverse,
+    nodes near coords,
+    nodes near coords align={horizontal},
+    every node near coord/.append style={font=\footnotesize, xshift=2pt},
+    enlarge y limits=0.08,
+    axis lines*=left,
+    xmajorgrids=true,
+    grid style={dashed,gray!30},
+]
+\addplot[fill=blue!60, draw=black] coordinates {
+    (18.0, 1) (24.1, 2) (25.1, 3) (29.1, 4) (29.6, 5) (30.6, 6) (31.8, 7) (31.9, 8) (33.7, 9) (35.7, 10)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Model baseline variation. Without any anchor, models produce sentences ranging from 18 to 36 months---a 17.7-month spread. This variation motivates per-model anchor calibration.}
+\label{fig:baselines}
+\end{figure}
+
 \subsection{High-Anchor Responses (No Technique)}
 
 Under high-anchor conditions without intervention, two distinct response patterns emerge:
@@ -453,6 +524,39 @@ GLM-5 & $-4\%$ & 1.000 & Not significant \\
 \end{tabular}
 \caption{Full SACD model-specific results. 5/10 significantly improve, 1/10 significantly worsens (Opus 4.6).}
 \end{table}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    bar width=8pt,
+    width=0.95\columnwidth,
+    height=7cm,
+    xlabel={Convergence Improvement (\%)},
+    xmin=-80,
+    xmax=60,
+    ytick=data,
+    yticklabels={Opus 4.6, GLM-5, Kimi-k2.5, Haiku 4.5, o4-mini, GPT-5.2, DeepSeek-v3.2, Sonnet 4.6, GPT-4.1, o3},
+    y dir=reverse,
+    nodes near coords,
+    nodes near coords align={horizontal},
+    every node near coord/.append style={font=\footnotesize},
+    point meta=explicit symbolic,
+    enlarge y limits=0.08,
+    axis lines*=left,
+    xmajorgrids=true,
+    grid style={dashed,gray!30},
+]
+\addplot[fill=red!70, draw=black] coordinates {(-68, 1) [-68\%***]};
+\addplot[fill=gray!40, draw=black] coordinates {(-4, 2) (-3, 3) (-2, 4) (12, 5)};
+\addplot[fill=green!60!black, draw=black] coordinates {(20, 6) (30, 7) (46, 8) (48, 9) (51, 10)};
+\draw[dashed, gray] (axis cs:0,0.5) -- (axis cs:0,10.5);
+\end{axis}
+\end{tikzpicture}
+\caption{Full SACD shows high model variance. Green: significant improvement ($p<.05$). Gray: not significant. Red: significant backfire. Opus 4.6 worsens by 68\%, while o3 improves by 51\%.}
+\label{fig:sacd-by-model}
+\end{figure}
 
 Key findings:
 \begin{enumerate}
