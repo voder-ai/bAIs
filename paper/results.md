@@ -108,7 +108,7 @@ Dramatic failures on reasoning models:
 
 ## The Calibration vs. Spread Paradox
 
-Outside View exemplifies why spread reduction is a flawed metric:
+Outside View exemplifies why spread reduction alone can produce misleading results:
 
 **Spread reduction metric:** 85% improvement (excellent)
 **Calibration metric:** -29% (worse than no intervention)
