@@ -56,6 +56,8 @@ When large language models make judgments, do debiasing techniques actually help
 
 We report findings from a large systematic evaluation of LLM debiasing techniques (13,369 trials across 10 models). Our core contribution is methodological: by collecting baseline responses without explicit anchors, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to the model's considered judgment}.
 
+\textbf{Study design note:} We analyze each model independently, measuring how debiasing techniques affect that model's responses at different temperatures. The adaptive anchor design (scaled to each model's baseline) is intentional---it measures within-model debiasing effects rather than cross-model comparisons. This design answers: ``How do techniques affect \textit{this} model?'' rather than ``Which model is least susceptible?''
+
 This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions---if the gap shrinks, the technique ``works.'' But this metric misses a critical failure mode: \textbf{overcorrection}. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show ``reduced susceptibility'' while actually \textit{increasing} distance from truth.
 
 \subsection{The Baseline Convergence Metric}
