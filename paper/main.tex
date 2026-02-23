@@ -32,7 +32,7 @@
 \begin{abstract}
 Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
 
-We introduce \textbf{baseline convergence} as a complementary evaluation metric. By collecting baseline responses without explicit anchors (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment. This metric reveals \textit{overcorrection}---when techniques move responses away from anchors but past where the model would naturally respond. While there is no objective ``correct'' sentence, the baseline provides a meaningful reference for measuring technique effects. Using this metric across 13,369 trials, we find that technique effectiveness varies substantially:
+We introduce \textbf{baseline convergence} as a complementary evaluation metric. By collecting baseline responses without explicit anchors (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment. This metric reveals \textit{overcorrection}---when techniques move responses away from anchors but past where the model would naturally respond. While there is no objective ``correct'' sentence, the baseline provides a meaningful reference for measuring technique effects. Using this metric across 13,799 trials, we find that technique effectiveness varies substantially:
 
 \begin{itemize}
     \item \textbf{Full SACD} (Self-Administered Cognitive Debiasing; iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
@@ -54,7 +54,7 @@ Without baseline collection, overcorrection would be invisible under standard su
 
 When large language models make judgments, do debiasing techniques actually help---or do they just move errors in a different direction?
 
-We report findings from a large systematic evaluation of LLM debiasing techniques (13,369 trials across 10 models). Our core contribution is methodological: by collecting baseline responses without explicit anchors, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to the model's considered judgment}.
+We report findings from a large systematic evaluation of LLM debiasing techniques (13,799 trials across 10 models). Our core contribution is methodological: by collecting baseline responses without explicit anchors, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to the model's considered judgment}.
 
 \textbf{Study design note:} We analyze each model independently, measuring how debiasing techniques affect that model's responses at different temperatures. Anchors use \textit{constant relative scaling}: low anchor = baseline $\times$ 0.5, high anchor = baseline $\times$ 1.5. This ensures anchors are equally strong relative to each model's natural judgment---a fixed 3-month anchor would be a strong pull for a model with an 18-month baseline but negligible for one with a 36-month baseline. This design answers: ``How do techniques affect \textit{this} model?'' rather than ``Which model is least susceptible?''
 
@@ -108,7 +108,7 @@ This has immediate practical implications:
     
     \item \textbf{High model variance}: 5/10 models significantly improve with SACD, but Opus 4.6 shows 68\% \textit{worse} convergence.
     
-    \item \textbf{13,369 trials across 10 models} with Bonferroni-corrected statistics and effect sizes.
+    \item \textbf{13,799 trials across 10 models} with Bonferroni-corrected statistics and effect sizes.
 \end{enumerate}
 
 %==============================================================================
@@ -251,7 +251,7 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
 \subsubsection{Trial Counts and Procedure}
 
 \begin{itemize}
-    \item \textbf{Total trials}: 13,369
+    \item \textbf{Total trials}: 13,799
     \item \textbf{Per model-technique-temperature}: 30--90 trials (target $n \geq 30$; range reflects iterative data collection with some conditions receiving additional trials for robustness)
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
@@ -278,7 +278,7 @@ Condition & $n$ \\
 \quad Anchored (no technique) & 1,509 \\
 \quad Unanchored Baseline & 909 \\
 \midrule
-\textbf{Total unique trials} & \textbf{13,369} \\
+\textbf{Total unique trials} & \textbf{13,799} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -452,7 +452,7 @@ Based on our findings in the judicial sentencing domain (generalization to other
 
 We introduced baseline convergence as a metric for evaluating LLM debiasing techniques. This metric catches overcorrection---a failure mode invisible to standard susceptibility measures.
 
-Our key findings from 13,369 trials across 10 models:
+Our key findings from 13,799 trials across 10 models:
 
 \begin{enumerate}
     \item \textbf{Full SACD leads, but with high variance.} +24\% average improvement ($d=0.41$), but Opus 4.6 shows $-68\%$ backfire. Practitioners must test per-model.
@@ -524,7 +524,7 @@ Random Control prompts consisted of unrelated elaboration requests (e.g., ``Desc
 %==============================================================================
 \section*{Data and Code Availability}
 
-All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 13,369 trials, statistical analysis scripts reproducible from raw data, and complete prompts for all debiasing techniques.
+All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 13,799 trials, statistical analysis scripts reproducible from raw data, and complete prompts for all debiasing techniques.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
