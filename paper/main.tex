@@ -14,6 +14,9 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{natbib}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 
 % Title
 \title{Debiasing Anchoring Bias in LLM Judicial Reasoning:\\Baseline Convergence as a Metric}
@@ -390,6 +393,41 @@ Devil's Advocate & 2166 & 12.1mo & [11.8, 12.4] & +2\% (ns) & 1.000 & 0.03 \\
 \end{tabular}
 \caption{Technique effectiveness with 95\% confidence intervals and Bonferroni-corrected p-values. Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance. $^\dagger$Outside View result confounded by required jurisdiction specification; included for transparency but excluded from primary conclusions.}
 \end{table}
+
+% Convergence visualization
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=18pt,
+    width=0.95\columnwidth,
+    height=5.5cm,
+    ylabel={Baseline Convergence (\%)},
+    ymin=-5,
+    ymax=35,
+    xtick=data,
+    symbolic x coords={Full SACD, Premortem, Random Control, Devil's Advocate},
+    xticklabel style={font=\small, align=center},
+    nodes near coords,
+    nodes near coords align={vertical},
+    every node near coord/.append style={font=\footnotesize\bfseries},
+    enlarge x limits=0.2,
+    axis lines*=left,
+    ymajorgrids=true,
+    grid style={dashed,gray!30},
+]
+\addplot[fill=green!60!black, draw=black] coordinates {
+    (Full SACD, 24)
+    (Premortem, 10)
+    (Random Control, 9)
+    (Devil's Advocate, 2)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Baseline convergence by debiasing technique. Positive values indicate the technique moves judgments toward the model's unprompted baseline. Full SACD shows strongest convergence (+24\%, $p<.001$), significantly outperforming the Random Control (+9\%), demonstrating that iterative self-critique provides genuine debiasing beyond conversation length effects. Devil's Advocate shows no significant effect ($p=1.0$ after Bonferroni correction).}
+\label{fig:convergence}
+\end{figure}
 
 \subsection{Model-Specific Results: Full SACD}
 

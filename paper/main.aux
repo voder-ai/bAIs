@@ -22,7 +22,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Why This Matters}{2}{subsection.1.3}\protected@file@percent }
 \citation{tversky1974}
 \citation{englich2006}
-\citation{binz2023,jones2022}
+\citation{binz2023,jones2022,chen2025cognitive}
 \citation{huang2025anchoring}
 \citation{song2026reasoning}
 \citation{sibony2019}
@@ -33,6 +33,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Cognitive Biases in LLMs}{3}{subsection.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Debiasing Techniques}{3}{subsection.2.3}\protected@file@percent }
 \citation{klein2007}
+\citation{lim2026deframe}
 \citation{englich2006,huang2025anchoring}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Evaluation Methodology}{4}{subsection.2.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Methodology}{4}{section.3}\protected@file@percent }
@@ -40,44 +41,49 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Standard Metric: Anchor Susceptibility}{4}{subsubsection.3.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Our Metric: Baseline Convergence}{4}{subsubsection.3.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Why Both Metrics Matter}{5}{subsubsection.3.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Experimental Design}{5}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Models}{5}{subsubsection.3.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Conditions}{5}{subsubsection.3.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Techniques Evaluated}{5}{subsubsection.3.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Temperature Conditions}{5}{subsubsection.3.2.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Susceptibility vs.\ Convergence: Rankings diverge. Even excluding confounded Outside View, Devil's Advocate (best susceptibility) and Full SACD (best convergence) show inverted rankings.}}{5}{table.1}\protected@file@percent }
+\newlabel{tab:metric-comparison}{{1}{5}{Susceptibility vs.\ Convergence: Rankings diverge. Even excluding confounded Outside View, Devil's Advocate (best susceptibility) and Full SACD (best convergence) show inverted rankings}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Experimental Design}{6}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Models}{6}{subsubsection.3.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Conditions}{6}{subsubsection.3.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Techniques Evaluated}{6}{subsubsection.3.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Temperature Conditions}{6}{subsubsection.3.2.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.5}Trial Counts and Procedure}{6}{subsubsection.3.2.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Trial distribution by condition. Each comparison uses the sample sizes shown; trials are assigned to conditions without overlap. All model-technique-temperature cells achieved $n \geq 30$.}}{6}{table.1}\protected@file@percent }
-\newlabel{tab:trial-counts}{{1}{6}{Trial distribution by condition. Each comparison uses the sample sizes shown; trials are assigned to conditions without overlap. All model-technique-temperature cells achieved $n \geq 30$}{table.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Confounds and Limitations}{6}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Outside View Jurisdiction Context}{6}{subsubsection.3.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{7}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Baseline Responses}{7}{subsection.4.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance at all temperatures, consistently responding with exactly 18 months---suggesting highly deterministic reasoning for this prompt type.}}{7}{table.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}High-Anchor Responses (No Technique)}{7}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Technique Effectiveness: Baseline Convergence}{7}{subsection.4.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Technique effectiveness with 95\% confidence intervals and Bonferroni-corrected p-values. Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance. $^\dagger $Outside View result confounded by required jurisdiction specification; included for transparency but excluded from primary conclusions.}}{7}{table.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Model-Specific Results: Full SACD}{7}{subsection.4.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Full SACD model-specific results. 5/10 significantly improve, 1/10 significantly worsens (Opus 4.6).}}{8}{table.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Why Baseline Collection Matters}{8}{subsection.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{8}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Why Full SACD Works (and Fails)}{8}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Why Random Control Works}{9}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}The Outside View Confound}{9}{subsection.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Limitations}{9}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Practical Recommendations}{9}{subsection.5.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{10}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{10}{appendix.A}\protected@file@percent }
-\newlabel{app:prompts}{{A}{10}{Prompt Templates}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Case Vignette (All Conditions)}{10}{subsection.A.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Trial distribution. Total unique trials: 13,799. Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets.}}{7}{table.2}\protected@file@percent }
+\newlabel{tab:trial-counts}{{2}{7}{Trial distribution. Total unique trials: 13,799. Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets}{table.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.6}Statistical Analysis}{7}{subsubsection.3.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Confounds and Limitations}{7}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Outside View Jurisdiction Context}{7}{subsubsection.3.3.1}\protected@file@percent }
+\citation{tversky1974}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{8}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Baseline Responses}{8}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance (SD=0.0) at all temperatures, consistently responding with exactly 18 months. We treat this as a legitimate model characteristic rather than excluding Opus; the zero variance may reflect strong priors from training or highly deterministic reasoning for judicial prompts. Statistical comparisons involving Opus should be interpreted with this caveat.}}{8}{table.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}High-Anchor Responses (No Technique)}{8}{subsection.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Baseline convergence by debiasing technique. Positive values indicate the technique moves judgments toward the model's unprompted baseline. Full SACD shows strongest convergence (+24\%, $p<.001$), significantly outperforming the Random Control (+9\%), demonstrating that iterative self-critique provides genuine debiasing beyond conversation length effects. Devil's Advocate shows no significant effect ($p=1.0$ after Bonferroni correction).}}{9}{figure.1}\protected@file@percent }
+\newlabel{fig:convergence}{{1}{9}{Baseline convergence by debiasing technique. Positive values indicate the technique moves judgments toward the model's unprompted baseline. Full SACD shows strongest convergence (+24\%, $p<.001$), significantly outperforming the Random Control (+9\%), demonstrating that iterative self-critique provides genuine debiasing beyond conversation length effects. Devil's Advocate shows no significant effect ($p=1.0$ after Bonferroni correction)}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Technique Effectiveness: Baseline Convergence}{9}{subsection.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Technique effectiveness with 95\% confidence intervals and Bonferroni-corrected p-values. Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance. $^\dagger $Outside View result confounded by required jurisdiction specification; included for transparency but excluded from primary conclusions.}}{9}{table.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Model-Specific Results: Full SACD}{9}{subsection.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Full SACD model-specific results. 5/10 significantly improve, 1/10 significantly worsens (Opus 4.6).}}{10}{table.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Why Baseline Collection Matters}{10}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{10}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Why Full SACD Works (and Fails)}{10}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Why Random Control Works}{11}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}The Outside View Confound}{11}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Limitations}{11}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Practical Recommendations}{12}{subsection.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{12}{section.6}\protected@file@percent }
 \citation{lyu2025}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{13}{appendix.A}\protected@file@percent }
+\newlabel{app:prompts}{{A}{13}{Prompt Templates}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Case Vignette (All Conditions)}{13}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchor Introduction (High/Low Anchor Conditions)}{13}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Outside View (As Implemented)}{13}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Full SACD (Iterative Self-Administered Cognitive Debiasing)}{13}{subsection.A.4}\protected@file@percent }
 \bibstyle{plainnat}
 \bibdata{references}
 \bibcite{binz2023}{{1}{2023}{{Binz and Schulz}}{{}}}
 \bibcite{englich2006}{{2}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchor Introduction (High/Low Anchor Conditions)}{11}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Outside View (As Implemented)}{11}{subsection.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Full SACD (Iterative Self-Administered Cognitive Debiasing)}{11}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Random Control}{11}{subsection.A.5}\protected@file@percent }
 \bibcite{huang2025anchoring}{{3}{2025}{{Huang et~al.}}{{}}}
 \bibcite{jones2022}{{4}{2022}{{Jones and Steinhardt}}{{}}}
 \bibcite{klein2007}{{5}{2007}{{Klein}}{{}}}
@@ -85,4 +91,5 @@
 \bibcite{sibony2019}{{7}{2019}{{Sibony}}{{}}}
 \bibcite{song2026reasoning}{{8}{2026}{{Song et~al.}}{{}}}
 \bibcite{tversky1974}{{9}{1974}{{Tversky and Kahneman}}{{}}}
-\gdef \@abspage@last{12}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Random Control}{14}{subsection.A.5}\protected@file@percent }
+\gdef \@abspage@last{14}
