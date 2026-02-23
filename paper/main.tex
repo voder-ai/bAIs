@@ -200,11 +200,11 @@ These metrics can diverge. Consider:
 
 Under susceptibility, the technique ``worked'' (moved away from anchor). Under convergence, it marginally helped---but a different technique might achieve 28mo (convergence error = 2mo).
 
-Our data demonstrates this divergence empirically. Table~\ref{tab:metric-comparison} shows that technique rankings are nearly inverted between metrics---Outside View appears most effective under susceptibility ($-84\%$) but shows the worst convergence ($-22\%$).
+Our data demonstrates this divergence empirically. Table~\ref{tab:metric-comparison} shows that technique rankings diverge between metrics. While Outside View shows the most dramatic inversion ($-84\%$ susceptibility, $-22\%$ convergence), the pattern holds even excluding it: Devil's Advocate ranks best on susceptibility ($-8\%$) but worst on convergence ($+2\%$), while Full SACD shows the opposite pattern.
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ Convergence: Rankings diverge. Outside View is best under susceptibility but worst under convergence, demonstrating why baseline collection is essential.}
+\caption{Susceptibility vs.\ Convergence: Rankings diverge. Even excluding confounded Outside View, Devil's Advocate (best susceptibility) and Full SACD (best convergence) show inverted rankings.}
 \label{tab:metric-comparison}
 \begin{tabular}{lcccc}
 \toprule
@@ -464,7 +464,7 @@ Outside View performed worst despite being recommended in human debiasing litera
     
     \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). This enables valid within-model comparisons but introduces circularity: the baseline we use to evaluate convergence also determines anchor values. This design choice prioritizes measuring debiasing effectiveness within each model over cross-model comparisons of absolute anchor resistance.
     
-    \item \textbf{Metric divergence depends on Outside View.} The dramatic divergence between susceptibility and convergence rankings (Table~\ref{tab:metric-comparison}) is substantially driven by our confounded Outside View implementation. Excluding Outside View, technique rankings partially converge: Full SACD $>$ Premortem $\approx$ Random Control $>$ Devil's Advocate under both metrics. The baseline convergence metric remains valuable for detecting overcorrection, but the magnitude of ranking divergence should be interpreted cautiously.
+    \item \textbf{Metric divergence holds without Outside View.} While Outside View shows the most dramatic divergence ($-84\%$ susceptibility, $-22\%$ convergence), the core finding---that metrics can give opposite rankings---holds even when excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility ($-8\%$ spread reduction) but \textit{worst} on convergence ($+2\%$); Full SACD ranks \textit{worst} on susceptibility ($+36\%$ spread increase) but \textit{best} on convergence ($+24\%$). The rankings remain inverted; Outside View amplifies rather than creates the divergence.
     
     \item \textbf{Outside View confound.} Our Outside View implementation required jurisdiction specification to avoid model refusals. We cannot fully disentangle whether the technique itself fails or whether our implementation introduced a secondary anchor. Future work should test jurisdiction-neutral Outside View prompts.
     
