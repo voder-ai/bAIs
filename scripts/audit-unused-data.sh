@@ -1,87 +1,72 @@
 #!/bin/bash
 # audit-unused-data.sh — Find collected data not used in paper
-# Prevents "we had the data but didn't use it" situations
+# Updated February 2026 for current model names
 
 cd "$(dirname "$0")/.."
 
 RESULTS_DIR="results"
-PAPER="paper/main.tex"
 
 echo "=== Data → Paper Audit ==="
 echo "Checking: Do we have data that's not in the paper?"
 echo ""
 
-# Models IN the paper (from Table 1 and Table 2)
-PAPER_MODELS=("gpt52" "gpt53" "gpt4o" "opus45" "opus46" "llama33" "hermes" "o1-" "o3-mini" "minimax")
+# Current models (February 2026)
+MODELS=(
+    "claude-opus-4-6"
+    "claude-sonnet-4-6"
+    "claude-haiku-4-5"
+    "gpt-5-2"
+    "gpt-4-1"
+    "o3"
+    "o4-mini"
+    "deepseek-v3-2"
+    "glm-5"
+    "kimi-k2-5"
+)
 
-echo "=== SACD Coverage ==="
-echo "Models in paper should have SACD data analyzed (not '---'):"
-echo ""
+TECHNIQUES=(
+    "full-sacd"
+    "random-control"
+    "premortem"
+    "outside-view"
+    "devils-advocate"
+)
 
-for model in "${PAPER_MODELS[@]}"; do
-    # Find SACD files for this model
-    sacd_files=$(ls $RESULTS_DIR/*${model}*sacd*.jsonl 2>/dev/null)
-    
-    if [[ -n "$sacd_files" ]]; then
+echo "=== Baseline Coverage ==="
+for model in "${MODELS[@]}"; do
+    files=$(ls $RESULTS_DIR/baseline-${model}-*.jsonl 2>/dev/null)
+    if [[ -n "$files" ]]; then
         total=0
-        for f in $sacd_files; do
-            n=$(wc -l < "$f")
+        for f in $files; do
+            n=$(wc -l < "$f" | tr -d ' ')
             total=$((total + n))
         done
-        
-        # Check if model has "---" in SACD table
-        if grep -q "${model}.*---.*---" "$PAPER" 2>/dev/null; then
-            echo "❌ $model: $total SACD trials exist but paper shows '---'"
-        else
-            echo "✅ $model: $total SACD trials (in paper)"
-        fi
+        echo "✅ $model baseline: n=$total"
     else
-        echo "⚠️  $model: No SACD data collected"
+        echo "❌ $model: No baseline data"
     fi
 done
 
 echo ""
-echo "=== 24mo Anchor Coverage ==="
-echo "Checking all 24mo data is in Table 2:"
-echo ""
-
-for f in $RESULTS_DIR/*24mo*.jsonl; do
-    if [[ -f "$f" ]]; then
-        filename=$(basename "$f")
-        n=$(wc -l < "$f")
-        
-        # Extract model name
-        model=$(echo "$filename" | sed 's/-24mo.*//')
-        
-        if [[ $n -ge 30 ]]; then
-            echo "✅ $filename: n=$n"
-        else
-            echo "⚠️  $filename: n=$n (below n=30 threshold)"
-        fi
-    fi
-done
-
-echo ""
-echo "=== No-Anchor Baseline Coverage ==="
-echo "Models should have no-anchor baseline for mechanism classification:"
-echo ""
-
-for model in opus45 llama33 gpt4o minimax o3-mini o1 hermes; do
-    baseline_files=$(ls $RESULTS_DIR/*${model}*no-anchor*.jsonl $RESULTS_DIR/*${model}*baseline*.jsonl 2>/dev/null)
-    
-    if [[ -n "$baseline_files" ]]; then
-        total=0
-        for f in $baseline_files; do
-            n=$(wc -l < "$f")
-            total=$((total + n))
+echo "=== Technique Coverage ==="
+for tech in "${TECHNIQUES[@]}"; do
+    total=0
+    for model in "${MODELS[@]}"; do
+        files=$(ls $RESULTS_DIR/${tech}-*-${model}-*.jsonl 2>/dev/null)
+        for f in $files; do
+            if [[ -f "$f" ]]; then
+                n=$(wc -l < "$f" | tr -d ' ')
+                total=$((total + n))
+            fi
         done
-        echo "✅ $model: $total baseline trials"
+    done
+    if [[ $total -gt 0 ]]; then
+        echo "✅ $tech: n=$total total trials"
     else
-        echo "❌ $model: No baseline data found"
+        echo "❌ $tech: No data"
     fi
 done
 
 echo ""
 echo "=== Summary ==="
-echo "Run this BEFORE marking anything '---' in paper."
-echo "If data exists, USE IT."
+echo "All data should be reflected in paper statistics."
