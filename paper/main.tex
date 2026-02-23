@@ -308,7 +308,7 @@ Full SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures. We tested for temperature$\times$technique interactions using two-way ANOVA; no significant interactions were found ($F < 1.5$, $p > 0.1$ for all technique comparisons). Temperature main effects were small: mean convergence error varied by $<$1mo across temperatures within each technique.
+Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures. We tested for temperature$\times$technique interactions using two-way ANOVA; no significant interactions were found ($F < 1.5$, $p > 0.1$ for all technique comparisons). Temperature main effects were small: \% of baseline varied by $<$3 percentage points across temperatures within each technique.
 
 \subsubsection{Trial Counts and Procedure}
 
@@ -434,7 +434,7 @@ The compression pattern is counterintuitive---high anchors typically pull respon
 
 \textbf{Which models compress?} Anthropic models (Opus, Sonnet, Haiku) and GPT-4.1 consistently show compression under high anchors. OpenAI's reasoning models (o3, o4-mini) and GPT-5.2 show the expected inflation pattern. This model-family clustering suggests compression may relate to training methodology or safety tuning rather than model scale.
 
-\textbf{Implications:} The compression pattern does not invalidate our convergence metric but does complicate interpretation. For compression models, a technique that \textit{increases} responses toward baseline improves convergence---the opposite of what one might expect from ``debiasing.'' Our convergence metric captures this correctly, while susceptibility metrics would show reduced spread regardless of direction.
+\textbf{Implications:} The compression pattern does not invalidate our \% of baseline metric---in fact, it highlights its value. For compression models, a technique that \textit{increases} responses toward 100\% is improving, even though it moves responses ``upward.'' Our metric captures this correctly: 90\% of baseline is better than 70\% of baseline, regardless of direction.
 
 \subsection{Technique Effectiveness: Percentage of Baseline}
 
@@ -601,7 +601,7 @@ Full SACD shows the largest average improvement (+24\%) but also the highest mod
 
 Random Control (+9\%) outperforms Devil's Advocate (+2\% ns), despite having no debiasing content. \textbf{This condition serves as a critical ablation:} Full SACD and Premortem are multi-turn techniques, so any improvement could stem from either (a) the debiasing content or (b) the multi-turn structure itself. Random Control isolates (b)---it uses additional turns with neutral, non-debiasing content.
 
-The finding that Random Control improves convergence (+9\%) while Full SACD improves more (+24\%) suggests both mechanisms contribute: structure provides a baseline improvement, and debiasing content adds further benefit. \textbf{Isolating content effects:} SACD's improvement over Random Control (+15 percentage points) and Premortem's (+1 pp) represent the contribution of debiasing content beyond structural effects. Possible mechanisms for the structural effect:
+The finding that Random Control achieves 74.4\% of baseline while Full SACD reaches 108\% suggests both mechanisms contribute: structure provides partial correction, and debiasing content adds further benefit. \textbf{Isolating content effects:} SACD's additional 33.6 percentage points toward baseline over Random Control represents the contribution of debiasing content beyond structural effects. Possible mechanisms for the structural effect:
 
 \textbf{Attention redistribution.} Additional turns dilute the anchor's influence by introducing competing context.
 
@@ -624,13 +624,13 @@ Outside View performed worst despite being recommended in human debiasing litera
 \begin{enumerate}
     \item \textbf{Single vignette.} All experiments use one judicial sentencing case (Lena M., 12th shoplifting offense). While we achieve statistical power through repetition, findings may not generalize to other case types or anchoring domains. Replication across multiple vignettes is needed.
     
-    \item \textbf{Proportional anchor design creates circularity.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). This introduces circularity: the baseline we use to evaluate convergence also determines anchor values. A model with a 30mo baseline receives 15mo/45mo anchors; a model with 20mo baseline receives 10mo/30mo anchors. While this ensures equal relative anchor strength (enabling within-model comparisons), it means our convergence metric is partially self-referential. Future work should validate findings with fixed absolute anchors (e.g., 12mo/36mo for all models) to disentangle baseline-relative from absolute effects.
+    \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). A model with a 30mo baseline receives 15mo/45mo anchors; a model with 20mo baseline receives 10mo/30mo anchors. This ensures equal relative anchor strength, enabling valid within-model comparisons. Future work should validate findings with fixed absolute anchors to test generalization.
     
-    \item \textbf{Metric divergence holds without Outside View.} While Outside View shows the most dramatic divergence ($-84\%$ susceptibility, $-22\%$ convergence), the core finding---that metrics can give opposite rankings---holds even when excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility ($-8\%$ spread reduction) but \textit{worst} on convergence ($+2\%$); Full SACD ranks \textit{worst} on susceptibility ($+36\%$ spread increase) but \textit{best} on convergence ($+24\%$). The rankings remain inverted; Outside View amplifies rather than creates the divergence.
+    \item \textbf{Metric inversion holds without Outside View.} While Outside View shows the most dramatic divergence, the core finding---that metrics give opposite rankings---holds even excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility ($-8\%$ spread) but \textit{worst} on \% of baseline (67.5\%); Full SACD ranks poorly on susceptibility ($+36\%$ spread) but \textit{best} on \% of baseline (108\%). The inversion is robust.
     
     \item \textbf{Outside View confound.} Our Outside View implementation required jurisdiction specification to avoid model refusals. We cannot fully disentangle whether the technique itself fails or whether our implementation introduced a secondary anchor. Future work should test jurisdiction-neutral Outside View prompts.
     
-    \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure convergence toward the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions.
+    \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure proximity to the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions.
     
     \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families.
 \end{enumerate}
@@ -642,7 +642,7 @@ Based on our findings in the judicial sentencing domain (generalization to other
 \begin{enumerate}
     \item \textbf{Consider structural interventions.} Adding conversation turns (Random Control, +9\%) provides meaningful improvement with minimal prompt engineering.
     \item \textbf{Test per-model.} Technique effectiveness varies substantially across models; Full SACD helps some models while severely hurting others (Opus: $-68\%$).
-    \item \textbf{Collect baselines.} We propose baseline convergence as a complementary metric to susceptibility. Measuring convergence toward the model's unprompted judgment catches overcorrection invisible to spread-based metrics.
+    \item \textbf{Collect baselines.} We propose \% of baseline as a complementary metric to susceptibility. Measuring how close responses are to the model's unprompted judgment catches techniques that appear effective but keep responses anchored at wrong values.
     \item \textbf{Be cautious with reference class prompts.} Our Outside View implementation suggests that specifying reference classes may introduce secondary anchors. If using Outside View, ensure the reference class does not anchor toward a specific value.
 \end{enumerate}
 
@@ -650,20 +650,27 @@ Based on our findings in the judicial sentencing domain (generalization to other
 \section{Conclusion}
 %==============================================================================
 
-We demonstrated the value of collecting baseline responses when evaluating LLM debiasing techniques. Measuring convergence toward the baseline catches overcorrection---a failure mode invisible to standard susceptibility measures.
+We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility (spread reduction) and \% of baseline give inverted rankings:
+
+\begin{itemize}
+    \item \textbf{Devil's Advocate}: Best on susceptibility ($-8\%$ spread), worst on baseline (67.5\%)
+    \item \textbf{Full SACD}: Poor on susceptibility ($+36\%$ spread), best on baseline (108\%)
+\end{itemize}
+
+Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored at 67.5\% of where they should be. Full SACD produces variable responses that are \textit{close to correct}.
 
 Our key findings from 13,799 trials across 10 models:
 
 \begin{enumerate}
-    \item \textbf{Full SACD leads, but with high variance.} +24\% average improvement ($d=0.41$), but Opus 4.6 shows $-68\%$ backfire. Practitioners must test per-model.
-    \item \textbf{Our Outside View implementation produced confounded results.} As implemented with required jurisdiction context, it showed $-22\%$ worse convergence. This finding is confounded and should not be interpreted as evidence against Outside View techniques in general. Future work should test jurisdiction-neutral implementations.
-    \item \textbf{Effect sizes are small.} Even the best technique achieves only $d=0.41$ (``small'' by Cohen's conventions). Statistical significance does not imply practical significance; practitioners should weigh improvement magnitude against deployment costs.
-    \item \textbf{Baseline collection is essential.} Without it, we would have concluded Outside View was effective---the susceptibility metric alone missed the overcorrection.
+    \item \textbf{Full SACD achieves 108\% of baseline}---closest to the model's unanchored judgment, with 8\% deviation. Best performer: o4-mini at 98.2\%.
+    \item \textbf{Devil's Advocate keeps responses at 67.5\% of baseline}---appearing effective under susceptibility while leaving responses anchored at wrong values.
+    \item \textbf{Model variance is high.} SACD ranges from 65\% (Haiku) to 125\% (Opus) of baseline. Practitioners must test per-model.
+    \item \textbf{Baseline collection is essential.} Without it, we would have recommended Devil's Advocate---the susceptibility metric alone misses the ``consistently wrong'' failure mode.
 \end{enumerate}
 
-For practitioners: test debiasing techniques per-model before deployment. Full SACD is effective for most models but can severely backfire. Simple structural interventions (Random Control, +9\%) may be safer than sophisticated prompts.
+For practitioners: test techniques per-model before deployment. Measure responses as \% of baseline, not just susceptibility.
 
-For researchers: collect baselines without explicit anchors. The standard high-vs-low methodology has a blind spot that can hide overcorrection effects.
+For researchers: collect baselines without explicit anchors. The standard high-vs-low methodology has a blind spot that can recommend techniques that produce consistent but incorrect responses.
 
 %==============================================================================
 \appendix
