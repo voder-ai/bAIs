@@ -354,12 +354,14 @@ Opus 4.6 & 18.0mo & 0.0 \\
 
 \subsection{High-Anchor Responses (No Technique)}
 
-Under high-anchor conditions without intervention, two anchor response patterns emerge:
+Under high-anchor conditions without intervention, two distinct response patterns emerge:
 
 \begin{enumerate}
-    \item \textbf{Compression}: Response pulled below baseline (Anthropic models, GPT-4.1)
+    \item \textbf{Compression}: Response pulled \textit{below} baseline (Anthropic models, GPT-4.1)
     \item \textbf{Inflation}: Response pulled above baseline (GPT-5.2, GLM-5, o3)
 \end{enumerate}
+
+The compression pattern is counterintuitive---high anchors typically pull responses upward. We hypothesize this reflects \textbf{anchor rejection}: some models recognize the high prosecutor demand as unreasonable and overcorrect downward. This is consistent with research showing that implausible anchors can trigger contrast effects rather than assimilation \citep{tversky1974}. The compression pattern does not invalidate our convergence metric but does complicate interpretation: for compression models, techniques that increase responses may improve convergence.
 
 \subsection{Technique Effectiveness: Baseline Convergence}
 
@@ -456,11 +458,17 @@ Outside View performed worst despite being recommended in human debiasing litera
 \subsection{Limitations}
 
 \begin{enumerate}
-    \item \textbf{Single domain.} All experiments use judicial sentencing vignettes. Replication across other anchoring domains (estimation, forecasting, negotiation) is needed before generalizing findings.
+    \item \textbf{Single vignette.} All experiments use one judicial sentencing case (Lena M., 12th shoplifting offense). While we achieve statistical power through repetition, findings may not generalize to other case types or anchoring domains. Replication across multiple vignettes is needed.
+    
+    \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). This enables valid within-model comparisons but introduces circularity: the baseline we use to evaluate convergence also determines anchor values. This design choice prioritizes measuring debiasing effectiveness within each model over cross-model comparisons of absolute anchor resistance.
+    
+    \item \textbf{Metric divergence depends on Outside View.} The dramatic divergence between susceptibility and convergence rankings (Table~\ref{tab:metric-comparison}) is substantially driven by our confounded Outside View implementation. Excluding Outside View, technique rankings partially converge: Full SACD $>$ Premortem $\approx$ Random Control $>$ Devil's Advocate under both metrics. The baseline convergence metric remains valuable for detecting overcorrection, but the magnitude of ranking divergence should be interpreted cautiously.
+    
     \item \textbf{Outside View confound.} Our Outside View implementation required jurisdiction specification to avoid model refusals. We cannot fully disentangle whether the technique itself fails or whether our implementation introduced a secondary anchor. Future work should test jurisdiction-neutral Outside View prompts.
-    \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure convergence toward the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions. The baseline represents the model's response absent \textit{explicit prosecutor demand anchoring}, not an ``unbiased'' state.
+    
+    \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure convergence toward the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions.
+    
     \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families.
-    \item \textbf{Prompt disclosure.} Complete prompt templates are available at our repository; we acknowledge that prompt engineering choices may influence results.
 \end{enumerate}
 
 \subsection{Practical Recommendations}
