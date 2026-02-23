@@ -17,7 +17,7 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}The Calibration Metric}{2}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}The Baseline Convergence Metric}{2}{subsection.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Findings Preview}{2}{subsection.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Why This Matters}{2}{subsection.1.3}\protected@file@percent }
 \citation{tversky1974}
@@ -38,7 +38,7 @@
 \@writefile{toc}{\contentsline {section}{\numberline {3}Methodology}{4}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Evaluation Metrics}{4}{subsection.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Standard Metric: Anchor Susceptibility}{4}{subsubsection.3.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Our Metric: Baseline Calibration}{4}{subsubsection.3.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Our Metric: Baseline Convergence}{4}{subsubsection.3.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Why Both Metrics Matter}{5}{subsubsection.3.1.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Experimental Design}{5}{subsection.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Models}{5}{subsubsection.3.2.1}\protected@file@percent }
@@ -50,30 +50,28 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Outside View Jurisdiction Context}{6}{subsubsection.3.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Results}{6}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Baseline Responses}{6}{subsection.4.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread.}}{6}{table.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus shows zero variance (deterministic).}}{6}{table.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}High-Anchor Responses (No Technique)}{6}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Technique Effectiveness: Calibration Metric}{7}{subsection.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}High-Anchor Conditions}{7}{subsubsection.4.3.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Random Control---which adds conversation turns without debiasing content---outperforms all content-based techniques.}}{7}{table.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}Low-Anchor Conditions}{7}{subsubsection.4.3.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Full SACD achieves perfect calibration under low anchors. Rankings shift between anchor conditions.}}{7}{table.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Temperature $\times $ Technique Interaction}{7}{subsection.4.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Temperature effects on calibration success (high-anchor conditions).}}{7}{table.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Comparison: Susceptibility vs.\ Calibration Metrics}{8}{subsection.4.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces This inversion demonstrates why baseline collection matters.}}{8}{table.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Technique Effectiveness: Baseline Convergence}{7}{subsection.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Technique effectiveness with Bonferroni-corrected p-values (5 tests). Full SACD shows largest improvement; Outside View significantly \textit  {worsens} convergence. Effect sizes are small by Cohen's conventions.}}{7}{table.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Model-Specific Results: Full SACD}{7}{subsection.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Full SACD model-specific results. 5/10 significantly improve, 1/10 significantly worsens (Opus 4.6).}}{7}{table.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Comparison: Susceptibility vs.\ Convergence Metrics}{7}{subsection.4.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Rankings invert between metrics. Without baseline collection, Outside View appears to ``work.''}}{8}{table.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{8}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Why Structure Beats Content}{8}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The Outside View Confound}{8}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Limitations}{8}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Why Full SACD Works (and Fails)}{8}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Why Random Control Works}{8}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}The Outside View Confound}{8}{subsection.5.3}\protected@file@percent }
 \bibstyle{plainnat}
 \bibdata{archive/references}
 \bibcite{binz2023}{{1}{2023}{{Binz and Schulz}}{{}}}
 \bibcite{englich2006}{{2}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Limitations}{9}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Practical Recommendations}{9}{subsection.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{9}{section.6}\protected@file@percent }
 \bibcite{huang2025anchoring}{{3}{2025}{{Huang et~al.}}{{}}}
 \bibcite{jones2022}{{4}{2022}{{Jones and Steinhardt}}{{}}}
 \bibcite{klein2007}{{5}{2007}{{Klein}}{{}}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Practical Recommendations}{9}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{9}{section.6}\protected@file@percent }
 \bibcite{lyu2025}{{6}{2025}{{Lyu et~al.}}{{}}}
 \bibcite{sibony2019}{{7}{2019}{{Sibony}}{{}}}
 \bibcite{song2026reasoning}{{8}{2026}{{Song et~al.}}{{}}}
