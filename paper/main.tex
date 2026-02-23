@@ -56,7 +56,7 @@ When large language models make judgments, do debiasing techniques actually help
 
 We report findings from a large systematic evaluation of LLM debiasing techniques (13,369 trials across 10 models). Our core contribution is methodological: by collecting baseline responses without explicit anchors, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to the model's considered judgment}.
 
-\textbf{Study design note:} We analyze each model independently, measuring how debiasing techniques affect that model's responses at different temperatures. The adaptive anchor design (scaled to each model's baseline) is intentional---it measures within-model debiasing effects rather than cross-model comparisons. This design answers: ``How do techniques affect \textit{this} model?'' rather than ``Which model is least susceptible?''
+\textbf{Study design note:} We analyze each model independently, measuring how debiasing techniques affect that model's responses at different temperatures. Anchors use \textit{constant relative scaling}: low anchor = baseline $\times$ 0.5, high anchor = baseline $\times$ 1.5. This ensures anchors are equally strong relative to each model's natural judgment---a fixed 3-month anchor would be a strong pull for a model with an 18-month baseline but negligible for one with a 36-month baseline. This design answers: ``How do techniques affect \textit{this} model?'' rather than ``Which model is least susceptible?''
 
 This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions---if the gap shrinks, the technique ``works.'' But this metric misses a critical failure mode: \textbf{overcorrection}. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show ``reduced susceptibility'' while actually \textit{increasing} distance from truth.
 
@@ -256,7 +256,7 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
     \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches
-    \item \textbf{High anchor values}: Proportional to model baseline (baseline $\times$ 1.5); Low anchor = baseline / 2
+    \item \textbf{Anchor values}: Constant relative scaling---low anchor = baseline $\times$ 0.5, high anchor = baseline $\times$ 1.5. This ensures equal anchor strength across models with different baselines.
 \end{itemize}
 
 \begin{table}[H]
