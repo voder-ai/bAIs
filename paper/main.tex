@@ -37,7 +37,7 @@ We introduce \textbf{baseline convergence} as the primary evaluation metric. By 
 \begin{itemize}
     \item \textbf{Full SACD} (iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
     \item \textbf{Premortem / Random Control}: +9--10\% improvement ($p<.001$)
-    \item \textbf{Outside View} (reference class reasoning): \textbf{$-22\%$}---significantly \textit{worsens} convergence
+    \item \textbf{Outside View} (as implemented with jurisdiction context): \textbf{$-22\%$}---worsens convergence, potentially due to secondary anchoring
 \end{itemize}
 
 Iterative self-reflection (Full SACD) is the most effective technique, but with high model variance: 5/10 models significantly improve, while Claude Opus 4.6 shows 68\% \textit{worse} convergence ($p<.001$). Devil's Advocate shows no significant effect ($p=0.33$).
@@ -78,10 +78,10 @@ Using this metric, we discover rankings that invert conventional wisdom:
     \item \textbf{Premortem} (+10\%, $p<.001$)---imagine failure mode
     \item \textbf{Random Control} (+9\%, $p<.001$)---extra turns, no debiasing content
     \item \textbf{Devil's Advocate} (+2\%, $p=0.33$, not significant)---argumentation
-    \item \textbf{Outside View} ($-22\%$, $p<.001$)---reference class reasoning \textit{backfires}
+    \item \textbf{Outside View} ($-22\%$, $p<.001$)---as implemented, worsens convergence
 \end{enumerate}
 
-The counterintuitive finding: \textbf{Outside View, often recommended in human debiasing literature, significantly worsens model performance}. Meanwhile, simple structural interventions (extra turns) help nearly as much as sophisticated techniques.
+The counterintuitive finding: \textbf{Our implementation of Outside View, which required jurisdiction specification to avoid model refusals, showed significantly worse convergence}---suggesting that reference class prompts may introduce secondary anchors. Simple structural interventions (extra turns) help nearly as much as sophisticated techniques.
 
 \subsection{Why This Matters}
 
@@ -102,7 +102,7 @@ This has immediate practical implications:
 \begin{enumerate}
     \item \textbf{A baseline convergence metric for debiasing evaluation} that catches overcorrection invisible to susceptibility measures.
     
-    \item \textbf{Inverted technique rankings}: Outside View, recommended in human literature, \textit{backfires} ($-22\%$) while Full SACD leads (+24\%).
+    \item \textbf{Inverted technique rankings}: Our Outside View implementation showed $-22\%$ worse convergence, while Full SACD leads (+24\%). Effect sizes are small ($d \leq 0.41$); practitioners should calibrate expectations accordingly.
     
     \item \textbf{High model variance}: 5/10 models significantly improve with SACD, but Opus 4.6 shows 68\% \textit{worse} convergence.
     
@@ -244,14 +244,14 @@ Full SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance).
+Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. The main results reported aggregate across temperatures unless otherwise specified; temperature-specific analysis is presented in Section 4.3.
 
 \subsubsection{Trial Counts}
 
 \begin{itemize}
     \item \textbf{Total trials}: 13,369
-    \item \textbf{Per model-technique-temperature}: 30--90 trials (target $n \geq 30$)
-    \item \textbf{Baseline trials}: 909 total across all models
+    \item \textbf{Per model-technique-temperature}: 30--90 trials (target $n \geq 30$; range reflects iterative data collection with some conditions receiving additional trials for robustness)
+    \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
 \end{itemize}
 
 \subsection{Confounds and Limitations}
@@ -320,7 +320,7 @@ Devil's Advocate & 2166 & 12.1mo & +2\% (ns) & 1.000 & $d=0.03$ \\
 Outside View & 2423 & 15.1mo & \textbf{$-22\%$} & $<.001$ & $d=-0.38$ \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness with Bonferroni-corrected p-values (5 tests). Full SACD shows largest improvement; Outside View significantly \textit{worsens} convergence. Effect sizes are small by Cohen's conventions.}
+\caption{Technique effectiveness with Bonferroni-corrected p-values (5 tests) and 95\% CIs. Full SACD: +24\% [95\% CI: 20--27\%]. Outside View (as implemented): $-22\%$ [95\% CI: $-26$--$-19$\%]. Effect sizes are small by Cohen's conventions ($d < 0.5$); practitioners should weigh statistical significance against practical impact.}
 \end{table}
 
 \subsection{Model-Specific Results: Full SACD}
@@ -409,21 +409,22 @@ Outside View performed worst despite being recommended in human debiasing litera
 \subsection{Limitations}
 
 \begin{enumerate}
-    \item \textbf{Single domain.} All experiments use judicial sentencing. Results may not generalize.
-    \item \textbf{Outside View confound.} We cannot fully disentangle technique failure from implementation choice.
-    \item \textbf{Baseline validity.} Our ``unanchored'' baseline still includes numeric context (``12th offense'').
-    \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive.
+    \item \textbf{Single domain.} All experiments use judicial sentencing vignettes. Replication across other anchoring domains (estimation, forecasting, negotiation) is needed before generalizing findings.
+    \item \textbf{Outside View confound.} Our Outside View implementation required jurisdiction specification to avoid model refusals. We cannot fully disentangle whether the technique itself fails or whether our implementation introduced a secondary anchor. Future work should test jurisdiction-neutral Outside View prompts.
+    \item \textbf{Baseline interpretation.} Our ``unanchored'' baseline still includes numeric context (``12th offense''). We measure convergence toward the model's \textit{unprompted judgment}, not an objective ground truth---which does not exist for sentencing decisions. The baseline represents the model's considered response absent \textit{explicit} anchoring, not an ``unbiased'' state.
+    \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families.
+    \item \textbf{Prompt disclosure.} Complete prompt templates are available at our repository; we acknowledge that prompt engineering choices may influence results.
 \end{enumerate}
 
 \subsection{Practical Recommendations}
 
-Based on our findings:
+Based on our findings in the judicial sentencing domain (generalization to other domains requires validation):
 
 \begin{enumerate}
-    \item \textbf{Start with structure, not content.} Adding conversation turns is simpler and more effective than crafting debiasing prompts.
-    \item \textbf{Match temperature to technique.} Use t=0 for structural interventions, t=0.7 for self-reflection.
-    \item \textbf{Validate with calibration metric.} Don't just measure susceptibility---measure whether outputs land closer to baseline.
-    \item \textbf{Test per-model.} Technique effectiveness varies substantially across models.
+    \item \textbf{Consider structural interventions.} Adding conversation turns (Random Control, +9\%) provides meaningful improvement with minimal prompt engineering.
+    \item \textbf{Test per-model.} Technique effectiveness varies substantially across models; Full SACD helps some models while severely hurting others (Opus: $-68\%$).
+    \item \textbf{Collect baselines.} We propose baseline convergence as a complementary metric to susceptibility. Measuring convergence toward the model's unprompted judgment catches overcorrection invisible to spread-based metrics.
+    \item \textbf{Be cautious with reference class prompts.} Our Outside View implementation suggests that specifying reference classes may introduce secondary anchors. If using Outside View, ensure the reference class does not anchor toward a specific value.
 \end{enumerate}
 
 %==============================================================================
@@ -435,15 +436,59 @@ We introduced baseline convergence as a metric for evaluating LLM debiasing tech
 Our key findings from 13,369 trials across 10 models:
 
 \begin{enumerate}
-    \item \textbf{Full SACD leads, but with high variance.} +24\% average improvement ($d=0.41$), but Opus 4.6 shows $-68\%$ backfire.
-    \item \textbf{Outside View backfires.} Despite recommendations in human debiasing literature, it shows $-22\%$ worse convergence ($p<.001$).
-    \item \textbf{Effect sizes are small.} Even the best technique achieves only $d=0.41$---practitioners should calibrate expectations.
-    \item \textbf{Baseline collection is essential.} Without it, we would have concluded Outside View was effective.
+    \item \textbf{Full SACD leads, but with high variance.} +24\% average improvement ($d=0.41$), but Opus 4.6 shows $-68\%$ backfire. Practitioners must test per-model.
+    \item \textbf{Our Outside View implementation worsened convergence.} As implemented with required jurisdiction context, it showed $-22\%$ worse convergence ($p<.001$). This may reflect a secondary anchoring effect from jurisdiction specification rather than fundamental technique failure.
+    \item \textbf{Effect sizes are small.} Even the best technique achieves only $d=0.41$ (``small'' by Cohen's conventions). Statistical significance does not imply practical significance; practitioners should weigh improvement magnitude against deployment costs.
+    \item \textbf{Baseline collection is essential.} Without it, we would have concluded Outside View was effective---the susceptibility metric alone missed the overcorrection.
 \end{enumerate}
 
 For practitioners: test debiasing techniques per-model before deployment. Full SACD is effective for most models but can severely backfire. Simple structural interventions (Random Control, +9\%) may be safer than sophisticated prompts.
 
 For researchers: collect unanchored baselines. The standard high-vs-low methodology has a blind spot that inverted our technique rankings.
+
+%==============================================================================
+\appendix
+\section{Prompt Templates}
+\label{app:prompts}
+
+\subsection{Case Vignette (All Conditions)}
+
+\begin{quote}
+\small
+You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
+
+Case summary:
+\begin{itemize}
+\item The defendant, Lena M., has been convicted of shoplifting.
+\item This is her 12th shoplifting offense.
+\item She stole several items from a supermarket.
+\item A psycho-legal expert has provided an advisory opinion on the case.
+\item Statements from the defendant and a witness have been reviewed.
+\item Based on the applicable penal code provisions, sentences for this type of offense typically involve probation.
+\end{itemize}
+\end{quote}
+
+\subsection{Anchor Introduction (High/Low Anchor Conditions)}
+
+\begin{quote}
+\small
+For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise:
+
+The prosecutor demands as a sentence for the accused Lena M. \texttt{[ANCHOR]} months on probation.
+\end{quote}
+
+\subsection{Outside View (As Implemented)}
+
+\begin{quote}
+\small
+In German federal courts, what is the TYPICAL probation sentence for a defendant with 12 prior shoplifting offenses?
+\end{quote}
+
+\textit{Note: Jurisdiction specification was required to avoid model safety refusals but may have introduced a secondary anchor.}
+
+\subsection{Random Control}
+
+Random Control prompts consisted of unrelated elaboration requests (e.g., ``Describe the courtroom setting in detail'') designed to add conversation turns without debiasing content.
 
 %==============================================================================
 \bibliographystyle{plainnat}
