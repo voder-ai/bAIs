@@ -564,7 +564,7 @@ Full SACD achieves 108\% of baseline (closest to 100\%) but shows the highest mo
 
 \textbf{Hypothesis 1: Iterative reflection enables genuine reconsideration.} Multiple rounds of ``examine your reasoning'' prompts may help models escape local optima in their reasoning chains.
 
-\textbf{Hypothesis 2: Some models perform ``debiasing theater.''} Opus 4.6's severe backfire ($-68\%$) suggests the technique can activate surface compliance without genuine reconsideration---the model may be optimizing for \textit{appearing} to reconsider rather than actually doing so.
+\textbf{Hypothesis 2: Some models perform ``debiasing theater.''} Opus 4.6 overshoots to 124.7\% of baseline (24.7\% deviation), suggesting the technique can activate surface compliance without genuine reconsideration---the model may be optimizing for \textit{appearing} to reconsider rather than actually doing so.
 
 \textbf{Hypothesis 3: Baseline proximity matters.} Opus 4.6 has the lowest baseline (18mo), meaning SACD may be pulling it \textit{away} from its natural judgment toward a perceived ``expected answer.''
 
@@ -612,7 +612,7 @@ Based on our findings in the judicial sentencing domain (generalization to other
 
 \begin{enumerate}
     \item \textbf{Consider structural interventions.} Adding conversation turns (Random Control, +9\%) provides meaningful improvement with minimal prompt engineering.
-    \item \textbf{Test per-model.} Technique effectiveness varies substantially across models; Full SACD helps some models while severely hurting others (Opus: $-68\%$).
+    \item \textbf{Test per-model.} Technique effectiveness varies substantially across models; SACD ranges from 65\% (Haiku) to 125\% (Opus) of baseline.
     \item \textbf{Collect baselines.} We propose \% of baseline as a complementary metric to susceptibility. Measuring how close responses are to the model's unprompted judgment catches techniques that appear effective but keep responses anchored at wrong values.
     \item \textbf{Be cautious with reference class prompts.} Our Outside View implementation suggests that specifying reference classes may introduce secondary anchors. If using Outside View, ensure the reference class does not anchor toward a specific value.
 \end{enumerate}
