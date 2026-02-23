@@ -173,7 +173,9 @@ A technique ``works'' if it reduces this gap. This metric answers: \textit{Does 
 
 \subsubsection{Our Metric: Baseline Convergence}
 
-We collected baseline responses without explicit anchors---model outputs with no prosecutor demand anchor present. This enables a second metric:
+We collected baseline responses without explicit anchors---model outputs with no prosecutor demand anchor present. \textbf{This baseline serves two purposes:} (1) it enables the convergence metric below, and (2) it validates anchor calibration. Without a baseline, one cannot distinguish whether a ``high'' anchor is genuinely high or whether both anchors are low relative to the model's natural judgment. The baseline confirms that our high anchors pull responses above, and low anchors pull responses below, the model's unprompted response.
+
+This enables a second metric:
 
 \[
 \text{Convergence Error} = |\bar{R}_{technique} - \bar{R}_{baseline}|
@@ -197,6 +199,28 @@ These metrics can diverge. Consider:
 \end{itemize}
 
 Under susceptibility, the technique ``worked'' (moved away from anchor). Under convergence, it marginally helped---but a different technique might achieve 28mo (convergence error = 2mo).
+
+Our data demonstrates this divergence empirically. Table~\ref{tab:metric-comparison} shows that technique rankings are nearly inverted between metrics---Outside View appears most effective under susceptibility ($-84\%$) but shows the worst convergence ($-22\%$).
+
+\begin{table}[H]
+\centering
+\caption{Susceptibility vs.\ Convergence: Rankings diverge. Outside View is best under susceptibility but worst under convergence, demonstrating why baseline collection is essential.}
+\label{tab:metric-comparison}
+\begin{tabular}{lcccc}
+\toprule
+Technique & Spread & Suscept.\ $\Delta$ & Conv.\ Error & Conv.\ $\Delta$ \\
+\midrule
+No technique & 7.7mo & --- & 12.4mo & --- \\
+Outside View$^\dagger$ & 1.2mo & $-84\%$ & 15.1mo & $-22\%$ \\
+Devil's Advocate & 7.1mo & $-8\%$ & 12.1mo & $+2\%$ \\
+Random Control & 8.7mo & $+13\%$ & 11.3mo & $+9\%$ \\
+Full SACD & 10.4mo & $+36\%$ & 9.4mo & $\mathbf{+24\%}$ \\
+Premortem & 13.8mo & $+79\%$ & 11.1mo & $+10\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent \textit{Note:} Susceptibility $\Delta$ = reduction in high$-$low spread (negative = less susceptible). Convergence $\Delta$ = reduction in distance from baseline (positive = closer to baseline). $^\dagger$Outside View confounded by jurisdiction specification.
 
 \subsection{Experimental Design}
 
