@@ -15,7 +15,7 @@ const MODELS: Record<string, { id: string; lowAnchor: number; highAnchor: number
   'claude-sonnet-4-6': { id: 'anthropic/claude-sonnet-4.6', lowAnchor: 12, highAnchor: 36 },
   'claude-haiku-4-5': { id: 'anthropic/claude-haiku-4.5', lowAnchor: 15, highAnchor: 44 },
   'gpt-5-2': { id: 'openai/gpt-5.2', lowAnchor: 16, highAnchor: 48 },
-  'gpt-4-1': { id: 'openai/gpt-4.1', lowAnchor: 15, highAnchor: 44, fullSacdAnchors: [13, 38] },
+  'gpt-4-1': { id: 'openai/gpt-4.1', lowAnchor: 13, highAnchor: 38 },
   'o3': { id: 'openai/o3', lowAnchor: 17, highAnchor: 51 },
   'o4-mini': { id: 'openai/o4-mini', lowAnchor: 18, highAnchor: 54 },
   'deepseek-v3-2': { id: 'deepseek/deepseek-v3.2', lowAnchor: 15, highAnchor: 44 },
