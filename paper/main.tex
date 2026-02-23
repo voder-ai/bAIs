@@ -363,7 +363,11 @@ Under high-anchor conditions without intervention, two distinct response pattern
     \item \textbf{Inflation}: Response pulled above baseline (GPT-5.2, GLM-5, o3)
 \end{enumerate}
 
-The compression pattern is counterintuitive---high anchors typically pull responses upward. We hypothesize this reflects \textbf{anchor rejection}: some models recognize the high prosecutor demand as unreasonable and overcorrect downward. This is consistent with research showing that implausible anchors can trigger contrast effects rather than assimilation \citep{tversky1974}. The compression pattern does not invalidate our convergence metric but does complicate interpretation: for compression models, techniques that increase responses may improve convergence.
+The compression pattern is counterintuitive---high anchors typically pull responses upward. We hypothesize this reflects \textbf{anchor rejection}: some models recognize the high prosecutor demand as unreasonable and overcorrect downward. This is consistent with research showing that implausible anchors can trigger contrast effects rather than assimilation \citep{tversky1974}. 
+
+\textbf{Which models compress?} Anthropic models (Opus, Sonnet, Haiku) and GPT-4.1 consistently show compression under high anchors. OpenAI's reasoning models (o3, o4-mini) and GPT-5.2 show the expected inflation pattern. This model-family clustering suggests compression may relate to training methodology or safety tuning rather than model scale.
+
+\textbf{Implications:} The compression pattern does not invalidate our convergence metric but does complicate interpretation. For compression models, a technique that \textit{increases} responses toward baseline improves convergence---the opposite of what one might expect from ``debiasing.'' Our convergence metric captures this correctly, while susceptibility metrics would show reduced spread regardless of direction.
 
 \subsection{Technique Effectiveness: Baseline Convergence}
 
@@ -464,7 +468,7 @@ Outside View performed worst despite being recommended in human debiasing litera
 \begin{enumerate}
     \item \textbf{Single vignette.} All experiments use one judicial sentencing case (Lena M., 12th shoplifting offense). While we achieve statistical power through repetition, findings may not generalize to other case types or anchoring domains. Replication across multiple vignettes is needed.
     
-    \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). This enables valid within-model comparisons but introduces circularity: the baseline we use to evaluate convergence also determines anchor values. This design choice prioritizes measuring debiasing effectiveness within each model over cross-model comparisons of absolute anchor resistance.
+    \item \textbf{Proportional anchor design creates circularity.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). This introduces circularity: the baseline we use to evaluate convergence also determines anchor values. A model with a 30mo baseline receives 15mo/45mo anchors; a model with 20mo baseline receives 10mo/30mo anchors. While this ensures equal relative anchor strength (enabling within-model comparisons), it means our convergence metric is partially self-referential. Future work should validate findings with fixed absolute anchors (e.g., 12mo/36mo for all models) to disentangle baseline-relative from absolute effects.
     
     \item \textbf{Metric divergence holds without Outside View.} While Outside View shows the most dramatic divergence ($-84\%$ susceptibility, $-22\%$ convergence), the core finding---that metrics can give opposite rankings---holds even when excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility ($-8\%$ spread reduction) but \textit{worst} on convergence ($+2\%$); Full SACD ranks \textit{worst} on susceptibility ($+36\%$ spread increase) but \textit{best} on convergence ($+24\%$). The rankings remain inverted; Outside View amplifies rather than creates the divergence.
     
