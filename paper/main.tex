@@ -32,7 +32,7 @@
 \begin{abstract}
 Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
 
-We introduce \textbf{baseline convergence} as the primary evaluation metric. By collecting unanchored responses (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment absent arbitrary anchors---the correct target for debiasing. There is no objective truth in sentencing, but the unanchored response represents the model's judgment free from anchor contamination. Debiasing \textit{should} aim for this state. Using this metric across 13,369 trials, we discover rankings that invert conventional wisdom:
+We introduce \textbf{baseline convergence} as the primary evaluation metric. By collecting unanchored responses (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment absent arbitrary anchors---the correct target for debiasing. There is no objective truth in sentencing, but the unanchored response represents the model's judgment free from anchor contamination. Debiasing \textit{should} aim for this state. Using this metric across 13,369 trials, we find that technique effectiveness varies substantially:
 
 \begin{itemize}
     \item \textbf{Full SACD} (iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
@@ -68,11 +68,9 @@ A technique succeeds on convergence if it brings the response \textit{closer} to
 
 \subsection{Findings Preview}
 
-Using this metric, we discover rankings that invert conventional wisdom:
+Using this metric, we observe technique rankings with clear statistical separation:
 
-\textbf{Standard metric (susceptibility):} All techniques appear roughly equivalent---most reduce the high-low gap.
-
-\textbf{Convergence metric:} Clear hierarchy emerges with statistical significance:
+\textbf{Convergence metric:} A hierarchy emerges:
 \begin{enumerate}
     \item \textbf{Full SACD} (+24\%, $p<.001$, $d=0.41$)---iterative self-reflection
     \item \textbf{Premortem} (+10\%, $p<.001$)---imagine failure mode
@@ -81,7 +79,7 @@ Using this metric, we discover rankings that invert conventional wisdom:
     \item \textbf{Outside View} ($-22\%$, $p<.001$)---as implemented, worsens convergence
 \end{enumerate}
 
-The counterintuitive finding: \textbf{Our implementation of Outside View, which required jurisdiction specification to avoid model refusals, showed significantly worse convergence}---suggesting that reference class prompts may introduce secondary anchors. Simple structural interventions (extra turns) help nearly as much as sophisticated techniques.
+A notable finding: \textbf{Our Outside View implementation showed worse convergence than the anchored baseline}. However, this result is confounded by the required jurisdiction specification (see Section 3.3) and should not be interpreted as evidence that Outside View techniques are generally ineffective. Simple structural interventions (extra turns) produced meaningful improvements with minimal prompt complexity.
 
 \subsection{Why This Matters}
 
@@ -92,7 +90,7 @@ This has immediate practical implications:
     
     \item \textbf{Reference class reasoning (Outside View) may introduce secondary anchors.} In our implementation, specifying jurisdiction to avoid model refusals may have anchored responses to that jurisdiction's typical sentences.
     
-    \item \textbf{Temperature interacts with technique type.} Deterministic responses (t=0) work best for structural interventions; moderate variance (t=0.7) helps self-reflection.
+    \item \textbf{Baseline collection enables overcorrection detection.} Without unanchored baselines, techniques that overcorrect would appear effective under susceptibility metrics.
     
     \item \textbf{The standard evaluation metric would have misled us completely.} Direction-based analysis showed Outside View as universally effective; calibration analysis reveals it as worst.
 \end{enumerate}
@@ -102,7 +100,7 @@ This has immediate practical implications:
 \begin{enumerate}
     \item \textbf{A baseline convergence metric for debiasing evaluation} that catches overcorrection invisible to susceptibility measures.
     
-    \item \textbf{Inverted technique rankings}: Our Outside View implementation showed $-22\%$ worse convergence, while Full SACD leads (+24\%). Effect sizes are small ($d \leq 0.41$); practitioners should calibrate expectations accordingly.
+    \item \textbf{Technique rankings differ between metrics}: Under susceptibility (spread reduction), most techniques appear effective. Under convergence, Full SACD leads (+24\%) while our Outside View implementation showed $-22\%$ worse convergence (confounded; see Section 5.3). Effect sizes are small ($d \leq 0.41$).
     
     \item \textbf{High model variance}: 5/10 models significantly improve with SACD, but Opus 4.6 shows 68\% \textit{worse} convergence.
     
@@ -320,7 +318,7 @@ Devil's Advocate & 2166 & 12.1mo & +2\% (ns) & 1.000 & $d=0.03$ \\
 Outside View & 2423 & 15.1mo & \textbf{$-22\%$} & $<.001$ & $d=-0.38$ \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness with Bonferroni-corrected p-values (5 tests) and 95\% CIs. Full SACD: +24\% [95\% CI: 20--27\%]. Outside View (as implemented): $-22\%$ [95\% CI: $-26$--$-19$\%]. Effect sizes are small by Cohen's conventions ($d < 0.5$); practitioners should weigh statistical significance against practical impact.}
+\caption{Technique effectiveness with Bonferroni-corrected p-values (5 tests). Full SACD: +24\% (95\% CI: 20--27\%). Outside View (as implemented): $-22\%$ (95\% CI: $-26$ to $-19$\%). Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance.}
 \end{table}
 
 \subsection{Model-Specific Results: Full SACD}
@@ -355,22 +353,11 @@ Key findings:
     \item \textbf{Effect sizes remain small} even for best performers ($d \leq 0.41$)
 \end{enumerate}
 
-\subsection{Comparison: Susceptibility vs.\ Convergence Metrics}
+\subsection{Why Baseline Collection Matters}
 
-Under the standard susceptibility metric, Outside View appeared to ``improve'' models by reducing the high-low gap. Under convergence:
+Consider a technique that reduces all responses to the same value regardless of anchor. Under susceptibility ($|R_{high} - R_{low}|$), this appears perfect---zero spread. Under convergence ($|R - R_{baseline}|$), the technique may perform poorly if that fixed value diverges from the baseline.
 
-\begin{table}[H]
-\centering
-\begin{tabular}{lll}
-\toprule
-Metric & Outside View & Full SACD \\
-\midrule
-Susceptibility ($|high - low|$) & Appears effective & Appears effective \\
-Convergence ($|response - baseline|$) & \textbf{$-22\%$ (backfires)} & \textbf{+24\% (best)} \\
-\bottomrule
-\end{tabular}
-\caption{Rankings invert between metrics. Without baseline collection, Outside View appears to ``work.''}
-\end{table}
+Our Outside View implementation (as confounded by jurisdiction specification) exemplifies this: it produces consistent responses that diverge from model baselines by 22\%. Without baseline collection, this overcorrection would be invisible.
 
 %==============================================================================
 \section{Discussion}
@@ -437,7 +424,7 @@ Our key findings from 13,369 trials across 10 models:
 
 \begin{enumerate}
     \item \textbf{Full SACD leads, but with high variance.} +24\% average improvement ($d=0.41$), but Opus 4.6 shows $-68\%$ backfire. Practitioners must test per-model.
-    \item \textbf{Our Outside View implementation worsened convergence.} As implemented with required jurisdiction context, it showed $-22\%$ worse convergence ($p<.001$). This may reflect a secondary anchoring effect from jurisdiction specification rather than fundamental technique failure.
+    \item \textbf{Our Outside View implementation produced confounded results.} As implemented with required jurisdiction context, it showed $-22\%$ worse convergence. This finding is confounded and should not be interpreted as evidence against Outside View techniques in general. Future work should test jurisdiction-neutral implementations.
     \item \textbf{Effect sizes are small.} Even the best technique achieves only $d=0.41$ (``small'' by Cohen's conventions). Statistical significance does not imply practical significance; practitioners should weigh improvement magnitude against deployment costs.
     \item \textbf{Baseline collection is essential.} Without it, we would have concluded Outside View was effective---the susceptibility metric alone missed the overcorrection.
 \end{enumerate}
@@ -485,6 +472,18 @@ In German federal courts, what is the TYPICAL probation sentence for a defendant
 \end{quote}
 
 \textit{Note: Jurisdiction specification was required to avoid model safety refusals but may have introduced a secondary anchor.}
+
+\subsection{Full SACD (Iterative Self-Administered Cognitive Debiasing)}
+
+Following \citet{lyu2025}, Full SACD implements three iterative steps:
+
+\begin{enumerate}
+\item \textbf{Bias Determination}: ``Analyze the following prompt... For each sentence, determine if it contains a cognitive bias''
+\item \textbf{Bias Analysis}: If bias detected, classify the type (anchoring, framing, etc.)
+\item \textbf{Cognitive Debiasing}: ``Rewrite the flagged sentences to remove the bias''
+\end{enumerate}
+
+Steps repeat until no bias is detected or maximum iterations (5) reached. Average iterations to convergence: 2.3.
 
 \subsection{Random Control}
 
