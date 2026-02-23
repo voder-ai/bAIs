@@ -27,7 +27,9 @@ Without intervention, anchored prompts shift responses away from baseline. Avera
 
 ## Technique Convergence Results
 
-All statistics computed from raw trial data using Welch's t-test with 95% confidence intervals.
+All statistics computed from raw trial data using Welch's t-test with 95% confidence intervals. Multiple comparison corrections use Bonferroni method.
+
+**Note on effect sizes:** Even the best-performing technique (Full SACD) shows a "small" effect by Cohen's conventions (d=0.41). Other techniques show negligible effect sizes (d<0.2). Practitioners should calibrate expectations accordingly.
 
 ### Summary Table
 
@@ -75,30 +77,32 @@ Premortem and Random Control show no significant difference (Δ=0.17mo, p=.468).
 
 ## Model-Specific Results
 
-### Full SACD Performance by Model
+### Full SACD Performance by Model (Bonferroni-corrected)
 
-| Model | Improvement | p-value | Sig |
-|-------|-------------|---------|-----|
-| o3 | +51% | p<.001 | *** |
-| GPT-4.1 | +48% | p<.001 | *** |
-| Sonnet 4.6 | +46% | p<.001 | *** |
-| DeepSeek-v3.2 | +30% | p<.001 | *** |
-| GPT-5.2 | +20% | p=.002 | ** |
-| o4-mini | +12% | p=.021 | * |
-| Haiku 4.5 | −2% | p=.619 | ns |
-| Kimi-k2.5 | −3% | p=.691 | ns |
-| GLM-5 | −4% | p=.554 | ns |
-| Opus 4.6 | −68% | p<.001 | *** (worse) |
+10 model-specific tests, α=0.05 → Bonferroni threshold p<.005
 
-Note: Opus 4.6 shows a significant *worsening* with Full SACD. This model has the lowest baseline susceptibility (6.0mo distance)—SACD may disrupt its natural resistance.
+| Model | Improvement | p (raw) | p (Bonf) | Sig |
+|-------|-------------|---------|----------|-----|
+| o3 | +51% | <.001 | <.001 | *** |
+| GPT-4.1 | +48% | <.001 | <.001 | *** |
+| Sonnet 4.6 | +46% | <.001 | <.001 | *** |
+| DeepSeek-v3.2 | +30% | <.001 | <.001 | *** |
+| GPT-5.2 | +20% | .002 | .022 | * |
+| o4-mini | +12% | .021 | .210 | ns |
+| Haiku 4.5 | −2% | .619 | 1.00 | ns |
+| Kimi-k2.5 | −3% | .691 | 1.00 | ns |
+| GLM-5 | −4% | .554 | 1.00 | ns |
+| Opus 4.6 | −68% | <.001 | <.001 | *** (worse) |
 
-### Models Where Full SACD Significantly Helps (6/10)
+Note: o4-mini's raw p=.021 does not survive Bonferroni correction. Opus 4.6 shows significant *worsening*—this model has the lowest baseline susceptibility (6.0mo distance), and SACD may disrupt its natural resistance.
 
-o3, GPT-4.1, Sonnet 4.6, DeepSeek-v3.2, GPT-5.2, o4-mini
+### Models Where Full SACD Significantly Helps (5/10)
 
-### Models Where Full SACD Has No Significant Effect (3/10)
+o3, GPT-4.1, Sonnet 4.6, DeepSeek-v3.2, GPT-5.2
 
-Haiku 4.5, Kimi-k2.5, GLM-5
+### Models Where Full SACD Has No Significant Effect (4/10)
+
+o4-mini, Haiku 4.5, Kimi-k2.5, GLM-5
 
 ### Model Where Full SACD Significantly Hurts (1/10)
 

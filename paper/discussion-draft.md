@@ -59,7 +59,7 @@ We recommend baseline convergence as the primary metric for debiasing evaluation
 
 Our data reveals substantial model variation that challenges "one-size-fits-all" debiasing recommendations:
 
-- **Full SACD shows the strongest aggregate effect** (+24%, p<.001, d=0.41), with significant improvement in 6/10 models, no effect in 3/10, and significant *worsening* in 1 model (Opus 4.6)
+- **Full SACD shows the strongest aggregate effect** (+24%, p<.001, d=0.41), with significant improvement in 5/10 models after Bonferroni correction, no significant effect in 4/10 (including o4-mini), and significant *worsening* in 1 model (Opus 4.6)
 - **No technique universally succeeds** across all models tested
 - **Temperature effects are inconsistent**, with no clear "optimal temperature for debiasing"
 

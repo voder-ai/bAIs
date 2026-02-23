@@ -128,6 +128,22 @@ function cohensD(a: number[], b: number[]): number {
   return (m1 - m2) / pooledSD;
 }
 
+// Bonferroni correction
+function bonferroniCorrect(p: number, numTests: number): number {
+  return Math.min(p * numTests, 1.0);
+}
+
+// Holm-Bonferroni correction (less conservative)
+function holmCorrect(pValues: Array<{label: string; p: number}>): Array<{label: string; p: number; pAdj: number}> {
+  const sorted = [...pValues].sort((a, b) => a.p - b.p);
+  const n = sorted.length;
+  
+  return sorted.map((item, i) => ({
+    ...item,
+    pAdj: Math.min(item.p * (n - i), 1.0)
+  }));
+}
+
 function getValues(filepath: string): number[] {
   if (!existsSync(filepath)) return [];
   const values: number[] = [];
@@ -243,34 +259,46 @@ function generateReport(): string {
   // Sort by improvement
   techniqueResults.sort((a, b) => b.improvement - a.improvement);
   
+  const NUM_TECHNIQUE_TESTS = techniqueResults.length; // 5 technique vs baseline tests
+  
   for (const r of techniqueResults) {
-    const sig = r.tTest.p < 0.001 ? '***' : r.tTest.p < 0.01 ? '**' : r.tTest.p < 0.05 ? '*' : 'ns';
+    const pAdj = bonferroniCorrect(r.tTest.p, NUM_TECHNIQUE_TESTS);
+    const sig = pAdj < 0.001 ? '***' : pAdj < 0.01 ? '**' : pAdj < 0.05 ? '*' : 'ns';
     output += `### ${r.tech}\n\n`;
     output += `- n = ${r.distances.length}\n`;
     output += `- Mean distance = ${r.ci.mean.toFixed(2)}mo (95% CI: [${r.ci.lower.toFixed(2)}, ${r.ci.upper.toFixed(2)}])\n`;
     output += `- Improvement vs anchored = ${r.improvement.toFixed(1)}% (95% CI: [${r.improvementCI.lower.toFixed(1)}%, ${r.improvementCI.upper.toFixed(1)}%])\n`;
-    output += `- Welch's t = ${r.tTest.t.toFixed(2)}, df = ${r.tTest.df.toFixed(1)}, p ${r.tTest.p < 0.001 ? '< 0.001' : '= ' + r.tTest.p.toFixed(4)} ${sig}\n`;
+    output += `- Welch's t = ${r.tTest.t.toFixed(2)}, df = ${r.tTest.df.toFixed(1)}, p ${r.tTest.p < 0.001 ? '< 0.001' : '= ' + r.tTest.p.toFixed(4)}\n`;
+    output += `- **Bonferroni-corrected p** (${NUM_TECHNIQUE_TESTS} tests): ${pAdj < 0.001 ? '< 0.001' : pAdj.toFixed(4)} ${sig}\n`;
     output += `- Cohen's d = ${r.cohensD.toFixed(2)} (${Math.abs(r.cohensD) < 0.2 ? 'negligible' : Math.abs(r.cohensD) < 0.5 ? 'small' : Math.abs(r.cohensD) < 0.8 ? 'medium' : 'large'})\n\n`;
   }
   
-  // Pairwise comparisons
-  output += '## 3. Pairwise Technique Comparisons\n\n';
-  output += '| Comparison | Δ Mean | t | p | Sig |\n';
-  output += '|------------|--------|---|---|-----|\n';
+  output += '**Note on effect sizes:** Even the best-performing technique (Full SACD, d=0.41) shows a "small" effect by Cohen\'s conventions. Practitioners should calibrate expectations accordingly.\n\n';
+  
+  // Pairwise comparisons with Bonferroni correction
+  const numPairwise = (techniqueResults.length * (techniqueResults.length - 1)) / 2; // 10 pairwise tests
+  output += '## 3. Pairwise Technique Comparisons (Bonferroni-corrected)\n\n';
+  output += `Note: ${numPairwise} pairwise comparisons, α=0.05 → Bonferroni threshold = ${(0.05/numPairwise).toFixed(4)}\n\n`;
+  output += '| Comparison | Δ Mean | t | p (raw) | p (adj) | Sig |\n';
+  output += '|------------|--------|---|---------|---------|-----|\n';
   
   for (let i = 0; i < techniqueResults.length; i++) {
     for (let j = i + 1; j < techniqueResults.length; j++) {
       const a = techniqueResults[i];
       const b = techniqueResults[j];
       const tTest = welchTTest(a.distances, b.distances);
-      const sig = tTest.p < 0.001 ? '***' : tTest.p < 0.01 ? '**' : tTest.p < 0.05 ? '*' : 'ns';
+      const pAdj = bonferroniCorrect(tTest.p, numPairwise);
+      const sig = pAdj < 0.001 ? '***' : pAdj < 0.01 ? '**' : pAdj < 0.05 ? '*' : 'ns';
       const delta = a.ci.mean - b.ci.mean;
-      output += `| ${a.tech} vs ${b.tech} | ${delta.toFixed(2)}mo | ${tTest.t.toFixed(2)} | ${tTest.p < 0.001 ? '<.001' : tTest.p.toFixed(3)} | ${sig} |\n`;
+      output += `| ${a.tech} vs ${b.tech} | ${delta.toFixed(2)}mo | ${tTest.t.toFixed(2)} | ${tTest.p < 0.001 ? '<.001' : tTest.p.toFixed(3)} | ${pAdj < 0.001 ? '<.001' : pAdj.toFixed(3)} | ${sig} |\n`;
     }
   }
   
-  // Model-specific results with CIs
-  output += '\n## 4. Model-Specific Results (Full SACD)\n\n';
+  // Model-specific results with CIs and Bonferroni correction
+  output += '\n## 4. Model-Specific Results (Full SACD, Bonferroni-corrected)\n\n';
+  output += `Note: ${MODELS.length} model-specific tests, α=0.05 → Bonferroni threshold = ${(0.05/MODELS.length).toFixed(4)}\n\n`;
+  
+  const modelResults: Array<{model: string; improvement: number; p: number; pAdj: number}> = [];
   
   for (const model of MODELS) {
     const anchored = getBaselineDistances(model);
@@ -282,21 +310,43 @@ function generateReport(): string {
     const sacdCI = confidenceInterval(sacd);
     const improvement = ((anchoredM - sacdCI.mean) / anchoredM) * 100;
     const tTest = welchTTest(anchored, sacd);
-    const sig = tTest.p < 0.05 ? '*' : 'ns';
     
-    output += `- **${model.id}**: ${improvement.toFixed(0)}% improvement (p ${tTest.p < 0.001 ? '< 0.001' : '= ' + tTest.p.toFixed(3)}) ${sig}\n`;
+    modelResults.push({
+      model: model.id,
+      improvement,
+      p: tTest.p,
+      pAdj: bonferroniCorrect(tTest.p, MODELS.length)
+    });
   }
+  
+  // Sort by improvement
+  modelResults.sort((a, b) => b.improvement - a.improvement);
+  
+  for (const r of modelResults) {
+    const sig = r.pAdj < 0.05 ? '*' : 'ns';
+    const direction = r.improvement < 0 ? '(WORSE)' : '';
+    output += `- **${r.model}**: ${r.improvement.toFixed(0)}% (p=${r.p < 0.001 ? '<.001' : r.p.toFixed(3)}, p_adj=${r.pAdj < 0.001 ? '<.001' : r.pAdj.toFixed(3)}) ${sig} ${direction}\n`;
+  }
+  
+  // Count significant after correction
+  const sigModels = modelResults.filter(r => r.pAdj < 0.05 && r.improvement > 0).length;
+  const worseModels = modelResults.filter(r => r.pAdj < 0.05 && r.improvement < 0).length;
+  const nsModels = modelResults.filter(r => r.pAdj >= 0.05).length;
+  output += `\n**After Bonferroni correction:** ${sigModels}/10 significantly improved, ${worseModels}/10 significantly worsened, ${nsModels}/10 no significant effect.\n`;
   
   // Summary table for paper
   output += '\n## 5. Summary Table (for paper)\n\n';
-  output += '| Technique | Mean Dist | 95% CI | Improvement | p-value | Effect Size |\n';
-  output += '|-----------|-----------|--------|-------------|---------|-------------|\n';
-  output += `| Anchored (no technique) | ${anchoredCI.mean.toFixed(1)}mo | [${anchoredCI.lower.toFixed(1)}, ${anchoredCI.upper.toFixed(1)}] | — | — | — |\n`;
+  output += '| Technique | Mean Dist | 95% CI | Improvement | p (raw) | p (Bonf) | Effect Size |\n';
+  output += '|-----------|-----------|--------|-------------|---------|----------|-------------|\n';
+  output += `| Anchored (no technique) | ${anchoredCI.mean.toFixed(1)}mo | [${anchoredCI.lower.toFixed(1)}, ${anchoredCI.upper.toFixed(1)}] | — | — | — | — |\n`;
   
   for (const r of techniqueResults) {
-    const pStr = r.tTest.p < 0.001 ? '<.001' : r.tTest.p.toFixed(3);
+    const pRaw = r.tTest.p < 0.001 ? '<.001' : r.tTest.p.toFixed(3);
+    const pAdj = bonferroniCorrect(r.tTest.p, NUM_TECHNIQUE_TESTS);
+    const pBonf = pAdj < 0.001 ? '<.001' : pAdj.toFixed(3);
+    const sig = pAdj < 0.05 ? '' : ' (ns)';
     const dStr = `d=${r.cohensD.toFixed(2)}`;
-    output += `| ${r.tech} | ${r.ci.mean.toFixed(1)}mo | [${r.ci.lower.toFixed(1)}, ${r.ci.upper.toFixed(1)}] | ${r.improvement > 0 ? '+' : ''}${r.improvement.toFixed(0)}% | ${pStr} | ${dStr} |\n`;
+    output += `| ${r.tech} | ${r.ci.mean.toFixed(1)}mo | [${r.ci.lower.toFixed(1)}, ${r.ci.upper.toFixed(1)}] | ${r.improvement > 0 ? '+' : ''}${r.improvement.toFixed(0)}%${sig} | ${pRaw} | ${pBonf} | ${dStr} |\n`;
   }
   
   return output;

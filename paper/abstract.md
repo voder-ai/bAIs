@@ -6,7 +6,7 @@ We introduce **baseline convergence** as a complementary metric. By collecting u
 
 **Key findings** (Welch's t-test, α=0.05):
 
-- **Full SACD** (iterative self-questioning): +24% convergence improvement (p<.001, d=0.41)
+- **Full SACD** (iterative self-questioning): +24% convergence improvement (p<.001, d=0.41, 5/10 models significantly improved after Bonferroni correction)
 - **Premortem**: +10% (p<.001, d=0.17)
 - **Random Control** (irrelevant elaboration): +9% (p<.001, d=0.15)
 - **Devil's Advocate**: +2% (**not significant**, p=.327)
