@@ -32,13 +32,16 @@
 \begin{abstract}
 Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
 
-We introduce \textbf{baseline convergence} as the primary evaluation metric. By collecting unanchored responses (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment absent arbitrary anchors---the correct target for debiasing. There is no objective truth in sentencing, but the unanchored response represents the model's judgment free from anchor contamination. Debiasing \textit{should} aim for this state. Using this metric across 13,369 trials, we find that technique effectiveness varies substantially:
+We introduce \textbf{baseline convergence} as a complementary evaluation metric. By collecting unanchored responses (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's unprompted judgment. This metric reveals \textit{overcorrection}---when techniques move responses away from anchors but past where the model would naturally respond. While there is no objective ``correct'' sentence, the unanchored baseline provides a meaningful reference for measuring technique effects. Using this metric across 13,369 trials, we find that technique effectiveness varies substantially:
 
 \begin{itemize}
     \item \textbf{Full SACD} (iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
-    \item \textbf{Premortem / Random Control}: +9--10\% improvement ($p<.001$)
-    \item \textbf{Outside View} (as implemented with jurisdiction context): \textbf{$-22\%$}---worsens convergence, potentially due to secondary anchoring
+    \item \textbf{Premortem}: +10\% improvement ($p<.001$, $d=0.17$)
+    \item \textbf{Random Control}: +9\% improvement ($p<.001$, $d=0.15$)
+    \item \textbf{Devil's Advocate}: +2\% (not significant, $p=0.33$)
 \end{itemize}
+
+\textit{Note: Our Outside View implementation ($-22\%$, worse than baseline) is excluded from primary findings due to confounding from required jurisdiction specification. See Section 5.3.}
 
 Iterative self-reflection (Full SACD) is the most effective technique, but with high model variance: 5/10 models significantly improve, while Claude Opus 4.6 shows 68\% \textit{worse} convergence ($p<.001$). Devil's Advocate shows no significant effect ($p=0.33$).
 
@@ -76,10 +79,9 @@ Using this metric, we observe technique rankings with clear statistical separati
     \item \textbf{Premortem} (+10\%, $p<.001$)---imagine failure mode
     \item \textbf{Random Control} (+9\%, $p<.001$)---extra turns, no debiasing content
     \item \textbf{Devil's Advocate} (+2\%, $p=0.33$, not significant)---argumentation
-    \item \textbf{Outside View} ($-22\%$, $p<.001$)---as implemented, worsens convergence
 \end{enumerate}
 
-A notable finding: \textbf{Our Outside View implementation showed worse convergence than the anchored baseline}. However, this result is confounded by the required jurisdiction specification (see Section 3.3) and should not be interpreted as evidence that Outside View techniques are generally ineffective. Simple structural interventions (extra turns) produced meaningful improvements with minimal prompt complexity.
+Simple structural interventions (extra turns) produced meaningful improvements with minimal prompt complexity. Our Outside View implementation showed worse convergence ($-22\%$), but this result is confounded and discussed separately in Section 5.3.
 
 \subsection{Why This Matters}
 
@@ -244,12 +246,15 @@ Full SACD & Iterative self-administered cognitive debiasing \\
 
 Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. The main results reported aggregate across temperatures unless otherwise specified; temperature-specific analysis is presented in Section 4.3.
 
-\subsubsection{Trial Counts}
+\subsubsection{Trial Counts and Procedure}
 
 \begin{itemize}
     \item \textbf{Total trials}: 13,369
     \item \textbf{Per model-technique-temperature}: 30--90 trials (target $n \geq 30$; range reflects iterative data collection with some conditions receiving additional trials for robustness)
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
+    \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
+    \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches
+    \item \textbf{High anchor values}: Proportional to model baseline (baseline $\times$ 1.5); Low anchor = baseline / 2
 \end{itemize}
 
 \subsection{Confounds and Limitations}
@@ -290,7 +295,7 @@ Sonnet 4.6 & 24.1mo & 1.3 \\
 Opus 4.6 & 18.0mo & 0.0 \\
 \bottomrule
 \end{tabular}
-\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus shows zero variance (deterministic).}
+\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance at all temperatures, consistently responding with exactly 18 months---suggesting highly deterministic reasoning for this prompt type.}
 \end{table}
 
 \subsection{High-Anchor Responses (No Technique)}
@@ -315,10 +320,11 @@ Anchored baseline & 1509 & 12.4mo & --- & --- & --- \\
 Premortem & 2186 & 11.1mo & +10\% & $<.001$ & $d=0.17$ \\
 Random Control & 2215 & 11.3mo & +9\% & $<.001$ & $d=0.15$ \\
 Devil's Advocate & 2166 & 12.1mo & +2\% (ns) & 1.000 & $d=0.03$ \\
-Outside View & 2423 & 15.1mo & \textbf{$-22\%$} & $<.001$ & $d=-0.38$ \\
+\midrule
+\textit{Outside View}$^\dagger$ & 2423 & 15.1mo & $-22\%$ & $<.001$ & $d=-0.38$ \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness with Bonferroni-corrected p-values (5 tests). Full SACD: +24\% (95\% CI: 20--27\%). Outside View (as implemented): $-22\%$ (95\% CI: $-26$ to $-19$\%). Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance.}
+\caption{Technique effectiveness with Bonferroni-corrected p-values (4 primary techniques). Full SACD: +24\% (95\% CI: 20--27\%). Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance. $^\dagger$Outside View result confounded by required jurisdiction specification; included for transparency but excluded from primary conclusions.}
 \end{table}
 
 \subsection{Model-Specific Results: Full SACD}
