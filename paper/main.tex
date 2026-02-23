@@ -35,7 +35,7 @@ Large language models exhibit anchoring bias---disproportionate influence of ini
 We introduce \textbf{baseline convergence} as a complementary evaluation metric. By collecting unanchored responses (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's unprompted judgment. This metric reveals \textit{overcorrection}---when techniques move responses away from anchors but past where the model would naturally respond. While there is no objective ``correct'' sentence, the unanchored baseline provides a meaningful reference for measuring technique effects. Using this metric across 13,369 trials, we find that technique effectiveness varies substantially:
 
 \begin{itemize}
-    \item \textbf{Full SACD} (iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
+    \item \textbf{Full SACD} (Self-Administered Cognitive Debiasing; iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
     \item \textbf{Premortem}: +10\% improvement ($p<.001$, $d=0.17$)
     \item \textbf{Random Control}: +9\% improvement ($p<.001$, $d=0.15$)
     \item \textbf{Devil's Advocate}: +2\% (not significant, $p=0.33$)
@@ -311,20 +311,20 @@ Under high-anchor conditions without intervention, two anchor response patterns 
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-Technique & $n$ & Mean Dist & Improvement & $p$ (Bonf) & Effect Size \\
+Technique & $n$ & Mean Dist & 95\% CI & Improvement & $p$ (Bonf) & $d$ \\
 \midrule
-Anchored baseline & 1509 & 12.4mo & --- & --- & --- \\
-\textbf{Full SACD} & 2391 & 9.4mo & \textbf{+24\%} & $<.001$ & $d=0.41$ \\
-Premortem & 2186 & 11.1mo & +10\% & $<.001$ & $d=0.17$ \\
-Random Control & 2215 & 11.3mo & +9\% & $<.001$ & $d=0.15$ \\
-Devil's Advocate & 2166 & 12.1mo & +2\% (ns) & 1.000 & $d=0.03$ \\
+Anchored baseline & 1509 & 12.4mo & [12.0, 12.7] & --- & --- & --- \\
+\textbf{Full SACD} & 2391 & 9.4mo & [9.1, 9.8] & \textbf{+24\%} & $<.001$ & 0.41 \\
+Premortem & 2186 & 11.1mo & [10.8, 11.5] & +10\% & $<.001$ & 0.17 \\
+Random Control & 2215 & 11.3mo & [11.0, 11.6] & +9\% & $<.001$ & 0.15 \\
+Devil's Advocate & 2166 & 12.1mo & [11.8, 12.4] & +2\% (ns) & 1.000 & 0.03 \\
 \midrule
-\textit{Outside View}$^\dagger$ & 2423 & 15.1mo & $-22\%$ & $<.001$ & $d=-0.38$ \\
+\textit{Outside View}$^\dagger$ & 2423 & 15.1mo & [14.8, 15.4] & $-22\%$ & $<.001$ & $-0.38$ \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness with Bonferroni-corrected p-values (4 primary techniques). Full SACD: +24\% (95\% CI: 20--27\%). Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance. $^\dagger$Outside View result confounded by required jurisdiction specification; included for transparency but excluded from primary conclusions.}
+\caption{Technique effectiveness with 95\% confidence intervals and Bonferroni-corrected p-values. Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance. $^\dagger$Outside View result confounded by required jurisdiction specification; included for transparency but excluded from primary conclusions.}
 \end{table}
 
 \subsection{Model-Specific Results: Full SACD}
