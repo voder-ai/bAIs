@@ -16,7 +16,7 @@
 \usepackage{xcolor}
 
 % Title
-\title{Baseline Convergence, Not Susceptibility:\\Evaluating LLM Debiasing with Unanchored Baselines}
+\title{Debiasing Anchoring Bias in LLM Judicial Reasoning:\\Baseline Convergence as a Metric}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -32,7 +32,7 @@
 \begin{abstract}
 Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
 
-We introduce \textbf{baseline convergence} as a complementary metric. By collecting unanchored responses (n=909 across 10 models), we can measure whether techniques bring outputs closer to the model's unprompted judgment, not just away from anchors. Using this metric across 13,369 trials, we discover rankings that invert conventional wisdom:
+We introduce \textbf{baseline convergence} as the primary evaluation metric. By collecting unanchored responses (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment absent arbitrary anchors---the correct target for debiasing. There is no objective truth in sentencing, but the unanchored response represents the model's judgment free from anchor contamination. Debiasing \textit{should} aim for this state. Using this metric across 13,369 trials, we discover rankings that invert conventional wisdom:
 
 \begin{itemize}
     \item \textbf{Full SACD} (iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)

@@ -1,16 +1,26 @@
 # Abstract
 
-Large language models exhibit anchoring bias—disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs. low anchor conditions; a technique "works" if it reduces this gap. We identify a critical limitation: this metric misses **overcorrection**, where techniques move responses away from anchors but past the unbiased answer.
+## Debiasing Anchoring Bias in LLM Judicial Reasoning: Baseline Convergence as a Metric
 
-We introduce **calibration to baseline** as a complementary metric. By collecting unanchored responses (n=1,001 across 10 models), we can measure whether techniques bring outputs closer to ground truth, not just away from anchors. Using this metric across 14,994 trials, we discover rankings that invert conventional wisdom:
+Large language models exhibit anchoring bias—disproportionate influence of initial numeric information on subsequent judgments. We study this phenomenon in the domain of **judicial sentencing reasoning**, where anchoring effects are well-documented in human judges. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs. low anchor conditions; a technique "works" if it reduces this spread. We identify a critical limitation: this metric misses **overcorrection**, where techniques move responses away from anchors but past the unanchored baseline.
 
-- **Random Control** (extra turns, no debiasing content): 91% of models improved
-- **Self-reflection techniques** (Premortem, SACD): 82%
-- **Outside View** (reference class reasoning): **36%**—worst performer
+We introduce **baseline convergence** as the primary evaluation metric. By collecting unanchored responses across 10 models, we measure whether techniques bring outputs closer to the model's considered judgment absent arbitrary anchors—the correct target for debiasing. There is no objective truth in sentencing, but the unanchored response represents the model's judgment free from anchor contamination. Debiasing *should* aim for this state—returning the model to its unprompted reasoning rather than pulling it toward an arbitrary anchor.
 
-The simplest structural intervention outperforms sophisticated prompt engineering. Temperature interacts with technique type: deterministic sampling (t=0) optimizes structural interventions; moderate variance (t=0.7) aids self-reflection.
+Using this metric across **13,369 trials** with 5 debiasing techniques, we discover that rankings can invert conventional wisdom.
 
-Without baseline collection, we would have concluded Outside View was universally effective—a finding completely inverted by proper calibration measurement. We argue baseline collection should become standard practice in LLM debiasing research.
+**Key findings** (Welch's t-test, α=0.05):
+
+- **Full SACD** (iterative self-questioning): +24% convergence improvement (p<.001, d=0.41, 5/10 models significantly improved after Bonferroni correction)
+- **Premortem**: +10% (p<.001, d=0.17)
+- **Random Control** (irrelevant elaboration): +9% (p<.001, d=0.15)
+- **Devil's Advocate**: +2% (**not significant**, p=.327)
+- **Outside View**: −22% (**worse** than no technique, p<.001)
+
+Outside View achieves 85% spread reduction but 22% *worse* baseline convergence—it replaces the external anchor with an internal one. 
+
+**Limitations:** All trials use judicial sentencing vignettes; results may not generalize to other anchoring domains. Outside View results are potentially confounded by jurisdiction wording.
+
+We argue baseline collection should become standard practice in LLM debiasing evaluation.
 
 ---
 
@@ -20,18 +30,18 @@ Without baseline collection, we would have concluded Outside View was universall
 
 When large language models make judgments, do debiasing techniques actually help—or do they just move errors in a different direction?
 
-We report findings from the largest systematic evaluation of LLM debiasing techniques to date (14,994 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques *reduce susceptibility* to anchors, but whether they bring outputs *closer to ground truth*.
+We report findings from a large systematic evaluation of LLM debiasing techniques (13,369 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques *reduce susceptibility* to anchors, but whether they bring outputs *closer to the model's unprompted judgment*.
 
 This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions—if the gap shrinks, the technique "works." But this metric misses a critical failure mode: **overcorrection**. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show "reduced susceptibility" while actually *increasing* distance from truth.
 
-## The Calibration Metric
+## The Baseline Convergence Metric
 
-We introduce a complementary evaluation metric: **calibration to baseline**.
+We introduce **baseline convergence** as the primary evaluation metric.
 
 - **Susceptibility** (standard): |response_high_anchor - response_low_anchor|
-- **Calibration** (ours): |technique_response - unanchored_baseline|
+- **Convergence** (ours): |technique_response - unanchored_baseline|
 
-A technique succeeds on calibration if it brings the response *closer* to what the model would say without any anchor present.
+A technique succeeds on convergence if it brings the response *closer* to what the model would say without any anchor present. There is no objective truth in sentencing, but the unanchored response represents the model's judgment free from anchor contamination—the correct target for debiasing.
 
 ## Findings Preview
 
@@ -39,13 +49,14 @@ Using this metric, we discover rankings that invert conventional wisdom:
 
 **Standard metric (susceptibility):** All techniques appear roughly equivalent—most reduce the high-low gap.
 
-**Calibration metric:** Clear hierarchy emerges:
-1. **Random Control** (10/10 models calibrated) — extra conversation turns with no debiasing content
-2. **Premortem / Full SACD** (9/11) — self-reflection techniques  
-3. **Devil's Advocate** (7/11) — argumentation
-4. **Outside View** (4/11) — reference class reasoning
+**Convergence metric:** Clear hierarchy emerges with statistical significance:
+1. **Full SACD** (+24%, p<.001, d=0.41) — iterative self-reflection
+2. **Premortem** (+10%, p<.001) — imagine failure mode
+3. **Random Control** (+9%, p<.001) — extra turns, no debiasing content
+4. **Devil's Advocate** (+2%, p=0.33, not significant) — argumentation
+5. **Outside View** (−22%, p<.001) — reference class reasoning **backfires**
 
-The counterintuitive finding: **the simplest intervention beats the most sophisticated**. Extra turns with irrelevant content outperform carefully crafted debiasing prompts.
+The counterintuitive finding: **Outside View, often recommended in human debiasing literature, significantly worsens model performance**. Meanwhile, simple structural interventions (extra turns) help nearly as much as sophisticated techniques.
 
 ## Why This Matters
 
@@ -61,13 +72,13 @@ This has immediate practical implications:
 
 ## Contributions
 
-1. **A calibration metric for debiasing evaluation** that catches overcorrection invisible to susceptibility measures.
+1. **Baseline convergence as the primary metric for debiasing evaluation** that catches overcorrection invisible to susceptibility measures.
 
-2. **Inverted technique rankings** showing structure (conversation turns) beats content (debiasing instructions).
+2. **Inverted technique rankings**: Outside View, recommended in human literature, *backfires* (−22%) while Full SACD leads (+24%).
 
-3. **Temperature × technique interaction effects** — first systematic analysis of temperature's role in debiasing.
+3. **High model variance**: 5/10 models significantly improve with SACD, but Opus 4.6 shows 68% *worse* convergence.
 
-4. **14,994 trials across 10 models** — the largest LLM debiasing evaluation to date.
+4. **13,369 trials across 10 models** with Bonferroni-corrected statistics and effect sizes.
 
 ## Paper Structure
 
