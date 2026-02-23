@@ -281,6 +281,12 @@ Condition & $n$ (analysis) \\
 \end{tabular}
 \end{table}
 
+\subsubsection{Statistical Analysis}
+
+All comparisons use \textbf{Welch's t-test} (unequal variances assumed) with \textbf{Bonferroni correction} for multiple comparisons (5 technique comparisons). Effect sizes are reported as Cohen's $d$. Confidence intervals are 95\%. Statistical significance ($p < .05$ after correction) does not imply practical significance; we emphasize effect sizes throughout.
+
+\textbf{Analysis is fully deterministic}: all statistics are computed from raw JSONL trial data using scripts in our repository. No manual intervention or selective reporting.
+
 \subsection{Confounds and Limitations}
 
 \subsubsection{Outside View Jurisdiction Context}
