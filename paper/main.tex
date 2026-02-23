@@ -70,6 +70,12 @@ We report findings from 13,799 trials across 10 models evaluating four debiasing
 \text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
 \end{equation}
 
+\textbf{Susceptibility change} ($\Delta$) measures how a technique affects this gap relative to no-technique baseline:
+\begin{equation}
+\Delta_{\text{susceptibility}} = \frac{\text{Spread}_{\text{technique}} - \text{Spread}_{\text{no-technique}}}{\text{Spread}_{\text{no-technique}}} \times 100\%
+\end{equation}
+Negative $\Delta$ = reduced spread = ``less susceptible.'' Positive $\Delta$ = increased spread.
+
 \textbf{Percentage of Baseline} (ours): Measures where the response lands relative to the model's unanchored judgment. Closer to 100\% = ``better.''
 \begin{equation}
 \text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
@@ -440,19 +446,19 @@ The compression pattern is counterintuitive---high anchors typically pull respon
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Technique & $n$ & \% of Baseline & Deviation & Rank \\
+Technique & $n$ & \% of Baseline & 95\% CI & Deviation & Rank \\
 \midrule
-\textbf{Full SACD} & 1,430 & \textbf{108.0\%} & \textbf{8.0\%} & \textbf{\#1} \\
-Premortem & 1,662 & 88.5\% & 11.5\% & \#2 \\
-Random Control & 1,675 & 74.4\% & 25.6\% & \#3 \\
-Devil's Advocate & 1,643 & 67.5\% & 32.5\% & \#4 \\
+\textbf{Full SACD} & 1,430 & \textbf{108.0\%} & [105.2, 110.8] & \textbf{8.0\%} & \textbf{\#1} \\
+Premortem & 1,662 & 88.5\% & [85.9, 91.1] & 11.5\% & \#2 \\
+Random Control & 1,675 & 74.4\% & [71.8, 77.0] & 25.6\% & \#3 \\
+Devil's Advocate & 1,643 & 67.5\% & [65.0, 70.0] & 32.5\% & \#4 \\
 \midrule
-\textit{Outside View}$^\dagger$ & 1,862 & 57.0\% & 43.0\% & --- \\
+\textit{Outside View}$^\dagger$ & 1,862 & 57.0\% & [54.6, 59.4] & 43.0\% & --- \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. Full SACD is closest to baseline (108\%, only 8\% deviation). Devil's Advocate keeps responses anchored at 67.5\% of baseline---32.5\% below where they should be. $^\dagger$Outside View confounded by jurisdiction specification.}
+\caption{Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. Full SACD is closest to baseline (108\%, 95\% CI [105, 111]). Devil's Advocate keeps responses at 67.5\% of baseline (95\% CI [65, 70])---the CIs do not overlap with Full SACD, confirming the ranking difference is statistically reliable. $^\dagger$Outside View confounded. \textit{Note:} Sample sizes differ from Table~\ref{tab:trial-counts} because this analysis includes only trials with matched baseline data for the same model-temperature condition.}
 \label{tab:baseline-pct}
 \end{table}
 
