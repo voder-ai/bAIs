@@ -41,11 +41,11 @@ We introduce \textbf{baseline convergence} as a complementary evaluation metric.
     \item \textbf{Devil's Advocate}: +2\% (not significant, $p=0.33$)
 \end{itemize}
 
-\textit{Note: Our Outside View implementation ($-22\%$, worse than baseline) is excluded from primary findings due to confounding from required jurisdiction specification. See Section 5.3.}
+\textit{(Our Outside View implementation produced confounded results and is discussed separately in Section 5.3.)}
 
 Iterative self-reflection (Full SACD) is the most effective technique, but with high model variance: 5/10 models significantly improve, while Claude Opus 4.6 shows 68\% \textit{worse} convergence ($p<.001$). Devil's Advocate shows no significant effect ($p=0.33$).
 
-Without baseline collection, we would have concluded Outside View was universally effective---a finding completely inverted by proper convergence measurement. We argue baseline collection should become standard practice in LLM debiasing research.
+Without baseline collection, overcorrection would be invisible under standard susceptibility metrics. We propose baseline convergence as a complementary metric for LLM debiasing research, particularly useful for detecting overcorrection.
 \end{abstract}
 
 %==============================================================================
@@ -497,6 +497,6 @@ Random Control prompts consisted of unrelated elaboration requests (e.g., ``Desc
 
 %==============================================================================
 \bibliographystyle{plainnat}
-\bibliography{archive/references}
+\bibliography{references}
 
 \end{document}
