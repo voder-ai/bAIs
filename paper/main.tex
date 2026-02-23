@@ -16,7 +16,7 @@
 \usepackage{xcolor}
 
 % Title
-\title{Calibration, Not Susceptibility:\\Evaluating LLM Debiasing with Unanchored Baselines}
+\title{Baseline Convergence, Not Susceptibility:\\Evaluating LLM Debiasing with Unanchored Baselines}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -32,17 +32,17 @@
 \begin{abstract}
 Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
 
-We introduce \textbf{calibration to baseline} as a complementary metric. By collecting unanchored responses (n=1,001 across 10 models), we can measure whether techniques bring outputs closer to ground truth, not just away from anchors. Using this metric across 14,994 trials, we discover rankings that invert conventional wisdom:
+We introduce \textbf{baseline convergence} as a complementary metric. By collecting unanchored responses (n=909 across 10 models), we can measure whether techniques bring outputs closer to the model's unprompted judgment, not just away from anchors. Using this metric across 13,369 trials, we discover rankings that invert conventional wisdom:
 
 \begin{itemize}
-    \item \textbf{Random Control} (extra turns, no debiasing content): 91\% of models improved
-    \item \textbf{Self-reflection techniques} (Premortem, SACD): 82\%
-    \item \textbf{Outside View} (reference class reasoning): \textbf{36\%}---worst performer
+    \item \textbf{Full SACD} (iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
+    \item \textbf{Premortem / Random Control}: +9--10\% improvement ($p<.001$)
+    \item \textbf{Outside View} (reference class reasoning): \textbf{$-22\%$}---significantly \textit{worsens} convergence
 \end{itemize}
 
-The simplest structural intervention outperforms sophisticated prompt engineering. Temperature interacts with technique type: deterministic sampling (t=0) optimizes structural interventions; moderate variance (t=0.7) aids self-reflection.
+Iterative self-reflection (Full SACD) is the most effective technique, but with high model variance: 5/10 models significantly improve, while Claude Opus 4.6 shows 68\% \textit{worse} convergence ($p<.001$). Devil's Advocate shows no significant effect ($p=0.33$).
 
-Without baseline collection, we would have concluded Outside View was universally effective---a finding completely inverted by proper calibration measurement. We argue baseline collection should become standard practice in LLM debiasing research.
+Without baseline collection, we would have concluded Outside View was universally effective---a finding completely inverted by proper convergence measurement. We argue baseline collection should become standard practice in LLM debiasing research.
 \end{abstract}
 
 %==============================================================================
@@ -51,20 +51,20 @@ Without baseline collection, we would have concluded Outside View was universall
 
 When large language models make judgments, do debiasing techniques actually help---or do they just move errors in a different direction?
 
-We report findings from the largest systematic evaluation of LLM debiasing techniques to date (14,994 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to ground truth}.
+We report findings from a large systematic evaluation of LLM debiasing techniques (13,369 trials across 10 models). Our core contribution is methodological: by collecting unanchored baseline responses, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to the model's unprompted judgment}.
 
 This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions---if the gap shrinks, the technique ``works.'' But this metric misses a critical failure mode: \textbf{overcorrection}. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show ``reduced susceptibility'' while actually \textit{increasing} distance from truth.
 
-\subsection{The Calibration Metric}
+\subsection{The Baseline Convergence Metric}
 
-We introduce a complementary evaluation metric: \textbf{calibration to baseline}.
+We introduce a complementary evaluation metric: \textbf{baseline convergence}.
 
 \begin{itemize}
     \item \textbf{Susceptibility} (standard): $|\bar{R}_{high} - \bar{R}_{low}|$
-    \item \textbf{Calibration} (ours): $|R_{technique} - R_{baseline}|$
+    \item \textbf{Convergence} (ours): $|R_{technique} - R_{baseline}|$
 \end{itemize}
 
-A technique succeeds on calibration if it brings the response \textit{closer} to what the model would say without any anchor present.
+A technique succeeds on convergence if it brings the response \textit{closer} to what the model would say without any anchor present.
 
 \subsection{Findings Preview}
 
@@ -72,15 +72,16 @@ Using this metric, we discover rankings that invert conventional wisdom:
 
 \textbf{Standard metric (susceptibility):} All techniques appear roughly equivalent---most reduce the high-low gap.
 
-\textbf{Calibration metric:} Clear hierarchy emerges:
+\textbf{Convergence metric:} Clear hierarchy emerges with statistical significance:
 \begin{enumerate}
-    \item \textbf{Random Control} (10/10 models calibrated)---extra conversation turns with no debiasing content
-    \item \textbf{Premortem / Full SACD} (9/11)---self-reflection techniques
-    \item \textbf{Devil's Advocate} (7/11)---argumentation
-    \item \textbf{Outside View} (4/11)---reference class reasoning
+    \item \textbf{Full SACD} (+24\%, $p<.001$, $d=0.41$)---iterative self-reflection
+    \item \textbf{Premortem} (+10\%, $p<.001$)---imagine failure mode
+    \item \textbf{Random Control} (+9\%, $p<.001$)---extra turns, no debiasing content
+    \item \textbf{Devil's Advocate} (+2\%, $p=0.33$, not significant)---argumentation
+    \item \textbf{Outside View} ($-22\%$, $p<.001$)---reference class reasoning \textit{backfires}
 \end{enumerate}
 
-The counterintuitive finding: \textbf{the simplest intervention beats the most sophisticated}. Extra turns with irrelevant content outperform carefully crafted debiasing prompts.
+The counterintuitive finding: \textbf{Outside View, often recommended in human debiasing literature, significantly worsens model performance}. Meanwhile, simple structural interventions (extra turns) help nearly as much as sophisticated techniques.
 
 \subsection{Why This Matters}
 
@@ -99,13 +100,13 @@ This has immediate practical implications:
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{A calibration metric for debiasing evaluation} that catches overcorrection invisible to susceptibility measures.
+    \item \textbf{A baseline convergence metric for debiasing evaluation} that catches overcorrection invisible to susceptibility measures.
     
-    \item \textbf{Inverted technique rankings} showing structure (conversation turns) beats content (debiasing instructions).
+    \item \textbf{Inverted technique rankings}: Outside View, recommended in human literature, \textit{backfires} ($-22\%$) while Full SACD leads (+24\%).
     
-    \item \textbf{Temperature $\times$ technique interaction effects}---first systematic analysis of temperature's role in debiasing.
+    \item \textbf{High model variance}: 5/10 models significantly improve with SACD, but Opus 4.6 shows 68\% \textit{worse} convergence.
     
-    \item \textbf{14,994 trials across 10 models}---the largest LLM debiasing evaluation to date.
+    \item \textbf{13,369 trials across 10 models} with Bonferroni-corrected statistics and effect sizes.
 \end{enumerate}
 
 %==============================================================================
@@ -142,13 +143,13 @@ Standard anchoring evaluation compares high-anchor and low-anchor conditions \ci
 
 A technique ``works'' if it reduces this gap. This methodology does not require ground truth---it measures susceptibility to anchors, not accuracy of outputs. This is a valid and important metric.
 
-We extend this by introducing \textbf{calibration to unanchored baselines}:
+We extend this by introducing \textbf{baseline convergence}:
 
 \[
-\text{Calibration Error} = |R_{technique} - R_{baseline}|
+\text{Convergence Error} = |R_{technique} - R_{baseline}|
 \]
 
-This requires collecting baseline responses but enables detection of \textbf{overcorrection}---a failure mode invisible to susceptibility-only evaluation. To our knowledge, no prior work on LLM anchoring has systematically collected unanchored baselines for calibration evaluation.
+This requires collecting baseline responses but enables detection of \textbf{overcorrection}---a failure mode invisible to susceptibility-only evaluation. To our knowledge, no prior work on LLM anchoring has systematically collected unanchored baselines for convergence evaluation.
 
 %==============================================================================
 \section{Methodology}
@@ -168,32 +169,32 @@ The conventional approach compares responses under high vs.\ low anchor conditio
 
 A technique ``works'' if it reduces this gap. This metric answers: \textit{Does the technique reduce the anchor's influence?}
 
-\subsubsection{Our Metric: Baseline Calibration}
+\subsubsection{Our Metric: Baseline Convergence}
 
 We collected unanchored baseline responses---model outputs with no anchor present. This enables a second metric:
 
 \[
-\text{Calibration Error} = |\bar{R}_{technique} - \bar{R}_{baseline}|
+\text{Convergence Error} = |\bar{R}_{technique} - \bar{R}_{baseline}|
 \]
 
-A technique succeeds if it reduces calibration error relative to the anchored (no-technique) condition:
+A technique succeeds if it reduces convergence error relative to the anchored (no-technique) condition:
 
 \[
 \text{Improved} = |R_{technique} - R_{baseline}| < |R_{anchored} - R_{baseline}|
 \]
 
-This metric answers: \textit{Does the technique bring the response closer to ground truth?}
+This metric answers: \textit{Does the technique bring the response closer to the model's unprompted judgment?}
 
 \subsubsection{Why Both Metrics Matter}
 
 These metrics can diverge. Consider:
 \begin{itemize}
     \item Baseline: 30mo
-    \item High-anchor response: 50mo (calibration error = 20mo)
-    \item Technique response: 12mo (calibration error = 18mo... but overcorrected)
+    \item High-anchor response: 50mo (convergence error = 20mo)
+    \item Technique response: 12mo (convergence error = 18mo... but overcorrected)
 \end{itemize}
 
-Under susceptibility, the technique ``worked'' (moved away from anchor). Under calibration, it marginally helped---but a different technique might achieve 28mo (calibration error = 2mo).
+Under susceptibility, the technique ``worked'' (moved away from anchor). Under convergence, it marginally helped---but a different technique might achieve 28mo (convergence error = 2mo).
 
 \subsection{Experimental Design}
 
@@ -210,7 +211,7 @@ Provider & Models \\
 Anthropic & Claude Haiku 4.5, Sonnet 4.6, Opus 4.6 \\
 OpenAI & GPT-4.1, GPT-5.2, o3, o4-mini \\
 DeepSeek & DeepSeek-v3.2 \\
-Others & Kimi-k2.5, GLM-5, MiniMax-m2.5 \\
+Others & Kimi-k2.5 (Moonshot), GLM-5 (Zhipu) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -248,9 +249,9 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
 \subsubsection{Trial Counts}
 
 \begin{itemize}
-    \item \textbf{Total trials}: $\sim$14,100
-    \item \textbf{Per model-technique-temperature}: 20--50 trials
-    \item \textbf{Baseline trials per model}: 91
+    \item \textbf{Total trials}: 13,369
+    \item \textbf{Per model-technique-temperature}: 30--90 trials (target $n \geq 30$)
+    \item \textbf{Baseline trials}: 909 total across all models
 \end{itemize}
 
 \subsection{Confounds and Limitations}
@@ -275,24 +276,23 @@ Unanchored baseline responses varied substantially across models:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lc}
+\begin{tabular}{lcc}
 \toprule
-Model & Baseline Mean \\
+Model & Baseline Mean & SD \\
 \midrule
-o4-mini & 35.7mo \\
-o3 & 33.7mo \\
-GLM-5 & 31.8mo \\
-GPT-5.2 & 31.8mo \\
-Kimi-k2.5 & 30.7mo \\
-DeepSeek-v3.2 & 29.6mo \\
-Haiku 4.5 & 29.1mo \\
-GPT-4.1 & 25.1mo \\
-Sonnet 4.6 & 24.1mo \\
-MiniMax-m2.5 & 24.1mo \\
-Opus 4.6 & 18.0mo \\
+o4-mini & 35.7mo & 4.7 \\
+o3 & 33.7mo & 5.6 \\
+GLM-5 & 31.9mo & 5.7 \\
+GPT-5.2 & 31.8mo & 5.7 \\
+Kimi-k2.5 & 30.6mo & 7.4 \\
+DeepSeek-v3.2 & 29.6mo & 8.0 \\
+Haiku 4.5 & 29.1mo & 11.2 \\
+GPT-4.1 & 25.1mo & 3.4 \\
+Sonnet 4.6 & 24.1mo & 1.3 \\
+Opus 4.6 & 18.0mo & 0.0 \\
 \bottomrule
 \end{tabular}
-\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread.}
+\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus shows zero variance (deterministic).}
 \end{table}
 
 \subsection{High-Anchor Responses (No Technique)}
@@ -304,101 +304,95 @@ Under high-anchor conditions without intervention, two anchor response patterns 
     \item \textbf{Inflation}: Response pulled above baseline (GPT-5.2, GLM-5, o3)
 \end{enumerate}
 
-\subsection{Technique Effectiveness: Calibration Metric}
-
-\subsubsection{High-Anchor Conditions}
+\subsection{Technique Effectiveness: Baseline Convergence}
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcc}
+\begin{tabular}{lccccc}
 \toprule
-Technique & Improved & Success Rate \\
+Technique & $n$ & Mean Dist & Improvement & $p$ (Bonf) & Effect Size \\
 \midrule
-\textbf{Random Control} & 10/11 & \textbf{91\%} \\
-Premortem & 9/11 & 82\% \\
-Full SACD & 9/11 & 82\% \\
-Devil's Advocate & 7/11 & 64\% \\
-Outside View & 4/11 & \textbf{36\%} \\
+Anchored baseline & 1509 & 12.4mo & --- & --- & --- \\
+\textbf{Full SACD} & 2391 & 9.4mo & \textbf{+24\%} & $<.001$ & $d=0.41$ \\
+Premortem & 2186 & 11.1mo & +10\% & $<.001$ & $d=0.17$ \\
+Random Control & 2215 & 11.3mo & +9\% & $<.001$ & $d=0.15$ \\
+Devil's Advocate & 2166 & 12.1mo & +2\% (ns) & 1.000 & $d=0.03$ \\
+Outside View & 2423 & 15.1mo & \textbf{$-22\%$} & $<.001$ & $d=-0.38$ \\
 \bottomrule
 \end{tabular}
-\caption{Random Control---which adds conversation turns without debiasing content---outperforms all content-based techniques.}
+\caption{Technique effectiveness with Bonferroni-corrected p-values (5 tests). Full SACD shows largest improvement; Outside View significantly \textit{worsens} convergence. Effect sizes are small by Cohen's conventions.}
 \end{table}
 
-\subsubsection{Low-Anchor Conditions}
+\subsection{Model-Specific Results: Full SACD}
+
+Full SACD shows high variance across models (Bonferroni-corrected, 10 tests):
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcc}
+\begin{tabular}{lccl}
 \toprule
-Technique & Improved & Success Rate \\
+Model & Improvement & $p$ (adj) & Result \\
 \midrule
-\textbf{Full SACD} & 11/11 & \textbf{100\%} \\
-Premortem & 9/11 & 82\% \\
-Random Control & 7/11 & 64\% \\
-Outside View & 5/11 & 45\% \\
-Devil's Advocate & 4/11 & 36\% \\
+o3 & +51\% & $<.001$ & Significant improvement \\
+GPT-4.1 & +48\% & $<.001$ & Significant improvement \\
+Sonnet 4.6 & +46\% & $<.001$ & Significant improvement \\
+DeepSeek-v3.2 & +30\% & $<.001$ & Significant improvement \\
+GPT-5.2 & +20\% & 0.022 & Significant improvement \\
+o4-mini & +12\% & 0.210 & Not significant \\
+Haiku 4.5 & $-2\%$ & 1.000 & Not significant \\
+Kimi-k2.5 & $-3\%$ & 1.000 & Not significant \\
+GLM-5 & $-4\%$ & 1.000 & Not significant \\
+\textbf{Opus 4.6} & $\mathbf{-68\%}$ & $<.001$ & \textbf{Significant backfire} \\
 \bottomrule
 \end{tabular}
-\caption{Full SACD achieves perfect calibration under low anchors. Rankings shift between anchor conditions.}
-\end{table}
-
-\subsection{Temperature $\times$ Technique Interaction}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-Technique & t=0 & t=0.7 & t=1 & Optimal \\
-\midrule
-Random Control & \textbf{100\%} & 80\% & 91\% & \textbf{t=0} \\
-Premortem & 70\% & \textbf{80\%} & 64\% & t=0.7 \\
-Full SACD & 64\% & \textbf{73\%} & 64\% & t=0.7 \\
-Devil's Advocate & 60\% & 60\% & 64\% & t=1 \\
-Outside View & 30\% & 30\% & 36\% & t=1 \\
-\bottomrule
-\end{tabular}
-\caption{Temperature effects on calibration success (high-anchor conditions).}
+\caption{Full SACD model-specific results. 5/10 significantly improve, 1/10 significantly worsens (Opus 4.6).}
 \end{table}
 
 Key findings:
 \begin{enumerate}
-    \item \textbf{Random Control at t=0 achieves 100\% success}---deterministic extra turns are optimal
-    \item \textbf{Self-reflection techniques (SACD, Premortem) prefer t=0.7}---moderate variance aids deliberation
-    \item \textbf{Outside View fails at all temperatures}---the technique itself is problematic, not the sampling
+    \item \textbf{5/10 models significantly improve} after Bonferroni correction
+    \item \textbf{Opus 4.6 shows severe backfire} ($-68\%$, $p<.001$)---the technique makes it \textit{worse}
+    \item \textbf{Effect sizes remain small} even for best performers ($d \leq 0.41$)
 \end{enumerate}
 
-\subsection{Comparison: Susceptibility vs.\ Calibration Metrics}
+\subsection{Comparison: Susceptibility vs.\ Convergence Metrics}
 
-Under the standard susceptibility metric, Outside View appeared to ``improve'' all models by reducing the high-low gap. Under calibration:
+Under the standard susceptibility metric, Outside View appeared to ``improve'' models by reducing the high-low gap. Under convergence:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{ll}
+\begin{tabular}{lll}
 \toprule
-Metric & Outside View Ranking \\
+Metric & Outside View & Full SACD \\
 \midrule
-Susceptibility ($|high - low|$) & Best (11/11 ``improved'') \\
-Calibration ($|response - baseline|$) & \textbf{Worst} (4/11 improved) \\
+Susceptibility ($|high - low|$) & Appears effective & Appears effective \\
+Convergence ($|response - baseline|$) & \textbf{$-22\%$ (backfires)} & \textbf{+24\% (best)} \\
 \bottomrule
 \end{tabular}
-\caption{This inversion demonstrates why baseline collection matters.}
+\caption{Rankings invert between metrics. Without baseline collection, Outside View appears to ``work.''}
 \end{table}
 
 %==============================================================================
 \section{Discussion}
 %==============================================================================
 
-\subsection{Why Structure Beats Content}
+\subsection{Why Full SACD Works (and Fails)}
 
-Our most surprising finding is that Random Control---conversation turns with irrelevant content---outperforms deliberate debiasing techniques. We propose several explanations:
+Full SACD shows the largest average improvement (+24\%) but also the highest model variance. We propose:
 
-\textbf{Hypothesis 1: Attention redistribution.} Additional turns may dilute the anchor's influence by introducing competing context. The model's attention becomes distributed across more tokens, reducing the relative weight of the anchoring value.
+\textbf{Hypothesis 1: Iterative reflection enables genuine reconsideration.} Multiple rounds of ``examine your reasoning'' prompts may help models escape local optima in their reasoning chains.
 
-\textbf{Hypothesis 2: Implicit reconsideration.} Multi-turn format may trigger different inference patterns than single-shot prompts. The model may treat subsequent turns as opportunities to revise rather than defend prior responses.
+\textbf{Hypothesis 2: Some models perform ``debiasing theater.''} Opus 4.6's severe backfire ($-68\%$) suggests the technique can activate surface compliance without genuine reconsideration---the model may be optimizing for \textit{appearing} to reconsider rather than actually doing so.
 
-\textbf{Hypothesis 3: Debiasing content backfires.} Explicit debiasing instructions may activate ``debiasing theater''---surface compliance without genuine reconsideration. Structure avoids this because there's nothing to perform.
+\textbf{Hypothesis 3: Baseline proximity matters.} Opus 4.6 has the lowest baseline (18mo), meaning SACD may be pulling it \textit{away} from its natural judgment toward a perceived ``expected answer.''
 
-The temperature findings support Hypothesis 2: Random Control works best at t=0 (deterministic), suggesting the structural effect is robust and doesn't require sampling variance.
+\subsection{Why Random Control Works}
+
+Random Control (+9\%) outperforms Devil's Advocate (+2\% ns), despite having no debiasing content. Possible mechanisms:
+
+\textbf{Attention redistribution.} Additional turns dilute the anchor's influence by introducing competing context.
+
+\textbf{Implicit reconsideration.} Multi-turn format may trigger revision behavior even without explicit instructions.
 
 \subsection{The Outside View Confound}
 
@@ -436,19 +430,20 @@ Based on our findings:
 \section{Conclusion}
 %==============================================================================
 
-We introduced calibration to baseline as a metric for evaluating LLM debiasing techniques. This metric catches overcorrection---a failure mode invisible to standard susceptibility measures.
+We introduced baseline convergence as a metric for evaluating LLM debiasing techniques. This metric catches overcorrection---a failure mode invisible to standard susceptibility measures.
 
-Our key findings:
+Our key findings from 13,369 trials across 10 models:
 
 \begin{enumerate}
-    \item \textbf{Structure beats content.} Random Control (extra turns, no debiasing content) achieves 91\% calibration improvement vs.\ 36\% for Outside View.
-    \item \textbf{Temperature matters.} Structural interventions prefer t=0; self-reflection prefers t=0.7.
-    \item \textbf{Baseline collection is essential.} Without it, we would have published inverted rankings.
+    \item \textbf{Full SACD leads, but with high variance.} +24\% average improvement ($d=0.41$), but Opus 4.6 shows $-68\%$ backfire.
+    \item \textbf{Outside View backfires.} Despite recommendations in human debiasing literature, it shows $-22\%$ worse convergence ($p<.001$).
+    \item \textbf{Effect sizes are small.} Even the best technique achieves only $d=0.41$---practitioners should calibrate expectations.
+    \item \textbf{Baseline collection is essential.} Without it, we would have concluded Outside View was effective.
 \end{enumerate}
 
-For practitioners: start with structure. Add conversation turns before crafting complex debiasing prompts. Validate with calibration metrics, not just susceptibility.
+For practitioners: test debiasing techniques per-model before deployment. Full SACD is effective for most models but can severely backfire. Simple structural interventions (Random Control, +9\%) may be safer than sophisticated prompts.
 
-For researchers: collect unanchored baselines. The standard high-vs-low methodology has a blind spot. Ground truth matters.
+For researchers: collect unanchored baselines. The standard high-vs-low methodology has a blind spot that inverted our technique rankings.
 
 %==============================================================================
 \bibliographystyle{plainnat}

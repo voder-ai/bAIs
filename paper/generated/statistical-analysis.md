@@ -2,7 +2,7 @@
 
 All statistics computed deterministically from raw JSONL trial data.
 
-Generated: 2026-02-23T11:26:39.828Z
+Generated: 2026-02-23T19:34:29.580Z
 
 ## 1. Anchored Baseline Distance (No Technique)
 
