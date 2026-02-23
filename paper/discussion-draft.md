@@ -53,7 +53,7 @@ Outside View achieves #2, not #1. Spread reduction looks excellent (85%) while c
 
 **Calibration** (|response - baseline|) captures what we actually care about: distance from ground truth. A technique that overcorrects—moving responses past baseline to the opposite extreme—shows poor calibration despite good spread reduction.
 
-We recommend calibration as the primary metric for debiasing research, with spread reduction as a secondary diagnostic for anchor sensitivity.
+We recommend calibration as the standard metric for debiasing evaluation. Spread reduction, while intuitive, can give misleading results when a technique overcorrects.
 
 ## Model-Specific Effects
 
@@ -77,7 +77,7 @@ Based on our findings, we offer the following guidance for practitioners:
 
 4. **Test on your specific model**: Debiasing effectiveness varies substantially across models. Validate techniques on your target architecture before deployment.
 
-5. **Measure calibration, not just spread**: Spread reduction can mask overcorrection. Always check distance from baseline truth.
+5. **Measure calibration**: Distance from baseline truth is what matters. Spread reduction can mask overcorrection and give a false sense of effectiveness.
 
 ## Limitations
 

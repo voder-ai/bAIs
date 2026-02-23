@@ -4,7 +4,7 @@ Human cognitive debiasing techniques are increasingly applied to Large Language 
 
 Our key contributions:
 
-1. **A calibration metric for debiasing evaluation.** We propose calibration (|response - baseline|) as a complementary metric to spread reduction. While spread reduction measures anchor sensitivity, calibration measures distance from ground truth—revealing that techniques with excellent spread reduction can sometimes overcorrect, moving responses further from baseline. Both metrics together provide a more complete picture.
+1. **Calibration as the correct metric for debiasing evaluation.** We show that the standard "spread reduction" metric can produce misleading results by failing to detect overcorrection. We propose calibration (|response - baseline|) as the appropriate metric. Our data reveals techniques with excellent spread reduction (e.g., Outside View at 85%) can actually worsen calibration by 29%, moving responses further from ground truth.
 
 2. **A mechanistic taxonomy of debiasing techniques.** We categorize techniques by how they interact with anchors: *distance* techniques (Random Control, Full SACD) dilute anchor salience through intervening tokens; *doubt* techniques (Premortem) undermine confidence without replacement; *replacement* techniques (Outside View) swap external anchors for internal estimates; *confrontation* techniques (Devil's Advocate) keep anchors salient while arguing against them.
 
