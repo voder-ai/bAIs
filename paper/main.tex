@@ -256,7 +256,7 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
     \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches
-    \item \textbf{Anchor values}: Constant relative scaling---low anchor = baseline $\times$ 0.5, high anchor = baseline $\times$ 1.5. This ensures equal anchor strength across models with different baselines.
+    \item \textbf{Anchor values}: To ensure equivalent relative anchor strength across models, we use constant proportional anchors: high anchor = baseline $\times$ 1.5 (50\% above baseline); low anchor = baseline $\times$ 0.5 (50\% below baseline). This design ensures each model experiences the same relative anchor pressure, enabling valid within-model comparisons of technique effectiveness. Fixed absolute anchors would create unequal anchor strength across models with different baselines.
 \end{itemize}
 
 \begin{table}[H]
