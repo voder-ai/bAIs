@@ -240,3 +240,33 @@ results/
 
 **Remaining trials:** ~7,920 (Phases 4-7)
 **Provider optimization:** Use high-throughput providers (SambaNova 84tps, Fireworks) for open source models
+
+---
+
+## Final Status (2026-02-23)
+
+**✅ ALL CONDITIONS COMPLETE — n≥30 for all models/techniques/temperatures**
+
+### Final Trial Counts
+
+| Condition | Trials |
+|-----------|--------|
+| Baseline | 909 |
+| Low-anchor | 909 |
+| Full SACD (iterative) | 2,397 |
+| Outside View | 2,430 |
+| Premortem | 2,188 |
+| Devil's Advocate | 2,174 |
+| Random Control | 2,242 |
+| **GRAND TOTAL** | **13,249** |
+
+### Models (10)
+- Anthropic: claude-opus-4.6, claude-sonnet-4.6, claude-haiku-4.5
+- OpenAI: gpt-5.2, gpt-4.1, o3, o4-mini
+- Open Source: deepseek-v3.2, glm-5, kimi-k2.5
+
+### Key Findings
+- Random Control: 90% success rate (structural effect alone helps)
+- Outside View: 100% improved (best overall)
+- Full SACD: 70% success but 3 models backfire (opus, glm-5, gpt-5.2)
+- Temperature effects vary by model
