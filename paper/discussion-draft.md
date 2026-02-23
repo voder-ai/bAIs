@@ -40,20 +40,20 @@ This has uncomfortable implications for the debiasing literature. Studies claimi
 
 The practical implication is counterintuitive: **a "think about something unrelated" step may outperform sophisticated debiasing prompts**. The specific content of the intervention matters less than the distance it creates.
 
-## The Calibration vs. Spread Problem
+## Baseline Convergence vs. Spread Reduction
 
 Traditional anchoring studies measure spread reduction: the difference between high-anchor and low-anchor responses. A technique that makes responses identical regardless of anchor appears perfectly effective.
 
-We argue this metric is can produce misleading results for debiasing evaluation. It conflates two very different outcomes:
+We argue this metric can produce misleading results for debiasing evaluation. It conflates two very different outcomes:
 
-1. **True debiasing**: Responses converge toward baseline truth
+1. **Baseline convergence**: Responses converge toward the model's unanchored judgment
 2. **Re-anchoring**: Responses converge toward a replacement anchor
 
-Outside View achieves #2, not #1. Spread reduction looks excellent (85%) while calibration worsens (29%). The model isn't less biased; it's biased toward a different number.
+Outside View achieves #2, not #1. Spread reduction looks excellent (85%) while baseline convergence worsens (29%). The model isn't less biased; it's biased toward a different number.
 
-**Calibration** (|response - baseline|) captures what we actually care about: distance from ground truth. A technique that overcorrects—moving responses past baseline to the opposite extreme—shows poor calibration despite good spread reduction.
+**Baseline convergence** (|response - unanchored_baseline|) measures how close a debiased response comes to what the model would say without any anchor exposure. This is not "ground truth" in an absolute sense—the unanchored response is simply the model's unprompted judgment. However, it provides a meaningful reference point: if debiasing techniques move responses *away* from what the model would naturally conclude, they may be introducing new biases rather than removing old ones.
 
-We recommend calibration as the standard metric for debiasing evaluation. Spread reduction, while intuitive, can give misleading results when a technique overcorrects.
+We recommend baseline convergence as the primary metric for debiasing evaluation. Spread reduction, while intuitive, can give misleading results when a technique overcorrects.
 
 ## Model-Specific Effects
 
@@ -81,8 +81,10 @@ Based on our findings, we offer the following guidance for practitioners:
 
 ## Limitations
 
-Our study uses a single experimental paradigm (judicial sentencing) which may not generalize to all anchoring contexts. The Englich et al. vignette, while well-validated for human studies, may interact differently with LLM training distributions that include legal reasoning.
+**Single-paradigm constraint.** Our study uses a single experimental paradigm (judicial sentencing from Englich et al.) which may not generalize to all anchoring contexts. The specific characteristics of legal reasoning—normative constraints, precedent considerations, jurisdictional variation—may interact with debiasing techniques differently than other domains (e.g., numerical estimation, probability judgment, negotiation). Future work should replicate these findings across multiple anchoring paradigms before drawing broad conclusions about "LLM debiasing" in general.
 
-We tested 10 models; the space of architectures is vast and evolving. Our taxonomy may require revision as new model families emerge.
+**Model coverage.** We tested 10 models representing major providers and architectures as of February 2026. The space of models is vast and rapidly evolving. Our taxonomy may require revision as new model families emerge, particularly as reasoning-focused models (like o3) show distinct vulnerability patterns.
 
-Finally, "baseline truth" in our paradigm is empirically derived (mean response without anchor) rather than normatively determined. Whether 24 months is the "correct" sentence for a 12th-offense shoplifter is beyond our scope—we measure only deviation from what the model would say unprompted.
+**Baseline interpretation.** Our "baseline convergence" metric measures distance from the model's unanchored response, not from any external ground truth. The unanchored response is simply what the model would say without anchor exposure—it may itself be biased in ways we don't measure. We do not claim that converging toward baseline produces "correct" answers, only that techniques moving responses *away* from baseline may be introducing new biases rather than removing existing ones.
+
+**Token length confound.** While we control for conversation structure in our Random Control condition, we do not perfectly control for total token count across techniques. Some techniques may benefit from the sheer volume of reasoning tokens rather than their specific content. Future work could include a "matched-length random tokens" control.

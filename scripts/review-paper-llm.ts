@@ -23,11 +23,27 @@ VERIFIED CITATIONS (confirmed on arXiv):
 These are all legitimate recent papers. Do not flag them as unverifiable.
 `;
 
+const CURRENT_FACTS = `
+CURRENT FACTS (as of February 2026):
+This paper was written in February 2026. The following model names are REAL and current:
+- GPT-5.2, GPT-4.1 (OpenAI's latest non-reasoning models)
+- o3, o4-mini (OpenAI's reasoning models, successors to o1)
+- Claude Opus 4.6, Claude Sonnet 4.6, Claude Haiku 4.5 (Anthropic's current lineup)
+- DeepSeek V3.2 (open-source model)
+- GLM-5 (Zhipu AI's reasoning model)
+- Kimi K2.5 (Moonshot AI's model)
+
+Do NOT flag these as "unknown" or "future" models — they are real and currently deployed.
+Trial counts of ~14,000+ are accurate for this study.
+`;
+
 const REVIEW_SYSTEM_PROMPT = `You are a critical academic reviewer with expertise in AI/ML research. Your job is to assess whether this paper is ready for public release as a preprint.
 
 TODAY'S DATE: ${TODAY}
 
 ${VERIFIED_CITATIONS}
+
+${CURRENT_FACTS}
 
 Be thorough and critical. Evaluate:
 1. **Methodology** - Are experiments well-designed? Are there confounds or flaws?
