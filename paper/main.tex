@@ -135,6 +135,8 @@ Several techniques have been proposed for mitigating anchoring:
 
 \textbf{Premortem Analysis:} Asking models to imagine the decision failed and explain why. Drawn from project management practice \citep{klein2007}.
 
+Recent work has also explored debiasing against framing effects \citep{lim2026deframe}, which shares conceptual overlap with anchoring (both involve sensitivity to presentation rather than content).
+
 \subsection{Evaluation Methodology}
 
 Standard anchoring evaluation compares high-anchor and low-anchor conditions \citep{englich2006,huang2025anchoring}:
@@ -272,13 +274,13 @@ Full SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures; preliminary analysis showed no significant temperature$\times$technique interaction effects ($p > 0.1$ for all comparisons).
+Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures. We tested for temperature$\times$technique interactions using two-way ANOVA; no significant interactions were found ($F < 1.5$, $p > 0.1$ for all technique comparisons). Temperature main effects were small: mean convergence error varied by $<$1mo across temperatures within each technique.
 
 \subsubsection{Trial Counts and Procedure}
 
 \begin{itemize}
     \item \textbf{Total trials}: 13,799
-    \item \textbf{Per model-technique-temperature}: 30--90 trials (target $n \geq 30$; range reflects iterative data collection with some conditions receiving additional trials for robustness)
+    \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Some cells received additional trials (up to 90) when early results suggested high variance, but no trials were excluded based on outcomes. Analysis uses all collected data.
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
     \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches
@@ -351,7 +353,7 @@ Sonnet 4.6 & 24.1mo & 1.3 \\
 Opus 4.6 & 18.0mo & 0.0 \\
 \bottomrule
 \end{tabular}
-\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance at all temperatures, consistently responding with exactly 18 months---suggesting highly deterministic reasoning for this prompt type.}
+\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance (SD=0.0) at all temperatures, consistently responding with exactly 18 months. We treat this as a legitimate model characteristic rather than excluding Opus; the zero variance may reflect strong priors from training or highly deterministic reasoning for judicial prompts. Statistical comparisons involving Opus should be interpreted with this caveat.}
 \end{table}
 
 \subsection{High-Anchor Responses (No Technique)}
