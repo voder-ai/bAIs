@@ -2,7 +2,7 @@
 
 Primary metric: |response - baseline| (lower = better calibration)
 
-Generated: 2026-02-23T10:49:06.228Z
+Generated: 2026-02-23T10:59:28.848Z
 
 ## 1. Anchored Response Distances from Baseline
 
