@@ -59,7 +59,7 @@ We recommend calibration as the primary metric for debiasing research, with spre
 
 Our data reveals substantial model variation that challenges "one-size-fits-all" debiasing recommendations:
 
-- **Full SACD backfires on 3/10 models** (Opus, GLM-5, GPT-5.2), suggesting iterative self-questioning can amplify rather than reduce bias in some architectures
+- **Full SACD is the only universal winner** (10/10 models improved), though improvement magnitude varies substantially (10-85%)
 - **No technique universally succeeds** across all models tested
 - **Temperature effects are inconsistent**, with no clear "optimal temperature for debiasing"
 

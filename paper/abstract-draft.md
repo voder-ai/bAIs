@@ -1,6 +1,6 @@
 # Abstract
 
-Human cognitive debiasing techniques are increasingly applied to Large Language Models (LLMs), yet their effectiveness remains poorly understood. We present the first large-scale empirical study of anchoring bias debiasing in LLMs, testing five techniques across 10 models and 13,249 trials.
+Human cognitive debiasing techniques are increasingly applied to Large Language Models (LLMs), yet their effectiveness remains poorly understood. We present the first large-scale empirical study of anchoring bias debiasing in LLMs, testing five techniques across 10 models and 14,324 trials.
 
 Our key contributions:
 
@@ -10,6 +10,6 @@ Our key contributions:
 
 3. **Evidence that structure trumps content.** Random Control—irrelevant elaboration with no debiasing content—achieves 30% calibration improvement, comparable to purpose-built techniques. This suggests prior debiasing studies may overestimate technique-specific effects by failing to control for structural factors (turn count, token distance, reasoning depth).
 
-4. **Demonstration of model-specific heterogeneity.** Full SACD, our best-performing technique overall (39% improvement), backfires on 3/10 models. No technique universally succeeds, challenging "one-size-fits-all" debiasing recommendations.
+4. **Demonstration of model-specific heterogeneity.** While Full SACD improves all 10 models tested (39% average), other techniques show dramatic variation: Outside View improves only 3/10 models and worsens calibration by up to 252% on reasoning models (o3). No technique except Full SACD universally succeeds.
 
 Our findings have immediate practical implications: practitioners should prefer distance-creating interventions over replacement prompts, measure calibration rather than spread, and validate techniques on their specific target models.
