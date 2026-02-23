@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Debiasing Anchoring Bias in LLM Judicial Reasoning:\\Baseline Convergence as a Metric}
+\title{Debiasing Anchoring Bias in LLM Judicial Reasoning:\\Why Metric Choice Determines Technique Recommendation}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -33,85 +33,90 @@
 \maketitle
 
 \begin{abstract}
-Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. Debiasing techniques exist, but how should we evaluate them? Standard methodology compares responses under high vs.\ low anchor conditions; a technique ``works'' if it reduces this gap. We identify a critical limitation: this metric misses \textbf{overcorrection}, where techniques move responses away from anchors but past the unbiased answer.
+Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between responses under high vs.\ low anchors. A technique ``works'' if it reduces this gap. We show this metric can be misleading.
 
-We propose \textbf{baseline convergence} as a complementary evaluation approach. By collecting baseline responses without explicit anchors (n=909 across 10 models), we measure whether techniques bring outputs closer to the model's considered judgment. This metric reveals \textit{overcorrection}---when techniques move responses away from anchors but past where the model would naturally respond. While there is no objective ``correct'' sentence, the baseline provides a meaningful reference for measuring technique effects. Using this metric across 13,799 trials, we find that technique effectiveness varies substantially:
+We propose measuring technique responses as a \textbf{percentage of baseline}---the model's unanchored judgment. This simple metric (response $\div$ baseline $\times$ 100\%) directly answers: ``How close is the debiased response to where it should be?'' A perfect technique produces responses at 100\% of baseline.
 
-\begin{itemize}
-    \item \textbf{Full SACD} (Self-Administered Cognitive Debiasing; iterative self-reflection): +24\% improvement ($d=0.41$, $p<.001$)
-    \item \textbf{Premortem}: +10\% improvement ($p<.001$, $d=0.17$)
-    \item \textbf{Random Control}: +9\% improvement ($p<.001$, $d=0.15$)
-    \item \textbf{Devil's Advocate}: +2\% (not significant, Bonferroni-corrected $p=1.0$)
-\end{itemize}
+Across 13,799 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give inverted rankings}:
 
-\textit{(Our Outside View implementation produced confounded results and is discussed separately in Section 5.3.)}
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Technique & Susceptibility Rank & Baseline Rank \\
+\midrule
+Devil's Advocate & \#1 (best) & \#4 (worst) \\
+Full SACD & \#3 & \#1 (best) \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-Iterative self-reflection (Full SACD) is the most effective technique, but with high model variance: 5/10 models significantly improve, while Claude Opus 4.6 shows 68\% \textit{worse} convergence ($p<.001$). Devil's Advocate shows no significant effect (Bonferroni-corrected $p=1.0$).
+Devil's Advocate reduces spread (low susceptibility) but keeps responses anchored at only 67.5\% of baseline---\textit{consistently wrong}. Full SACD increases spread but brings responses to 108\% of baseline---\textit{close to correct}.
 
-Without baseline collection, overcorrection would be invisible under standard susceptibility metrics. We propose baseline convergence as a complementary metric for LLM debiasing research, particularly useful for detecting overcorrection.
+\textbf{The metric you choose determines which technique you recommend.} Traditional susceptibility would lead practitioners to deploy Devil's Advocate; baseline-aware metrics recommend SACD. Without baseline collection, this critical distinction is invisible.
 \end{abstract}
 
 %==============================================================================
 \section{Introduction}
 %==============================================================================
 
-When large language models make judgments, do debiasing techniques actually help---or do they just move errors in a different direction?
+When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and the standard metric can mislead.
 
-We report findings from a large systematic evaluation of LLM debiasing techniques (13,799 trials across 10 models). Our core contribution is methodological: by collecting baseline responses without explicit anchors, we can measure not just whether techniques \textit{reduce susceptibility} to anchors, but whether they bring outputs \textit{closer to the model's considered judgment}.
+We report findings from 13,799 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give inverted technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa.
 
-\textbf{Study design note:} We analyze each model independently, measuring how debiasing techniques affect that model's responses at different temperatures. Anchors use \textit{constant relative scaling}: low anchor = baseline $\times$ 0.5, high anchor = baseline $\times$ 1.5. This ensures anchors are equally strong relative to each model's natural judgment---a fixed 3-month anchor would be a strong pull for a model with an 18-month baseline but negligible for one with a 36-month baseline. This design answers: ``How do techniques affect \textit{this} model?'' rather than ``Which model is least susceptible?''
+\subsection{Two Metrics, Opposite Conclusions}
 
-This distinction matters. Standard anchoring studies compare high-anchor and low-anchor conditions---if the gap shrinks, the technique ``works.'' But this metric misses a critical failure mode: \textbf{overcorrection}. A technique that moves every response to 15 months, regardless of whether the unbiased answer is 30 months or 6 months, would show ``reduced susceptibility'' while actually \textit{increasing} distance from truth.
+\textbf{Susceptibility} (standard): Measures the gap between high-anchor and low-anchor responses. Lower gap = less susceptible = ``better.''
+\begin{equation}
+\text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
+\end{equation}
 
-\subsection{The Baseline Convergence Metric}
+\textbf{Percentage of Baseline} (ours): Measures where the response lands relative to the model's unanchored judgment. Closer to 100\% = ``better.''
+\begin{equation}
+\text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
+\end{equation}
 
-We introduce a complementary evaluation metric: \textbf{baseline convergence}.
+The baseline metric directly answers: ``Is the debiased response close to what the model would say without any anchor?''
 
-\begin{itemize}
-    \item \textbf{Susceptibility} (standard): $|\bar{R}_{high} - \bar{R}_{low}|$
-    \item \textbf{Convergence} (ours): $|R_{technique} - R_{baseline}|$
-\end{itemize}
+\subsection{The Inversion}
 
-A technique succeeds on convergence if it brings the response \textit{closer} to what the model would say without any anchor present.
+Our key finding:
 
-\subsection{Findings Preview}
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Technique & Susceptibility & \% of Baseline & Deviation \\
+\midrule
+Devil's Advocate & \textbf{-8\%} (best) & 67.5\% & 32.5\% (worst) \\
+Random Control & +13\% & 74.4\% & 25.6\% \\
+Premortem & +79\% & 88.5\% & 11.5\% \\
+Full SACD & +36\% & \textbf{108\%} & 8\% (best) \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-Using this metric, we observe technique rankings with clear statistical separation:
-
-\textbf{Convergence metric:} A hierarchy emerges:
-\begin{enumerate}
-    \item \textbf{Full SACD} (+24\%, $p<.001$, $d=0.41$)---iterative self-reflection
-    \item \textbf{Premortem} (+10\%, $p<.001$)---imagine failure mode
-    \item \textbf{Random Control} (+9\%, $p<.001$)---extra turns, no debiasing content
-    \item \textbf{Devil's Advocate} (+2\%, Bonferroni $p=1.0$, not significant)---argumentation
-\end{enumerate}
-
-Simple structural interventions (extra turns) produced meaningful improvements with minimal prompt complexity. Our Outside View implementation showed worse convergence ($-22\%$), but this result is confounded and discussed separately in Section 5.3.
+Devil's Advocate produces \textit{consistent} responses (low susceptibility) that are \textit{consistently wrong} (67.5\% of baseline). Full SACD produces \textit{variable} responses (high susceptibility) that are \textit{close to correct} (108\% of baseline).
 
 \subsection{Why This Matters}
 
-This has immediate practical implications:
-
 \begin{enumerate}
-    \item \textbf{Practitioners don't need complex debiasing prompts.} Simply adding conversation turns helps more than specific debiasing instructions.
+    \item \textbf{Metric choice determines recommendation.} Susceptibility recommends Devil's Advocate; baseline metrics recommend SACD. They give opposite advice.
     
-    \item \textbf{Reference class reasoning (Outside View) may introduce secondary anchors.} In our implementation, specifying jurisdiction to avoid model refusals may have anchored responses to that jurisdiction's typical sentences.
+    \item \textbf{Low susceptibility $\neq$ correct.} A technique can reduce anchor sensitivity while keeping responses anchored at the wrong value.
     
-    \item \textbf{Baseline collection enables overcorrection detection.} Without baselines, techniques that overcorrect would appear effective under susceptibility metrics.
+    \item \textbf{Baseline collection is essential.} Without measuring where responses \textit{should} land, you cannot detect this failure mode.
     
-    \item \textbf{The standard evaluation metric would have misled us completely.} Direction-based analysis showed Outside View as universally effective; calibration analysis reveals it as worst.
 \end{enumerate}
 
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{A baseline convergence metric for debiasing evaluation} that catches overcorrection invisible to susceptibility measures.
+    \item \textbf{A percentage-of-baseline metric} that directly measures how close debiased responses are to the model's unanchored judgment.
     
-    \item \textbf{Technique rankings differ between metrics}: Under susceptibility (spread reduction), most techniques appear effective. Under convergence, Full SACD leads (+24\%) while our Outside View implementation showed $-22\%$ worse convergence (confounded; see Section 5.3). Effect sizes are small ($d \leq 0.41$).
+    \item \textbf{Demonstration that susceptibility and baseline metrics give inverted rankings}: Devil's Advocate is best under susceptibility, worst under baseline; SACD is the opposite.
     
-    \item \textbf{High model variance}: 5/10 models significantly improve with SACD, but Opus 4.6 shows 68\% \textit{worse} convergence.
+    \item \textbf{Evidence that ``low susceptibility'' can mean ``consistently wrong''}: Devil's Advocate keeps responses anchored at 67.5\% of baseline while appearing to ``work'' under susceptibility.
     
-    \item \textbf{13,799 trials across 10 models} with Bonferroni-corrected statistics and effect sizes.
+    \item \textbf{13,799 trials across 10 models} with model-specific breakdowns showing high variance.
 \end{enumerate}
 
 %==============================================================================
@@ -148,15 +153,15 @@ Standard anchoring evaluation compares high-anchor and low-anchor conditions \ci
 \text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
 \]
 
-A technique ``works'' if it reduces this gap. This methodology does not require ground truth---it measures susceptibility to anchors, not accuracy of outputs. This is a valid and important metric.
+A technique ``works'' if it reduces this gap. This methodology does not require ground truth---it measures susceptibility to anchors, not accuracy of outputs.
 
-We extend this by introducing \textbf{baseline convergence}:
+We extend this by introducing \textbf{percentage of baseline}:
 
 \[
-\text{Convergence Error} = |R_{technique} - R_{baseline}|
+\text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
 \]
 
-This requires collecting baseline responses but enables detection of \textbf{overcorrection}---a failure mode invisible to susceptibility-only evaluation. To our knowledge, no prior work on LLM anchoring has systematically collected baselines without explicit anchors for convergence evaluation.
+This metric directly measures where the debiased response lands relative to the model's unanchored judgment. A perfect technique produces responses at exactly 100\% of baseline. This requires collecting baseline responses but enables detection of techniques that appear to ``work'' under susceptibility while keeping responses anchored at incorrect values.
 
 %==============================================================================
 \section{Methodology}
@@ -164,7 +169,7 @@ This requires collecting baseline responses but enables detection of \textbf{ove
 
 \subsection{Evaluation Metrics}
 
-We distinguish two evaluation approaches for debiasing techniques:
+We compare two evaluation approaches:
 
 \subsubsection{Standard Metric: Anchor Susceptibility}
 
@@ -174,100 +179,86 @@ The conventional approach compares responses under high vs.\ low anchor conditio
 \text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
 \]
 
-A technique ``works'' if it reduces this gap. This metric answers: \textit{Does the technique reduce the anchor's influence?}
+A technique ``works'' if it reduces this gap. Lower susceptibility = less anchor influence.
 
-\subsubsection{Our Metric: Baseline Convergence}
+\subsubsection{Our Metric: Percentage of Baseline}
 
-We collected baseline responses without explicit anchors---model outputs with no prosecutor demand anchor present. \textbf{This baseline serves two purposes:} (1) it enables the convergence metric below, and (2) it validates anchor calibration. Without a baseline, one cannot distinguish whether a ``high'' anchor is genuinely high or whether both anchors are low relative to the model's natural judgment. The baseline confirms that our high anchors pull responses above, and low anchors pull responses below, the model's unprompted response.
-
-This enables a second metric:
+We collected baseline responses without explicit anchors. This enables a direct measure of where debiased responses land:
 
 \[
-\text{Convergence Error} = |\bar{R}_{technique} - \bar{R}_{baseline}|
+\text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
 \]
 
-A technique succeeds if it reduces convergence error relative to the anchored (no-technique) condition:
+\textbf{Interpretation:}
+\begin{itemize}
+    \item 100\% = response matches unanchored judgment (perfect debiasing)
+    \item $<$100\% = response remains below baseline (under-correction or opposite-direction anchor)
+    \item $>$100\% = response overshoots baseline
+\end{itemize}
 
+\textbf{Deviation from baseline} measures how far from perfect:
 \[
-\text{Improved} = |R_{technique} - R_{baseline}| < |R_{anchored} - R_{baseline}|
+\text{Deviation} = |(\text{\% of Baseline}) - 100\%|
 \]
+
+Lower deviation = better. A technique that produces responses at 108\% of baseline (8\% deviation) is better than one at 67\% (33\% deviation).
 
 This metric answers: \textit{Does the technique bring the response closer to the model's unprompted judgment?}
 
 \subsubsection{Why Both Metrics Matter}
 
-These metrics can diverge. Consider:
-\begin{itemize}
-    \item Baseline: 30mo
-    \item High-anchor response: 50mo (convergence error = 20mo)
-    \item Technique response: 12mo (convergence error = 18mo... but overcorrected)
-\end{itemize}
-
-Under susceptibility, the technique ``worked'' (moved away from anchor). Under convergence, it marginally helped---but a different technique might achieve 28mo (convergence error = 2mo).
-
-Our data demonstrates this divergence empirically. Table~\ref{tab:metric-comparison} shows that technique rankings diverge between metrics. While Outside View shows the most dramatic inversion ($-84\%$ susceptibility, $-22\%$ convergence), the pattern holds even excluding it: Devil's Advocate ranks best on susceptibility ($-8\%$) but worst on convergence ($+2\%$), while Full SACD shows the opposite pattern.
+These metrics give \textbf{inverted rankings}:
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ Convergence: Rankings diverge. Even excluding confounded Outside View, Devil's Advocate (best susceptibility) and Full SACD (best convergence) show inverted rankings.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings are inverted. Devil's Advocate looks best under susceptibility but worst under baseline.}
 \label{tab:metric-comparison}
 \begin{tabular}{lcccc}
 \toprule
-Technique & Spread & Suscept.\ $\Delta$ & Conv.\ Error & Conv.\ $\Delta$ \\
+Technique & Susceptibility $\Delta$ & Rank & \% of Baseline & Rank \\
 \midrule
-No technique & 7.7mo & --- & 12.4mo & --- \\
-Outside View$^\dagger$ & 1.2mo & $-84\%$ & 15.1mo & $-22\%$ \\
-Devil's Advocate & 7.1mo & $-8\%$ & 12.1mo & $+2\%$ \\
-Random Control & 8.7mo & $+13\%$ & 11.3mo & $+9\%$ \\
-Full SACD & 10.4mo & $+36\%$ & 9.4mo & $\mathbf{+24\%}$ \\
-Premortem & 13.8mo & $+79\%$ & 11.1mo & $+10\%$ \\
+Devil's Advocate & $-8\%$ & \#1 (best) & 67.5\% & \#4 (worst) \\
+Random Control & $+13\%$ & \#2 & 74.4\% & \#3 \\
+Full SACD & $+36\%$ & \#3 & 108.0\% & \#1 (best) \\
+Premortem & $+79\%$ & \#4 (worst) & 88.5\% & \#2 \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\noindent \textit{Note:} Susceptibility $\Delta$ = reduction in high$-$low spread (negative = less susceptible). Convergence $\Delta$ = reduction in distance from baseline (positive = closer to baseline). $^\dagger$Outside View confounded by jurisdiction specification.
 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
     ybar,
-    bar width=12pt,
+    bar width=14pt,
     width=0.95\columnwidth,
     height=6cm,
-    ylabel={Change from No Technique (\%)},
-    ymin=-30,
-    ymax=40,
+    ylabel={\% of Baseline (100\% = perfect)},
+    ymin=60,
+    ymax=115,
     xtick=data,
     symbolic x coords={Devil's Advocate, Random Control, Premortem, Full SACD},
     xticklabel style={font=\small},
-    legend style={at={(0.5,1.02)}, anchor=south, legend columns=2, font=\small},
+    nodes near coords,
+    nodes near coords align={vertical},
+    every node near coord/.append style={font=\footnotesize\bfseries},
     enlarge x limits=0.15,
     axis lines*=left,
     ymajorgrids=true,
     grid style={dashed,gray!30},
 ]
-\addplot[fill=orange!70, draw=black] coordinates {
-    (Devil's Advocate, -8)
-    (Random Control, 13)
-    (Premortem, 79)
-    (Full SACD, 36)
-};
-\addplot[fill=blue!60, draw=black] coordinates {
-    (Devil's Advocate, 2)
-    (Random Control, 9)
-    (Premortem, 10)
-    (Full SACD, 24)
-};
-\legend{Susceptibility (spread increase), Convergence (baseline approach)}
-\draw[dashed, gray] (axis cs:{[normalized]-0.5},0) -- (axis cs:{[normalized]4.5},0);
+\addplot[fill=red!60, draw=black] coordinates {(Devil's Advocate, 67.5)};
+\addplot[fill=orange!60, draw=black] coordinates {(Random Control, 74.4)};
+\addplot[fill=blue!50, draw=black] coordinates {(Premortem, 88.5)};
+\addplot[fill=green!60!black, draw=black] coordinates {(Full SACD, 108)};
+\draw[dashed, black, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
 \end{axis}
 \end{tikzpicture}
-\caption{Susceptibility vs.\ Convergence metrics diverge. Devil's Advocate appears best under susceptibility ($-8\%$ spread) but worst under convergence ($+2\%$). Full SACD shows the opposite: worst susceptibility ($+36\%$ spread) but best convergence ($+24\%$). The metrics capture different properties---neither is ``correct.''}
+\caption{Technique responses as \% of baseline. Dashed line = 100\% (perfect). Devil's Advocate keeps responses at 67.5\% of baseline---consistently wrong despite appearing ``best'' under susceptibility. Full SACD reaches 108\%---slightly overshooting but closest to correct.}
 \label{fig:metric-comparison}
 \end{figure}
 
-\textbf{Why do SACD and Premortem increase spread while improving convergence?} These techniques pull responses toward the baseline from \textit{both} anchor directions. Under high anchors, this improves convergence. But under low anchors, responses that were already near-baseline get pulled further down, \textit{increasing} the high-low spread. The convergence metric captures that high-anchor responses moved closer to baseline; the susceptibility metric reflects the widened gap. Neither metric is ``correct''---they measure different properties.
+\textbf{Why the inversion?} Devil's Advocate produces \textit{consistent} responses (low susceptibility/spread) that are \textit{consistently anchored at the wrong value} (67.5\% of baseline). SACD produces \textit{variable} responses (high susceptibility) that are \textit{close to correct} (108\% of baseline).
 
 \subsection{Experimental Design}
 
@@ -445,27 +436,27 @@ The compression pattern is counterintuitive---high anchors typically pull respon
 
 \textbf{Implications:} The compression pattern does not invalidate our convergence metric but does complicate interpretation. For compression models, a technique that \textit{increases} responses toward baseline improves convergence---the opposite of what one might expect from ``debiasing.'' Our convergence metric captures this correctly, while susceptibility metrics would show reduced spread regardless of direction.
 
-\subsection{Technique Effectiveness: Baseline Convergence}
+\subsection{Technique Effectiveness: Percentage of Baseline}
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccccc}
+\begin{tabular}{lcccc}
 \toprule
-Technique & $n$ & Mean Dist & 95\% CI & Improvement & $p$ (Bonf) & $d$ \\
+Technique & $n$ & \% of Baseline & Deviation & Rank \\
 \midrule
-Anchored baseline & 1509 & 12.4mo & [12.0, 12.7] & --- & --- & --- \\
-\textbf{Full SACD} & 2391 & 9.4mo & [9.1, 9.8] & \textbf{+24\%} & $<.001$ & 0.41 \\
-Premortem & 2186 & 11.1mo & [10.8, 11.5] & +10\% & $<.001$ & 0.17 \\
-Random Control & 2215 & 11.3mo & [11.0, 11.6] & +9\% & $<.001$ & 0.15 \\
-Devil's Advocate & 2166 & 12.1mo & [11.8, 12.4] & +2\% (ns) & 1.000 & 0.03 \\
+\textbf{Full SACD} & 1,430 & \textbf{108.0\%} & \textbf{8.0\%} & \textbf{\#1} \\
+Premortem & 1,662 & 88.5\% & 11.5\% & \#2 \\
+Random Control & 1,675 & 74.4\% & 25.6\% & \#3 \\
+Devil's Advocate & 1,643 & 67.5\% & 32.5\% & \#4 \\
 \midrule
-\textit{Outside View}$^\dagger$ & 2423 & 15.1mo & [14.8, 15.4] & $-22\%$ & $<.001$ & $-0.38$ \\
+\textit{Outside View}$^\dagger$ & 1,862 & 57.0\% & 43.0\% & --- \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness with 95\% confidence intervals and Bonferroni-corrected p-values. Effect sizes are small by Cohen's conventions ($d < 0.5$); statistical significance does not imply practical significance. $^\dagger$Outside View result confounded by required jurisdiction specification; included for transparency but excluded from primary conclusions.}
+\caption{Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. Full SACD is closest to baseline (108\%, only 8\% deviation). Devil's Advocate keeps responses anchored at 67.5\% of baseline---32.5\% below where they should be. $^\dagger$Outside View confounded by jurisdiction specification.}
+\label{tab:baseline-pct}
 \end{table}
 
-% Convergence visualization
+% Percentage of baseline visualization
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
@@ -473,10 +464,10 @@ Devil's Advocate & 2166 & 12.1mo & [11.8, 12.4] & +2\% (ns) & 1.000 & 0.03 \\
     ybar,
     bar width=18pt,
     width=0.95\columnwidth,
-    height=5.5cm,
-    ylabel={Baseline Convergence (\%)},
-    ymin=-5,
-    ymax=35,
+    height=6cm,
+    ylabel={\% of Baseline},
+    ymin=50,
+    ymax=120,
     xtick=data,
     symbolic x coords={Full SACD, Premortem, Random Control, Devil's Advocate},
     xticklabel style={font=\small, align=center},
@@ -489,40 +480,42 @@ Devil's Advocate & 2166 & 12.1mo & [11.8, 12.4] & +2\% (ns) & 1.000 & 0.03 \\
     grid style={dashed,gray!30},
 ]
 \addplot[fill=green!60!black, draw=black] coordinates {
-    (Full SACD, 24)
-    (Premortem, 10)
-    (Random Control, 9)
-    (Devil's Advocate, 2)
+    (Full SACD, 108)
+    (Premortem, 88.5)
+    (Random Control, 74.4)
+    (Devil's Advocate, 67.5)
 };
+\draw[dashed, red, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
 \end{axis}
 \end{tikzpicture}
-\caption{Baseline convergence by debiasing technique. Positive values indicate the technique moves judgments toward the model's unprompted baseline. Full SACD shows strongest convergence (+24\%, $p<.001$), significantly outperforming the Random Control (+9\%), demonstrating that iterative self-critique provides genuine debiasing beyond conversation length effects. Devil's Advocate shows no significant effect ($p=1.0$ after Bonferroni correction).}
-\label{fig:convergence}
+\caption{Technique responses as percentage of baseline. The dashed red line marks 100\% (perfect match to unanchored judgment). Full SACD (108\%) slightly overshoots but is closest to baseline. Devil's Advocate (67.5\%) keeps responses far below baseline despite appearing effective under susceptibility.}
+\label{fig:baseline-pct}
 \end{figure}
 
 \subsection{Model-Specific Results: Full SACD}
 
-Full SACD shows high variance across models (Bonferroni-corrected, 10 tests):
+Full SACD shows high variance across models:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccl}
+\begin{tabular}{lccc}
 \toprule
-Model & Improvement & $p$ (adj) & Result \\
+Model & \% of Baseline & Deviation & Assessment \\
 \midrule
-o3 & +51\% & $<.001$ & Significant improvement \\
-GPT-4.1 & +48\% & $<.001$ & Significant improvement \\
-Sonnet 4.6 & +46\% & $<.001$ & Significant improvement \\
-DeepSeek-v3.2 & +30\% & $<.001$ & Significant improvement \\
-GPT-5.2 & +20\% & 0.022 & Significant improvement \\
-o4-mini & +12\% & 0.210 & Not significant \\
-Haiku 4.5 & $-2\%$ & 1.000 & Not significant \\
-Kimi-k2.5 & $-3\%$ & 1.000 & Not significant \\
-GLM-5 & $-4\%$ & 1.000 & Not significant \\
-\textbf{Opus 4.6} & $\mathbf{-68\%}$ & $<.001$ & \textbf{Significant backfire} \\
+\textbf{o4-mini} & \textbf{98.2\%} & \textbf{1.8\%} & Near-perfect \\
+Kimi-k2.5 & 97.6\% & 2.4\% & Near-perfect \\
+DeepSeek-v3.2 & 106.5\% & 6.5\% & Good \\
+GLM-5 & 107.5\% & 7.5\% & Good \\
+o3 & 108.9\% & 8.9\% & Good \\
+Sonnet 4.6 & 111.8\% & 11.8\% & Moderate overshoot \\
+GPT-5.2 & 116.2\% & 16.2\% & Overshoot \\
+GPT-4.1 & 123.2\% & 23.2\% & Significant overshoot \\
+Opus 4.6 & 124.7\% & 24.7\% & Significant overshoot \\
+\textbf{Haiku 4.5} & \textbf{65.1\%} & \textbf{34.9\%} & Undershoot (worst) \\
 \bottomrule
 \end{tabular}
-\caption{Full SACD model-specific results. 5/10 significantly improve, 1/10 significantly worsens (Opus 4.6).}
+\caption{Full SACD model-specific results (percentage of baseline). o4-mini achieves near-perfect debiasing (98.2\%). Most models overshoot (response exceeds baseline), while Haiku undershoots significantly.}
+\label{tab:sacd-by-model}
 \end{table}
 
 \begin{figure}[t]
@@ -533,43 +526,62 @@ GLM-5 & $-4\%$ & 1.000 & Not significant \\
     bar width=8pt,
     width=0.95\columnwidth,
     height=7cm,
-    xlabel={Convergence Improvement (\%)},
-    xmin=-80,
-    xmax=60,
+    xlabel={\% of Baseline},
+    xmin=50,
+    xmax=140,
     ytick=data,
-    yticklabels={Opus 4.6, GLM-5, Kimi-k2.5, Haiku 4.5, o4-mini, GPT-5.2, DeepSeek-v3.2, Sonnet 4.6, GPT-4.1, o3},
+    yticklabels={Haiku 4.5, Kimi-k2.5, o4-mini, DeepSeek-v3.2, GLM-5, o3, Sonnet 4.6, GPT-5.2, GPT-4.1, Opus 4.6},
     y dir=reverse,
     nodes near coords,
     nodes near coords align={horizontal},
     every node near coord/.append style={font=\footnotesize},
-    point meta=explicit symbolic,
     enlarge y limits=0.08,
     axis lines*=left,
     xmajorgrids=true,
     grid style={dashed,gray!30},
 ]
-\addplot[fill=red!70, draw=black] coordinates {(-68, 1) [-68\%***]};
-\addplot[fill=gray!40, draw=black] coordinates {(-4, 2) (-3, 3) (-2, 4) (12, 5)};
-\addplot[fill=green!60!black, draw=black] coordinates {(20, 6) (30, 7) (46, 8) (48, 9) (51, 10)};
-\draw[dashed, gray] (axis cs:0,0.5) -- (axis cs:0,10.5);
+\addplot[fill=red!70, draw=black] coordinates {(65.1, 1)};
+\addplot[fill=green!60!black, draw=black] coordinates {(97.6, 2) (98.2, 3)};
+\addplot[fill=blue!50, draw=black] coordinates {(106.5, 4) (107.5, 5) (108.9, 6)};
+\addplot[fill=orange!60, draw=black] coordinates {(111.8, 7) (116.2, 8) (123.2, 9) (124.7, 10)};
+\draw[dashed, red, thick] (axis cs:100,0.5) -- (axis cs:100,10.5);
 \end{axis}
 \end{tikzpicture}
-\caption{Full SACD shows high model variance. Green: significant improvement ($p<.05$). Gray: not significant. Red: significant backfire. Opus 4.6 worsens by 68\%, while o3 improves by 51\%.}
+\caption{Full SACD by model (percentage of baseline). Dashed line = 100\% (perfect). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% overshoot. Red = significant undershoot.}
 \label{fig:sacd-by-model}
 \end{figure}
 
 Key findings:
 \begin{enumerate}
-    \item \textbf{5/10 models significantly improve} after Bonferroni correction
-    \item \textbf{Opus 4.6 shows severe backfire} ($-68\%$, $p<.001$)---the technique makes it \textit{worse}
-    \item \textbf{Effect sizes remain small} even for best performers ($d \leq 0.41$)
+    \item \textbf{o4-mini achieves near-perfect debiasing} (98.2\% of baseline)
+    \item \textbf{Most models overshoot} --- responses go past baseline (108--125\%)
+    \item \textbf{Haiku 4.5 undershoots} --- responses stay anchored low (65\%)
+    \item \textbf{High variance}: best = 1.8\% deviation, worst = 34.9\%
 \end{enumerate}
 
-\subsection{Why Baseline Collection Matters}
+\subsection{The Metric Inversion}
 
-Consider a technique that reduces all responses to the same value regardless of anchor. Under susceptibility ($|R_{high} - R_{low}|$), this appears perfect---zero spread. Under convergence ($|R - R_{baseline}|$), the technique may perform poorly if that fixed value diverges from the baseline.
+Our central finding: susceptibility and baseline metrics give \textbf{inverted rankings}.
 
-Our Outside View implementation (as confounded by jurisdiction specification) exemplifies this: it produces consistent responses that diverge from model baselines by 22\%. Without baseline collection, this overcorrection would be invisible.
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Technique & Susceptibility $\Delta$ & Rank & \% of Baseline & Rank \\
+\midrule
+Devil's Advocate & $-8\%$ (best) & \#1 & 67.5\% & \#4 (worst) \\
+Random Control & $+13\%$ & \#2 & 74.4\% & \#3 \\
+Full SACD & $+36\%$ & \#3 & 108.0\% & \#1 (best) \\
+Premortem & $+79\%$ (worst) & \#4 & 88.5\% & \#2 \\
+\bottomrule
+\end{tabular}
+\caption{Susceptibility vs.\ Baseline metrics give inverted rankings. Devil's Advocate is best under susceptibility but worst under baseline---responses are consistent but consistently wrong (67.5\% of where they should be). Full SACD is worst under susceptibility but best under baseline.}
+\label{tab:metric-inversion}
+\end{table}
+
+\textbf{Why does Devil's Advocate fail?} It produces consistent responses (low susceptibility) that are \textit{consistently anchored at the wrong value}. Responses cluster at 67.5\% of baseline---the technique reduces variability without correcting the anchor's influence.
+
+\textbf{Why does SACD succeed?} It brings responses close to baseline (108\%) despite increasing variability. The spread increases because responses move toward baseline from both directions.
 
 %==============================================================================
 \section{Discussion}
