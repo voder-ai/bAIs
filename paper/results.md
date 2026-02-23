@@ -1,97 +1,125 @@
 # Results
 
+## Trial Overview
+
+We collected **14,324 trials** across 10 models, 5 techniques, and 3 temperature conditions (0, 0.7, 1.0). All conditions achieved n≥30 trials for statistical reliability.
+
 ## Baseline Responses
 
 Unanchored baseline responses varied substantially across models:
 
-| Model | Baseline Mean | Std Dev |
-|-------|---------------|---------|
-| o4-mini | 35.7mo | — |
-| o3 | 33.7mo | — |
-| GLM-5 | 31.8mo | — |
-| GPT-5.2 | 31.8mo | — |
-| Kimi-k2.5 | 30.7mo | — |
-| DeepSeek-v3.2 | 29.6mo | — |
-| Haiku 4.5 | 29.1mo | — |
-| GPT-4.1 | 25.1mo | — |
-| Sonnet 4.6 | 24.1mo | — |
-| MiniMax-m2.5 | 24.1mo | — |
-| Opus 4.6 | 18.0mo | — |
+- **o4-mini**: 35.7mo (highest)
+- **o3**: 33.7mo
+- **GLM-5**: 31.9mo
+- **GPT-5.2**: 31.8mo
+- **Kimi-k2.5**: 30.6mo
+- **DeepSeek-v3.2**: 29.6mo
+- **Haiku 4.5**: 29.1mo
+- **GPT-4.1**: 25.1mo
+- **Sonnet 4.6**: 24.1mo
+- **Opus 4.6**: 18.0mo (lowest)
 
-Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)—a 17.7mo spread. This variance underscores why calibration to model-specific baselines matters.
+Model baselines span 17.7mo—underscoring why calibration to model-specific baselines matters.
 
-## High-Anchor Responses (No Technique)
+## Anchored Response Distances
 
-Under high-anchor conditions without intervention:
+Without intervention, anchored prompts shift responses away from baseline:
 
-| Model | Baseline | Anchored | Calibration Error |
-|-------|----------|----------|-------------------|
-| GPT-5.2 | 31.8mo | 47.8mo | 16.0mo |
-| Haiku 4.5 | 29.1mo | 12.5mo | 16.6mo |
-| GLM-5 | 31.8mo | 44.9mo | 13.1mo |
-| GPT-4.1 | 25.1mo | 12.0mo | 13.1mo |
-| Sonnet 4.6 | 24.1mo | 12.0mo | 12.1mo |
-| Kimi-k2.5 | 30.7mo | 19.6mo | 11.1mo |
-| DeepSeek-v3.2 | 29.6mo | 22.2mo | 7.5mo |
-| Opus 4.6 | 18.0mo | 12.0mo | 6.0mo |
-| MiniMax-m2.5 | 24.1mo | 18.9mo | 5.3mo |
-| o3 | 33.7mo | 38.9mo | 5.2mo |
-| o4-mini | 35.7mo | 31.8mo | 3.9mo |
+**Average calibration error (|response - baseline|) by model:**
+- Haiku 4.5: 17.9mo (most susceptible)
+- Sonnet 4.6: 15.1mo
+- DeepSeek-v3.2: 13.2mo
+- GPT-5.2: 12.1mo
+- GPT-4.1: 11.3mo
+- GLM-5: 10.3mo
+- Kimi-k2.5: 8.9mo
+- o4-mini: 7.9mo
+- o3: 6.7mo
+- Opus 4.6: 6.0mo (least susceptible)
 
-Two anchor response patterns emerge:
-1. **Compression**: Response pulled below baseline (Anthropic models, GPT-4.1)
-2. **Inflation**: Response pulled above baseline (GPT-5.2, GLM-5, o3)
+## Technique Calibration Results
 
-## Technique Effectiveness: Calibration Metric
+### Primary Finding: Technique Taxonomy
 
-### High-Anchor Conditions
+Techniques ranked by calibration improvement (reduction in |response - baseline|):
 
-| Technique | Improved | Success Rate |
-|-----------|----------|--------------|
-| **Random Control** | 10/11 | **91%** |
-| **Premortem** | 9/11 | 82% |
-| **Full SACD** | 9/11 | 82% |
-| Devil's Advocate | 7/11 | 64% |
-| Outside View | 4/11 | **36%** |
+**Distance techniques** (dilute the anchor):
+- Full SACD: **+39%** improvement (10/10 models improved)
+- Random Control: **+30%** improvement (8/10 models improved)
 
-Random Control—which adds conversation turns without debiasing content—outperforms all content-based techniques.
+**Doubt techniques** (undermine without replacing):
+- Premortem: **+22%** improvement (8/10 models improved)
 
-### Low-Anchor Conditions
+**Confrontation techniques** (argue with anchor):
+- Devil's Advocate: **+2%** improvement (5/10 models improved)
 
-| Technique | Improved | Success Rate |
-|-----------|----------|--------------|
-| **Full SACD** | 11/11 | **100%** |
-| **Premortem** | 9/11 | 82% |
-| Random Control | 7/11 | 64% |
-| Outside View | 5/11 | 45% |
-| Devil's Advocate | 4/11 | 36% |
+**Replacement techniques** (swap anchors):
+- Outside View: **-29%** (WORSE calibration, only 3/10 models improved)
 
-Full SACD achieves perfect calibration under low anchors. Rankings shift between anchor conditions.
+### Key Insight: Structure Beats Content
 
-## Temperature × Technique Interaction
+Random Control—irrelevant elaboration about Arctic terns and Swiss watchmaking—outperforms purpose-built debiasing techniques (Devil's Advocate, Outside View).
 
-### High-Anchor Conditions
+This suggests ~30% of debiasing "effectiveness" in prior studies may be attributable to structural factors (more reasoning turns, token distance) rather than technique-specific content.
 
-| Technique | t=0 | t=0.7 | t=1 | Optimal |
-|-----------|-----|-------|-----|---------|
-| Random Control | **100%** | 80% | 91% | **t=0** |
-| Premortem | 70% | **80%** | 64% | t=0.7 |
-| Full SACD | 64% | **73%** | 64% | t=0.7 |
-| Devil's Advocate | 60% | 60% | 64% | t=1 |
-| Outside View | 30% | 30% | 36% | t=1 |
+## Model-Specific Results
 
-Key findings:
-1. **Random Control at t=0 achieves 100% success**—deterministic extra turns are optimal
-2. **Self-reflection techniques (SACD, Premortem) prefer t=0.7**—moderate variance aids deliberation
-3. **Outside View fails at all temperatures**—the technique itself is flawed, not the sampling
+### Full SACD (Universal Winner)
 
-## Comparison: Susceptibility vs. Calibration Metrics
+All 10 models improved:
+- Sonnet 4.6: +85%
+- DeepSeek-v3.2: +58%
+- GPT-4.1: +58%
+- o3: +54%
+- GLM-5: +28%
+- GPT-5.2: +24%
+- o4-mini: +21%
+- Haiku 4.5: +16%
+- Opus 4.6: +12%
+- Kimi-k2.5: +10%
 
-Under the standard susceptibility metric, Outside View appeared to "improve" all models by reducing the high-low gap. Under calibration:
+### Random Control (8/10 Improved)
 
-| Metric | Outside View Ranking |
-|--------|---------------------|
-| Susceptibility (|high - low|) | Best (11/11 "improved") |
-| Calibration (|response - baseline|) | **Worst** (4/11 improved) |
+Most models improved, but reasoning models showed slight worsening:
+- DeepSeek-v3.2: +60%
+- GLM-5: +59%
+- Kimi-k2.5: +42%
+- Opus 4.6: +37%
+- GPT-5.2: +34%
+- Sonnet 4.6: +28%
+- Haiku 4.5: +27%
+- GPT-4.1: +8%
+- o4-mini: -5%
+- o3: -12%
 
-This inversion demonstrates why baseline collection matters. Without baselines, we would have concluded Outside View was universally effective.
+### Outside View (3/10 Improved, 7/10 Worsened)
+
+Dramatic failures on reasoning models:
+- Sonnet 4.6: +77%
+- Haiku 4.5: +40%
+- Opus 4.6: +10%
+- GPT-4.1: -3%
+- DeepSeek-v3.2: -4%
+- GPT-5.2: -64%
+- Kimi-k2.5: -78%
+- o4-mini: -92%
+- GLM-5: -117%
+- o3: **-252%** (worst result in study)
+
+## The Calibration vs. Spread Paradox
+
+Outside View exemplifies why spread reduction is a flawed metric:
+
+**Spread reduction metric:** 85% improvement (excellent)
+**Calibration metric:** -29% (worse than no intervention)
+
+The technique eliminates sensitivity to the *external* anchor by replacing it with an *internal* estimate. Spread decreases because responses converge—but they converge toward the wrong value.
+
+## Temperature Effects
+
+No consistent pattern emerged across models:
+- Some models showed improved calibration at higher temperatures
+- Others showed degradation
+- Full SACD remained effective across all temperature conditions
+
+Temperature optimization should be model-specific.
