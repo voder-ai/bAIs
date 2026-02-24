@@ -630,7 +630,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial but \#5 (worst) on Loan. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. Spread $\Delta$\% = change in high-low gap vs.\ no-technique baseline; negative = reduced susceptibility.}
+\caption{Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial but \#5 (worst) on Loan. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. Spread $\Delta$\% = change in high-low gap vs.\ no-technique baseline; negative = reduced susceptibility. $n \approx 120$ trials per technique per vignette (baseline: $n \approx 180$); see Table V1 for exact counts.$^*$Medical spread percentages are undefined (baseline spread $\approx 0$); shown for completeness but should be ignored.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -643,12 +643,12 @@ Domain & Technique & \% of Baseline & Deviation & Spread $\Delta$\% & Rank by De
 & random-control & 73.6\% & 26.4\% & +3\% & 5 \\
 & sacd & 57.1\% & 42.9\% & \textbf{$-$60\%} & 5 (worst) \\
 \midrule
-\multirow{5}{*}{Medical}
+\multirow{5}{*}{Medical$^*$}
 & baseline & 106.7\% & 6.7\% & --- & 4 \\
-& devils-advocate & 102.7\% & \textbf{2.7\%} & +1971\% & \textbf{1} \\
-& premortem & 106.2\% & 6.2\% & +5600\% & 3 \\
-& random-control & 106.5\% & 6.5\% & $-$13\% & 5 \\
-& sacd & 103.8\% & 3.8\% & $-$17757\% & 2 \\
+& devils-advocate & 102.7\% & \textbf{2.7\%} & --- & \textbf{1} \\
+& premortem & 106.2\% & 6.2\% & --- & 3 \\
+& random-control & 106.5\% & 6.5\% & --- & 5 \\
+& sacd & 103.8\% & 3.8\% & --- & 2 \\
 \midrule
 \multirow{5}{*}{Salary}
 & baseline & 104.8\% & \textbf{4.8\%} & --- & \textbf{1} \\
