@@ -589,7 +589,7 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 
 \subsection{Why Full SACD Works (and Fails)}
 
-Full SACD achieves the highest baseline proximity (Table~\ref{tab:technique-effectiveness}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
+Full SACD achieves the highest baseline proximity (Table~\ref{tab:baseline-pct}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
 
 \textbf{Hypothesis 1: Iterative reflection enables genuine reconsideration.} Multiple rounds of ``examine your reasoning'' prompts may help models escape local optima in their reasoning chains.
 
@@ -623,7 +623,7 @@ The compression phenomenon explains Devil's Advocate's favorable susceptibility 
 
 \subsection{Why Random Control Works}
 
-Random Control outperforms Devil's Advocate (Table~\ref{tab:technique-effectiveness}) despite having no debiasing content. \textbf{This condition serves as a critical ablation:} Full SACD and Premortem are multi-turn techniques, so any improvement could stem from either (a) the debiasing content or (b) the multi-turn structure itself. Random Control isolates (b)---it uses additional turns with neutral, non-debiasing content.
+Random Control outperforms Devil's Advocate (Table~\ref{tab:baseline-pct}) despite having no debiasing content. \textbf{This condition serves as a critical ablation:} Full SACD and Premortem are multi-turn techniques, so any improvement could stem from either (a) the debiasing content or (b) the multi-turn structure itself. Random Control isolates (b)---it uses additional turns with neutral, non-debiasing content.
 
 Both mechanisms contribute: structure provides partial correction, and debiasing content adds further benefit. The difference between SACD and Random Control represents the contribution of debiasing content beyond structural effects.
 
