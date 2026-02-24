@@ -33,9 +33,9 @@
 \maketitle
 
 \begin{abstract}
-Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between responses under high vs.\ low anchors. A technique ``works'' if it reduces this gap. We show this metric can be misleading.
+Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between responses under high vs.\ low anchors. A technique ``works'' if it reduces this gap. We show this metric alone is insufficient.
 
-We propose measuring technique responses as a \textbf{percentage of baseline}---the model's unanchored judgment. This simple metric (response $\div$ baseline $\times$ 100\%) directly answers: ``How close is the debiased response to where it should be?'' A perfect technique produces responses at 100\% of baseline.
+We propose a \textbf{complementary metric}: percentage of baseline---the model's unanchored judgment. This metric (response $\div$ baseline $\times$ 100\%) answers: ``How close is the debiased response to where it should be?'' A perfect technique produces responses at 100\% of baseline. \textbf{Both metrics are informative}: susceptibility measures response \textit{consistency} across anchors; baseline proximity measures response \textit{correctness}.
 
 Across 14,152 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}:
 
@@ -59,7 +59,7 @@ Devil's Advocate reduces spread (low susceptibility) but keeps responses anchore
 \section{Introduction}
 %==============================================================================
 
-When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and the standard metric can mislead.
+When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and using only one metric can be insufficient.
 
 We report findings from 14,152 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
 
@@ -104,7 +104,7 @@ Premortem & 45.2 (highest) & 91.6\% & 8.4\% \\
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{A percentage-of-baseline metric} for debiasing evaluation---simpler and more interpretable than distance-based alternatives.
+    \item \textbf{A complementary percentage-of-baseline metric} for debiasing evaluation---measuring proximity to unanchored judgment alongside traditional susceptibility.
     
     \item \textbf{Empirical demonstration of metric divergence} across 14,152 trials on 10 models, with model-specific breakdowns showing high variance.
 \end{enumerate}
@@ -185,18 +185,18 @@ These metrics give \textbf{divergent rankings}:
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). \textit{Spread} = gap between high-anchor and low-anchor responses in percentage-of-baseline space. \textit{Asymmetry} = qualitative pattern of anchor correction (see Table~\ref{tab:anchor-asymmetry}). 95\% CIs from bootstrap.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). \textit{Spread} = gap between high/low anchor responses$^\dagger$. $\Delta$ = change in spread relative to no-technique baseline (negative = reduced susceptibility). 95\% CIs from bootstrap for \% of baseline; spread values are point estimates. $^\dagger$Spread CIs not computed due to anchor-direction stratification complexity; per-anchor CIs in Table~\ref{tab:anchor-asymmetry}.}
 \label{tab:metric-comparison}
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-Technique & Spread & Asymmetry & Rank & \% of Baseline & Rank \\
+Technique & Spread & $\Delta$ & Rank & \% of Baseline & Rank \\
 \midrule
-\textit{No Technique (Anchored)} & \textit{26.0pp} & \textit{---} & \textit{ref} & \textit{72.9\%} & \textit{ref} \\
+\textit{No Technique} & \textit{26.0pp} & \textit{ref} & \textit{---} & \textit{72.9\%} & \textit{ref} \\
 \midrule
-Devil's Advocate & 23.7pp & lowest & \#1 & 63.6\% [62, 65] & \#4 \\
-Random Control & 30.1pp & --- & \#2 & 78.3\% [77, 80] & \#3 \\
-Premortem & 45.2pp & highest & \#4 & 91.6\% [90, 93] & \#2 \\
-Full SACD & 36.3pp & --- & \#3 & 93.7\% [92, 95] & \#1 \\
+Devil's Advocate & 23.7pp & $-$8.8\% & \#1 & 63.6\% [62, 65] & \#4 \\
+Random Control & 30.1pp & +15.8\% & \#2 & 78.3\% [77, 80] & \#3 \\
+Full SACD & 36.3pp & +39.6\% & \#3 & 93.7\% [92, 95] & \#1 \\
+Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -286,7 +286,22 @@ Full SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures. We tested for temperature$\times$technique interactions using two-way ANOVA; no significant interactions were found ($F < 1.5$, $p > 0.1$ for all technique comparisons). Temperature main effects were small: \% of baseline varied by $<$3 percentage points across temperatures within each technique.
+Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures unless otherwise noted. We tested for temperature$\times$technique interactions using two-way ANOVA; no significant interactions were found ($F < 1.5$, $p > 0.1$ for all technique comparisons). Temperature main effects were small ($<$3 percentage points):
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Technique & t=0 & t=0.7 & t=1.0 \\
+\midrule
+Devil's Advocate & 64.6\% & 66.0\% & 66.2\% \\
+Random Control & 77.9\% & 80.8\% & 80.7\% \\
+Premortem & 92.1\% & 93.3\% & 95.0\% \\
+Full SACD & 93.2\% & 94.1\% & 93.8\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Temperature does not materially affect technique rankings or the metric divergence finding.
 
 \subsubsection{Trial Counts and Procedure}
 
@@ -690,9 +705,9 @@ Our key findings from 14,152 trials across 10 models:
     \item \textbf{Baseline collection is essential}: Without it, systematic biases and model-specific failures are invisible.
 \end{enumerate}
 
-For practitioners: test techniques per-model before deployment. Measure responses as \% of baseline, not just susceptibility.
+For practitioners: test techniques per-model before deployment. Measure \textit{both} susceptibility and \% of baseline---they capture different aspects of technique effectiveness (consistency vs.\ correctness).
 
-For researchers: collect baselines without explicit anchors. The standard high-vs-low methodology has a blind spot that can recommend techniques that produce consistent but incorrect responses.
+For researchers: collect baselines without explicit anchors. Susceptibility alone has a blind spot: it can favor techniques that produce consistent responses that are consistently wrong. Baseline proximity complements susceptibility by revealing this failure mode.
 
 %==============================================================================
 \appendix
