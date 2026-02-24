@@ -33,26 +33,11 @@
 \maketitle
 
 \begin{abstract}
-Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between responses under high vs.\ low anchors. A technique ``works'' if it reduces this gap. We show this metric alone is insufficient.
+Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between responses under high vs.\ low anchors. We show this metric alone is insufficient.
 
-Following \citet{jacowitz1995}'s Anchoring Index methodology, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}---the model's unanchored judgment. This metric (response $\div$ baseline $\times$ 100\%) answers: ``How close is the debiased response to where it should be?'' A perfect technique produces responses at 100\% of baseline. \textbf{Both metrics are informative}: susceptibility measures response \textit{consistency} across anchors; baseline proximity measures how close responses are to the model's \textit{unanchored judgment}. Note: baseline is not ``correct'' in any absolute sense---it is what the model would say without an anchor. This is established methodology in human anchoring research; we show it matters for LLM evaluation.
+Following \citet{jacowitz1995}, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}. This metric answers: ``How close is the debiased response to the model's unanchored judgment?'' Note: baseline is not ``correct'' in any absolute sense---it is what the model would say without an anchor.
 
-Across 14,152 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}:
-
-\begin{center}
-\begin{tabular}{lcc}
-\toprule
-Technique & Susceptibility Rank & Baseline Rank \\
-\midrule
-Devil's Advocate & \#1 (best) & \#4 (worst) \\
-Full SACD & \#3 & \#1 (best) \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-Devil's Advocate reduces spread (low susceptibility) but keeps responses anchored far below baseline---\textit{consistently wrong}. Full SACD achieves responses closest to baseline but shows \textbf{bidirectional asymmetry}: undershooting from low anchors, overshooting from high anchors.
-
-\textbf{SACD and Premortem show similar baseline proximity}, with no statistically significant difference ($p = 0.054$, uncorrected). Model-specific variation is substantial---some models undershoot severely while others achieve near-perfect debiasing. Without baseline collection, none of these distinctions are visible. See Tables~\ref{tab:metric-comparison}--\ref{tab:sacd-by-model} for exact values.
+Across 14,152 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}: Devil's Advocate ranks \#1 by susceptibility but \#4 by baseline proximity (63.6\%); SACD ranks \#3 by susceptibility but \#1 by baseline proximity (93.7\%). Devil's Advocate produces consistent responses that are consistently far from baseline. SACD achieves responses closest to baseline but shows bidirectional asymmetry. Model-specific variation is substantial. Without baseline collection, none of these distinctions are visible.
 \end{abstract}
 
 %==============================================================================
@@ -687,7 +672,7 @@ Outside View performed worst despite recommendations in human debiasing literatu
     
     \item \textbf{Outside View confound.} See Section~\ref{sec:outside-view-confound}. Future work should test jurisdiction-neutral prompts.
     
-    \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure proximity to the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions.
+    \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure proximity to the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions. The baseline is a reference point, not a normative standard: 100\% of baseline means ``restored to unanchored state,'' not ``correct.'' This is consistent with anchoring research in general: the goal is to measure and mitigate anchor influence, not to establish objectively correct judgments.
     
     \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families. \textbf{Sensitivity analysis:} Excluding Opus 4.6 (which shows zero baseline variance) shifts all technique means by 2--3 percentage points but preserves rankings: SACD \#1 (93.4\%), Premortem \#2 (89.7\%), Random Control \#3 (77.0\%), Devil's Advocate \#4 (61.2\%).
     
