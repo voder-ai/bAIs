@@ -27,9 +27,9 @@ const TARGET_N = 30;
 const RESULTS_DIR = './results';
 
 const MODELS = [
-  'anthropic/claude-sonnet-4-5',  // Latest Sonnet (4.6 doesn't exist)
-  'anthropic/claude-opus-4-6', 
-  'anthropic/claude-haiku-4-5',
+  'anthropic/claude-sonnet-4-5',  // Mid-tier (4.6 doesn't exist)
+  'anthropic/claude-opus-4-6',    // Top-tier
+  // Haiku 4.5 excluded: refuses most vignettes (ethical/safety concerns)
 ];
 
 const TECHNIQUES = ['baseline', 'sacd', 'premortem', 'devils-advocate', 'random-control'];
