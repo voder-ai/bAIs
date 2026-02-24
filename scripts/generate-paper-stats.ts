@@ -463,6 +463,77 @@ if (vignetteTrials.length > 0) {
     console.log('');
   }
   
+  // 11. Debiasing Effectiveness: % of Baseline vs Spread Reduction
+  console.log('## 11. Debiasing Effectiveness Comparison\n');
+  console.log('Two metrics compared:\n');
+  console.log('- **% of Baseline**: How close to unanchored truth? (|response - baseline| / baseline)\n');
+  console.log('- **Spread Reduction**: Does H-L gap shrink? ((H-L)_technique vs (H-L)_baseline)\n');
+  
+  const vignetteTechniquesAll = ['baseline', 'devils-advocate', 'premortem', 'random-control', 'sacd'];
+  
+  for (const [vignette, trials] of Object.entries(byVignette).sort()) {
+    console.log(`### ${vignette.charAt(0).toUpperCase() + vignette.slice(1)}\n`);
+    
+    // Get the expected baseline value (from any trial's baseline field)
+    const expectedBaseline = trials[0]?.baseline || 0;
+    
+    // Calculate baseline spread (H-L for baseline technique)
+    const baselineTrials = trials.filter(t => t.technique === 'baseline');
+    const baselineLow = baselineTrials.filter(t => t.anchorType === 'low').map(t => t.response);
+    const baselineHigh = baselineTrials.filter(t => t.anchorType === 'high').map(t => t.response);
+    const baselineLowMean = baselineLow.length > 0 ? baselineLow.reduce((a, b) => a + b, 0) / baselineLow.length : NaN;
+    const baselineHighMean = baselineHigh.length > 0 ? baselineHigh.reduce((a, b) => a + b, 0) / baselineHigh.length : NaN;
+    const baselineSpread = !isNaN(baselineHighMean) && !isNaN(baselineLowMean) ? baselineHighMean - baselineLowMean : NaN;
+    
+    console.log(`**Expected unanchored baseline:** ${expectedBaseline.toFixed(1)}`);
+    console.log(`**Baseline spread (H-L):** ${isNaN(baselineSpread) ? '—' : baselineSpread.toFixed(1)}\n`);
+    
+    console.log('| Technique | Low Mean | High Mean | Spread (H-L) | Spread Δ% | Low % from baseline | High % from baseline | Avg % from baseline |');
+    console.log('|-----------|----------|-----------|--------------|-----------|---------------------|----------------------|---------------------|');
+    
+    for (const technique of vignetteTechniquesAll) {
+      const techTrials = trials.filter(t => t.technique === technique);
+      const lowTrials = techTrials.filter(t => t.anchorType === 'low').map(t => t.response);
+      const highTrials = techTrials.filter(t => t.anchorType === 'high').map(t => t.response);
+      
+      if (lowTrials.length === 0 && highTrials.length === 0) continue;
+      
+      const lowMean = lowTrials.length > 0 ? lowTrials.reduce((a, b) => a + b, 0) / lowTrials.length : NaN;
+      const highMean = highTrials.length > 0 ? highTrials.reduce((a, b) => a + b, 0) / highTrials.length : NaN;
+      const techSpread = !isNaN(highMean) && !isNaN(lowMean) ? highMean - lowMean : NaN;
+      
+      // Spread reduction % (negative = reduced spread, positive = increased spread)
+      const spreadDeltaPct = !isNaN(techSpread) && !isNaN(baselineSpread) && baselineSpread !== 0 
+        ? ((techSpread - baselineSpread) / Math.abs(baselineSpread)) * 100 
+        : NaN;
+      
+      // % deviation from expected baseline (0% = at baseline)
+      const lowPctFromBaseline = !isNaN(lowMean) && expectedBaseline !== 0 
+        ? ((lowMean - expectedBaseline) / expectedBaseline) * 100 
+        : NaN;
+      const highPctFromBaseline = !isNaN(highMean) && expectedBaseline !== 0 
+        ? ((highMean - expectedBaseline) / expectedBaseline) * 100 
+        : NaN;
+      const avgPctFromBaseline = !isNaN(lowPctFromBaseline) && !isNaN(highPctFromBaseline)
+        ? (Math.abs(lowPctFromBaseline) + Math.abs(highPctFromBaseline)) / 2
+        : NaN;
+      
+      const fmtSpreadDelta = isNaN(spreadDeltaPct) ? '—' : (spreadDeltaPct >= 0 ? '+' : '') + spreadDeltaPct.toFixed(0) + '%';
+      const fmtLowPct = isNaN(lowPctFromBaseline) ? '—' : (lowPctFromBaseline >= 0 ? '+' : '') + lowPctFromBaseline.toFixed(1) + '%';
+      const fmtHighPct = isNaN(highPctFromBaseline) ? '—' : (highPctFromBaseline >= 0 ? '+' : '') + highPctFromBaseline.toFixed(1) + '%';
+      const fmtAvgPct = isNaN(avgPctFromBaseline) ? '—' : avgPctFromBaseline.toFixed(1) + '%';
+      
+      console.log(`| ${technique} | ${isNaN(lowMean) ? '—' : lowMean.toFixed(1)} | ${isNaN(highMean) ? '—' : highMean.toFixed(1)} | ${isNaN(techSpread) ? '—' : techSpread.toFixed(1)} | ${fmtSpreadDelta} | ${fmtLowPct} | ${fmtHighPct} | ${fmtAvgPct} |`);
+    }
+    console.log('');
+    
+    // Interpretation
+    console.log('**Interpretation:**\n');
+    console.log('- Spread Δ% < 0 means technique reduces anchor spread (good for "reduces spread" metric)');
+    console.log('- Avg % from baseline closer to 0% means closer to unanchored truth (good for "% of baseline" metric)');
+    console.log('- These can conflict: a technique might reduce spread but still be far from baseline\n');
+  }
+  
   // Vignette summary
   console.log('## Vignette Summary\n');
   console.log(`- **Total vignette trials:** ${vignetteTrials.length}`);
