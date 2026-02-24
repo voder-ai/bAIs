@@ -534,7 +534,7 @@ To account for non-independence of observations within models, we fit a linear m
 y_{ij} = \beta_0 + \beta_{\text{technique}} + u_j + \epsilon_{ij}
 \end{equation}
 
-where $y_{ij}$ is the \% of baseline for trial $i$ in model $j$, $\beta_{\text{technique}}$ is the fixed effect for technique (reference: grand mean), $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ij} \sim N(0, \sigma^2_\epsilon)$ is the residual error. Analysis includes 6,410 trials across 10 models and 4 techniques.
+where $y_{ij}$ is the \% of baseline for trial $i$ in model $j$, $\beta_{\text{technique}}$ is the fixed effect for technique (reference: grand mean), $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ij} \sim N(0, \sigma^2_\epsilon)$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound).
 
 The intraclass correlation coefficient (ICC) is 0.17:
 \begin{equation}
@@ -543,12 +543,12 @@ The intraclass correlation coefficient (ICC) is 0.17:
 
 This indicates that \textbf{17\% of variance} in \% of baseline is attributable to model differences.
 
-\textbf{Fixed effects} (technique, relative to grand mean of 83.8\%):
+\textbf{Fixed effects} (technique, relative to grand mean of 81.8\%):
 \begin{itemize}
-    \item Full SACD: $+24.2\%$ (95\% CI [105.9, 110.1])
-    \item Premortem: $+4.8\%$
-    \item Random Control: $-9.4\%$
-    \item Devil's Advocate: $-16.3\%$
+    \item Full SACD: $+11.9$ pp (93.7\% of baseline)
+    \item Premortem: $+9.8$ pp (91.6\%)
+    \item Random Control: $-3.5$ pp (78.3\%)
+    \item Devil's Advocate: $-18.2$ pp (63.6\%)
 \end{itemize}
 
 The ranking is robust after accounting for model-level variance. A model with random slopes for technique would capture model $\times$ technique interactions (e.g., SACD works differently on Haiku vs.\ Opus); our per-model breakdowns in Table~\ref{tab:sacd-by-model} and Figure~\ref{fig:sacd-by-model} provide this detail descriptively. The ICC justifies our recommendation to test per-model before deployment.
