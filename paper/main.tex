@@ -202,16 +202,16 @@ These metrics give \textbf{inverted rankings}:
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings are inverted. Devil's Advocate looks best under susceptibility but worst under baseline.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings are inverted. Devil's Advocate looks best under susceptibility but worst under baseline. Susceptibility $\Delta$ = percent change in high-low spread relative to no-technique baseline (8.2mo). 95\% CIs from bootstrap.}
 \label{tab:metric-comparison}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Technique & Susceptibility $\Delta$ & Rank & \% of Baseline & Rank \\
+Technique & Spread & Suscept.\ $\Delta$ & Rank & \% of Baseline & Rank \\
 \midrule
-Devil's Advocate & $-8\%$ & \#1 (best) & 67.5\% & \#4 (worst) \\
-Random Control & $+13\%$ & \#2 & 74.4\% & \#3 \\
-Full SACD & $+36\%$ & \#3 & 108.0\% & \#1 (best) \\
-Premortem & $+79\%$ & \#4 (worst) & 88.5\% & \#2 \\
+Devil's Advocate & 7.0mo [6.0, 8.0] & $-14\%$ & \#1 & 67.5\% [65, 70] & \#4 \\
+Random Control & 8.6mo [7.3, 9.7] & $+5\%$ & \#2 & 74.4\% [72, 77] & \#3 \\
+Premortem & 11.5mo [10.3, 12.7] & $+40\%$ & \#3 & 88.5\% [86, 91] & \#2 \\
+Full SACD & 18.6mo & $+127\%$ & \#4 & 108.0\% [106, 111] & \#1 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -635,7 +635,7 @@ Outside View performed worst despite being recommended in human debiasing litera
     
     \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). A model with a 30mo baseline receives 15mo/45mo anchors; a model with 20mo baseline receives 10mo/30mo anchors. This ensures equal relative anchor strength, enabling valid within-model comparisons. Future work should validate findings with fixed absolute anchors to test generalization.
     
-    \item \textbf{Metric inversion holds without Outside View.} While Outside View shows the most dramatic divergence, the core finding---that metrics give opposite rankings---holds even excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility ($-8\%$ spread) but \textit{worst} on \% of baseline (67.5\%); Full SACD ranks poorly on susceptibility ($+36\%$ spread) but \textit{best} on \% of baseline (108\%). The inversion is robust.
+    \item \textbf{Metric inversion holds without Outside View.} While Outside View shows the most dramatic divergence, the core finding---that metrics give opposite rankings---holds even excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility ($-14\%$ spread) but \textit{worst} on \% of baseline (67.5\%); Full SACD ranks \textit{worst} on susceptibility ($+127\%$ spread) but \textit{best} on \% of baseline (108\%). The inversion is robust.
     
     \item \textbf{Outside View confound.} Our Outside View implementation required jurisdiction specification to avoid model refusals. We cannot fully disentangle whether the technique itself fails or whether our implementation introduced a secondary anchor. Future work should test jurisdiction-neutral Outside View prompts.
     
@@ -662,8 +662,8 @@ Based on our findings in the judicial sentencing domain (generalization to other
 We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility (spread reduction) and \% of baseline give inverted rankings:
 
 \begin{itemize}
-    \item \textbf{Devil's Advocate}: Best on susceptibility ($-8\%$ spread), worst on baseline (67.5\%)
-    \item \textbf{Full SACD}: Poor on susceptibility ($+36\%$ spread), best on baseline (108\%)
+    \item \textbf{Devil's Advocate}: Best on susceptibility ($-14\%$ spread), worst on baseline (67.5\%)
+    \item \textbf{Full SACD}: Worst on susceptibility ($+127\%$ spread), best on baseline (108\%)
 \end{itemize}
 
 Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored at 67.5\% of where they should be. Full SACD's 108\% average appears close to correct, but \textbf{masks bidirectional overcorrection}: from low anchors it undershoots (73.7\%), from high anchors it overshoots (141.1\%).
