@@ -5,20 +5,6 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Author and Others(2025{\natexlab{a}})]{llm-bayesian-2025}
-Anonymous Author and Others.
-\newblock Llms are bayesian, in expectation, not in realization.
-\newblock \emph{arXiv preprint arXiv:2507.11768}, 2025{\natexlab{a}}.
-\newblock Demonstrates that positional encodings break exchangeability in LLM
-  inference.
-
-\bibitem[Author and Others(2025{\natexlab{b}})]{llm-judge-overconfidence-2025}
-Anonymous Author and Others.
-\newblock Overconfidence in llm-as-a-judge.
-\newblock \emph{arXiv preprint arXiv:2508.06225}, 2025{\natexlab{b}}.
-\newblock Shows LLMs systematically overstate confidence when self-judging;
-  proposes ensemble Fuser approach.
-
 \bibitem[Binz and Schulz(2023)]{binz2023}
 Marcel Binz and Eric Schulz.
 \newblock Using cognitive psychology to understand {GPT-3}.
@@ -30,6 +16,13 @@ Marcel Binz and Eric Schulz.
 Yifan Chen et~al.
 \newblock Cognitive biases in {LLM}-assisted software development.
 \newblock \emph{arXiv preprint arXiv:2601.08045}, 2025.
+
+\bibitem[Chlon et~al.(2025)Chlon, Rashidi, Khamis, and
+  Awada]{llm-bayesian-2025}
+Leon Chlon, Sarah Rashidi, Zein Khamis, and MarcAntonio~M. Awada.
+\newblock {LLMs} are {Bayesian}, in expectation, not in realization.
+\newblock \emph{arXiv preprint arXiv:2507.11768}, 2025.
+\newblock \doi{10.48550/arXiv.2507.11768}.
 
 \bibitem[Englich et~al.(2006)Englich, Mussweiler, and Strack]{englich2006}
 Birte Englich, Thomas Mussweiler, and Fritz Strack.
@@ -87,6 +80,13 @@ Peiyang Song, Pengrui Han, and Noah Goodman.
 \newblock Large language model reasoning failures.
 \newblock \emph{arXiv preprint arXiv:2602.06176}, 2026.
 \newblock TMLR 2026 Survey Certification.
+
+\bibitem[Tian et~al.(2025)]{llm-judge-overconfidence-2025}
+Zailong Tian et~al.
+\newblock Overconfidence in {LLM}-as-a-judge: Diagnosis and confidence-driven
+  solution.
+\newblock \emph{arXiv preprint arXiv:2508.06225}, 2025.
+\newblock \doi{10.48550/arXiv.2508.06225}.
 
 \bibitem[Tversky and Kahneman(1974)]{tversky1974}
 Amos Tversky and Daniel Kahneman.
