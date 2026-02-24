@@ -595,6 +595,16 @@ Full SACD achieves 93.7\% of baseline (closest to 100\%) but shows the highest m
 
 \textbf{Hypothesis 4: Haiku's severe undershoot (47.8\%).} Unlike most models that overshoot, Haiku undershoots dramatically, suggesting SACD can backfire entirely for some model architectures.
 
+\subsection{Theoretical Grounding}
+
+Recent theoretical work helps explain our empirical findings:
+
+\textbf{Positional encoding breaks exchangeability.} \citet{llm-bayesian-2025} show that LLMs are ``Bayesian in expectation, not in realization''---the same evidence presented in different orders yields different posteriors due to positional encoding effects. This may explain SACD's model-dependent effectiveness: iterative self-reflection changes the \textit{order} of reasoning steps, and models with stronger positional biases (potentially Haiku) may amplify rather than correct errors through repeated passes.
+
+\textbf{Self-judgment induces overconfidence.} \citet{llm-judge-overconfidence-2025} demonstrate that LLMs systematically overstate confidence when judging their own outputs. Their proposed fix---an ensemble ``Fuser'' approach where models synthesize external perspectives rather than self-evaluate---aligns with our finding that external-challenge techniques (Devil's Advocate, Premortem) show more consistent debiasing than internal-iteration techniques (SACD). The ``ironic process'' we observe in SACD may be a manifestation of this overconfidence: extended reasoning produces outputs that \textit{sound} more considered while actually drifting further from calibrated judgment.
+
+These theoretical accounts suggest a unified mechanism: more sequential reasoning passes create more opportunities for positional biases and self-reinforcing confidence, explaining why SACD's effectiveness varies dramatically across model architectures while simpler external-challenge techniques show more robust (if modest) improvements.
+
 \subsection{Per-Trial Distribution Analysis}
 
 Aggregate means can mask important distributional properties. Examining individual trial distributions reveals:
