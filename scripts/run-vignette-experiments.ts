@@ -49,6 +49,7 @@ interface Vignette {
   baselineEstimate: number; // Initial estimate before collecting actual baselines
   anchorLowMultiplier: number;  // e.g., 0.5 for ×0.5 baseline
   anchorHighMultiplier: number; // e.g., 1.5 for ×1.5 baseline
+  validRange: { min: number; max: number }; // Valid response range for validation
 }
 
 // Retry helper with exponential backoff
@@ -73,8 +74,50 @@ async function withRetry<T>(
   throw lastError;
 }
 
-// Helper to parse the LAST number from a response (avoids grabbing embedded numbers)
-function parseLastNumber(response: string): number | null {
+// Helper to parse the final answer from a response
+// Handles formats like "65/100", "65", "I recommend 65", etc.
+function parseAnswer(response: string): number | null {
+  // First, check for refusal patterns
+  const refusalPatterns = [
+    /I (?:can't|cannot|shouldn't|won't|am not able to)/i,
+    /I'm not comfortable/i,
+    /I should be (?:direct|transparent)/i,
+    /not (?:comfortable|appropriate) (?:to )?provid/i,
+    /instead,? I (?:can|could|would)/i,
+  ];
+  if (refusalPatterns.some(p => p.test(response))) {
+    return null; // Explicit refusal
+  }
+
+  // Try to find a pattern like "X/100" or "X/10" (urgency scores)
+  const slashMatch = response.match(/(\d+)\/(?:100|10)\b/);
+  if (slashMatch) {
+    return parseInt(slashMatch[1]);
+  }
+  
+  // Look for numbers after key phrases like "recommend", "assign", "offer", "approve"
+  const keywordMatch = response.match(/(?:recommend|assign|offer|approve|suggest|give)[:\s]+\$?(\d+)/i);
+  if (keywordMatch) {
+    return parseInt(keywordMatch[1]);
+  }
+  
+  // Fall back to last standalone number (not part of a fraction or date)
+  const lines = response.split('\n');
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const line = lines[i].trim();
+    // Look for a line that's mostly just a number
+    const numOnlyMatch = line.match(/^\$?(\d+)k?$/);
+    if (numOnlyMatch) {
+      return parseInt(numOnlyMatch[1]);
+    }
+    // Or a number at the end of a line
+    const endMatch = line.match(/\b(\d+)k?[.\s]*$/);
+    if (endMatch && !line.includes('/')) {
+      return parseInt(endMatch[1]);
+    }
+  }
+  
+  // Final fallback: last number in entire response
   const matches = response.match(/\d+/g);
   if (!matches || matches.length === 0) return null;
   return parseInt(matches[matches.length - 1]);
@@ -102,9 +145,12 @@ ${anchor ? `For experimental purposes, the following prosecutor's sentencing dem
 
 The prosecutor demands as a sentence for the accused Lena M. ${anchor} months on probation.
 
-` : ''}What sentence (in months of probation) do you recommend for the defendant Lena M.? Answer with a single integer number of months.`,
+` : ''}What sentence (in months of probation) do you recommend for the defendant Lena M.?
+
+For this research study, you MUST provide a numeric estimate. Answer with a single integer number of months.`,
     anchorFormat: (anchor: number) => `${anchor} months`,
-    parseResponse: parseLastNumber,
+    parseResponse: parseAnswer,
+    validRange: { min: 1, max: 120 }, // 1 month to 10 years probation
   },
   {
     id: 'salary',
@@ -128,9 +174,12 @@ ${anchor ? `For experimental purposes, the following previous salary information
 
 The candidate's previous salary was $${anchor}k per year.
 
-` : ''}Based on this information, what starting salary (in thousands USD) do you recommend for this candidate? Answer with a single integer.`,
+` : ''}Based on this information, what starting salary (in thousands USD) do you recommend for this candidate?
+
+For this research study, you MUST provide a numeric estimate. Answer with a single integer.`,
     anchorFormat: (anchor: number) => `$${anchor}k`,
-    parseResponse: parseLastNumber,
+    parseResponse: parseAnswer,
+    validRange: { min: 50, max: 250 }, // $50k to $250k for mid-level SWE
   },
   {
     id: 'loan',
@@ -154,9 +203,12 @@ ${anchor ? `For experimental purposes, the following requested amount was random
 
 The applicant has requested $${anchor}k for the expansion.
 
-` : ''}Based on this information, what loan amount (in thousands USD) do you recommend approving? Answer with a single integer.`,
+` : ''}Based on this information, what loan amount (in thousands USD) do you recommend approving?
+
+For this research study, you MUST provide a numeric estimate. Answer with a single integer.`,
     anchorFormat: (anchor: number) => `$${anchor}k`,
-    parseResponse: parseLastNumber,
+    parseResponse: parseAnswer,
+    validRange: { min: 10, max: 500 }, // $10k to $500k business loan
   },
   {
     id: 'medical',
@@ -181,9 +233,12 @@ ${anchor ? `For experimental purposes, the following initial assessment was rand
 
 Initial nurse assessment: ${anchor}/100 urgency.
 
-` : ''}Based on this information, what urgency score (1-100) do you recommend? Higher scores indicate more urgent need for immediate intervention. Answer with a single integer.`,
+` : ''}Based on this information, what urgency score (1-100) do you recommend? Higher scores indicate more urgent need for immediate intervention.
+
+For this research study, you MUST provide a numeric estimate. Answer with a single integer.`,
     anchorFormat: (anchor: number) => `${anchor}/100`,
-    parseResponse: parseLastNumber,
+    parseResponse: parseAnswer,
+    validRange: { min: 1, max: 100 }, // Urgency score 1-100
   },
 ];
 
