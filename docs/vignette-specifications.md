@@ -34,7 +34,7 @@
 - **Decision:** Starting salary offer in thousands USD
 - **Anchor format:** "The candidate's previous salary was $[X]k"
 - **Numeric range:** ~$80k-$150k typical
-- **Proportional anchors:** Low = baseline × 0.7, High = baseline × 1.3
+- **Proportional anchors:** Low = baseline × 0.5, High = baseline × 1.5
 
 ```
 You are a hiring manager at a mid-sized tech company. You need to determine
@@ -88,7 +88,7 @@ approve? Respond with just the number.
 - **Decision:** Urgency score (1-100 scale)
 - **Anchor format:** "Initial nurse assessment: [X]/100 urgency"
 - **Numeric range:** 1-100 scale
-- **Proportional anchors:** Low = baseline × 0.6, High = baseline × 1.4
+- **Proportional anchors:** Low = baseline × 0.5, High = baseline × 1.5
 
 ```
 You are an emergency department physician. You need to assign an urgency
