@@ -440,7 +440,7 @@ Full SACD shows high variance across models:
 Model & \% of Baseline & 95\% CI & Deviation & Assessment \\
 \midrule
 \textbf{o4-mini} & \textbf{98.2\%} & [90, 101] & \textbf{1.8\%} & Near-perfect \\
-Kimi-k2.5 & 97.6\% & [83, 112] & 2.4\% & Wide CI (n=22) \\
+Kimi-k2.5$^\dagger$ & 97.6\% & [83, 112] & 2.4\% & Wide CI \\
 DeepSeek-v3.2 & 99.6\% & [96, 103] & 0.4\% & Near-perfect \\
 GLM-5 & 107.5\% & [90, 116] & 7.5\% & Good \\
 o3 & 108.9\% & [104, 112] & 8.9\% & Good \\
@@ -451,7 +451,7 @@ Opus 4.6 & 124.7\% & [120, 129] & 24.7\% & Significant overshoot \\
 \textbf{Haiku 4.5} & \textbf{65.1\%} & [63, 71] & \textbf{34.9\%} & Undershoot (worst) \\
 \bottomrule
 \end{tabular}
-\caption{Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. o4-mini achieves near-perfect debiasing (98.2\%). Most models overshoot (response exceeds baseline), while Haiku undershoots significantly.}
+\caption{Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. o4-mini achieves near-perfect debiasing (98.2\%). Most models overshoot (response exceeds baseline), while Haiku undershoots significantly. $^\dagger$Kimi-k2.5 has n=22 (below target n$\geq$30); wide CI reflects limited data.}
 \label{tab:sacd-by-model}
 \end{table}
 
@@ -565,7 +565,7 @@ Average response deviation from 100\% & 7.4\% & 12.8\% & SACD \\
 Mean absolute per-trial error & 33.7\% & 19.7\% & Premortem \\
 \bottomrule
 \end{tabular}
-\caption{Two ways to measure ``closeness to baseline'' give opposite rankings. SACD's bidirectional overcorrection (73.7\% low, 141.1\% high) averages to 107.4\%---close to 100\%. But each individual trial is far from baseline. Premortem's asymmetry (67.5\% low, 106.9\% high) averages to 87.2\%---further from 100\%, but individual trials are closer on average.}
+\caption{Two ways to measure ``closeness to baseline'' give opposite rankings. SACD's bidirectional overcorrection (73.7\% low, 141.1\% high) averages to 108\%---close to 100\%. But each individual trial is far from baseline. Premortem's asymmetry (67.5\% low, 106.9\% high) averages to 88.5\%---further from 100\%, but individual trials are closer on average. (Percentages here are unweighted anchor-condition means; Table~\ref{tab:baseline-pct} reports weighted trial-level means.)}
 \label{tab:sacd-premortem}
 \end{table}
 
@@ -662,7 +662,7 @@ Devil's Advocate produces consistent responses that are \textit{consistently wro
 
 \textbf{A critical nuance:} Two ways to measure ``closeness to baseline'' give \textit{opposite rankings}:
 \begin{itemize}
-    \item \textbf{Average response deviation}: SACD's average (107.4\%) is 7.4\% from baseline; Premortem's (87.2\%) is 12.8\% from baseline. \textbf{SACD wins.}
+    \item \textbf{Average response deviation}: SACD's average (108\%) is 8\% from baseline; Premortem's (88.5\%) is 11.5\% from baseline. \textbf{SACD wins.}
     \item \textbf{Average per-trial error}: SACD's mean absolute deviation is 33.7\% (averaging 26.3\% undershoot + 41.1\% overshoot); Premortem's is 19.7\%. \textbf{Premortem wins.}
 \end{itemize}
 
