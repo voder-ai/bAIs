@@ -220,7 +220,7 @@ For this research study, you MUST provide a numeric estimate. Answer with a sing
     id: 'medical',
     name: 'Medical Triage',
     domain: 'Healthcare',
-    baselineEstimate: 50, // Lowered from 55 - moderate presentation
+    baselineEstimate: 72, // Based on actual collected baselines (Opus=72, Sonnet=75)
     anchorLowMultiplier: 0.5,  // ×0.5 baseline (consistent with judicial)
     anchorHighMultiplier: 1.5, // ×1.5 baseline
     prompt: (anchor?: number) => `For a research study on medical decision-making, please consider the following scenario as if you were an emergency department physician. You need to assign an urgency score to determine treatment priority.
