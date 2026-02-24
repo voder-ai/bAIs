@@ -475,8 +475,9 @@ if (vignetteTrials.length > 0) {
   for (const [vignette, trials] of Object.entries(byVignette).sort()) {
     console.log(`### ${vignette.charAt(0).toUpperCase() + vignette.slice(1)}\n`);
     
-    // Get the expected baseline value (from any trial's baseline field)
-    const expectedBaseline = trials[0]?.baseline || 0;
+    // Get the expected baseline value (average across all trials with baseline field)
+    const baselineValues = trials.map(t => t.baseline).filter((v): v is number => v !== null && v !== undefined && !isNaN(v));
+    const expectedBaseline = baselineValues.length > 0 ? baselineValues.reduce((a, b) => a + b, 0) / baselineValues.length : 0;
     
     // Calculate baseline spread (H-L for baseline technique)
     const baselineTrials = trials.filter(t => t.technique === 'baseline');
@@ -494,13 +495,24 @@ if (vignetteTrials.length > 0) {
     
     for (const technique of vignetteTechniquesAll) {
       const techTrials = trials.filter(t => t.technique === technique);
-      const lowTrials = techTrials.filter(t => t.anchorType === 'low').map(t => t.response);
-      const highTrials = techTrials.filter(t => t.anchorType === 'high').map(t => t.response);
+      const lowTrials = techTrials.filter(t => t.anchorType === 'low');
+      const highTrials = techTrials.filter(t => t.anchorType === 'high');
       
       if (lowTrials.length === 0 && highTrials.length === 0) continue;
       
-      const lowMean = lowTrials.length > 0 ? lowTrials.reduce((a, b) => a + b, 0) / lowTrials.length : NaN;
-      const highMean = highTrials.length > 0 ? highTrials.reduce((a, b) => a + b, 0) / highTrials.length : NaN;
+      // Calculate per-trial % of baseline, then average (handles model-specific baselines)
+      const lowPctOfBaselineTrials = lowTrials
+        .filter(t => t.baseline && t.baseline > 0 && t.response !== undefined)
+        .map(t => (t.response / t.baseline) * 100);
+      const highPctOfBaselineTrials = highTrials
+        .filter(t => t.baseline && t.baseline > 0 && t.response !== undefined)
+        .map(t => (t.response / t.baseline) * 100);
+      
+      const lowResponses = lowTrials.map(t => t.response).filter((v): v is number => v !== undefined);
+      const highResponses = highTrials.map(t => t.response).filter((v): v is number => v !== undefined);
+      
+      const lowMean = lowResponses.length > 0 ? lowResponses.reduce((a, b) => a + b, 0) / lowResponses.length : NaN;
+      const highMean = highResponses.length > 0 ? highResponses.reduce((a, b) => a + b, 0) / highResponses.length : NaN;
       const techSpread = !isNaN(highMean) && !isNaN(lowMean) ? highMean - lowMean : NaN;
       
       // Spread reduction % (negative = reduced spread, positive = increased spread)
@@ -508,12 +520,12 @@ if (vignetteTrials.length > 0) {
         ? ((techSpread - baselineSpread) / Math.abs(baselineSpread)) * 100 
         : NaN;
       
-      // % of Baseline (paper metric: 100% = perfect)
-      const lowPctOfBaseline = !isNaN(lowMean) && expectedBaseline !== 0 
-        ? (lowMean / expectedBaseline) * 100 
+      // % of Baseline (paper metric: 100% = perfect) - per-trial calculation
+      const lowPctOfBaseline = lowPctOfBaselineTrials.length > 0 
+        ? lowPctOfBaselineTrials.reduce((a, b) => a + b, 0) / lowPctOfBaselineTrials.length 
         : NaN;
-      const highPctOfBaseline = !isNaN(highMean) && expectedBaseline !== 0 
-        ? (highMean / expectedBaseline) * 100 
+      const highPctOfBaseline = highPctOfBaselineTrials.length > 0 
+        ? highPctOfBaselineTrials.reduce((a, b) => a + b, 0) / highPctOfBaselineTrials.length 
         : NaN;
       const avgPctOfBaseline = !isNaN(lowPctOfBaseline) && !isNaN(highPctOfBaseline)
         ? (lowPctOfBaseline + highPctOfBaseline) / 2
