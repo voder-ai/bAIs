@@ -35,7 +35,7 @@
 \begin{abstract}
 Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between responses under high vs.\ low anchors. A technique ``works'' if it reduces this gap. We show this metric alone is insufficient.
 
-We propose a \textbf{complementary metric}: percentage of baseline---the model's unanchored judgment. This metric (response $\div$ baseline $\times$ 100\%) answers: ``How close is the debiased response to where it should be?'' A perfect technique produces responses at 100\% of baseline. \textbf{Both metrics are informative}: susceptibility measures response \textit{consistency} across anchors; baseline proximity measures how close responses are to the model's \textit{unanchored judgment}. Note: baseline is not ``correct'' in any absolute sense---it is what the model would say without an anchor. The metric reveals whether debiasing restores responses to this unanchored state.
+Following \citet{jacowitz1995}'s Anchoring Index methodology, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}---the model's unanchored judgment. This metric (response $\div$ baseline $\times$ 100\%) answers: ``How close is the debiased response to where it should be?'' A perfect technique produces responses at 100\% of baseline. \textbf{Both metrics are informative}: susceptibility measures response \textit{consistency} across anchors; baseline proximity measures how close responses are to the model's \textit{unanchored judgment}. Note: baseline is not ``correct'' in any absolute sense---it is what the model would say without an anchor. This is established methodology in human anchoring research; we show it matters for LLM evaluation.
 
 Across 14,152 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}:
 
@@ -104,9 +104,9 @@ Premortem & 45.2 (highest) & 91.6\% & 8.4\% \\
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{Empirical demonstration that metric choice affects technique rankings}---showing that susceptibility and baseline proximity can give divergent recommendations on the same data.
+    \item \textbf{Baseline collection matters for LLM debiasing evaluation.} Following \citet{jacowitz1995}, we collect unanchored baseline responses to complement susceptibility measurement. We show that technique rankings diverge substantially between susceptibility (response consistency) and baseline proximity metrics. This is established methodology in human anchoring research; we demonstrate its importance for LLM debiasing.
     
-    \item \textbf{Empirical demonstration of metric divergence} across 14,152 trials on 10 models, with model-specific breakdowns showing high variance.
+    \item \textbf{Empirical comparison of 4 debiasing techniques} across 14,152 trials on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
 \end{enumerate}
 
 %==============================================================================
@@ -161,7 +161,7 @@ This metric directly measures where the debiased response lands relative to the 
 
 \subsection{Evaluation Metrics}
 
-We compare susceptibility (standard) with \% of baseline (proposed). Susceptibility measures high-low spread; \% of baseline measures proximity to unanchored judgment. Formulas defined in Section~\ref{sec:two-metrics}.
+We compare susceptibility (standard) with \% of baseline (following \citealt{jacowitz1995}). Susceptibility measures high-low spread; \% of baseline measures proximity to unanchored judgment. Formulas defined in Section~\ref{sec:two-metrics}.
 
 \textbf{Interpretation of \% of baseline:}
 \begin{itemize}
@@ -578,6 +578,8 @@ y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + u_j + \ep
 
 where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, confirming the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
+\textbf{Technique $\times$ anchor interaction.} Extending the model with a technique $\times$ anchor interaction term reveals significant differences in how techniques respond to anchor direction. The interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$), confirming that techniques do not simply shift all responses uniformly: SACD shows the largest interaction effect (high anchors produce +36.3 pp higher responses than low anchors), while Devil's Advocate shows minimal asymmetry (+24.0 pp). This interaction explains why SACD's aggregate 93.7\% masks bidirectional deviation.
+
 The intraclass correlation coefficient (ICC) is 0.17:
 \begin{equation}
 \text{ICC} = \frac{\sigma^2_u}{\sigma^2_u + \sigma^2_\epsilon} = \frac{294.9}{294.9 + 1411.1} = 0.17
@@ -697,7 +699,7 @@ Based on our findings in the judicial sentencing domain (generalization to other
 \begin{enumerate}
     \item \textbf{Consider structural interventions.} Adding conversation turns (Random Control, +15pp over Devil's Advocate) provides meaningful improvement with minimal prompt engineering.
     \item \textbf{Test per-model.} Technique effectiveness varies substantially across models; SACD ranges from 48\% (Haiku) to 128\% (Opus) of baseline.
-    \item \textbf{Collect baselines.} We propose \% of baseline as a complementary metric to susceptibility. Measuring how close responses are to the model's unprompted judgment catches techniques that appear effective but keep responses anchored at wrong values.
+    \item \textbf{Collect baselines.} Following \citet{jacowitz1995}, measure \% of baseline alongside susceptibility. This catches techniques that appear effective but keep responses anchored at wrong values---the Devil's Advocate failure mode we document.
     \item \textbf{Be cautious with reference class prompts.} See Section~\ref{sec:outside-view-confound}.
 \end{enumerate}
 
