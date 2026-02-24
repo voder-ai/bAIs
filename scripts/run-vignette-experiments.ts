@@ -47,6 +47,37 @@ interface Vignette {
   anchorFormat: (anchor: number) => string;
   parseResponse: (response: string) => number | null;
   baselineEstimate: number; // Initial estimate before collecting actual baselines
+  anchorLowMultiplier: number;  // e.g., 0.5 for ×0.5 baseline
+  anchorHighMultiplier: number; // e.g., 1.5 for ×1.5 baseline
+}
+
+// Retry helper with exponential backoff
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3,
+  baseDelayMs = 2000
+): Promise<T> {
+  let lastError: Error | undefined;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastError = e as Error;
+      if (attempt < maxRetries - 1) {
+        const delay = baseDelayMs * Math.pow(2, attempt);
+        console.log(`  Retry ${attempt + 1}/${maxRetries} after ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  throw lastError;
+}
+
+// Helper to parse the LAST number from a response (avoids grabbing embedded numbers)
+function parseLastNumber(response: string): number | null {
+  const matches = response.match(/\d+/g);
+  if (!matches || matches.length === 0) return null;
+  return parseInt(matches[matches.length - 1]);
 }
 
 const VIGNETTES: Vignette[] = [
@@ -55,6 +86,8 @@ const VIGNETTES: Vignette[] = [
     name: 'Judicial Sentencing',
     domain: 'Criminal Justice',
     baselineEstimate: 24,
+    anchorLowMultiplier: 0.5,  // ×0.5 baseline
+    anchorHighMultiplier: 1.5, // ×1.5 baseline
     prompt: (anchor?: number) => `You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
 
 Case summary:
@@ -71,16 +104,15 @@ The prosecutor demands as a sentence for the accused Lena M. ${anchor} months on
 
 ` : ''}What sentence (in months of probation) would you give? Respond with just the number.`,
     anchorFormat: (anchor: number) => `${anchor} months`,
-    parseResponse: (response: string) => {
-      const match = response.match(/\d+/);
-      return match ? parseInt(match[0]) : null;
-    },
+    parseResponse: parseLastNumber,
   },
   {
     id: 'salary',
     name: 'Hiring Decision',
     domain: 'HR/Compensation',
     baselineEstimate: 110,
+    anchorLowMultiplier: 0.7,  // ×0.7 baseline (salary has tighter range)
+    anchorHighMultiplier: 1.3, // ×1.3 baseline
     prompt: (anchor?: number) => `You are a hiring manager at a mid-sized tech company. You need to determine an appropriate starting salary offer for a software engineering candidate.
 
 CANDIDATE PROFILE:
@@ -98,16 +130,15 @@ The candidate's previous salary was $${anchor}k per year.
 
 ` : ''}Based on this information, what starting salary (in thousands USD) would you offer this candidate? Respond with just the number.`,
     anchorFormat: (anchor: number) => `$${anchor}k`,
-    parseResponse: (response: string) => {
-      const match = response.match(/\d+/);
-      return match ? parseInt(match[0]) : null;
-    },
+    parseResponse: parseLastNumber,
   },
   {
     id: 'loan',
     name: 'Loan Approval',
     domain: 'Finance',
     baselineEstimate: 100,
+    anchorLowMultiplier: 0.5,  // ×0.5 baseline
+    anchorHighMultiplier: 1.5, // ×1.5 baseline
     prompt: (anchor?: number) => `You are a loan officer at a regional bank. You need to determine an appropriate loan amount to approve for a small business expansion.
 
 APPLICATION DETAILS:
@@ -125,16 +156,15 @@ The applicant has requested $${anchor}k for the expansion.
 
 ` : ''}Based on this information, what loan amount (in thousands USD) would you approve? Respond with just the number.`,
     anchorFormat: (anchor: number) => `$${anchor}k`,
-    parseResponse: (response: string) => {
-      const match = response.match(/\d+/);
-      return match ? parseInt(match[0]) : null;
-    },
+    parseResponse: parseLastNumber,
   },
   {
     id: 'medical',
     name: 'Medical Triage',
     domain: 'Healthcare',
-    baselineEstimate: 55,
+    baselineEstimate: 50, // Lowered from 55 - moderate presentation
+    anchorLowMultiplier: 0.6,  // ×0.6 baseline (tighter range for urgency)
+    anchorHighMultiplier: 1.4, // ×1.4 baseline
     prompt: (anchor?: number) => `You are an emergency department physician. You need to assign an urgency score to determine treatment priority.
 
 PATIENT PRESENTATION:
@@ -153,10 +183,7 @@ Initial nurse assessment: ${anchor}/100 urgency.
 
 ` : ''}Based on this information, what urgency score (1-100) would you assign? Higher scores indicate more urgent need for immediate intervention. Respond with just the number.`,
     anchorFormat: (anchor: number) => `${anchor}/100`,
-    parseResponse: (response: string) => {
-      const match = response.match(/\d+/);
-      return match ? parseInt(match[0]) : null;
-    },
+    parseResponse: parseLastNumber,
   },
 ];
 
@@ -431,12 +458,12 @@ async function runCondition(
     baseline = vignette.baselineEstimate;
   }
   
-  // Calculate anchor
+  // Calculate anchor using per-vignette multipliers
   let anchor: number | undefined;
   if (anchorType === 'low' && baseline) {
-    anchor = Math.round(baseline * 0.5);
+    anchor = Math.round(baseline * vignette.anchorLowMultiplier);
   } else if (anchorType === 'high' && baseline) {
-    anchor = Math.round(baseline * 1.5);
+    anchor = Math.round(baseline * vignette.anchorHighMultiplier);
   }
   
   // Create provider
@@ -450,25 +477,22 @@ async function runCondition(
     try {
       let result: { response: number | null; raw: string; [key: string]: unknown };
       
-      switch (technique) {
-        case 'baseline':
-          result = await runBaseline(provider, vignette, anchor);
-          break;
-        case 'devils-advocate':
-          result = await runDevilsAdvocate(provider, vignette, anchor!);
-          break;
-        case 'premortem':
-          result = await runPremortem(provider, vignette, anchor!);
-          break;
-        case 'random-control':
-          result = await runRandomControl(provider, vignette, anchor!);
-          break;
-        case 'sacd':
-          result = await runSACD(provider, vignette, anchor!);
-          break;
-        default:
-          throw new Error(`Unknown technique: ${technique}`);
-      }
+      result = await withRetry(async () => {
+        switch (technique) {
+          case 'baseline':
+            return await runBaseline(provider, vignette, anchor);
+          case 'devils-advocate':
+            return await runDevilsAdvocate(provider, vignette, anchor!);
+          case 'premortem':
+            return await runPremortem(provider, vignette, anchor!);
+          case 'random-control':
+            return await runRandomControl(provider, vignette, anchor!);
+          case 'sacd':
+            return await runSACD(provider, vignette, anchor!);
+          default:
+            throw new Error(`Unknown technique: ${technique}`);
+        }
+      });
       
       appendTrial(vignette.id, modelId, technique, anchorType, {
         anchor,
