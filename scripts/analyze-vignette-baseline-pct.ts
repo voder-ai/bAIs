@@ -96,11 +96,12 @@ function calculateStats(trials: Trial[]): ConditionStats[] {
     const meanBaseline = mean(baselines);
     const meanAnchor = mean(anchors);
     
-    // Calculate % of baseline (J&K 1995 formula)
-    // % = (response - baseline) / (anchor - baseline)
+    // Calculate % of baseline (paper's formula)
+    // % = response / baseline × 100
+    // Closer to 100% = better (response matches unanchored judgment)
     let pctOfBaseline: number | null = null;
-    if (anchorType !== 'none' && meanAnchor !== meanBaseline) {
-      pctOfBaseline = ((meanResponse - meanBaseline) / (meanAnchor - meanBaseline)) * 100;
+    if (meanBaseline !== 0) {
+      pctOfBaseline = (meanResponse / meanBaseline) * 100;
     }
     
     stats.push({
@@ -239,15 +240,23 @@ for (const [vignette, vignetteStats] of byVignette) {
     
     const reducesSpread = techniqueSpread < baselineSpread;
     
-    // % of baseline average
+    // % of baseline average - calculate deviation from 100%
     const allPcts = [...low, ...high]
       .filter(s => s.pctOfBaseline !== null)
-      .map(s => Math.abs(s.pctOfBaseline!));
+      .map(s => s.pctOfBaseline!);
     const avgPct = allPcts.length > 0 ? mean(allPcts) : null;
     
-    // "Effective" by % of baseline = avg < 100% (pulling less than full anchor distance)
-    // Lower is better
-    const effectiveByPct = avgPct !== null && avgPct < 100;
+    // Calculate deviation from 100% (perfect = 100%)
+    const avgDeviation = avgPct !== null ? Math.abs(avgPct - 100) : null;
+    
+    // "Effective" by % of baseline = closer to 100% than baseline condition
+    // Lower deviation is better
+    const baselineAvgPct = mean([...baselineLow, ...baselineHigh]
+      .filter(s => s.pctOfBaseline !== null)
+      .map(s => s.pctOfBaseline!));
+    const baselineDeviation = Math.abs(baselineAvgPct - 100);
+    
+    const effectiveByPct = avgDeviation !== null && avgDeviation < baselineDeviation;
     
     const sameConclusion = reducesSpread === effectiveByPct ? "✓" : "**DIFFERS**";
     
@@ -255,6 +264,7 @@ for (const [vignette, vignetteStats] of byVignette) {
   }
 }
 
-console.log("\n\n**Key:** % of Baseline < 100% means response pulled less than full distance to anchor (good).");
+console.log("\n\n**Key:** % of Baseline = 100% means response matches unanchored judgment (perfect).");
+console.log("**Deviation** = |% of Baseline - 100%| — lower is better.");
 console.log("**Reduces Spread** looks at convergence of high/low responses.");
 console.log("**DIFFERS** indicates the two metrics give opposite conclusions about technique effectiveness.");
