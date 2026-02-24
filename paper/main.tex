@@ -52,7 +52,7 @@ Full SACD & \#4 (worst) & \#1 (best) \\
 
 Devil's Advocate reduces spread (low susceptibility) but keeps responses anchored at only 63.6\% of baseline---\textit{consistently wrong}. Full SACD achieves 93.7\% of baseline (closest to correct), but shows \textbf{bidirectional asymmetry}: from low anchors it reaches 75.7\%, from high anchors 112.0\%.
 
-\textbf{Even baseline-aware metrics give different recommendations.} By \textit{average response}, SACD is best (6.3\% from baseline). By \textit{per-trial error}, Premortem is better (22.6\% mean absolute deviation vs.\ SACD's 18.1\%). The ``best'' technique depends on whether you optimize for aggregate outcomes or individual decision accuracy. Without baseline collection, none of these distinctions are visible.
+\textbf{Both baseline-aware metrics favor SACD.} By \textit{average response}, SACD is best (6.3\% from baseline vs.\ Premortem's 8.4\%). By \textit{per-trial error}, SACD is also best (18.1\% mean absolute deviation vs.\ Premortem's 22.6\%). However, model-specific variation is substantial---Haiku undershoots to 47.8\% while DeepSeek achieves 100.8\%. Without baseline collection, none of these distinctions are visible.
 \end{abstract}
 
 %==============================================================================
@@ -61,7 +61,7 @@ Devil's Advocate reduces spread (low susceptibility) but keeps responses anchore
 
 When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and the standard metric can mislead.
 
-We report findings from 13,799 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give inverted technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa.
+We report findings from 14,679 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give inverted technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -464,10 +464,10 @@ Opus 4.6 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
     width=0.95\columnwidth,
     height=7cm,
     xlabel={\% of Baseline},
-    xmin=50,
+    xmin=40,
     xmax=140,
     ytick=data,
-    yticklabels={Haiku 4.5, Kimi-k2.5, o4-mini, DeepSeek-v3.2, GLM-5, o3, Sonnet 4.6, GPT-5.2, GPT-4.1, Opus 4.6},
+    yticklabels={Haiku 4.5, o4-mini, o3, Sonnet 4.6, GPT-4.1, DeepSeek-v3.2, Kimi-k2.5, GPT-5.2, GLM-5, Opus 4.6},
     y dir=reverse,
     nodes near coords,
     nodes near coords align={horizontal},
@@ -477,14 +477,20 @@ Opus 4.6 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
     xmajorgrids=true,
     grid style={dashed,gray!30},
 ]
-\addplot[fill=red!70, draw=black] coordinates {(65.1, 1)};
-\addplot[fill=green!60!black, draw=black] coordinates {(100.8, 2) (100.9, 3)};
-\addplot[fill=blue!50, draw=black] coordinates {(90.8, 4) (91.9, 5) (92.0, 6)};
-\addplot[fill=orange!60, draw=black] coordinates {(79.5, 7) (122.4, 8) (123.1, 9) (127.8, 10)};
+% Red = severe undershoot (Haiku 47.8%)
+\addplot[fill=red!70, draw=black] coordinates {(47.8, 1)};
+% Orange = undershoot >10% (o4-mini 79.5%)
+\addplot[fill=orange!60, draw=black] coordinates {(79.5, 2)};
+% Blue = 5-10% deviation (o3, Sonnet, GPT-4.1)
+\addplot[fill=blue!50, draw=black] coordinates {(92.0, 3) (91.9, 4) (90.8, 5)};
+% Green = within 5% (DeepSeek, Kimi)
+\addplot[fill=green!60!black, draw=black] coordinates {(100.8, 6) (100.9, 7)};
+% Orange = overshoot >10% (GPT-5.2, GLM-5, Opus)
+\addplot[fill=orange!60, draw=black] coordinates {(122.4, 8) (123.1, 9) (127.8, 10)};
 \draw[dashed, red, thick] (axis cs:100,0.5) -- (axis cs:100,10.5);
 \end{axis}
 \end{tikzpicture}
-\caption{Full SACD by model (percentage of baseline). Dashed line = 100\% (perfect). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% overshoot/undershoot. Red = severe undershoot (Haiku at 47.8\%).}
+\caption{Full SACD by model (percentage of baseline). Dashed line = 100\% (perfect). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% over/undershoot. Red = severe undershoot (Haiku at 47.8\%).}
 \label{fig:sacd-by-model}
 \end{figure}
 
@@ -506,9 +512,9 @@ Aggregate results hide an important asymmetry. Breaking down by anchor direction
 \toprule
 Technique & Low Anchor & 95\% CI & High Anchor & 95\% CI & Asymmetry \\
 \midrule
-Full SACD & 75.7\% & [77, 79] & 112.0\% & [113, 116] & 36.3 pp \\
-Premortem & 69.0\% & [68, 70] & 114.2\% & [111, 117] & 45.2 pp \\
-Random Control & 63.4\% & [62, 65] & 93.5\% & [91, 96] & 30.1 pp \\
+Full SACD & 75.7\% & [73, 78] & 112.0\% & [109, 115] & 36.3 pp \\
+Premortem & 69.0\% & [68, 70] & 114.2\% & [112, 117] & 45.2 pp \\
+Random Control & 63.4\% & [62, 65] & 93.5\% & [90, 96] & 30.1 pp \\
 Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
 \bottomrule
 \end{tabular}
@@ -738,7 +744,7 @@ Random Control prompts consisted of unrelated elaboration requests (e.g., ``Desc
 %==============================================================================
 \section*{Data and Code Availability}
 
-All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 13,799 trials, statistical analysis scripts reproducible from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition.
+All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 14,679 trials, statistical analysis scripts reproducible from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
