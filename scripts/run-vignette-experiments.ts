@@ -75,8 +75,11 @@ async function withRetry<T>(
 }
 
 // Helper to parse the final answer from a response
-// Handles formats like "65/100", "65", "I recommend 65", etc.
+// Handles formats like "65/100", "65", "$110,000", "I recommend 65", etc.
 function parseAnswer(response: string): number | null {
+  // Strip commas from numbers (e.g., "110,000" → "110000")
+  const normalized = response.replace(/(\d),(\d)/g, '$1$2');
+  
   // First, check for refusal patterns
   const refusalPatterns = [
     /I (?:can't|cannot|shouldn't|won't|am not able to)/i,
@@ -85,24 +88,24 @@ function parseAnswer(response: string): number | null {
     /not (?:comfortable|appropriate) (?:to )?provid/i,
     /instead,? I (?:can|could|would)/i,
   ];
-  if (refusalPatterns.some(p => p.test(response))) {
+  if (refusalPatterns.some(p => p.test(normalized))) {
     return null; // Explicit refusal
   }
 
   // Try to find a pattern like "X/100" or "X/10" (urgency scores)
-  const slashMatch = response.match(/(\d+)\/(?:100|10)\b/);
+  const slashMatch = normalized.match(/(\d+)\/(?:100|10)\b/);
   if (slashMatch) {
     return parseInt(slashMatch[1]);
   }
   
   // Look for numbers after key phrases like "recommend", "assign", "offer", "approve"
-  const keywordMatch = response.match(/(?:recommend|assign|offer|approve|suggest|give)[:\s]+\$?(\d+)/i);
+  const keywordMatch = normalized.match(/(?:recommend|assign|offer|approve|suggest|give)[:\s]+\$?(\d+)/i);
   if (keywordMatch) {
     return parseInt(keywordMatch[1]);
   }
   
   // Fall back to last standalone number (not part of a fraction or date)
-  const lines = response.split('\n');
+  const lines = normalized.split('\n');
   for (let i = lines.length - 1; i >= 0; i--) {
     const line = lines[i].trim();
     // Look for a line that's mostly just a number
@@ -118,7 +121,7 @@ function parseAnswer(response: string): number | null {
   }
   
   // Final fallback: last number in entire response
-  const matches = response.match(/\d+/g);
+  const matches = normalized.match(/\d+/g);
   if (!matches || matches.length === 0) return null;
   return parseInt(matches[matches.length - 1]);
 }
@@ -509,8 +512,9 @@ async function runCondition(
   // Get baseline for anchor calculation
   let baseline = getBaseline(vignette.id, modelId);
   if (!baseline && anchorType !== 'none') {
-    console.log(`    ⚠ No baseline yet, using estimate: ${vignette.baselineEstimate}`);
-    baseline = vignette.baselineEstimate;
+    console.log(`    ❌ SKIPPING: No baseline yet for ${modelId}. Run baseline conditions first!`);
+    console.log(`       Expected: results/vignette-${vignette.id}/baseline-none-*-t07.jsonl`);
+    return; // Skip this condition - baselines must be collected first
   }
   
   // Calculate anchor using per-vignette multipliers
