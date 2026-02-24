@@ -87,6 +87,8 @@ function parseAnswer(response: string): number | null {
     /I should be (?:direct|transparent)/i,
     /not (?:comfortable|appropriate) (?:to )?provid/i,
     /instead,? I (?:can|could|would)/i,
+    /respectfully decline/i,
+    /need to (?:respectfully )?decline/i,
   ];
   if (refusalPatterns.some(p => p.test(normalized))) {
     return null; // Explicit refusal
