@@ -665,7 +665,15 @@ We demonstrated that \textbf{metric choice determines technique recommendation}.
     \item \textbf{Full SACD}: Worst on susceptibility ($+127\%$ spread), best on baseline (108\%)
 \end{itemize}
 
-Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored at 67.5\% of where they should be. Full SACD's 108\% average appears close to correct, but \textbf{masks bidirectional overcorrection}: from low anchors it undershoots (73.7\%), from high anchors it overshoots (141.1\%). We rank SACD \#1 because its average deviation (8\%) is smaller than Devil's Advocate's (32.5\%), but practitioners should be aware that SACD amplifies rather than converges---the ``best'' technique still has significant failure modes.
+Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored at 67.5\% of where they should be. Full SACD's 108\% average appears close to correct, but \textbf{masks bidirectional overcorrection}: from low anchors it undershoots (73.7\%), from high anchors it overshoots (141.1\%).
+
+\textbf{A critical nuance:} Two ways to measure ``closeness to baseline'' give \textit{opposite rankings}:
+\begin{itemize}
+    \item \textbf{Average response deviation}: SACD's average (107.4\%) is 7.4\% from baseline; Premortem's (87.2\%) is 12.8\% from baseline. \textbf{SACD wins.}
+    \item \textbf{Average per-trial error}: SACD's mean absolute deviation is 33.7\% (averaging 26.3\% undershoot + 41.1\% overshoot); Premortem's is 19.7\%. \textbf{Premortem wins.}
+\end{itemize}
+
+If you care where the \textit{average} of many decisions lands, SACD is best. If you care that \textit{each individual} decision is close to correct, Premortem is best. We report average response (favoring SACD) but practitioners should consider their use case.
 
 Our key findings from 13,799 trials across 10 models:
 
