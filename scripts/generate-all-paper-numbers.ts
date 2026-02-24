@@ -23,7 +23,9 @@ function normalizeModel(model: string): string {
     .replace('openai/', '')
     .replace('deepseek/', '')
     .replace('moonshot/', '')
+    .replace('moonshotai/', '')  // kimi models
     .replace('zhipu/', '')
+    .replace('z-ai/', '')  // glm models
     .replace(/\./g, '-')
     .toLowerCase();
 }
@@ -108,10 +110,13 @@ function loadSacdTrials(): SacdTrial[] {
     const model = normalizeModel(s.model);
     const baseline = baselineByModel.get(model);
     if (!baseline) continue;
+    // Use finalMean (new format) or debiasedMean (old format)
+    const finalValue = s.finalMean ?? s.debiasedMean;
+    if (finalValue === undefined) continue;
     trials.push({
       model,
       anchorType: s.anchorType,
-      pctBaseline: (s.debiasedMean / baseline.mean) * 100,
+      pctBaseline: s.finalPctOfBaseline ?? (finalValue / baseline.mean) * 100,
       n: s.n
     });
   }
