@@ -45,7 +45,7 @@ Across 13,799 trials on 10 models, we find that \textbf{susceptibility and basel
 Technique & Susceptibility Rank & Baseline Rank \\
 \midrule
 Devil's Advocate & \#1 (best) & \#4 (worst) \\
-Full SACD & \#3 & \#1 (best) \\
+Full SACD & \#4 (worst) & \#1 (best) \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -420,7 +420,7 @@ Devil's Advocate & 1,643 & 67.5\% & [65.0, 70.0] & 32.5\% & \#4 \\
 \textit{Outside View}$^\dagger$ & 1,862 & 57.0\% & [54.6, 59.4] & 43.0\% & --- \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. Full SACD is closest to baseline (108\%, 95\% CI [105, 111]). Devil's Advocate keeps responses at 67.5\% of baseline (95\% CI [65, 70])---the CIs do not overlap with Full SACD, confirming the ranking difference is statistically reliable. $^\dagger$Outside View confounded. \textit{Note:} Sample sizes differ from Table~\ref{tab:trial-counts} because this analysis includes only trials with matched baseline data for the same model-temperature condition.}
+\caption{Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. Full SACD is closest to baseline (108\%, 95\% CI [105, 111]). Devil's Advocate keeps responses at 67.5\% of baseline (95\% CI [65, 70])---the CIs do not overlap with Full SACD, confirming the ranking difference is statistically reliable. $^\dagger$Outside View confounded. \textit{Note:} Sample sizes differ from Table~\ref{tab:trial-counts} because \% of baseline analysis requires matched baseline data (same model-temperature condition). Full SACD drops from 2,391 to 1,430 because early experiments ran before baseline collection for some model-temperature combinations.}
 \label{tab:baseline-pct}
 \end{table}
 
@@ -472,7 +472,7 @@ Model & \% of Baseline & 95\% CI & Deviation & Assessment \\
 \midrule
 \textbf{o4-mini} & \textbf{98.2\%} & [90, 101] & \textbf{1.8\%} & Near-perfect \\
 Kimi-k2.5 & 97.6\% & [83, 112] & 2.4\% & Near-perfect \\
-DeepSeek-v3.2 & 106.5\% & [96, 104] & 6.5\% & Good \\
+DeepSeek-v3.2 & 99.6\% & [96, 103] & 0.4\% & Near-perfect \\
 GLM-5 & 107.5\% & [90, 116] & 7.5\% & Good \\
 o3 & 108.9\% & [104, 112] & 8.9\% & Good \\
 Sonnet 4.6 & 111.8\% & [106, 117] & 11.8\% & Moderate overshoot \\
