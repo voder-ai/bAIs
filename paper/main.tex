@@ -37,7 +37,7 @@ Large language models exhibit anchoring bias---disproportionate influence of ini
 
 We propose measuring technique responses as a \textbf{percentage of baseline}---the model's unanchored judgment. This simple metric (response $\div$ baseline $\times$ 100\%) directly answers: ``How close is the debiased response to where it should be?'' A perfect technique produces responses at 100\% of baseline.
 
-Across 14,154 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}:
+Across 14,152 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}:
 
 \begin{center}
 \begin{tabular}{lcc}
@@ -61,7 +61,7 @@ Devil's Advocate reduces spread (low susceptibility) but keeps responses anchore
 
 When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and the standard metric can mislead.
 
-We report findings from 14,154 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
+We report findings from 14,152 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -106,7 +106,7 @@ Full SACD & +36.3pp & \textbf{93.7\%} & 6.3\% (best) \\
 \begin{enumerate}
     \item \textbf{A percentage-of-baseline metric} for debiasing evaluation---simpler and more interpretable than distance-based alternatives.
     
-    \item \textbf{Empirical demonstration of metric divergence} across 14,154 trials on 10 models, with model-specific breakdowns showing high variance.
+    \item \textbf{Empirical demonstration of metric divergence} across 14,152 trials on 10 models, with model-specific breakdowns showing high variance.
 \end{enumerate}
 
 %==============================================================================
@@ -289,7 +289,7 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
 \subsubsection{Trial Counts and Procedure}
 
 \begin{itemize}
-    \item \textbf{Total trials}: 14,154
+    \item \textbf{Total trials}: 14,152
     \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Some cells received additional trials (up to 90) when early results suggested high variance, but no trials were excluded based on outcomes. Analysis uses all collected data.
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
@@ -299,14 +299,14 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
 
 \begin{table}[H]
 \centering
-\caption{Trial distribution. Total unique trials: 14,154. Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets.}
+\caption{Trial distribution. Total unique trials: 14,152. Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets.}
 \label{tab:trial-counts}
 \begin{tabular}{lr}
 \toprule
 Condition & $n$ (analysis) \\
 \midrule
 \multicolumn{2}{l}{\textit{Debiasing Techniques}} \\
-\quad Full SACD & 2,391 \\
+\quad Full SACD & 2,389 \\
 \quad Outside View & 2,423 \\
 \quad Random Control & 2,215 \\
 \quad Premortem & 2,186 \\
@@ -414,7 +414,7 @@ The compression pattern is counterintuitive---high anchors typically pull respon
 \toprule
 Technique & $n$ & \% of Baseline & 95\% CI & Deviation & Rank \\
 \midrule
-\textbf{Full SACD} & 2,391 & \textbf{93.7\%} & [92, 95] & \textbf{6.3\%} & \textbf{\#1} \\
+\textbf{Full SACD} & 2,389 & \textbf{93.7\%} & [92, 95] & \textbf{6.3\%} & \textbf{\#1} \\
 Premortem & 2,186 & 91.6\% & [90, 93] & 8.4\% & \#2 \\
 Random Control & 2,215 & 78.3\% & [77, 80] & 21.7\% & \#3 \\
 Devil's Advocate & 2,166 & 63.6\% & [62, 65] & 36.4\% & \#4 \\
@@ -684,7 +684,7 @@ Devil's Advocate produces consistent responses that are \textit{consistently wro
 
 However, model-specific variation is substantial (Haiku at 47.8\% vs.\ DeepSeek at 100.8\%), making per-model testing essential.
 
-Our key findings from 14,154 trials across 10 models:
+Our key findings from 14,152 trials across 10 models:
 
 \begin{enumerate}
     \item \textbf{Metric divergence}: Devil's Advocate ranks \#1 on susceptibility but \#4 on \% of baseline. SACD shows the opposite pattern.
@@ -756,7 +756,7 @@ Random Control prompts consisted of unrelated elaboration requests (e.g., ``Desc
 %==============================================================================
 \section*{Data and Code Availability}
 
-All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 14,154 trials, statistical analysis scripts reproducible from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition.
+All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 14,152 trials, statistical analysis scripts reproducible from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
