@@ -578,7 +578,7 @@ This indicates that \textbf{17\% of variance} in \% of baseline is attributable 
     \item Devil's Advocate: $-16.3\%$
 \end{itemize}
 
-The ranking is robust after accounting for model-level variance. This supports treating technique effects as generalizable across models, while the ICC justifies our recommendation to test per-model before deployment.
+The ranking is robust after accounting for model-level variance. A model with random slopes for technique would capture model $\times$ technique interactions (e.g., SACD works differently on Haiku vs.\ Opus); our per-model breakdowns in Table~\ref{tab:sacd-by-model} and Figure~\ref{fig:sacd-by-model} provide this detail descriptively. The ICC justifies our recommendation to test per-model before deployment.
 
 \subsection{The Metric Inversion}
 
@@ -616,6 +616,8 @@ Random Control (74.4\% of baseline) outperforms Devil's Advocate (67.5\%) despit
 
 Both mechanisms contribute: structure provides partial correction (Random Control at 74.4\%), and debiasing content adds further benefit (SACD at 108\%). The 33.6 percentage point difference represents the contribution of debiasing content beyond structural effects.
 
+\textbf{Direct comparison:} Random Control (73.4\%) outperforms Devil's Advocate (66.5\%) by 6.8 percentage points ($t = 5.26$, $p < 0.001$, 95\% CI [4.3, 9.4]). However, Cohen's $d = 0.18$ (negligible), suggesting the practical difference is small---both techniques leave responses substantially below baseline.
+
 \subsection{The Outside View Confound}
 \label{sec:outside-view-confound}
 
@@ -637,6 +639,8 @@ Outside View performed worst despite recommendations in human debiasing literatu
     \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure proximity to the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions.
     
     \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families.
+    
+    \item \textbf{Stopping rule.} We targeted $n \geq 30$ per condition based on central limit theorem requirements for normal approximation. We did not use adaptive stopping based on effect size stabilization. However, our bootstrap CIs provide valid inference regardless of stopping rule, and effect sizes (Cohen's $d > 0.5$ for key comparisons) suggest adequate power.
 \end{enumerate}
 
 \subsection{Practical Recommendations}
