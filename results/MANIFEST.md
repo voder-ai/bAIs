@@ -324,9 +324,12 @@ Full prompts in `docs/vignette-specifications.md`.
 | Devil's Advocate + low anchor | baseline×0.5 | n=30 |
 | Devil's Advocate + high anchor | baseline×1.5 | n=30 |
 
-**Total:** 11 conditions × 30 trials × 2 models × 4 vignettes = **2,640 trials**
+**Total:** 11 conditions × 30 trials × 2 models × 3 NEW vignettes = **1,980 trials**
 
-*Note: Haiku 4.5 excluded due to ethical/safety refusals via pi-ai. Sonnet 4.5 works on all 4 vignettes.*
+*Notes:*
+- *Judicial already has 14,152 trials from existing experiments*
+- *Haiku 4.5 excluded due to ethical/safety refusals via pi-ai*
+- *Sonnet 4.5 + Opus 4.6 work on all vignettes*
 
 ### Script Design
 
