@@ -270,3 +270,74 @@ results/
 - Outside View: 100% improved (best overall)
 - Full SACD: 70% success but 3 models backfire (opus, glm-5, gpt-5.2)
 - Temperature effects vary by model
+
+---
+
+## Multi-Vignette Experiment Plan (2026-02-24)
+
+### Rationale
+
+Reviewer feedback: "Single vignette limits generalization claims. Need 3-5 vignettes to validate findings across domains."
+
+### Temperature Decision: t=0.7
+
+**Why t=0.7 (not t=0):**
+1. **More representative of deployment** — Production apps typically use t=0.3-0.7
+2. **Tests robustness** — If techniques work with sampling variance, they transfer to deterministic
+3. **Avoids "cherry-picking" criticism** — t=0 could be seen as artificially favorable
+4. **Industry defaults** — OpenAI defaults to 0.7-1.0; t=0.7 is realistic
+
+**Existing data supports this:** Temperature×technique interaction was non-significant (F<1.5, p>0.1) with <3pp variance across t=0, t=0.7, t=1.0.
+
+### Vignettes (4 total)
+
+| # | Domain | Decision | Anchor Format | Status |
+|---|--------|----------|---------------|--------|
+| 1 | Judicial Sentencing | Prison months | Prosecutor request | EXISTING |
+| 2 | Hiring/Salary | Starting salary ($k) | Previous salary | NEW |
+| 3 | Loan Approval | Loan amount ($k) | Requested amount | NEW |
+| 4 | Medical Triage | Urgency (1-100) | Nurse assessment | NEW |
+
+Full prompts in `docs/vignette-specifications.md`.
+
+### Models (3 Anthropic via pi-ai OAuth)
+
+| Model | ID | Rationale |
+|-------|-----|-----------|
+| Sonnet 4.6 | `claude-sonnet-4-6` | Primary analysis model |
+| Opus 4.6 | `claude-opus-4-6` | Flagship |
+| Haiku 4.5 | `claude-haiku-4-5` | Fast/cheap tier |
+
+### Conditions per Vignette
+
+| Condition | Anchor | Trials Target |
+|-----------|--------|---------------|
+| Baseline | None | n=30 |
+| Low anchor (no technique) | baseline×0.5 | n=30 |
+| High anchor (no technique) | baseline×1.5 | n=30 |
+| SACD + low anchor | baseline×0.5 | n=30 |
+| SACD + high anchor | baseline×1.5 | n=30 |
+| Premortem + low anchor | baseline×0.5 | n=30 |
+| Premortem + high anchor | baseline×1.5 | n=30 |
+| Random Control + low anchor | baseline×0.5 | n=30 |
+| Random Control + high anchor | baseline×1.5 | n=30 |
+| Devil's Advocate + low anchor | baseline×0.5 | n=30 |
+| Devil's Advocate + high anchor | baseline×1.5 | n=30 |
+
+**Total:** 11 conditions × 30 trials × 3 models × 3 new vignettes = **2,970 trials**
+
+### Script Design
+
+`run-vignette-experiments.ts`:
+- Uses Anthropic via pi-ai OAuth
+- Checks existing trial counts per (vignette, model, technique, anchor)
+- Runs trials until n≥30 per condition
+- Skips complete conditions on rerun (idempotent)
+- Outputs to `results/vignette-{name}/*.jsonl`
+
+### Execution Order
+
+1. Collect baselines for new vignettes (determines anchor values)
+2. Run anchored conditions (no technique)
+3. Run technique conditions
+4. Validate n≥30 per condition
