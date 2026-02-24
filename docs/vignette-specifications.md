@@ -9,13 +9,14 @@
 - 11 × 30 trials × 3 models × 3 new vignettes = **2,970 new trials**
 - Plus existing judicial data
 
-## Models (3 Anthropic via pi-ai OAuth)
+## Models (2 Anthropic via pi-ai OAuth)
 
-1. **Claude Sonnet 4.6** (`anthropic/claude-sonnet-4-6`) — Mid-tier, existing data baseline
+1. **Claude Sonnet 4.5** (`anthropic/claude-sonnet-4-5`) — Mid-tier
 2. **Claude Opus 4.6** (`anthropic/claude-opus-4-6`) — Top-tier capability
-3. **Claude Haiku 4.5** (`anthropic/claude-haiku-4-5`) — Fast/cheap tier
 
-**Scope note:** This validates generalization within the Claude model family (across capability tiers), not across model families. Cross-family validation would require OpenRouter credits.
+**Haiku 4.5 excluded:** Pilot testing showed Haiku refuses most vignettes via pi-ai (ethical/safety concerns on salary, medical, loan). Sonnet and Opus work on all vignettes.
+
+**Scope note:** This validates generalization within the Claude model family (across capability tiers), not across model families.
 
 ## Vignettes (4 total: 1 existing + 3 new)
 

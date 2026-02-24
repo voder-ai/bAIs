@@ -306,7 +306,7 @@ Full prompts in `docs/vignette-specifications.md`.
 |-------|-----|-----------|
 | Sonnet 4.6 | `claude-sonnet-4-6` | Primary analysis model |
 | Opus 4.6 | `claude-opus-4-6` | Flagship |
-| Haiku 4.5 | `claude-haiku-4-5` | Fast/cheap tier |
+| ~~Haiku 4.5~~ | ~~`claude-haiku-4-5`~~ | *Excluded: refuses most vignettes* |
 
 ### Conditions per Vignette
 
@@ -324,7 +324,9 @@ Full prompts in `docs/vignette-specifications.md`.
 | Devil's Advocate + low anchor | baseline×0.5 | n=30 |
 | Devil's Advocate + high anchor | baseline×1.5 | n=30 |
 
-**Total:** 11 conditions × 30 trials × 3 models × 3 new vignettes = **2,970 trials**
+**Total:** 11 conditions × 30 trials × 2 models × 3 new vignettes = **1,980 trials**
+
+*Note: Haiku 4.5 excluded due to ethical/safety refusals on salary, medical, and loan vignettes via pi-ai.*
 
 ### Script Design
 
