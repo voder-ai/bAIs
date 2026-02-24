@@ -421,11 +421,12 @@ function getExistingTrialCount(
   for (const file of files) {
     const content = readFileSync(join(dirPath, file), 'utf-8');
     const lines = content.trim().split('\n').filter(l => l);
-    // Only count successful trials (non-null responses)
+    // Only count successful trials (non-null responses AND not out of range)
+    // Per Tom's directive: n=30 must be valid, usable data
     for (const line of lines) {
       try {
         const trial = JSON.parse(line);
-        if (trial.response !== null) count++;
+        if (trial.response !== null && !trial.outOfRange) count++;
       } catch {
         // Skip malformed lines
       }
