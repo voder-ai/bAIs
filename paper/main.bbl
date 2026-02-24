@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{12}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -30,6 +30,12 @@ Yucheng Huang et~al.
 \newblock An empirical study of the anchoring effect in {LLMs}: Existence,
   mechanism, and potential mitigations.
 \newblock \emph{arXiv preprint arXiv:2505.15392}, 2025.
+
+\bibitem[Jacowitz and Kahneman(1995)]{jacowitz1995}
+Karen~E Jacowitz and Daniel Kahneman.
+\newblock Measures of anchoring in estimation tasks.
+\newblock \emph{Personality and Social Psychology Bulletin}, 21\penalty0
+  (11):\penalty0 1161--1166, 1995.
 
 \bibitem[Jones and Steinhardt(2022)]{jones2022}
 Erik Jones and Jacob Steinhardt.
