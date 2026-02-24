@@ -143,7 +143,9 @@ Standard anchoring evaluation compares high-anchor and low-anchor conditions \ci
 \text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
 \]
 
-A technique ``works'' if it reduces this gap. The classic Anchoring Index (AI) from \citet{jacowitz1995} measures anchor influence as the ratio of response movement toward the anchor: $\text{AI} = \frac{\text{Response} - \text{Baseline}}{\text{Anchor} - \text{Baseline}}$. Our \% of baseline metric is related but simpler: it directly measures proximity to unanchored judgment without requiring anchor values in the denominator. Both capture the fundamental question of whether responses are appropriately calibrated.
+A technique ``works'' if it reduces this gap. 
+
+\textbf{Relationship to Anchoring Index.} The classic Anchoring Index (AI) from \citet{jacowitz1995} measures anchor influence: $\text{AI} = \frac{\text{Response} - \text{Baseline}}{\text{Anchor} - \text{Baseline}}$. AI requires knowing anchor values to compute the denominator; our \% of baseline metric requires only the baseline. The key distinction: AI measures \textit{how much} responses moved toward the anchor; \% of baseline measures \textit{how far} responses are from correct. A technique with AI $\approx 0$ (no anchor influence) and 100\% of baseline is ideal; low AI with poor baseline proximity indicates consistent but wrong responses---precisely the Devil's Advocate failure mode we document.
 
 We extend this by introducing \textbf{percentage of baseline}:
 
@@ -552,10 +554,10 @@ Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
 To account for non-independence of observations within models, we fit a linear mixed effects model:
 
 \begin{equation}
-y_{ij} = \beta_0 + \beta_{\text{technique}} + u_j + \epsilon_{ij}
+y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + u_j + \epsilon_{ijk}
 \end{equation}
 
-where $y_{ij}$ is the \% of baseline for trial $i$ in model $j$, $\beta_{\text{technique}}$ is the fixed effect for technique (reference: grand mean), $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ij} \sim N(0, \sigma^2_\epsilon)$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound).
+where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, confirming the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
 The intraclass correlation coefficient (ICC) is 0.17:
 \begin{equation}
