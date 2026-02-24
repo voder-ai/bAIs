@@ -55,49 +55,52 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.6}Statistical Analysis}{7}{subsubsection.3.2.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Confounds and Limitations}{7}{subsection.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Outside View Jurisdiction Context}{7}{subsubsection.3.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{7}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Baseline Responses}{7}{subsection.4.1}\protected@file@percent }
-\citation{tversky1974}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Model baseline variation. Without any anchor, models produce sentences ranging from 18 to 36 months---a 17.7-month spread. This variation motivates per-model anchor calibration.}}{8}{figure.2}\protected@file@percent }
 \newlabel{fig:baselines}{{2}{8}{Model baseline variation. Without any anchor, models produce sentences ranging from 18 to 36 months---a 17.7-month spread. This variation motivates per-model anchor calibration}{figure.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{8}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Baseline Responses}{8}{subsection.4.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance (SD=0.0) at all temperatures, consistently responding with exactly 18 months. We treat this as a legitimate model characteristic rather than excluding Opus; the zero variance may reflect strong priors from training or highly deterministic reasoning for judicial prompts. Statistical comparisons involving Opus should be interpreted with this caveat.}}{8}{table.3}\protected@file@percent }
+\newlabel{tab:baselines}{{3}{8}{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance (SD=0.0) at all temperatures, consistently responding with exactly 18 months. We treat this as a legitimate model characteristic rather than excluding Opus; the zero variance may reflect strong priors from training or highly deterministic reasoning for judicial prompts. Statistical comparisons involving Opus should be interpreted with this caveat}{table.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}High-Anchor Responses (No Technique)}{8}{subsection.4.2}\protected@file@percent }
+\citation{tversky1974}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Technique Effectiveness: Percentage of Baseline}{9}{subsection.4.3}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. Full SACD is closest to baseline (93.7\%, 95\% CI [92, 95]). Devil's Advocate keeps responses at 63.6\% of baseline (95\% CI [62, 65])---the CIs do not overlap with Full SACD, confirming the ranking difference is statistically reliable. $^\dagger $Outside View confounded.}}{9}{table.4}\protected@file@percent }
 \newlabel{tab:baseline-pct}{{4}{9}{Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. Full SACD is closest to baseline (93.7\%, 95\% CI [92, 95]). Devil's Advocate keeps responses at 63.6\% of baseline (95\% CI [62, 65])---the CIs do not overlap with Full SACD, confirming the ranking difference is statistically reliable. $^\dagger $Outside View confounded}{table.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Model-Specific Results: Full SACD}{9}{subsection.4.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. DeepSeek and Kimi achieve near-perfect debiasing ($\sim $100\%). Several models overshoot (Opus, GLM, GPT-5.2), while Haiku severely undershoots (47.8\%---SACD makes it worse). Note: Opus 4.6 shows zero baseline variance (see Table\nobreakspace  {}\ref  {tab:baselines}); excluding it does not change rankings (see Limitations).}}{9}{table.5}\protected@file@percent }
-\newlabel{tab:sacd-by-model}{{5}{9}{Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. DeepSeek and Kimi achieve near-perfect debiasing ($\sim $100\%). Several models overshoot (Opus, GLM, GPT-5.2), while Haiku severely undershoots (47.8\%---SACD makes it worse). Note: Opus 4.6 shows zero baseline variance (see Table~\ref {tab:baselines}); excluding it does not change rankings (see Limitations)}{table.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Full SACD by model (percentage of baseline). Dashed line = 100\% (perfect). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% over/undershoot. Red = severe undershoot (Haiku at 47.8\%).}}{10}{figure.3}\protected@file@percent }
 \newlabel{fig:sacd-by-model}{{3}{10}{Full SACD by model (percentage of baseline). Dashed line = 100\% (perfect). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% over/undershoot. Red = severe undershoot (Haiku at 47.8\%)}{figure.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Asymmetry: High vs.\ Low Anchor}{10}{subsection.4.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Technique effectiveness by anchor direction. 95\% CIs from bootstrap. $^\dagger $Spread = High $-$ Low (mathematically equivalent to Table\nobreakspace  {}\ref  {tab:metric-comparison} spread column). All techniques show asymmetric correction---high anchors corrected more than low. SACD undershoots from low anchors (75.7\%) and overshoots from high (112.0\%).}}{10}{table.6}\protected@file@percent }
-\newlabel{tab:anchor-asymmetry}{{6}{10}{Technique effectiveness by anchor direction. 95\% CIs from bootstrap. $^\dagger $Spread = High $-$ Low (mathematically equivalent to Table~\ref {tab:metric-comparison} spread column). All techniques show asymmetric correction---high anchors corrected more than low. SACD undershoots from low anchors (75.7\%) and overshoots from high (112.0\%)}{table.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. DeepSeek and Kimi achieve near-perfect debiasing ($\sim $100\%). Several models overshoot (Opus, GLM, GPT-5.2), while Haiku severely undershoots (47.8\%---SACD makes it worse). Note: Opus 4.6 shows zero baseline variance (see Table\nobreakspace  {}\ref  {tab:baselines}); excluding it does not change rankings (see Limitations).}}{10}{table.5}\protected@file@percent }
+\newlabel{tab:sacd-by-model}{{5}{10}{Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. DeepSeek and Kimi achieve near-perfect debiasing ($\sim $100\%). Several models overshoot (Opus, GLM, GPT-5.2), while Haiku severely undershoots (47.8\%---SACD makes it worse). Note: Opus 4.6 shows zero baseline variance (see Table~\ref {tab:baselines}); excluding it does not change rankings (see Limitations)}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Asymmetry: High vs.\ Low Anchor}{11}{subsection.4.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Technique effectiveness by anchor direction. 95\% CIs from bootstrap. $^\dagger $Spread = High $-$ Low (mathematically equivalent to Table\nobreakspace  {}\ref  {tab:metric-comparison} spread column). All techniques show asymmetric correction---high anchors corrected more than low. SACD undershoots from low anchors (75.7\%) and overshoots from high (112.0\%).}}{11}{table.6}\protected@file@percent }
+\newlabel{tab:anchor-asymmetry}{{6}{11}{Technique effectiveness by anchor direction. 95\% CIs from bootstrap. $^\dagger $Spread = High $-$ Low (mathematically equivalent to Table~\ref {tab:metric-comparison} spread column). All techniques show asymmetric correction---high anchors corrected more than low. SACD undershoots from low anchors (75.7\%) and overshoots from high (112.0\%)}{table.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Mixed Effects Analysis}{11}{subsection.4.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}The Metric Divergence}{11}{subsection.4.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}The SACD vs.\ Premortem Tradeoff}{11}{subsection.4.8}\protected@file@percent }
-\citation{llm-bayesian-2025}
-\citation{llm-judge-overconfidence-2025}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}The Metric Divergence}{12}{subsection.4.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}The SACD vs.\ Premortem Tradeoff}{12}{subsection.4.8}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Two metrics for closeness to baseline. \textit  {Average response deviation} (6.3\% vs 8.4\%) can mask per-trial variance. \textit  {Mean absolute per-trial error} (18.1\% vs 22.6\%) reveals that individual SACD responses deviate substantially from baseline---the 93.7\% aggregate is an average of overshoots and undershoots. Difference not statistically significant ($p \approx 0.054$).}}{12}{table.7}\protected@file@percent }
 \newlabel{tab:sacd-premortem}{{7}{12}{Two metrics for closeness to baseline. \textit {Average response deviation} (6.3\% vs 8.4\%) can mask per-trial variance. \textit {Mean absolute per-trial error} (18.1\% vs 22.6\%) reveals that individual SACD responses deviate substantially from baseline---the 93.7\% aggregate is an average of overshoots and undershoots. Difference not statistically significant ($p \approx 0.054$)}{table.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{12}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Why Full SACD Works (and Fails)}{12}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Theoretical Grounding}{12}{subsection.5.2}\protected@file@percent }
+\citation{llm-bayesian-2025}
+\citation{llm-judge-overconfidence-2025}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Theoretical Grounding}{13}{subsection.5.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Per-Trial Distribution Analysis}{13}{subsection.5.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Why Random Control Works}{13}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}The Outside View Confound}{13}{subsection.5.5}\protected@file@percent }
-\newlabel{sec:outside-view-confound}{{5.5}{13}{The Outside View Confound}{subsection.5.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Limitations}{13}{subsection.5.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Practical Recommendations}{14}{subsection.5.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{14}{section.6}\protected@file@percent }
-\citation{lyu2025}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}The Outside View Confound}{14}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:outside-view-confound}{{5.5}{14}{The Outside View Confound}{subsection.5.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Limitations}{14}{subsection.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Practical Recommendations}{15}{subsection.5.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{15}{section.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{15}{appendix.A}\protected@file@percent }
 \newlabel{app:prompts}{{A}{15}{Prompt Templates}{appendix.A}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Case Vignette (All Conditions)}{15}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchor Introduction (High/Low Anchor Conditions)}{15}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Outside View (As Implemented)}{15}{subsection.A.3}\protected@file@percent }
+\citation{lyu2025}
 \bibstyle{plainnat}
 \bibdata{references}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchor Introduction (High/Low Anchor Conditions)}{16}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Outside View (As Implemented)}{16}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Full SACD (Iterative Self-Administered Cognitive Debiasing)}{16}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Random Control}{16}{subsection.A.5}\protected@file@percent }
 \bibcite{binz2023}{{1}{2023}{{Binz and Schulz}}{{}}}
 \bibcite{chen2025cognitive}{{2}{2025}{{Chen et~al.}}{{}}}
 \bibcite{llm-bayesian-2025}{{3}{2025}{{Chlon et~al.}}{{Chlon, Rashidi, Khamis, and Awada}}}
@@ -107,8 +110,6 @@
 \bibcite{jones2022}{{7}{2022}{{Jones and Steinhardt}}{{}}}
 \bibcite{klein2007}{{8}{2007}{{Klein}}{{}}}
 \bibcite{lim2026deframe}{{9}{2026}{{Lim et~al.}}{{}}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Full SACD (Iterative Self-Administered Cognitive Debiasing)}{16}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Random Control}{16}{subsection.A.5}\protected@file@percent }
 \bibcite{lyu2025}{{10}{2025}{{Lyu et~al.}}{{}}}
 \bibcite{sibony2019}{{11}{2019}{{Sibony}}{{}}}
 \bibcite{song2026reasoning}{{12}{2026}{{Song et~al.}}{{Song, Han, and Goodman}}}
