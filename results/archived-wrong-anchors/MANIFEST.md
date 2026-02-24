@@ -36,5 +36,14 @@ Proportional anchors (baseline × 0.5 and baseline × 1.5) guarantee:
 ## Paper Reference
 Include this in Discussion section under "Methodology" or "Limitations" — the failed experiment demonstrates why proportional anchors are necessary.
 
+## Additional Finding: Salary Refusals
+
+With ±30% anchors, Sonnet showed **very high refusal rates** on the salary vignette. This warrants future investigation:
+- Were the anchors triggering safety concerns?
+- Did the narrower range seem "too specific" or manipulative?
+- Compare refusal rates between ±30% and ±50% anchors
+
+This is an interesting methodological artifact worth exploring in future work.
+
 ## Date Archived
 2026-02-25
