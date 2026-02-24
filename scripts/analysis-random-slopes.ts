@@ -84,7 +84,8 @@ export function computeRandomSlopesStats(): RandomSlopesStats {
 
   // Load all technique data
   const trials: Trial[] = [];
-  const techniqueNames = ['devils-advocate', 'premortem', 'random-control', 'outside-view'];
+  // Exclude Outside View due to jurisdiction confound
+  const techniqueNames = ['devils-advocate', 'premortem', 'random-control'];
   
   for (const tech of techniqueNames) {
     const files = readdirSync(RESULTS_DIR).filter(f => 
