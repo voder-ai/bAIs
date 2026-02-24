@@ -37,7 +37,7 @@ Large language models exhibit anchoring bias---disproportionate influence of ini
 
 We propose measuring technique responses as a \textbf{percentage of baseline}---the model's unanchored judgment. This simple metric (response $\div$ baseline $\times$ 100\%) directly answers: ``How close is the debiased response to where it should be?'' A perfect technique produces responses at 100\% of baseline.
 
-Across 14,152 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give inverted rankings}:
+Across 14,154 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}:
 
 \begin{center}
 \begin{tabular}{lcc}
@@ -61,7 +61,7 @@ Devil's Advocate reduces spread (low susceptibility) but keeps responses anchore
 
 When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and the standard metric can mislead.
 
-We report findings from 14,152 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give inverted technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa.
+We report findings from 14,154 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -106,7 +106,7 @@ Full SACD & +36.3pp & \textbf{93.7\%} & 6.3\% (best) \\
 \begin{enumerate}
     \item \textbf{A percentage-of-baseline metric} for debiasing evaluation---simpler and more interpretable than distance-based alternatives.
     
-    \item \textbf{Empirical demonstration of metric inversion} across 14,152 trials on 10 models, with model-specific breakdowns showing high variance.
+    \item \textbf{Empirical demonstration of metric divergence} across 14,154 trials on 10 models, with model-specific breakdowns showing high variance.
 \end{enumerate}
 
 %==============================================================================
@@ -181,11 +181,11 @@ This metric answers: \textit{Does the technique bring the response closer to the
 
 \subsubsection{Why Both Metrics Matter}
 
-These metrics give \textbf{inverted rankings}:
+These metrics give \textbf{divergent rankings}:
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings are inverted. Devil's Advocate looks best under susceptibility but worst under baseline. Susceptibility spread = high-low response difference. 95\% CIs from bootstrap.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Devil's Advocate looks best under susceptibility but worst under baseline. \textit{Spread} = high-low response gap (susceptibility). \textit{Anchor correction asymmetry} = qualitative difference in low vs.\ high anchor correction (see Table~\ref{tab:anchor-asymmetry}). 95\% CIs from bootstrap.}
 \label{tab:metric-comparison}
 \begin{tabular}{lccccc}
 \toprule
@@ -232,7 +232,7 @@ Full SACD & 36.3pp & --- & \#3 & 93.7\% [92, 95] & \#1 \\
 \label{fig:metric-comparison}
 \end{figure}
 
-\textbf{Why the inversion?} Devil's Advocate produces \textit{consistent} responses (low susceptibility/spread) that are \textit{consistently anchored at the wrong value} (63.6\% of baseline). SACD produces \textit{variable} responses (higher susceptibility) that are \textit{close to correct} (93.7\% of baseline).
+\textbf{Why the divergence?} Devil's Advocate produces \textit{consistent} responses (low susceptibility/spread) that are \textit{consistently anchored at the wrong value} (63.6\% of baseline). SACD produces \textit{variable} responses (higher susceptibility) that are \textit{close to correct on average} (93.7\% of baseline---though this average masks bidirectional deviation: 75.7\% from low anchors, 112.0\% from high anchors).
 
 \textbf{Effect sizes (Cohen's d):} The difference between Full SACD and Devil's Advocate on \% of baseline is large ($d = 1.06$). SACD vs.\ Random Control is medium ($d = 0.51$). Premortem vs.\ Devil's Advocate is medium-large ($d = 0.71$). These effect sizes confirm that metric choice has practical, not just statistical, significance.
 
@@ -289,7 +289,7 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
 \subsubsection{Trial Counts and Procedure}
 
 \begin{itemize}
-    \item \textbf{Total trials}: 14,152
+    \item \textbf{Total trials}: 14,154
     \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Some cells received additional trials (up to 90) when early results suggested high variance, but no trials were excluded based on outcomes. Analysis uses all collected data.
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
@@ -299,7 +299,7 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
 
 \begin{table}[H]
 \centering
-\caption{Trial distribution. Total unique trials: 14,152. Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets.}
+\caption{Trial distribution. Total unique trials: 14,154. Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets.}
 \label{tab:trial-counts}
 \begin{tabular}{lr}
 \toprule
@@ -555,7 +555,7 @@ The ranking is robust after accounting for model-level variance. A model with ra
 
 \subsection{The Metric Inversion}
 
-Table~\ref{tab:metric-comparison} confirms the inversion: Devil's Advocate ranks best on susceptibility but worst on baseline; SACD shows the opposite. The bidirectional deviation in Table~\ref{tab:anchor-asymmetry} reveals that SACD's 93.7\% average results from direction-dependent over/under-correction.
+Table~\ref{tab:metric-comparison} confirms the divergence: Devil's Advocate ranks best on susceptibility but worst on baseline; SACD shows the opposite pattern. The bidirectional deviation in Table~\ref{tab:anchor-asymmetry} reveals that SACD's 93.7\% average results from direction-dependent over/under-correction.
 
 \subsection{The SACD vs.\ Premortem Tradeoff}
 
@@ -639,7 +639,7 @@ Outside View performed worst despite recommendations in human debiasing literatu
     
     \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). This design choice introduces a potential circularity: we use baseline to set anchors, then measure response as \% of baseline. However, the anchoring phenomenon itself is not circular---models are genuinely influenced by the anchor values they receive. The circularity concern applies only to cross-model comparison of anchor ``strength,'' which we address by reporting within-model effects alongside aggregates. Future work should validate findings with fixed absolute anchors.
     
-    \item \textbf{Metric inversion holds without Outside View.} While Outside View shows the most dramatic divergence, the core finding---that metrics give opposite rankings---holds even excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility (lowest spread) but \textit{worst} on \% of baseline (63.6\%); Full SACD shows higher susceptibility but \textit{best} on \% of baseline (93.7\%). The inversion is robust.
+    \item \textbf{Metric divergence holds without Outside View.} While Outside View shows the most dramatic divergence, the core finding---that metrics give opposite rankings---holds even excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility (lowest spread) but \textit{worst} on \% of baseline (63.6\%); Full SACD shows higher susceptibility but \textit{best} on \% of baseline (93.7\%). The divergence is robust.
     
     \item \textbf{Outside View confound.} See Section~\ref{sec:outside-view-confound}. Future work should test jurisdiction-neutral prompts.
     
@@ -665,7 +665,7 @@ Based on our findings in the judicial sentencing domain (generalization to other
 \section{Conclusion}
 %==============================================================================
 
-We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility (spread reduction) and \% of baseline give inverted rankings:
+We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility (spread reduction) and \% of baseline give divergent rankings:
 
 \begin{itemize}
     \item \textbf{Devil's Advocate}: Best on susceptibility (lowest spread), worst on baseline (63.6\%)
@@ -682,10 +682,10 @@ Devil's Advocate produces consistent responses that are \textit{consistently wro
 
 However, model-specific variation is substantial (Haiku at 47.8\% vs.\ DeepSeek at 100.8\%), making per-model testing essential.
 
-Our key findings from 14,152 trials across 10 models:
+Our key findings from 14,154 trials across 10 models:
 
 \begin{enumerate}
-    \item \textbf{Metric inversion}: Devil's Advocate ranks \#1 on susceptibility but \#4 on \% of baseline. SACD shows the opposite pattern.
+    \item \textbf{Metric divergence}: Devil's Advocate ranks \#1 on susceptibility but \#4 on \% of baseline. SACD shows the opposite pattern.
     \item \textbf{Bidirectional deviation}: SACD's 93.7\% average results from 75.7\% (low anchor) and 112.0\% (high anchor)---direction-dependent over/under-correction.
     \item \textbf{High model variance}: SACD ranges from 48\% (Haiku) to 128\% (Opus). Practitioners must test per-model.
     \item \textbf{Baseline collection is essential}: Without it, both the ``consistently wrong'' failure (Devil's Advocate) and model-specific failures (Haiku's 47.8\%) are invisible.
@@ -754,7 +754,7 @@ Random Control prompts consisted of unrelated elaboration requests (e.g., ``Desc
 %==============================================================================
 \section*{Data and Code Availability}
 
-All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 14,152 trials, statistical analysis scripts reproducible from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition.
+All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 14,154 trials, statistical analysis scripts reproducible from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
