@@ -1,0 +1,220 @@
+================================================================================
+FULL PAPER STATISTICS - Generated from raw JSONL
+================================================================================
+Total trials loaded: 12290
+SACD entries: 60
+
+TABLE 1: Technique Susceptibility vs % of Baseline
+------------------------------------------------------------
+No-technique spread: 7.7mo
+
+| Technique | % of Baseline | 95% CI | Spread | Suscept. Δ | n |
+|-----------|---------------|--------|--------|------------|---|
+| devils-advocate | 63.6% | [62, 65] | 23.7mo | +209% | 2166 |
+| random-control | 78.3% | [76, 80] | 30.1mo | +291% | 2215 |
+| premortem | 91.6% | [90, 94] | 45.2mo | +488% | 2186 |
+| full-sacd | 93.7% | [92, 95] | 36.3mo | +372% | 2391 |
+
+
+TABLE 5: SACD by Model
+------------------------------------------------------------
+| Model | % of Baseline | 95% CI | Deviation | n |
+|-------|---------------|--------|-----------|---|
+| deepseek-v3-2 | 100.8% | [98, 103] | 0.8% | 291 |
+| kimi-k2-5 | 100.9% | [97, 105] | 0.9% | 178 |
+| o3 | 92.0% | [91, 93] | 8.0% | 316 |
+| claude-sonnet-4-6 | 91.9% | [90, 93] | 8.1% | 180 |
+| gpt-4-1 | 90.8% | [89, 93] | 9.2% | 420 |
+| o4-mini | 79.5% | [78, 81] | 20.5% | 287 |
+| gpt-5-2 | 122.4% | [118, 127] | 22.4% | 180 |
+| glm-5 | 123.1% | [120, 126] | 23.1% | 178 |
+| claude-opus-4-6 | 127.8% | [124, 132] | 27.8% | 180 |
+| claude-haiku-4-5 | 47.8% | [46, 50] | 52.2% | 179 |
+
+
+TABLE 6: High vs Low Anchor
+------------------------------------------------------------
+| Technique | Low Anchor | Low CI | High Anchor | High CI | Asymmetry |
+|-----------|------------|--------|-------------|---------|-----------|
+| devils-advocate | 51.8% | [50, 53] | 75.5% | [73, 78] | 23.7pp |
+| random-control | 63.4% | [62, 65] | 93.5% | [91, 96] | 30.1pp |
+| premortem | 69.0% | [68, 70] | 114.2% | [111, 117] | 45.2pp |
+| full-sacd | 75.7% | [77, 79] | 112.0% | [113, 116] | 36.3pp |
+
+
+TABLE 7: SACD vs Premortem Tradeoff
+------------------------------------------------------------
+| Metric | SACD | Premortem | Winner |
+|--------|------|-----------|--------|
+| Avg response deviation | 6.1% | 8.4% | SACD |
+| Mean abs per-trial error | 18.1% | 22.6% | SACD |
+
+
+EFFECT SIZES (Cohen's d)
+------------------------------------------------------------
+SACD vs Devil's Advocate: d = 1.06
+SACD vs Random Control: d = 0.51
+Premortem vs Devil's Advocate: d = 0.71
+Random Control vs Devil's Advocate: d = 0.39
+
+
+OPUS SENSITIVITY ANALYSIS
+------------------------------------------------------------
+devils-advocate: All=63.6%, NoOpus=61.2%, Δ=-2.4pp
+random-control: All=78.3%, NoOpus=77.0%, Δ=-1.2pp
+premortem: All=91.6%, NoOpus=89.7%, Δ=-1.9pp
+full-sacd: All=96.0%, NoOpus=93.4%, Δ=-2.6pp
+
+
+================================================================================
+KEY NUMBERS FOR PAPER
+================================================================================
+
+Total trials: 14679
+Models: 10
+Techniques: 4
+
+SACD: 93.7% [92, 95]
+Premortem: 91.6% [90, 94]
+Random Control: 78.3%
+Devil's Advocate: 63.6%
+
+SACD vs Premortem Tradeoff:
+  - By avg response: SACD 6.1% vs Premortem 8.4%
+  - By per-trial error: SACD 18.1% vs Premortem 22.6%
+
+No-technique spread: 7.7mo
+
+
+
+RANDOM SLOPES MODEL
+------------------------------------------------------------
+
+Random slopes model: % of baseline ~ technique + (technique|model)
+  - Total trials: 8958
+  - Variance reduction vs intercepts-only: 16.9%
+  - LRT: χ² = 1658.4, df = 26, p << 0.001
+  - Highest variance technique: full-sacd (SD = 25.6 pp)
+  - Technique effect range: -56% to +33%
+
+
+
+VERIFICATION
+================================================================================
+Trial count breakdown:
+  Baseline:   909
+  Anchoring:  1,864
+  SACD:       2,389
+  Techniques: 8,990
+  ─────────────────────
+  Computed:   14,152
+  Claimed:    14,152
+
+⚠️  WARNING: SACD count inconsistency in analysis-data.json
+   summary.breakdown.sacd: 2389
+   techniqueGrandTotals[full-sacd].n: 2391
+   Using summary.breakdown value for paper consistency.
+
+✅ Verification passed: Trial counts sum correctly.
+
+
+================================================================================
+VIGNETTE ANALYSIS - Multi-Domain Validation
+================================================================================
+
+Vignette trials loaded: 1941
+
+TABLE V1: Vignette Trial Counts
+------------------------------------------------------------
+| Vignette | Trials |
+|----------|--------|
+| salary | 663 |
+| loan | 620 |
+| medical | 658 |
+| **Total** | **1941** |
+
+
+TABLE V2: % of Baseline by Vignette × Technique
+------------------------------------------------------------
+
+### SALARY
+Baseline (no-anchor) mean: 115.8
+
+| Technique | Low % | High % | Avg % | Deviation |
+|-----------|-------|--------|-------|-----------|
+| baseline | 91.2% | 118.4% | 104.8% | 4.8% |
+| devils-advocate | 98.6% | 113.9% | 106.2% | 6.2% |
+| sacd | 115.4% | 114.0% | 114.7% | 14.7% |
+| random-control | 98.6% | 119.3% | 108.9% | 8.9% |
+| premortem | 104.7% | 127.5% | 116.1% | 16.1% |
+
+### LOAN
+Baseline (no-anchor) mean: 164.2
+
+| Technique | Low % | High % | Avg % | Deviation |
+|-----------|-------|--------|-------|-----------|
+| baseline | 45.3% | 91.4% | 68.3% | 31.7% |
+| devils-advocate | 46.4% | 117.7% | 82.0% | 18.0% |
+| sacd | 47.8% | 66.5% | 57.1% | 42.9% |
+| random-control | 49.7% | 97.4% | 73.6% | 26.4% |
+| premortem | 44.3% | 107.5% | 75.9% | 24.1% |
+
+### MEDICAL
+Baseline (no-anchor) mean: 73.5
+
+| Technique | Low % | High % | Avg % | Deviation |
+|-----------|-------|--------|-------|-----------|
+| baseline | 106.6% | 106.8% | 106.7% | 6.7% |
+| devils-advocate | 101.0% | 104.3% | 102.7% | 2.7% |
+| sacd | 117.8% | 89.8% | 103.8% | 3.8% |
+| random-control | 106.4% | 106.6% | 106.5% | 6.5% |
+| premortem | 101.7% | 110.7% | 106.2% | 6.2% |
+
+
+TABLE V3: Methodology Comparison (Spread vs % of Baseline)
+------------------------------------------------------------
+Does "reduces spread" agree with "closer to baseline"?
+
+### SALARY
+Baseline spread: 31.5, deviation: 4.8%
+
+| Technique | Spread Δ | % of Baseline | Deviation | Metrics Agree? |
+|-----------|----------|---------------|-----------|----------------|
+| devils-advocate | -44% | 106.2% | 6.2% | **CONFLICT** |
+| sacd | -105% | 114.7% | 14.7% | **CONFLICT** |
+| random-control | -24% | 108.9% | 8.9% | **CONFLICT** |
+| premortem | -16% | 116.1% | 16.1% | **CONFLICT** |
+
+### LOAN
+Baseline spread: 75.7, deviation: 31.7%
+
+| Technique | Spread Δ | % of Baseline | Deviation | Metrics Agree? |
+|-----------|----------|---------------|-----------|----------------|
+| devils-advocate | +55% | 82.0% | 18.0% | **CONFLICT** |
+| sacd | -60% | 57.1% | 42.9% | **CONFLICT** |
+| random-control | +3% | 73.6% | 26.4% | **CONFLICT** |
+| premortem | +37% | 75.9% | 24.1% | **CONFLICT** |
+
+### MEDICAL
+Baseline spread: 0.1, deviation: 6.7%
+
+| Technique | Spread Δ | % of Baseline | Deviation | Metrics Agree? |
+|-----------|----------|---------------|-----------|----------------|
+| devils-advocate | +1971% | 102.7% | 2.7% | **CONFLICT** |
+| sacd | -17757% | 103.8% | 3.8% | ✓ |
+| random-control | -13% | 106.5% | 6.5% | ✓ |
+| premortem | +5600% | 106.2% | 6.2% | **CONFLICT** |
+
+
+TABLE V4: Best Technique by Domain (% of Baseline)
+------------------------------------------------------------
+| Domain | Best Technique | % of Baseline | Deviation |
+|--------|----------------|---------------|-----------|
+| salary | baseline | 104.8% | 4.8% |
+| loan | devils-advocate | 82.0% | 18.0% |
+| medical | devils-advocate | 102.7% | 2.7% |
+
+**Key finding:** Best technique varies by domain. No universal "best debiasing."
+
+
+Script complete. Copy relevant sections to main.tex.
