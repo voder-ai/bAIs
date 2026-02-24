@@ -4,13 +4,18 @@
 
 **Goal:** Validate that metric inversion finding generalizes across domains.
 
-**Structure:** 3 models × 4 vignettes × 4 techniques × 2 anchor conditions × ~38 trials = ~3,648 trials
+**Structure:** 
+- 11 conditions per model per vignette (baseline/none + baseline/low,high + 4 techniques × 2 anchors)
+- 11 × 30 trials × 3 models × 3 new vignettes = **2,970 new trials**
+- Plus existing judicial data
 
-## Models (3)
+## Models (3 Anthropic via pi-ai OAuth)
 
-1. **Claude Sonnet 4.6** — Anchor model (existing data baseline)
-2. **GPT-4.1** — Divergent model (different ranking pattern in existing data)
-3. **Llama 3.3 70B** — Open-source (via OpenRouter: `meta-llama/llama-3.3-70b-instruct`)
+1. **Claude Sonnet 4.6** (`anthropic/claude-sonnet-4-6`) — Mid-tier, existing data baseline
+2. **Claude Opus 4.6** (`anthropic/claude-opus-4-6`) — Top-tier capability
+3. **Claude Haiku 4.5** (`anthropic/claude-haiku-4-5`) — Fast/cheap tier
+
+**Scope note:** This validates generalization within the Claude model family (across capability tiers), not across model families. Cross-family validation would require OpenRouter credits.
 
 ## Vignettes (4 total: 1 existing + 3 new)
 

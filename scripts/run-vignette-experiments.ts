@@ -549,15 +549,24 @@ async function runCondition(
         }
       });
       
+      // Check if response is in valid range
+      const outOfRange = result.response !== null && (
+        result.response < vignette.validRange.min || 
+        result.response > vignette.validRange.max
+      );
+      
       appendTrial(vignette.id, modelId, technique, anchorType, {
         anchor,
         baseline,
         response: result.response,
         raw: result.raw,
+        outOfRange,
+        validRange: vignette.validRange,
         ...result,
       });
       
-      console.log(` ${result.response ?? 'PARSE_ERROR'}`);
+      const rangeWarning = outOfRange ? ' ⚠️OUT_OF_RANGE' : '';
+      console.log(` ${result.response ?? 'PARSE_ERROR'}${rangeWarning}`);
       
     } catch (error) {
       console.log(` ERROR: ${error}`);
