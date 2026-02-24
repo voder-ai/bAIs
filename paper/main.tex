@@ -323,7 +323,9 @@ Condition & $n$ (analysis) \\
 
 All comparisons use \textbf{Welch's t-test} (unequal variances assumed) with \textbf{Bonferroni correction} for multiple comparisons (5 technique comparisons). Effect sizes are reported as Cohen's $d$. Statistical significance ($p < .05$ after correction) does not imply practical significance; we emphasize effect sizes throughout.
 
-\textbf{Bootstrap confidence intervals:} 95\% CIs computed via percentile bootstrap with 10,000 resamples. Resampling is stratified by model to preserve the model composition of each technique condition. For aggregate technique statistics, we resample trials within each model, compute the model-level mean, then average across models---this accounts for the clustered data structure where trials within a model are not independent.
+\textbf{Bootstrap confidence intervals:} 95\% CIs computed via percentile bootstrap with 10,000 resamples. Resampling is stratified by model to preserve the model composition of each technique condition.
+
+\textbf{Aggregate statistics:} Reported aggregate \% of baseline values (e.g., SACD's 93.7\%) are \textit{trial-weighted} means pooled across all models. The unweighted model-average for SACD is 97.7\% (Table~\ref{tab:sacd-by-model}); the difference reflects that models with more trials (and often lower baselines) pull the weighted mean down. We report trial-weighted aggregates for technique comparisons, but model-level results (Table~\ref{tab:sacd-by-model}) for deployment decisions.
 
 \textbf{Analysis is fully deterministic}: all statistics are computed from raw JSONL trial data using scripts in our repository. No manual intervention or selective reporting.
 
