@@ -50,9 +50,9 @@ Full SACD & \#3 & \#1 (best) \\
 \end{tabular}
 \end{center}
 
-Devil's Advocate reduces spread (low susceptibility) but keeps responses anchored at only 67.5\% of baseline---\textit{consistently wrong}. Full SACD increases spread but brings responses to 108\% of baseline---\textit{close to correct}.
+Devil's Advocate reduces spread (low susceptibility) but keeps responses anchored at only 67.5\% of baseline---\textit{consistently wrong}. Full SACD's 108\% average appears close to correct, but \textbf{masks bidirectional overcorrection}: from low anchors it undershoots (73.7\%), from high anchors it massively overshoots (141.1\%).
 
-\textbf{The metric you choose determines which technique you recommend.} Traditional susceptibility would lead practitioners to deploy Devil's Advocate; baseline-aware metrics recommend SACD. Without baseline collection, this critical distinction is invisible.
+\textbf{The metric you choose determines which technique you recommend.} Traditional susceptibility would lead practitioners to deploy Devil's Advocate; baseline-aware metrics recommend SACD---but with the caveat that SACD amplifies correction rather than converging on baseline. Without baseline collection, these failure modes are invisible.
 \end{abstract}
 
 %==============================================================================
@@ -666,15 +666,15 @@ We demonstrated that \textbf{metric choice determines technique recommendation}.
     \item \textbf{Full SACD}: Poor on susceptibility ($+36\%$ spread), best on baseline (108\%)
 \end{itemize}
 
-Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored at 67.5\% of where they should be. Full SACD produces variable responses that are \textit{close to correct}.
+Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored at 67.5\% of where they should be. Full SACD's 108\% average appears close to correct, but \textbf{masks bidirectional overcorrection}: from low anchors it undershoots (73.7\%), from high anchors it overshoots (141.1\%).
 
 Our key findings from 13,799 trials across 10 models:
 
 \begin{enumerate}
-    \item \textbf{Full SACD achieves 108\% of baseline}---closest to the model's unanchored judgment, with 8\% deviation. Best performer: o4-mini at 98.2\%.
-    \item \textbf{Devil's Advocate keeps responses at 67.5\% of baseline}---appearing effective under susceptibility while leaving responses anchored at wrong values.
-    \item \textbf{Model variance is high.} SACD ranges from 65\% (Haiku) to 125\% (Opus) of baseline. Practitioners must test per-model.
-    \item \textbf{Baseline collection is essential.} Without it, we would have recommended Devil's Advocate---the susceptibility metric alone misses the ``consistently wrong'' failure mode.
+    \item \textbf{Metric inversion}: Devil's Advocate ranks \#1 on susceptibility but \#4 on \% of baseline. SACD shows the opposite pattern.
+    \item \textbf{Bidirectional overcorrection}: SACD's 108\% average masks 73.7\% (low anchor) and 141.1\% (high anchor)---it amplifies correction rather than converging.
+    \item \textbf{High model variance}: SACD ranges from 65\% (Haiku) to 125\% (Opus). Practitioners must test per-model.
+    \item \textbf{Baseline collection is essential}: Without it, both the ``consistently wrong'' failure (Devil's Advocate) and bidirectional overcorrection (SACD) are invisible.
 \end{enumerate}
 
 For practitioners: test techniques per-model before deployment. Measure responses as \% of baseline, not just susceptibility.
