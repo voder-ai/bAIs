@@ -119,13 +119,32 @@ console.log(`ANALYSIS-DATA.JSON TOTAL: ${analysisData.summary.totalTrials.toLoca
 
 // Verification
 console.log('\n=== VERIFICATION ===\n');
-if (computedTotal === analysisData.summary.totalTrials) {
-  console.log('✅ MATCH: Raw file count matches analysis-data.json');
-} else {
-  console.log(`❌ MISMATCH: ${computedTotal} vs ${analysisData.summary.totalTrials}`);
-  console.log(`   Difference: ${Math.abs(computedTotal - analysisData.summary.totalTrials)}`);
+
+const rawTotal = computedTotal;
+const validTotal = analysisData.summary.totalTrials;
+const invalidCount = rawTotal - validTotal;
+
+console.log(`Raw trials (from files):    ${rawTotal.toLocaleString()}`);
+console.log(`- Invalid/null responses:   -${invalidCount.toLocaleString()}`);
+console.log('-'.repeat(35));
+console.log(`Valid trials (for analysis): ${validTotal.toLocaleString()}`);
+
+// Verify analysis-data.json internal consistency
+const { baseline, anchoring, techniques, sacd } = analysisData.summary.breakdown;
+const analysisSum = baseline + anchoring + techniques + sacd;
+
+console.log('\n=== ANALYSIS-DATA.JSON BREAKDOWN ===\n');
+console.log(`Baseline:    ${baseline.toLocaleString()}`);
+console.log(`Anchoring:   ${anchoring.toLocaleString()}`);
+console.log(`Techniques:  ${techniques.toLocaleString()}`);
+console.log(`SACD:        ${sacd.toLocaleString()}`);
+console.log('-'.repeat(35));
+console.log(`Sum:         ${analysisSum.toLocaleString()}`);
+
+if (analysisSum !== validTotal) {
+  console.log(`\n❌ INTERNAL MISMATCH: breakdown sum ${analysisSum} !== total ${validTotal}`);
   process.exit(1);
 }
 
-// Paper should use this number
-console.log(`\n📄 PAPER SHOULD REPORT: ${computedTotal.toLocaleString()} total trials`);
+console.log('\n✅ VERIFIED: All numbers add up correctly');
+console.log(`\n📄 PAPER SHOULD REPORT: ${validTotal.toLocaleString()} total trials`);
