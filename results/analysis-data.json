@@ -20,18 +20,8 @@
       "o3",
       "o4-mini"
     ],
-    "temperatures": [
-      0,
-      0.7,
-      1
-    ],
-    "techniques": [
-      "devils-advocate",
-      "premortem",
-      "random-control",
-      "outside-view",
-      "full-sacd"
-    ]
+    "temperatures": [0, 0.7, 1],
+    "techniques": ["devils-advocate", "premortem", "random-control", "outside-view", "full-sacd"]
   },
   "computedBaselines": {
     "claude-haiku-4-5": 29.144444444444446,

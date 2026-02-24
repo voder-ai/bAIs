@@ -32,17 +32,21 @@ Improvement = reduction in |response - baseline|
 ## 3. Taxonomy Summary
 
 **Distance techniques:** +35% avg calibration improvement
-  - full-sacd: +39%
-  - random-control: +30%
+
+- full-sacd: +39%
+- random-control: +30%
 
 **Doubt techniques:** +22% avg calibration improvement
-  - premortem: +22%
+
+- premortem: +22%
 
 **Replacement techniques:** -29% avg calibration improvement
-  - outside-view: -29%
+
+- outside-view: -29%
 
 **Confrontation techniques:** +2% avg calibration improvement
-  - devils-advocate: +2%
+
+- devils-advocate: +2%
 
 ## 4. Model-Specific Calibration
 

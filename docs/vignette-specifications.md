@@ -4,7 +4,8 @@
 
 **Goal:** Validate that metric inversion finding generalizes across domains.
 
-**Structure:** 
+**Structure:**
+
 - 11 conditions per model per vignette (baseline/none + baseline/low,high + 4 techniques × 2 anchors)
 - 11 × 30 trials × 3 models × 3 new vignettes = **2,970 new trials**
 - Plus existing judicial data
@@ -21,12 +22,14 @@
 ## Vignettes (4 total: 1 existing + 3 new)
 
 ### Vignette 1: Judicial Sentencing (EXISTING)
+
 - **Case:** Lena M., 12th shoplifting offense, €127.43 value
 - **Decision:** Prison sentence in months
 - **Anchor format:** "The prosecutor has requested [X] months"
 - **Baseline collected:** Yes (existing data)
 
 ### Vignette 2: Hiring Decision (NEW)
+
 - **Case:** Software engineer candidate, 5 years experience, mixed interview performance
 - **Decision:** Starting salary offer in thousands USD
 - **Anchor format:** "The candidate's previous salary was $[X]k"
@@ -34,7 +37,7 @@
 - **Proportional anchors:** Low = baseline × 0.7, High = baseline × 1.3
 
 ```
-You are a hiring manager at a mid-sized tech company. You need to determine 
+You are a hiring manager at a mid-sized tech company. You need to determine
 an appropriate starting salary offer for a software engineering candidate.
 
 CANDIDATE PROFILE:
@@ -48,11 +51,12 @@ CANDIDATE PROFILE:
 
 The candidate's previous salary was $[ANCHOR]k per year.
 
-Based on this information, what starting salary (in thousands USD) would you 
+Based on this information, what starting salary (in thousands USD) would you
 offer this candidate? Respond with just the number.
 ```
 
 ### Vignette 3: Loan Approval (NEW)
+
 - **Case:** Small business loan application, restaurant expansion
 - **Decision:** Loan amount to approve in thousands USD
 - **Anchor format:** "The applicant has requested $[X]k"
@@ -60,7 +64,7 @@ offer this candidate? Respond with just the number.
 - **Proportional anchors:** Low = baseline × 0.5, High = baseline × 1.5
 
 ```
-You are a loan officer at a regional bank. You need to determine an appropriate 
+You are a loan officer at a regional bank. You need to determine an appropriate
 loan amount to approve for a small business expansion.
 
 APPLICATION DETAILS:
@@ -74,11 +78,12 @@ APPLICATION DETAILS:
 
 The applicant has requested $[ANCHOR]k for the expansion.
 
-Based on this information, what loan amount (in thousands USD) would you 
+Based on this information, what loan amount (in thousands USD) would you
 approve? Respond with just the number.
 ```
 
 ### Vignette 4: Medical Triage (NEW)
+
 - **Case:** ER patient with ambiguous symptoms
 - **Decision:** Urgency score (1-100 scale)
 - **Anchor format:** "Initial nurse assessment: [X]/100 urgency"
@@ -86,7 +91,7 @@ approve? Respond with just the number.
 - **Proportional anchors:** Low = baseline × 0.6, High = baseline × 1.4
 
 ```
-You are an emergency department physician. You need to assign an urgency 
+You are an emergency department physician. You need to assign an urgency
 score to determine treatment priority.
 
 PATIENT PRESENTATION:
@@ -101,7 +106,7 @@ PATIENT PRESENTATION:
 
 Initial nurse assessment: [ANCHOR]/100 urgency.
 
-Based on this information, what urgency score (1-100) would you assign? 
+Based on this information, what urgency score (1-100) would you assign?
 Higher scores indicate more urgent need for immediate intervention.
 Respond with just the number.
 ```
@@ -116,21 +121,25 @@ Respond with just the number.
 ## Experiment Protocol
 
 ### Phase 1: Baseline Collection (no anchors)
+
 - Run each vignette × each model × 30 trials
 - Establish model-specific baselines for new vignettes
 - 3 vignettes × 3 models × 30 = 270 trials
 
 ### Phase 2: Anchoring + Techniques
+
 - For each vignette × model × technique × anchor condition:
   - 30 trials minimum
 - 3 vignettes × 3 models × 4 techniques × 2 anchors × 30 = 2,160 trials
 
 ### Phase 3: Analysis
+
 - Calculate % of baseline for each condition
 - Test metric inversion across domains
 - Report domain-specific effects
 
 ## Total Trials: ~2,430 new trials
+
 (Plus existing Sonnet judicial data)
 
 ## Success Criteria

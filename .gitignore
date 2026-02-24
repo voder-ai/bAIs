@@ -194,3 +194,5 @@ coverage-tmp/
 eslint-complexity-report.json
 eslint-complexity-report-detailed.json
 jscpd-output/results/
+!results/vignette-*/*.jsonl
+!results/spot-check-*/*.jsonl

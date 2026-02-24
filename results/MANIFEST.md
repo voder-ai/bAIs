@@ -249,23 +249,25 @@ results/
 
 ### Final Trial Counts
 
-| Condition | Trials |
-|-----------|--------|
-| Baseline | 909 |
-| Low-anchor | 909 |
-| Full SACD (iterative) | 2,397 |
-| Outside View | 2,430 |
-| Premortem | 2,188 |
-| Devil's Advocate | 2,174 |
-| Random Control | 2,242 |
-| **GRAND TOTAL** | **13,249** |
+| Condition             | Trials     |
+| --------------------- | ---------- |
+| Baseline              | 909        |
+| Low-anchor            | 909        |
+| Full SACD (iterative) | 2,397      |
+| Outside View          | 2,430      |
+| Premortem             | 2,188      |
+| Devil's Advocate      | 2,174      |
+| Random Control        | 2,242      |
+| **GRAND TOTAL**       | **13,249** |
 
 ### Models (10)
+
 - Anthropic: claude-opus-4.6, claude-sonnet-4.6, claude-haiku-4.5
 - OpenAI: gpt-5.2, gpt-4.1, o3, o4-mini
 - Open Source: deepseek-v3.2, glm-5, kimi-k2.5
 
 ### Key Findings
+
 - Random Control: 90% success rate (structural effect alone helps)
 - Outside View: 100% improved (best overall)
 - Full SACD: 70% success but 3 models backfire (opus, glm-5, gpt-5.2)
@@ -282,6 +284,7 @@ Reviewer feedback: "Single vignette limits generalization claims. Need 3-5 vigne
 ### Temperature Decision: t=0.7
 
 **Why t=0.7 (not t=0):**
+
 1. **More representative of deployment** — Production apps typically use t=0.3-0.7
 2. **Tests robustness** — If techniques work with sampling variance, they transfer to deterministic
 3. **Avoids "cherry-picking" criticism** — t=0 could be seen as artificially favorable
@@ -291,49 +294,51 @@ Reviewer feedback: "Single vignette limits generalization claims. Need 3-5 vigne
 
 ### Vignettes (4 total)
 
-| # | Domain | Decision | Anchor Format | Status |
-|---|--------|----------|---------------|--------|
-| 1 | Judicial Sentencing | Prison months | Prosecutor request | EXISTING |
-| 2 | Hiring/Salary | Starting salary ($k) | Previous salary | NEW |
-| 3 | Loan Approval | Loan amount ($k) | Requested amount | NEW |
-| 4 | Medical Triage | Urgency (1-100) | Nurse assessment | NEW |
+| #   | Domain              | Decision             | Anchor Format      | Status   |
+| --- | ------------------- | -------------------- | ------------------ | -------- |
+| 1   | Judicial Sentencing | Prison months        | Prosecutor request | EXISTING |
+| 2   | Hiring/Salary       | Starting salary ($k) | Previous salary    | NEW      |
+| 3   | Loan Approval       | Loan amount ($k)     | Requested amount   | NEW      |
+| 4   | Medical Triage      | Urgency (1-100)      | Nurse assessment   | NEW      |
 
 Full prompts in `docs/vignette-specifications.md`.
 
 ### Models (3 Anthropic via pi-ai OAuth)
 
-| Model | ID | Rationale |
-|-------|-----|-----------|
-| Sonnet 4.6 | `claude-sonnet-4-6` | Primary analysis model |
-| Opus 4.6 | `claude-opus-4-6` | Flagship |
-| ~~Haiku 4.5~~ | ~~`claude-haiku-4-5`~~ | *Excluded: refuses most vignettes* |
+| Model         | ID                     | Rationale                          |
+| ------------- | ---------------------- | ---------------------------------- |
+| Sonnet 4.6    | `claude-sonnet-4-6`    | Primary analysis model             |
+| Opus 4.6      | `claude-opus-4-6`      | Flagship                           |
+| ~~Haiku 4.5~~ | ~~`claude-haiku-4-5`~~ | _Excluded: refuses most vignettes_ |
 
 ### Conditions per Vignette
 
-| Condition | Anchor | Trials Target |
-|-----------|--------|---------------|
-| Baseline | None | n=30 |
-| Low anchor (no technique) | baseline×0.5 | n=30 |
-| High anchor (no technique) | baseline×1.5 | n=30 |
-| SACD + low anchor | baseline×0.5 | n=30 |
-| SACD + high anchor | baseline×1.5 | n=30 |
-| Premortem + low anchor | baseline×0.5 | n=30 |
-| Premortem + high anchor | baseline×1.5 | n=30 |
-| Random Control + low anchor | baseline×0.5 | n=30 |
-| Random Control + high anchor | baseline×1.5 | n=30 |
-| Devil's Advocate + low anchor | baseline×0.5 | n=30 |
-| Devil's Advocate + high anchor | baseline×1.5 | n=30 |
+| Condition                      | Anchor       | Trials Target |
+| ------------------------------ | ------------ | ------------- |
+| Baseline                       | None         | n=30          |
+| Low anchor (no technique)      | baseline×0.5 | n=30          |
+| High anchor (no technique)     | baseline×1.5 | n=30          |
+| SACD + low anchor              | baseline×0.5 | n=30          |
+| SACD + high anchor             | baseline×1.5 | n=30          |
+| Premortem + low anchor         | baseline×0.5 | n=30          |
+| Premortem + high anchor        | baseline×1.5 | n=30          |
+| Random Control + low anchor    | baseline×0.5 | n=30          |
+| Random Control + high anchor   | baseline×1.5 | n=30          |
+| Devil's Advocate + low anchor  | baseline×0.5 | n=30          |
+| Devil's Advocate + high anchor | baseline×1.5 | n=30          |
 
 **Total:** 11 conditions × 30 trials × 2 models × 3 NEW vignettes = **1,980 trials**
 
-*Notes:*
-- *Judicial already has 14,152 trials from existing experiments*
-- *Haiku 4.5 excluded due to ethical/safety refusals via pi-ai*
-- *Sonnet 4.5 + Opus 4.6 work on all vignettes*
+_Notes:_
+
+- _Judicial already has 14,152 trials from existing experiments_
+- _Haiku 4.5 excluded due to ethical/safety refusals via pi-ai_
+- _Sonnet 4.5 + Opus 4.6 work on all vignettes_
 
 ### Script Design
 
 `run-vignette-experiments.ts`:
+
 - Uses Anthropic via pi-ai OAuth
 - Checks existing trial counts per (vignette, model, technique, anchor)
 - Runs trials until n≥30 per condition
