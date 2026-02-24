@@ -135,8 +135,12 @@ Respond with just the number.
 
 ## Implementation Notes
 
-- All via OpenRouter for consistent API
-- Temperature = 0 for reproducibility (match existing experiments)
+- All via Anthropic OAuth (pi-ai) for cost efficiency
+- **Temperature = 0.7** for realism and robustness
+  - Rationale: Matches typical production settings (OpenAI default 0.7-1.0)
+  - Existing temperature analysis (F<1.5, p>0.1) shows <3pp variance across temps
+  - Avoids "cherry-picking deterministic conditions" criticism
+  - Findings at t=0.7 generalize to both lower and higher temps
 - Parse numeric responses; retry on failure (max 3 attempts)
 - Log all raw responses for audit
 
