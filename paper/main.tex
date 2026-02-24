@@ -608,6 +608,18 @@ Full SACD achieves 108\% of baseline (closest to 100\%) but shows the highest mo
 
 \textbf{Hypothesis 3: Baseline proximity matters.} Opus 4.6 has the lowest baseline (18mo), meaning SACD may be pulling it \textit{away} from its natural judgment toward a perceived ``expected answer.''
 
+\subsection{Per-Trial Distribution Analysis}
+
+Aggregate means can mask important distributional properties. Examining individual trial distributions reveals:
+
+\begin{itemize}
+    \item \textbf{Devil's Advocate compresses variance} but toward the wrong target: SD = 34.6, median = 69\%, only 11\% of trials within $\pm$10\% of baseline. The technique produces consistent responses that are consistently wrong.
+    \item \textbf{Premortem shows highest baseline proximity}: 13.9\% of trials within $\pm$10\% of baseline, though with higher variance (SD = 41.9).
+    \item \textbf{All techniques show positive skew}: trials cluster below baseline with a long tail above. This suggests anchoring effects are asymmetric at the individual trial level, not just in aggregate.
+\end{itemize}
+
+The compression phenomenon---Devil's Advocate producing low variance---explains its favorable susceptibility score. But variance reduction is only valuable if responses converge on the correct value. Devil's Advocate achieves compression toward 67\% of baseline, not toward baseline itself.
+
 \subsection{Why Random Control Works}
 
 Random Control (74.4\% of baseline) outperforms Devil's Advocate (67.5\%) despite having no debiasing content. \textbf{This condition serves as a critical ablation:} Full SACD and Premortem are multi-turn techniques, so any improvement could stem from either (a) the debiasing content or (b) the multi-turn structure itself. Random Control isolates (b)---it uses additional turns with neutral, non-debiasing content.
@@ -635,7 +647,7 @@ Outside View performed worst despite being recommended in human debiasing litera
 \begin{enumerate}
     \item \textbf{Single vignette.} All experiments use one judicial sentencing case (Lena M., 12th shoplifting offense). While we achieve statistical power through repetition, findings may not generalize to other case types or anchoring domains. Replication across multiple vignettes is needed.
     
-    \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). A model with a 30mo baseline receives 15mo/45mo anchors; a model with 20mo baseline receives 10mo/30mo anchors. This ensures equal relative anchor strength, enabling valid within-model comparisons. Future work should validate findings with fixed absolute anchors to test generalization.
+    \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). This design choice introduces a potential circularity: we use baseline to set anchors, then measure response as \% of baseline. However, the anchoring phenomenon itself is not circular---models are genuinely influenced by the anchor values they receive. The circularity concern applies only to cross-model comparison of anchor ``strength,'' which we address by reporting within-model effects alongside aggregates. Future work should validate findings with fixed absolute anchors.
     
     \item \textbf{Metric inversion holds without Outside View.} While Outside View shows the most dramatic divergence, the core finding---that metrics give opposite rankings---holds even excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility ($-14\%$ spread) but \textit{worst} on \% of baseline (67.5\%); Full SACD ranks \textit{worst} on susceptibility ($+127\%$ spread) but \textit{best} on \% of baseline (108\%). The inversion is robust.
     
