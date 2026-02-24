@@ -77,3 +77,11 @@ No major confound from API provider choice.
 2. Discuss vignette-dependent susceptibility
 3. Note model-tier differences (Opus vs Sonnet)
 4. Acknowledge medical vignette issues (low effect sizes, possible ceiling effects)
+
+## Related Work to Cite
+
+**arxiv 2508.21137** — Paper finding that reasoning models are LESS prone to anchoring (CoT mitigates the effect).
+
+**Contrast with our findings:** Our SACD multi-turn results show different patterns. 
+
+**Hypothesis:** Single-turn reasoning may help debias, but multi-turn reasoning may trigger "ironic process" effects — trying harder to debias can backfire (Wegner 1994). This explains why SACD sometimes worsens anchoring in frontier reasoning models.
