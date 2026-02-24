@@ -185,11 +185,13 @@ These metrics give \textbf{divergent rankings}:
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{Spread} = gap between high-anchor and low-anchor responses, expressed in percentage-of-baseline space (pp = percentage points of baseline). Lower spread = less susceptible to anchor direction. \textit{Asymmetry} = qualitative pattern of anchor correction (see Table~\ref{tab:anchor-asymmetry}). Both metrics use \% of baseline as the common measurement space. 95\% CIs from bootstrap.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). \textit{Spread} = gap between high-anchor and low-anchor responses in percentage-of-baseline space. \textit{Asymmetry} = qualitative pattern of anchor correction (see Table~\ref{tab:anchor-asymmetry}). 95\% CIs from bootstrap.}
 \label{tab:metric-comparison}
 \begin{tabular}{lccccc}
 \toprule
 Technique & Spread & Asymmetry & Rank & \% of Baseline & Rank \\
+\midrule
+\textit{No Technique (Anchored)} & \textit{26.0pp} & \textit{---} & \textit{ref} & \textit{72.9\%} & \textit{ref} \\
 \midrule
 Devil's Advocate & 23.7pp & lowest & \#1 & 63.6\% [62, 65] & \#4 \\
 Random Control & 30.1pp & --- & \#2 & 78.3\% [77, 80] & \#3 \\
@@ -577,7 +579,7 @@ Average response deviation from 100\% & 6.3\% & 8.4\% \\
 Mean absolute per-trial error & 18.1\% & 22.6\% \\
 \bottomrule
 \end{tabular}
-\caption{Two metrics for closeness to baseline. SACD shows numerically smaller deviation on both metrics, but the difference is not statistically significant ($p \approx 0.054$, see text).}
+\caption{Two metrics for closeness to baseline. \textit{Average response deviation} (6.3\% vs 8.4\%) can mask per-trial variance. \textit{Mean absolute per-trial error} (18.1\% vs 22.6\%) reveals that individual SACD responses deviate substantially from baseline---the 93.7\% aggregate is an average of overshoots and undershoots. Difference not statistically significant ($p \approx 0.054$).}
 \label{tab:sacd-premortem}
 \end{table}
 
