@@ -16,28 +16,29 @@ Total new trials: 2,121 successful (2,558 total)
 | | Sonnet | $98.2K | +12.1% ⚠️ COUNTER | +18.1% ↑ |
 | **Loan ($K)** | Opus | $181.9K | **-53.3%** ↓ | -17.5% ↓ |
 | | Sonnet | $146.5K | **-56.5%** ↓ | +2.4% ↑ |
-| **Medical (1-100)** | Opus | 72.0 | **0.0%** NO EFFECT | **0.0%** NO EFFECT |
-| | Sonnet | 67.9 | +1.4% | +11.0% ↑ |
+| **Medical (1-100)** | Opus | 72.0 | **0.0%** IMMUNE | **0.0%** IMMUNE |
+| | Sonnet | 75.0 | **+13%** COUNTER ↑ | **+13%** COUNTER ↑ |
 
 ### Interpretation
 
 **Loan shows strongest effects:** Both models susceptible to -50%+ anchoring on low anchor.
 
-**Medical shows weakest effects:** Opus is completely unaffected (always returns 72), Sonnet shows minimal effects.
+**Medical shows unique pattern:** Opus is completely IMMUNE (always returns 72, std=0). Sonnet shows COUNTER-anchoring (both anchors push responses UP to ~85). This suggests strong domain-specific safety training on medical triage.
 
 **Salary shows model differences:** Opus anchors normally, Sonnet COUNTER-anchors on low (resists unreasonably low values).
 
 ## Key Finding 2: Model-Specific Anchoring Patterns
 
 ### Opus 4.6
-- Shows standard bidirectional anchoring on salary
+- Shows standard bidirectional anchoring on salary (-24.8% low, +17.6% high)
 - Shows strong unidirectional anchoring on loan (both directions pull DOWN)
-- Shows **NO anchoring on medical** (std=0, always returns 72)
+- Shows **COMPLETE IMMUNITY on medical** (std=0, always returns 72)
+- SACD breaks the determinism on medical (72 → 63.5 or 86.6)
 
 ### Sonnet 4.5
-- Shows counter-anchoring on salary low anchor (strong domain priors)
-- Shows strong anchoring on loan low anchor
-- Shows minimal anchoring on medical
+- Shows counter-anchoring on salary low anchor (strong domain priors resist $69K)
+- Shows strong anchoring on loan low anchor (-56.5%)
+- Shows **COUNTER-anchoring on medical** (both anchors push UP to ~85)
 
 ## Key Finding 3: Asymmetric Anchoring (Spot-check Judicial)
 
@@ -57,11 +58,11 @@ Anchoring effects present via both OpenRouter and pi-ai OAuth.
 ~5mo baseline difference (~20%), but EFFECT direction consistent.
 No major confound from API provider choice.
 
-## Data Quality Issues
+## Data Quality Issues (RESOLVED)
 
-1. **Medical parsing:** Parser sometimes extracts wrong numbers (e.g., "4" from "4/10 pain")
-2. **Opus medical:** Always returns 72 with std=0 - suspicious determinism
-3. **Salary anchor values:** May need verification of ×0.7/×1.3 multipliers
+1. **Medical parsing:** ✅ FIXED - 31 records corrected (extracted "4" from "4/10 pain")
+2. **Opus medical:** ✅ VERIFIED - Always returns 72 is REAL behavior (domain-specific immunity)
+3. **Salary anchor values:** Verified - $69K low, $129K high (×0.7/×1.3 multipliers)
 
 ## Implications for Paper
 
