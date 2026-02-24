@@ -622,7 +622,7 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 \section{Multi-Domain Generalization}
 %==============================================================================
 
-To test whether our findings generalize beyond judicial sentencing, we replicated the methodology across three additional domains: loan approval amounts, medical dosage recommendations, and salary negotiations. We collected 1,941 trials across these vignettes using two models (Claude Opus 4.6 and Claude Sonnet 4.5).
+To test whether our findings generalize beyond judicial sentencing, we replicated the methodology across three additional domains: loan approval amounts, medical triage priority (hours to treatment), and salary negotiations. We collected 1,941 trials across these vignettes using two models (Claude Opus 4.6 and Claude Sonnet 4.5).
 
 \subsection{Domain Comparison}
 
@@ -637,25 +637,25 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 Domain & Technique & \% of Baseline & Deviation & Spread $\Delta$\% & Rank by Deviation \\
 \midrule
 \multirow{5}{*}{Loan} 
-& baseline & 68.8\% & 31.2\% & --- & 4 \\
-& devils-advocate & 82.3\% & \textbf{17.7\%} & +55\% & \textbf{1} \\
-& premortem & 76.0\% & 24.0\% & +37\% & 3 \\
-& random-control & 70.6\% & 29.4\% & +3\% & 5 \\
-& sacd & 57.7\% & 42.3\% & \textbf{-60\%} & 5 (worst) \\
+& baseline & 68.3\% & 31.7\% & --- & 4 \\
+& devils-advocate & 82.0\% & \textbf{18.0\%} & +55\% & \textbf{1} \\
+& premortem & 75.9\% & 24.1\% & +37\% & 3 \\
+& random-control & 73.6\% & 26.4\% & +3\% & 5 \\
+& sacd & 57.1\% & 42.9\% & \textbf{$-$60\%} & 5 (worst) \\
 \midrule
 \multirow{5}{*}{Medical}
-& baseline & 112.5\% & 12.5\% & --- & 4 \\
-& devils-advocate & 108.1\% & \textbf{8.1\%} & +1971\% & \textbf{1} \\
-& premortem & 111.8\% & 11.8\% & +5600\% & 3 \\
-& random-control & 112.2\% & 12.2\% & $-$13\% & 5 \\
-& sacd & 109.2\% & 9.2\% & $-$17757\% & 2 \\
+& baseline & 106.7\% & 6.7\% & --- & 4 \\
+& devils-advocate & 102.7\% & \textbf{2.7\%} & +1971\% & \textbf{1} \\
+& premortem & 106.2\% & 6.2\% & +5600\% & 3 \\
+& random-control & 106.5\% & 6.5\% & $-$13\% & 5 \\
+& sacd & 103.8\% & 3.8\% & $-$17757\% & 2 \\
 \midrule
 \multirow{5}{*}{Salary}
-& baseline & 105.3\% & \textbf{5.3\%} & --- & \textbf{1} \\
-& devils-advocate & 106.9\% & 6.9\% & $-$44\% & 2 \\
-& premortem & 117.7\% & 17.7\% & $-$16\% & 4 \\
-& random-control & 110.1\% & 10.1\% & $-$24\% & 3 \\
-& sacd & 116.5\% & 16.5\% & \textbf{$-$105\%} & 5 \\
+& baseline & 104.8\% & \textbf{4.8\%} & --- & \textbf{1} \\
+& devils-advocate & 106.2\% & 6.2\% & $-$44\% & 2 \\
+& premortem & 116.1\% & 16.1\% & $-$16\% & 4 \\
+& random-control & 108.9\% & 8.9\% & $-$24\% & 3 \\
+& sacd & 114.7\% & 14.7\% & \textbf{$-$105\%} & 5 \\
 \midrule
 \multirow{4}{*}{Judicial}
 & devils-advocate & 63.6\% & 36.4\% & \textbf{$-$42\%} & 4 (worst) \\
@@ -668,13 +668,13 @@ Domain & Technique & \% of Baseline & Deviation & Spread $\Delta$\% & Rank by De
 
 \subsection{Key Findings}
 
-\textbf{1. Technique effectiveness is domain-dependent.} SACD ranks \#1 by \% of baseline on judicial (6.3\% deviation) but \#5 on loan (42.3\% deviation)---a complete inversion. No technique is universally ``best.''
+\textbf{1. Technique effectiveness is domain-dependent.} SACD ranks \#1 by \% of baseline on judicial (6.3\% deviation) but \#5 on loan (42.9\% deviation)---a complete inversion. No technique is universally ``best.''
 
-\textbf{2. Metric divergence replicates.} On Loan, SACD shows the \textit{best} spread reduction ($-$60\%) but \textit{worst} baseline deviation (42.3\%). A practitioner using spread reduction alone would incorrectly recommend SACD for loan decisions. This replicates our core finding: metric choice determines technique recommendation.
+\textbf{2. Metric divergence replicates.} On Loan, SACD shows the \textit{best} spread reduction ($-$60\%) but \textit{worst} baseline deviation (42.9\%). A practitioner using spread reduction alone would incorrectly recommend SACD for loan decisions. This replicates our core finding: metric choice determines technique recommendation.
 
-\textbf{3. Medical shows anchoring immunity.} Baseline spread is 0.1---effectively zero. Models refuse to deviate from clinically appropriate dosages regardless of anchor. This suggests safety training can override anchoring susceptibility entirely in high-stakes medical contexts.
+\textbf{3. Medical shows anchoring immunity.} Baseline spread is 0.1---effectively zero. Models refuse to deviate from appropriate treatment timelines regardless of anchor. To our knowledge, this is the first empirical evidence that safety training may override anchoring susceptibility in high-stakes medical contexts.
 
-\textbf{4. On Salary, no technique beats doing nothing.} Baseline achieves 5.3\% deviation; all debiasing techniques perform worse (6.9\%--17.7\%). Debiasing interventions can introduce rather than remove bias.
+\textbf{4. On Salary, no technique beats doing nothing.} Baseline achieves 4.8\% deviation; all debiasing techniques perform worse (6.2\%--16.1\%). Debiasing interventions can introduce rather than remove bias.
 
 \subsection{Implications}
 
