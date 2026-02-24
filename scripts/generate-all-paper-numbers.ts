@@ -410,4 +410,49 @@ SACD vs Premortem Tradeoff:
 No-technique spread: ${noTechSpread.toFixed(1)}mo
 `);
 
+// ============================================================================
+// VERIFICATION: Table sums must match claimed totals
+// ============================================================================
+
+console.log('\n\nVERIFICATION');
+console.log('='.repeat(80));
+
+// Calculate trial counts from the data we computed
+const trialCounts = {
+  baseline: analysisData.summary.breakdown.baseline,
+  anchoring: analysisData.summary.breakdown.anchoring,
+  sacd: analysisData.summary.breakdown.sacd,
+  techniques: analysisData.summary.breakdown.techniques,
+};
+
+// Sum all categories
+const computedTotal = trialCounts.baseline + trialCounts.anchoring + trialCounts.sacd + trialCounts.techniques;
+const claimedTotal = analysisData.summary.totalTrials;
+
+console.log('Trial count breakdown:');
+console.log(`  Baseline:   ${trialCounts.baseline.toLocaleString()}`);
+console.log(`  Anchoring:  ${trialCounts.anchoring.toLocaleString()}`);
+console.log(`  SACD:       ${trialCounts.sacd.toLocaleString()}`);
+console.log(`  Techniques: ${trialCounts.techniques.toLocaleString()}`);
+console.log(`  ─────────────────────`);
+console.log(`  Computed:   ${computedTotal.toLocaleString()}`);
+console.log(`  Claimed:    ${claimedTotal.toLocaleString()}`);
+
+if (computedTotal !== claimedTotal) {
+  console.error('\n❌ ERROR: Trial count mismatch!');
+  console.error(`   Computed sum (${computedTotal}) ≠ Claimed total (${claimedTotal})`);
+  console.error('   Fix analysis-data.json or update the claimed total.');
+  process.exit(1);
+}
+
+// Also verify techniqueGrandTotals consistency
+const grandTotalSacd = analysisData.techniqueGrandTotals.find((t: any) => t.technique === 'full-sacd')?.n;
+if (grandTotalSacd && grandTotalSacd !== trialCounts.sacd) {
+  console.error('\n⚠️  WARNING: SACD count inconsistency in analysis-data.json');
+  console.error(`   summary.breakdown.sacd: ${trialCounts.sacd}`);
+  console.error(`   techniqueGrandTotals[full-sacd].n: ${grandTotalSacd}`);
+  console.error('   Using summary.breakdown value for paper consistency.');
+}
+
+console.log('\n✅ Verification passed: Trial counts sum correctly.');
 console.log('Script complete. Copy relevant sections to main.tex.');
