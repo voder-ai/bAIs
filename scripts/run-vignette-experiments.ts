@@ -99,8 +99,8 @@ function parseAnswer(response: string): number | null {
   }
   
   // Look for numbers after key phrases like "recommend", "assign", "offer", "approve"
-  // Handle formats like "recommend:\n\n**95**" or "recommend: $115" or "recommend 95"
-  const keywordMatch = normalized.match(/(?:recommend|assign|offer|approve|suggest|give)[:\s\n*]*\$?(\d+)/i);
+  // Handle formats like "recommend a salary of:\n\n**95**" or "recommend: $115"
+  const keywordMatch = normalized.match(/(?:recommend|assign|offer|approve|suggest|give)[^0-9]*?(?:\*\*)?(\d+)/i);
   if (keywordMatch) {
     return parseInt(keywordMatch[1]);
   }
