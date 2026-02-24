@@ -84,7 +84,7 @@ Negative $\Delta$ = reduced spread = ``less susceptible.'' Positive $\Delta$ = i
 
 The baseline metric directly answers: ``Is the debiased response close to what the model would say without any anchor?''
 
-\subsection{The Inversion}
+\subsection{The Divergence}
 
 Our key finding:
 
@@ -555,7 +555,7 @@ This indicates that \textbf{17\% of variance} in \% of baseline is attributable 
 
 The ranking is robust after accounting for model-level variance. A model with random slopes for technique would capture model $\times$ technique interactions (e.g., SACD works differently on Haiku vs.\ Opus); our per-model breakdowns in Table~\ref{tab:sacd-by-model} and Figure~\ref{fig:sacd-by-model} provide this detail descriptively. The ICC justifies our recommendation to test per-model before deployment.
 
-\subsection{The Metric Inversion}
+\subsection{The Metric Divergence}
 
 Table~\ref{tab:metric-comparison} confirms the divergence: Devil's Advocate ranks best on susceptibility but worst on baseline; SACD shows the opposite pattern. The bidirectional deviation in Table~\ref{tab:anchor-asymmetry} reveals that SACD's 93.7\% average results from direction-dependent over/under-correction.
 
