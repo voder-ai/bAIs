@@ -57,18 +57,22 @@ function loadAllTrials(): Trial[] {
       const lines = content.trim().split('\n').filter(l => l);
       for (const line of lines) {
         const data = JSON.parse(line);
-        if (typeof data.sentenceMonths !== 'number') continue;
+        
+        // Handle different field names: 'sentenceMonths' for most, 'final' for SACD
+        const response = data.sentenceMonths ?? data.final;
+        if (typeof response !== 'number') continue;
         
         const model = normalizeModel(data.model || data.actualModel);
         const baseline = baselineByModel.get(model);
         if (!baseline) continue;
         
         const technique = data.technique || 
-          (file.includes('devils-advocate') ? 'devils-advocate' : 
+          (file.startsWith('full-sacd-') ? 'full-sacd' :
+           file.includes('devils-advocate') ? 'devils-advocate' : 
            file.includes('premortem') ? 'premortem' : 
            file.includes('random-control') ? 'random-control' :
            file.includes('outside-view') ? 'outside-view' :
-           file.includes('baseline') && !file.includes('sacd') ? 'baseline' : null);
+           file.startsWith('baseline-') ? 'baseline' : null);
         
         if (!technique) continue;
         
@@ -79,8 +83,8 @@ function loadAllTrials(): Trial[] {
           technique,
           anchor: data.anchor,
           anchorType,
-          sentenceMonths: data.sentenceMonths,
-          pctBaseline: (data.sentenceMonths / baseline.mean) * 100
+          sentenceMonths: response,
+          pctBaseline: (response / baseline.mean) * 100
         });
       }
     } catch (e) {
@@ -178,24 +182,11 @@ const techniqueStats: Map<string, {
 }> = new Map();
 
 for (const tech of techniques) {
-  let pcts: number[] = [];
-  let lowPcts: number[] = [];
-  let highPcts: number[] = [];
-  
-  if (tech === 'full-sacd') {
-    for (const s of sacdTrials) {
-      for (let i = 0; i < s.n; i++) {
-        pcts.push(s.pctBaseline);
-        if (s.anchorType === 'low') lowPcts.push(s.pctBaseline);
-        else highPcts.push(s.pctBaseline);
-      }
-    }
-  } else {
-    const filtered = allTrials.filter(t => t.technique === tech);
-    pcts = filtered.map(t => t.pctBaseline);
-    lowPcts = filtered.filter(t => t.anchorType === 'low').map(t => t.pctBaseline);
-    highPcts = filtered.filter(t => t.anchorType === 'high').map(t => t.pctBaseline);
-  }
+  // All techniques now loaded from raw JSONL (including SACD)
+  const filtered = allTrials.filter(t => t.technique === tech);
+  const pcts = filtered.map(t => t.pctBaseline);
+  const lowPcts = filtered.filter(t => t.anchorType === 'low').map(t => t.pctBaseline);
+  const highPcts = filtered.filter(t => t.anchorType === 'high').map(t => t.pctBaseline);
   
   if (pcts.length === 0) continue;
   
