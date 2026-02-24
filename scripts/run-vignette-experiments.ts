@@ -27,9 +27,9 @@ const TARGET_N = 30;
 const RESULTS_DIR = './results';
 
 const MODELS = [
-  'anthropic/claude-sonnet-4.6',
-  'anthropic/claude-opus-4.6', 
-  'anthropic/claude-haiku-4.5',
+  'anthropic/claude-sonnet-4-6',
+  'anthropic/claude-opus-4-6', 
+  'anthropic/claude-haiku-4-5',
 ];
 
 const TECHNIQUES = ['baseline', 'sacd', 'premortem', 'devils-advocate', 'random-control'];

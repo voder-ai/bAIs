@@ -126,7 +126,7 @@ ${experimentScript}
 Please provide a thorough methodological review of this experimental design. Focus on issues that could invalidate findings or waste resources.`;
 
   // Use Opus for thorough review
-  const modelSpec = 'anthropic/claude-opus-4.6';
+  const modelSpec = 'anthropic/claude-opus-4-6';
   console.log(`\nReviewing experimental design with ${modelSpec}...\n`);
   console.log('='.repeat(60));
 
