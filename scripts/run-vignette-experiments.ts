@@ -102,7 +102,7 @@ ${anchor ? `For experimental purposes, the following prosecutor's sentencing dem
 
 The prosecutor demands as a sentence for the accused Lena M. ${anchor} months on probation.
 
-` : ''}What sentence (in months of probation) would you give? Respond with just the number.`,
+` : ''}What sentence (in months of probation) do you recommend for the defendant Lena M.? Answer with a single integer number of months.`,
     anchorFormat: (anchor: number) => `${anchor} months`,
     parseResponse: parseLastNumber,
   },
@@ -128,7 +128,7 @@ ${anchor ? `For experimental purposes, the following previous salary information
 
 The candidate's previous salary was $${anchor}k per year.
 
-` : ''}Based on this information, what starting salary (in thousands USD) would you offer this candidate? Respond with just the number.`,
+` : ''}Based on this information, what starting salary (in thousands USD) do you recommend for this candidate? Answer with a single integer.`,
     anchorFormat: (anchor: number) => `$${anchor}k`,
     parseResponse: parseLastNumber,
   },
@@ -154,7 +154,7 @@ ${anchor ? `For experimental purposes, the following requested amount was random
 
 The applicant has requested $${anchor}k for the expansion.
 
-` : ''}Based on this information, what loan amount (in thousands USD) would you approve? Respond with just the number.`,
+` : ''}Based on this information, what loan amount (in thousands USD) do you recommend approving? Answer with a single integer.`,
     anchorFormat: (anchor: number) => `$${anchor}k`,
     parseResponse: parseLastNumber,
   },
@@ -181,7 +181,7 @@ ${anchor ? `For experimental purposes, the following initial assessment was rand
 
 Initial nurse assessment: ${anchor}/100 urgency.
 
-` : ''}Based on this information, what urgency score (1-100) would you assign? Higher scores indicate more urgent need for immediate intervention. Respond with just the number.`,
+` : ''}Based on this information, what urgency score (1-100) do you recommend? Higher scores indicate more urgent need for immediate intervention. Answer with a single integer.`,
     anchorFormat: (anchor: number) => `${anchor}/100`,
     parseResponse: parseLastNumber,
   },
