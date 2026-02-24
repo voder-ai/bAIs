@@ -37,7 +37,9 @@ Large language models exhibit anchoring bias---disproportionate influence of ini
 
 Following \citet{jacowitz1995}, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}. This metric answers: ``How close is the debiased response to the model's unanchored judgment?'' Note: baseline is not ``correct'' in any absolute sense---it is what the model would say without an anchor.
 
-Across 14,152 trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}: Devil's Advocate ranks \#1 by susceptibility but \#4 by baseline proximity (63.6\%); SACD ranks \#3 by susceptibility but \#1 by baseline proximity (93.7\%). Devil's Advocate produces consistent responses that are consistently far from baseline. SACD achieves responses closest to baseline but shows bidirectional asymmetry. Model-specific variation is substantial. Without baseline collection, none of these distinctions are visible.
+Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}: Devil's Advocate ranks \#1 by susceptibility but \#4 by baseline proximity (63.6\%); SACD ranks \#3 by susceptibility but \#1 by baseline proximity (93.7\%). Devil's Advocate produces consistent responses that are consistently far from baseline. SACD achieves responses closest to baseline but shows bidirectional asymmetry.
+
+We extend this analysis to 1,941 additional trials across loan, medical, and salary domains. \textbf{Technique effectiveness is domain-dependent}: SACD ranks \#1 on judicial but \#5 (worst) on loan. On loan, SACD shows the best spread reduction ($-$60\%) but worst baseline proximity (57.7\%)---the opposite conclusion depending on metric. Practitioners must validate per-domain; no technique is universally ``best.''
 \end{abstract}
 
 %==============================================================================
@@ -46,7 +48,7 @@ Across 14,152 trials on 10 models, we find that \textbf{susceptibility and basel
 
 When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and using only one metric can be insufficient.
 
-We report findings from 14,152 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
+We report findings from 16,093 trials across 10 models and 4 domains evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -91,7 +93,9 @@ Premortem & 45.2 (highest) & 91.6\% & 8.4\% \\
 \begin{enumerate}
     \item \textbf{Baseline collection matters for LLM debiasing evaluation.} Following \citet{jacowitz1995}, we collect unanchored baseline responses to complement susceptibility measurement. We show that technique rankings diverge substantially between susceptibility (response consistency) and baseline proximity metrics. This is established methodology in human anchoring research; we demonstrate its importance for LLM debiasing.
     
-    \item \textbf{Empirical comparison of 4 debiasing techniques} across 14,152 trials on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
+    \item \textbf{Empirical comparison of 4 debiasing techniques} across 16,093 total trials (14,152 judicial + 1,941 multi-domain) on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
+    
+    \item \textbf{Technique effectiveness is domain-dependent.} SACD ranks \#1 on judicial but \#5 (worst) on loan approval. No technique generalizes universally; domain-specific validation is essential.
 \end{enumerate}
 
 %==============================================================================
@@ -613,6 +617,74 @@ Mean absolute per-trial error & 18.1\% & 22.6\% \\
 \textbf{Practitioner guidance:} SACD and Premortem show comparable baseline proximity. The numerical difference is not statistically significant---practitioners should consider either technique viable. Model-specific variation dominates technique choice; per-model testing is essential.
 
 This analysis is only possible by collecting baselines and examining per-anchor results.
+
+%==============================================================================
+\section{Multi-Domain Generalization}
+%==============================================================================
+
+To test whether our findings generalize beyond judicial sentencing, we replicated the methodology across three additional domains: loan approval amounts, medical dosage recommendations, and salary negotiations. We collected 1,941 trials across these vignettes using two models (Claude Opus 4.6 and Claude Sonnet 4.5).
+
+\subsection{Domain Comparison}
+
+Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings vary dramatically by domain.
+
+\begin{table}[H]
+\centering
+\caption{Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial but \#5 (worst) on Loan. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. Spread $\Delta$\% = change in high-low gap vs.\ no-technique baseline; negative = reduced susceptibility.}
+\label{tab:vignette-comparison}
+\begin{tabular}{llcccc}
+\toprule
+Domain & Technique & \% of Baseline & Deviation & Spread $\Delta$\% & Rank by Deviation \\
+\midrule
+\multirow{5}{*}{Loan} 
+& baseline & 68.8\% & 31.2\% & --- & 4 \\
+& devils-advocate & 82.3\% & \textbf{17.7\%} & +55\% & \textbf{1} \\
+& premortem & 76.0\% & 24.0\% & +37\% & 3 \\
+& random-control & 70.6\% & 29.4\% & +3\% & 5 \\
+& sacd & 57.7\% & 42.3\% & \textbf{-60\%} & 5 (worst) \\
+\midrule
+\multirow{5}{*}{Medical}
+& baseline & 112.5\% & 12.5\% & --- & 4 \\
+& devils-advocate & 108.1\% & \textbf{8.1\%} & +1971\% & \textbf{1} \\
+& premortem & 111.8\% & 11.8\% & +5600\% & 3 \\
+& random-control & 112.2\% & 12.2\% & $-$13\% & 5 \\
+& sacd & 109.2\% & 9.2\% & $-$17757\% & 2 \\
+\midrule
+\multirow{5}{*}{Salary}
+& baseline & 105.3\% & \textbf{5.3\%} & --- & \textbf{1} \\
+& devils-advocate & 106.9\% & 6.9\% & $-$44\% & 2 \\
+& premortem & 117.7\% & 17.7\% & $-$16\% & 4 \\
+& random-control & 110.1\% & 10.1\% & $-$24\% & 3 \\
+& sacd & 116.5\% & 16.5\% & \textbf{$-$105\%} & 5 \\
+\midrule
+\multirow{4}{*}{Judicial}
+& devils-advocate & 63.6\% & 36.4\% & \textbf{$-$42\%} & 4 (worst) \\
+& premortem & 91.6\% & 8.4\% & +30\% & 2 \\
+& random-control & 78.3\% & 21.7\% & --- & 3 \\
+& sacd & 93.7\% & \textbf{6.3\%} & +13\% & \textbf{1} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Findings}
+
+\textbf{1. Technique effectiveness is domain-dependent.} SACD ranks \#1 by \% of baseline on judicial (6.3\% deviation) but \#5 on loan (42.3\% deviation)---a complete inversion. No technique is universally ``best.''
+
+\textbf{2. Metric divergence replicates.} On Loan, SACD shows the \textit{best} spread reduction ($-$60\%) but \textit{worst} baseline deviation (42.3\%). A practitioner using spread reduction alone would incorrectly recommend SACD for loan decisions. This replicates our core finding: metric choice determines technique recommendation.
+
+\textbf{3. Medical shows anchoring immunity.} Baseline spread is 0.1---effectively zero. Models refuse to deviate from clinically appropriate dosages regardless of anchor. This suggests safety training can override anchoring susceptibility entirely in high-stakes medical contexts.
+
+\textbf{4. On Salary, no technique beats doing nothing.} Baseline achieves 5.3\% deviation; all debiasing techniques perform worse (6.9\%--17.7\%). Debiasing interventions can introduce rather than remove bias.
+
+\subsection{Implications}
+
+These results strengthen rather than weaken our core argument:
+
+\begin{enumerate}
+    \item \textbf{Metric choice still matters}---spread reduction and \% of baseline give divergent rankings across all domains
+    \item \textbf{Domain-specific validation is essential}---practitioners cannot assume techniques that work in one domain will transfer
+    \item \textbf{The counterfactual matters}---using spread reduction alone for loan decisions would recommend SACD, which actually \textit{increases} distance from the unanchored judgment
+\end{enumerate}
 
 %==============================================================================
 \section{Discussion}
