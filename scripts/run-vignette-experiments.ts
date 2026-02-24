@@ -420,7 +420,16 @@ function getExistingTrialCount(
   let count = 0;
   for (const file of files) {
     const content = readFileSync(join(dirPath, file), 'utf-8');
-    count += content.trim().split('\n').filter(l => l).length;
+    const lines = content.trim().split('\n').filter(l => l);
+    // Only count successful trials (non-null responses)
+    for (const line of lines) {
+      try {
+        const trial = JSON.parse(line);
+        if (trial.response !== null) count++;
+      } catch {
+        // Skip malformed lines
+      }
+    }
   }
   
   return count;
