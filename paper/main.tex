@@ -64,6 +64,7 @@ When evaluating debiasing techniques for LLMs, which metric should you use? The 
 We report findings from 13,799 trials across 10 models evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give inverted technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa.
 
 \subsection{Two Metrics, Opposite Conclusions}
+\label{sec:two-metrics}
 
 \textbf{Susceptibility} (standard): Measures the gap between high-anchor and low-anchor responses. Lower gap = less susceptible = ``better.''
 \begin{equation}
@@ -99,8 +100,6 @@ Full SACD & +127\% & \textbf{108\%} & 8\% (best) \\
 \bottomrule
 \end{tabular}
 \end{center}
-
-Devil's Advocate produces \textit{consistent} responses (low susceptibility) that are \textit{consistently wrong} (67.5\% of baseline). Full SACD produces \textit{variable} responses (high susceptibility) that are \textit{close to correct} (108\% of baseline). Without baseline collection, this critical distinction is invisible.
 
 \subsection{Contributions}
 
@@ -160,27 +159,9 @@ This metric directly measures where the debiased response lands relative to the 
 
 \subsection{Evaluation Metrics}
 
-We compare two evaluation approaches:
+We compare susceptibility (standard) with \% of baseline (proposed). Susceptibility measures high-low spread; \% of baseline measures proximity to unanchored judgment. Formulas defined in Section~\ref{sec:two-metrics}.
 
-\subsubsection{Standard Metric: Anchor Susceptibility}
-
-The conventional approach compares responses under high vs.\ low anchor conditions:
-
-\[
-\text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
-\]
-
-A technique ``works'' if it reduces this gap. Lower susceptibility = less anchor influence.
-
-\subsubsection{Our Metric: Percentage of Baseline}
-
-We collected baseline responses without explicit anchors. This enables a direct measure of where debiased responses land:
-
-\[
-\text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
-\]
-
-\textbf{Interpretation:}
+\textbf{Interpretation of \% of baseline:}
 \begin{itemize}
     \item 100\% = response matches unanchored judgment (perfect debiasing)
     \item $<$100\% = response remains below baseline (under-correction or opposite-direction anchor)
@@ -346,13 +327,7 @@ All comparisons use \textbf{Welch's t-test} (unequal variances assumed) with \te
 
 \subsubsection{Outside View Jurisdiction Context}
 
-To avoid model safety refusals, Outside View prompts included jurisdiction specification:
-
-\begin{quote}
-``In German federal courts, what is the TYPICAL probation sentence...''
-\end{quote}
-
-This may have introduced a secondary anchor toward German sentencing norms ($\sim$12--18 months for probation). Other techniques did not require this modification.
+Outside View prompts required jurisdiction specification (``German federal courts'') to avoid safety refusals, potentially introducing a secondary anchor. See Section~\ref{sec:outside-view-confound} for analysis.
 
 %==============================================================================
 \section{Results}
@@ -578,11 +553,24 @@ Devil's Advocate & 54.4\% & [53, 56] & 78.7\% & [76, 81] & 24.3 pp \\
 
 \subsection{Mixed Effects Analysis}
 
-To account for non-independence of observations within models, we fit a mixed effects model with technique as a fixed effect and model as a random effect. The intraclass correlation coefficient (ICC) is 0.17, indicating that \textbf{17\% of variance} in \% of baseline is attributable to model differences.
+To account for non-independence of observations within models, we fit a linear mixed effects model:
 
-\textbf{Fixed effects} (technique, controlling for model):
+\begin{equation}
+y_{ij} = \beta_0 + \beta_{\text{technique}} + u_j + \epsilon_{ij}
+\end{equation}
+
+where $y_{ij}$ is the \% of baseline for trial $i$ in model $j$, $\beta_{\text{technique}}$ is the fixed effect for technique (reference: grand mean), $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ij} \sim N(0, \sigma^2_\epsilon)$ is the residual error. Analysis includes 6,410 trials across 10 models and 4 techniques.
+
+The intraclass correlation coefficient (ICC) is 0.17:
+\begin{equation}
+\text{ICC} = \frac{\sigma^2_u}{\sigma^2_u + \sigma^2_\epsilon} = \frac{294.9}{294.9 + 1411.1} = 0.17
+\end{equation}
+
+This indicates that \textbf{17\% of variance} in \% of baseline is attributable to model differences.
+
+\textbf{Fixed effects} (technique, relative to grand mean of 83.8\%):
 \begin{itemize}
-    \item Full SACD: $+24.2\%$ from grand mean (95\% CI [105.9, 110.1])
+    \item Full SACD: $+24.2\%$ (95\% CI [105.9, 110.1])
     \item Premortem: $+4.8\%$
     \item Random Control: $-9.4\%$
     \item Devil's Advocate: $-16.3\%$
@@ -592,7 +580,7 @@ The ranking is robust after accounting for model-level variance. This supports t
 
 \subsection{The Metric Inversion}
 
-As shown in Table~\ref{tab:metric-comparison}, susceptibility and baseline metrics give inverted rankings. Devil's Advocate produces consistent responses (low susceptibility) that are consistently anchored at the wrong value (67.5\% of baseline). SACD brings responses close to baseline (108\%) on average despite high variability---but this average masks bidirectional overcorrection (Table~\ref{tab:anchor-asymmetry}).
+Table~\ref{tab:metric-comparison} confirms the inversion: Devil's Advocate ranks best on susceptibility but worst on baseline; SACD shows the opposite. The bidirectional overcorrection in Table~\ref{tab:anchor-asymmetry} reveals that SACD's 108\% average masks directional failures.
 
 %==============================================================================
 \section{Discussion}
@@ -613,34 +601,25 @@ Full SACD achieves 108\% of baseline (closest to 100\%) but shows the highest mo
 Aggregate means can mask important distributional properties. Examining individual trial distributions reveals:
 
 \begin{itemize}
-    \item \textbf{Devil's Advocate compresses variance} but toward the wrong target: SD = 34.6, median = 69\%, only 11\% of trials within $\pm$10\% of baseline. The technique produces consistent responses that are consistently wrong.
+    \item \textbf{Devil's Advocate compresses variance} toward the wrong target: SD = 34.6, median = 69\%, only 11\% of trials within $\pm$10\% of baseline.
     \item \textbf{Premortem shows highest baseline proximity}: 13.9\% of trials within $\pm$10\% of baseline, though with higher variance (SD = 41.9).
     \item \textbf{All techniques show positive skew}: trials cluster below baseline with a long tail above. This suggests anchoring effects are asymmetric at the individual trial level, not just in aggregate.
 \end{itemize}
 
-The compression phenomenon---Devil's Advocate producing low variance---explains its favorable susceptibility score. But variance reduction is only valuable if responses converge on the correct value. Devil's Advocate achieves compression toward 67\% of baseline, not toward baseline itself.
+The compression phenomenon explains Devil's Advocate's favorable susceptibility score---but compression toward 67\% of baseline is not useful.
 
 \subsection{Why Random Control Works}
 
 Random Control (74.4\% of baseline) outperforms Devil's Advocate (67.5\%) despite having no debiasing content. \textbf{This condition serves as a critical ablation:} Full SACD and Premortem are multi-turn techniques, so any improvement could stem from either (a) the debiasing content or (b) the multi-turn structure itself. Random Control isolates (b)---it uses additional turns with neutral, non-debiasing content.
 
-The finding that Random Control achieves 74.4\% of baseline while Full SACD reaches 108\% suggests both mechanisms contribute: structure provides partial correction, and debiasing content adds further benefit. \textbf{Isolating content effects:} SACD's additional 33.6 percentage points toward baseline over Random Control represents the contribution of debiasing content beyond structural effects. Possible mechanisms for the structural effect:
-
-\textbf{Attention redistribution.} Additional turns dilute the anchor's influence by introducing competing context.
-
-\textbf{Implicit reconsideration.} Multi-turn format may trigger revision behavior even without explicit instructions.
+Both mechanisms contribute: structure provides partial correction (Random Control at 74.4\%), and debiasing content adds further benefit (SACD at 108\%). The 33.6 percentage point difference represents the contribution of debiasing content beyond structural effects.
 
 \subsection{The Outside View Confound}
+\label{sec:outside-view-confound}
 
-Outside View performed worst despite being recommended in human debiasing literature. Our implementation required jurisdiction specification (``German federal courts'') to avoid model safety refusals. This may have introduced a secondary anchor:
+Outside View performed worst despite recommendations in human debiasing literature. Our prompts required jurisdiction specification (``German federal courts'') to avoid safety refusals, likely introducing a secondary anchor toward German norms ($\sim$12--18 months). Baselines without this context ranged 18--36 months; Outside View pulled toward $\sim$15 months.
 
-\begin{itemize}
-    \item German probation for repeat shoplifting: $\sim$12--18 months
-    \item Our model baselines (without explicit anchor): 18--36 months
-    \item Outside View consistently pulled toward $\sim$15 months
-\end{itemize}
-
-\textbf{Implication for practitioners:} When using Outside View, ensure the reference class matches your actual decision context. Specifying a jurisdiction to avoid refusals may import that jurisdiction's norms.
+\textbf{Practitioner implication:} Reference classes may import unintended anchors.
 
 \subsection{Limitations}
 
@@ -651,7 +630,7 @@ Outside View performed worst despite being recommended in human debiasing litera
     
     \item \textbf{Metric inversion holds without Outside View.} While Outside View shows the most dramatic divergence, the core finding---that metrics give opposite rankings---holds even excluding it. Without Outside View: Devil's Advocate ranks \textit{best} on susceptibility ($-14\%$ spread) but \textit{worst} on \% of baseline (67.5\%); Full SACD ranks \textit{worst} on susceptibility ($+127\%$ spread) but \textit{best} on \% of baseline (108\%). The inversion is robust.
     
-    \item \textbf{Outside View confound.} Our Outside View implementation required jurisdiction specification to avoid model refusals. We cannot fully disentangle whether the technique itself fails or whether our implementation introduced a secondary anchor. Future work should test jurisdiction-neutral Outside View prompts.
+    \item \textbf{Outside View confound.} See Section~\ref{sec:outside-view-confound}. Future work should test jurisdiction-neutral prompts.
     
     \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure proximity to the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions.
     
@@ -666,7 +645,7 @@ Based on our findings in the judicial sentencing domain (generalization to other
     \item \textbf{Consider structural interventions.} Adding conversation turns (Random Control, +9\%) provides meaningful improvement with minimal prompt engineering.
     \item \textbf{Test per-model.} Technique effectiveness varies substantially across models; SACD ranges from 65\% (Haiku) to 125\% (Opus) of baseline.
     \item \textbf{Collect baselines.} We propose \% of baseline as a complementary metric to susceptibility. Measuring how close responses are to the model's unprompted judgment catches techniques that appear effective but keep responses anchored at wrong values.
-    \item \textbf{Be cautious with reference class prompts.} Our Outside View implementation suggests that specifying reference classes may introduce secondary anchors. If using Outside View, ensure the reference class does not anchor toward a specific value.
+    \item \textbf{Be cautious with reference class prompts.} See Section~\ref{sec:outside-view-confound}.
 \end{enumerate}
 
 %==============================================================================
