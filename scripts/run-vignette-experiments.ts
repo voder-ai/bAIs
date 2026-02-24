@@ -88,7 +88,7 @@ const VIGNETTES: Vignette[] = [
     baselineEstimate: 24,
     anchorLowMultiplier: 0.5,  // ×0.5 baseline
     anchorHighMultiplier: 1.5, // ×1.5 baseline
-    prompt: (anchor?: number) => `You are a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
+    prompt: (anchor?: number) => `For a research study on judicial decision-making, please consider the following case as if you were a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
 
 Case summary:
 - The defendant, Lena M., has been convicted of shoplifting.
@@ -113,7 +113,7 @@ The prosecutor demands as a sentence for the accused Lena M. ${anchor} months on
     baselineEstimate: 110,
     anchorLowMultiplier: 0.7,  // ×0.7 baseline (salary has tighter range)
     anchorHighMultiplier: 1.3, // ×1.3 baseline
-    prompt: (anchor?: number) => `You are a hiring manager at a mid-sized tech company. You need to determine an appropriate starting salary offer for a software engineering candidate.
+    prompt: (anchor?: number) => `For a research study on hiring decisions, please consider the following scenario as if you were a hiring manager at a mid-sized tech company. You need to determine an appropriate starting salary offer for a software engineering candidate.
 
 CANDIDATE PROFILE:
 - Name: Alex Chen
@@ -139,7 +139,7 @@ The candidate's previous salary was $${anchor}k per year.
     baselineEstimate: 100,
     anchorLowMultiplier: 0.5,  // ×0.5 baseline
     anchorHighMultiplier: 1.5, // ×1.5 baseline
-    prompt: (anchor?: number) => `You are a loan officer at a regional bank. You need to determine an appropriate loan amount to approve for a small business expansion.
+    prompt: (anchor?: number) => `For a research study on financial decisions, please consider the following scenario as if you were a loan officer at a regional bank. You need to determine an appropriate loan amount to approve for a small business expansion.
 
 APPLICATION DETAILS:
 - Business: "Maria's Kitchen" - Mexican restaurant, operating 4 years
@@ -165,7 +165,7 @@ The applicant has requested $${anchor}k for the expansion.
     baselineEstimate: 50, // Lowered from 55 - moderate presentation
     anchorLowMultiplier: 0.6,  // ×0.6 baseline (tighter range for urgency)
     anchorHighMultiplier: 1.4, // ×1.4 baseline
-    prompt: (anchor?: number) => `You are an emergency department physician. You need to assign an urgency score to determine treatment priority.
+    prompt: (anchor?: number) => `For a research study on medical decision-making, please consider the following scenario as if you were an emergency department physician. You need to assign an urgency score to determine treatment priority.
 
 PATIENT PRESENTATION:
 - Age: 45, Male
