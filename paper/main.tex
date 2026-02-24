@@ -52,7 +52,7 @@ Full SACD & \#4 (worst) & \#1 (best) \\
 
 Devil's Advocate reduces spread (low susceptibility) but keeps responses anchored at only 67.5\% of baseline---\textit{consistently wrong}. Full SACD's 108\% average appears close to correct, but \textbf{masks bidirectional overcorrection}: from low anchors it undershoots (73.7\%), from high anchors it massively overshoots (141.1\%).
 
-\textbf{The metric you choose determines which technique you recommend.} Traditional susceptibility would lead practitioners to deploy Devil's Advocate; baseline-aware metrics recommend SACD---but with the caveat that SACD amplifies correction rather than converging on baseline. Without baseline collection, these failure modes are invisible.
+\textbf{Even baseline-aware metrics give different recommendations.} By \textit{average response}, SACD is best (7.4\% from baseline). By \textit{per-trial error}, Premortem is best (19.7\% mean absolute deviation vs.\ SACD's 33.7\%). The ``best'' technique depends on whether you optimize for aggregate outcomes or individual decision accuracy. Without baseline collection, none of these distinctions are visible.
 \end{abstract}
 
 %==============================================================================
@@ -550,6 +550,32 @@ The ranking is robust after accounting for model-level variance. A model with ra
 \subsection{The Metric Inversion}
 
 Table~\ref{tab:metric-comparison} confirms the inversion: Devil's Advocate ranks best on susceptibility but worst on baseline; SACD shows the opposite. The bidirectional overcorrection in Table~\ref{tab:anchor-asymmetry} reveals that SACD's 108\% average masks directional failures.
+
+\subsection{The SACD vs.\ Premortem Tradeoff}
+
+Even within baseline-aware evaluation, two reasonable metrics give \textbf{opposite recommendations}:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Metric & SACD & Premortem & Winner \\
+\midrule
+Average response deviation from 100\% & 7.4\% & 12.8\% & SACD \\
+Mean absolute per-trial error & 33.7\% & 19.7\% & Premortem \\
+\bottomrule
+\end{tabular}
+\caption{Two ways to measure ``closeness to baseline'' give opposite rankings. SACD's bidirectional overcorrection (73.7\% low, 141.1\% high) averages to 107.4\%---close to 100\%. But each individual trial is far from baseline. Premortem's asymmetry (67.5\% low, 106.9\% high) averages to 87.2\%---further from 100\%, but individual trials are closer on average.}
+\label{tab:sacd-premortem}
+\end{table}
+
+\textbf{Practitioner guidance:}
+\begin{itemize}
+    \item If optimizing for \textbf{aggregate outcomes} (average of many decisions): choose SACD
+    \item If optimizing for \textbf{individual decision accuracy}: choose Premortem
+\end{itemize}
+
+This tradeoff is invisible without collecting baselines and examining per-anchor results.
 
 %==============================================================================
 \section{Discussion}
