@@ -427,40 +427,7 @@ Devil's Advocate & 1,643 & 67.5\% & [65.0, 70.0] & 32.5\% & \#4 \\
 \end{table}
 
 % Percentage of baseline visualization
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    bar width=18pt,
-    width=0.95\columnwidth,
-    height=6cm,
-    ylabel={\% of Baseline},
-    ymin=50,
-    ymax=120,
-    xtick=data,
-    symbolic x coords={Full SACD, Premortem, Random Control, Devil's Advocate},
-    xticklabel style={font=\small, align=center},
-    nodes near coords,
-    nodes near coords align={vertical},
-    every node near coord/.append style={font=\footnotesize\bfseries},
-    enlarge x limits=0.2,
-    axis lines*=left,
-    ymajorgrids=true,
-    grid style={dashed,gray!30},
-]
-\addplot[fill=green!60!black, draw=black] coordinates {
-    (Full SACD, 108)
-    (Premortem, 88.5)
-    (Random Control, 74.4)
-    (Devil's Advocate, 67.5)
-};
-\draw[dashed, red, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
-\end{axis}
-\end{tikzpicture}
-\caption{Technique responses as percentage of baseline. The dashed red line marks 100\% (perfect match to unanchored judgment). Full SACD (108\%) slightly overshoots but is closest to baseline. Devil's Advocate (67.5\%) keeps responses far below baseline despite appearing effective under susceptibility.}
-\label{fig:baseline-pct}
-\end{figure}
+% Figure removed - redundant with Figure 1 (fig:metric-comparison)
 
 \subsection{Model-Specific Results: Full SACD}
 
@@ -473,7 +440,7 @@ Full SACD shows high variance across models:
 Model & \% of Baseline & 95\% CI & Deviation & Assessment \\
 \midrule
 \textbf{o4-mini} & \textbf{98.2\%} & [90, 101] & \textbf{1.8\%} & Near-perfect \\
-Kimi-k2.5 & 97.6\% & [83, 112] & 2.4\% & Near-perfect \\
+Kimi-k2.5 & 97.6\% & [83, 112] & 2.4\% & Wide CI (n=22) \\
 DeepSeek-v3.2 & 99.6\% & [96, 103] & 0.4\% & Near-perfect \\
 GLM-5 & 107.5\% & [90, 116] & 7.5\% & Good \\
 o3 & 108.9\% & [104, 112] & 8.9\% & Good \\
@@ -616,7 +583,7 @@ Random Control (74.4\% of baseline) outperforms Devil's Advocate (67.5\%) despit
 
 Both mechanisms contribute: structure provides partial correction (Random Control at 74.4\%), and debiasing content adds further benefit (SACD at 108\%). The 33.6 percentage point difference represents the contribution of debiasing content beyond structural effects.
 
-\textbf{Direct comparison:} Random Control (73.4\%) outperforms Devil's Advocate (66.5\%) by 6.8 percentage points ($t = 5.26$, $p < 0.001$, 95\% CI [4.3, 9.4]). However, Cohen's $d = 0.18$ (negligible), suggesting the practical difference is small---both techniques leave responses substantially below baseline.
+\textbf{Direct comparison:} Random Control (74.4\%) outperforms Devil's Advocate (67.5\%) by 6.9 percentage points ($t = 5.26$, $p < 0.001$). However, Cohen's $d = 0.18$ (negligible), suggesting the practical difference is small---both techniques leave responses substantially below baseline.
 
 \subsection{The Outside View Confound}
 \label{sec:outside-view-confound}
