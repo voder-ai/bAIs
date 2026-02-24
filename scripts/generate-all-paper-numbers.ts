@@ -10,6 +10,7 @@
 
 import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { computeRandomSlopesStats } from './analysis-random-slopes';
 
 const RESULTS_DIR = './results';
 
@@ -411,20 +412,21 @@ No-technique spread: ${noTechSpread.toFixed(1)}mo
 `);
 
 // ============================================================================
-// RANDOM SLOPES MODEL (computed separately, values hardcoded from analysis)
+// RANDOM SLOPES MODEL (computed from analysis-random-slopes.ts)
 // ============================================================================
-// Note: Run scripts/analysis-random-slopes.ts to regenerate these values
 
 console.log('\n\nRANDOM SLOPES MODEL');
 console.log('-'.repeat(60));
+
+const randomSlopesStats = computeRandomSlopesStats();
+
 console.log(`
 Random slopes model: % of baseline ~ technique + (technique|model)
-  - Variance reduction vs intercepts-only: 29.4%
-  - LRT: χ² = 3965.0, df = 35, p << 0.001
-  - SACD slope SD: 25.6 percentage points (highest variability)
-  - Technique effect range: -56% to +33% across models
-  
-To regenerate: bun run scripts/analysis-random-slopes.ts
+  - Total trials: ${randomSlopesStats.totalTrials}
+  - Variance reduction vs intercepts-only: ${randomSlopesStats.varianceReduction}%
+  - LRT: χ² = ${randomSlopesStats.lrtChiSq}, df = ${randomSlopesStats.lrtDf}, p << 0.001
+  - Highest variance technique: ${randomSlopesStats.highestVarianceTechnique} (SD = ${randomSlopesStats.highestVarianceSD} pp)
+  - Technique effect range: ${randomSlopesStats.minSlopeEffect}% to +${randomSlopesStats.maxSlopeEffect}%
 `);
 
 // ============================================================================
