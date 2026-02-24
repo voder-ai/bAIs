@@ -491,23 +491,23 @@ Full SACD shows high variance across models:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-Model & \% of Baseline & Deviation & Assessment \\
+Model & \% of Baseline & 95\% CI & Deviation & Assessment \\
 \midrule
-\textbf{o4-mini} & \textbf{98.2\%} & \textbf{1.8\%} & Near-perfect \\
-Kimi-k2.5 & 97.6\% & 2.4\% & Near-perfect \\
-DeepSeek-v3.2 & 106.5\% & 6.5\% & Good \\
-GLM-5 & 107.5\% & 7.5\% & Good \\
-o3 & 108.9\% & 8.9\% & Good \\
-Sonnet 4.6 & 111.8\% & 11.8\% & Moderate overshoot \\
-GPT-5.2 & 116.2\% & 16.2\% & Overshoot \\
-GPT-4.1 & 123.2\% & 23.2\% & Significant overshoot \\
-Opus 4.6 & 124.7\% & 24.7\% & Significant overshoot \\
-\textbf{Haiku 4.5} & \textbf{65.1\%} & \textbf{34.9\%} & Undershoot (worst) \\
+\textbf{o4-mini} & \textbf{98.2\%} & [90, 101] & \textbf{1.8\%} & Near-perfect \\
+Kimi-k2.5 & 97.6\% & [83, 112] & 2.4\% & Near-perfect \\
+DeepSeek-v3.2 & 106.5\% & [96, 104] & 6.5\% & Good \\
+GLM-5 & 107.5\% & [90, 116] & 7.5\% & Good \\
+o3 & 108.9\% & [104, 112] & 8.9\% & Good \\
+Sonnet 4.6 & 111.8\% & [106, 117] & 11.8\% & Moderate overshoot \\
+GPT-5.2 & 116.2\% & [113, 125] & 16.2\% & Overshoot \\
+GPT-4.1 & 123.2\% & [112, 127] & 23.2\% & Significant overshoot \\
+Opus 4.6 & 124.7\% & [120, 129] & 24.7\% & Significant overshoot \\
+\textbf{Haiku 4.5} & \textbf{65.1\%} & [63, 71] & \textbf{34.9\%} & Undershoot (worst) \\
 \bottomrule
 \end{tabular}
-\caption{Full SACD model-specific results (percentage of baseline). o4-mini achieves near-perfect debiasing (98.2\%). Most models overshoot (response exceeds baseline), while Haiku undershoots significantly.}
+\caption{Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. o4-mini achieves near-perfect debiasing (98.2\%). Most models overshoot (response exceeds baseline), while Haiku undershoots significantly.}
 \label{tab:sacd-by-model}
 \end{table}
 
@@ -558,17 +558,17 @@ Aggregate results hide an important asymmetry. Breaking down by anchor direction
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Technique & Low Anchor & High Anchor & Asymmetry \\
+Technique & Low Anchor & 95\% CI & High Anchor & 95\% CI & Asymmetry \\
 \midrule
-Full SACD & 73.7\% & 141.1\% & 67.4 pp \\
-Premortem & 68.5\% & 108.6\% & 40.1 pp \\
-Random Control & 59.1\% & 89.8\% & 30.8 pp \\
-Devil's Advocate & 55.2\% & 79.7\% & 24.6 pp \\
+Full SACD & 73.7\% & [73, 75] & 141.1\% & [139, 143] & 67.4 pp \\
+Premortem & 67.5\% & [66, 69] & 106.9\% & [104, 110] & 39.4 pp \\
+Random Control & 58.1\% & [56, 60] & 88.9\% & [86, 92] & 30.8 pp \\
+Devil's Advocate & 54.4\% & [53, 56] & 78.7\% & [76, 81] & 24.3 pp \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness by anchor direction. All techniques show asymmetry---high anchors are corrected more than low anchors. Full SACD shows the largest asymmetry: it undershoots from low anchors (73.7\%) but massively overshoots from high anchors (141.1\%).}
+\caption{Technique effectiveness by anchor direction. 95\% CIs from bootstrap. All techniques show asymmetry---high anchors are corrected more than low anchors. Full SACD shows the largest asymmetry: it undershoots from low anchors (73.7\%) but massively overshoots from high anchors (141.1\%).}
 \label{tab:anchor-asymmetry}
 \end{table}
 
