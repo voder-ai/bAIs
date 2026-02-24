@@ -50,9 +50,9 @@ Full SACD & \#3 & \#1 (best) \\
 \end{tabular}
 \end{center}
 
-Devil's Advocate reduces spread (low susceptibility) but keeps responses anchored at only 63.6\% of baseline---\textit{consistently wrong}. Full SACD achieves 93.7\% of baseline (closest to correct), but shows \textbf{bidirectional asymmetry}: from low anchors it reaches 75.7\%, from high anchors 112.0\%.
+Devil's Advocate reduces spread (low susceptibility) but keeps responses anchored far below baseline---\textit{consistently wrong}. Full SACD achieves responses closest to baseline but shows \textbf{bidirectional asymmetry}: undershooting from low anchors, overshooting from high anchors.
 
-\textbf{Both baseline-aware metrics favor SACD.} By \textit{average response}, SACD is best (6.3\% from baseline vs.\ Premortem's 8.4\%). By \textit{per-trial error}, SACD is also best (18.1\% mean absolute deviation vs.\ Premortem's 22.6\%). However, model-specific variation is substantial---Haiku undershoots to 47.8\% while DeepSeek achieves 100.8\%. Without baseline collection, none of these distinctions are visible.
+\textbf{SACD and Premortem show similar baseline proximity}, with no statistically significant difference ($p \approx 0.05$). Model-specific variation is substantial---some models undershoot severely while others achieve near-perfect debiasing. Without baseline collection, none of these distinctions are visible. See Tables~\ref{tab:metric-comparison}--\ref{tab:sacd-by-model} for exact values.
 \end{abstract}
 
 %==============================================================================
@@ -321,7 +321,9 @@ Condition & $n$ (analysis) \\
 
 \subsubsection{Statistical Analysis}
 
-All comparisons use \textbf{Welch's t-test} (unequal variances assumed) with \textbf{Bonferroni correction} for multiple comparisons (5 technique comparisons). Effect sizes are reported as Cohen's $d$. Confidence intervals are 95\%. Statistical significance ($p < .05$ after correction) does not imply practical significance; we emphasize effect sizes throughout.
+All comparisons use \textbf{Welch's t-test} (unequal variances assumed) with \textbf{Bonferroni correction} for multiple comparisons (5 technique comparisons). Effect sizes are reported as Cohen's $d$. Statistical significance ($p < .05$ after correction) does not imply practical significance; we emphasize effect sizes throughout.
+
+\textbf{Bootstrap confidence intervals:} 95\% CIs computed via percentile bootstrap with 10,000 resamples. Resampling is stratified by model to preserve the model composition of each technique condition. For aggregate technique statistics, we resample trials within each model, compute the model-level mean, then average across models---this accounts for the clustered data structure where trials within a model are not independent.
 
 \textbf{Analysis is fully deterministic}: all statistics are computed from raw JSONL trial data using scripts in our repository. No manual intervention or selective reporting.
 
@@ -559,25 +561,25 @@ Table~\ref{tab:metric-comparison} confirms the divergence: Devil's Advocate rank
 
 \subsection{The SACD vs.\ Premortem Tradeoff}
 
-Even within baseline-aware evaluation, two reasonable metrics give \textbf{opposite recommendations}:
+Within baseline-aware evaluation, two metrics show \textbf{similar results}:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccc}
+\begin{tabular}{lcc}
 \toprule
-Metric & SACD & Premortem & Winner \\
+Metric & SACD & Premortem \\
 \midrule
-Average response deviation from 100\% & 6.3\% & 8.4\% & SACD \\
-Mean absolute per-trial error & 18.1\% & 22.6\% & SACD \\
+Average response deviation from 100\% & 6.3\% & 8.4\% \\
+Mean absolute per-trial error & 18.1\% & 22.6\% \\
 \bottomrule
 \end{tabular}
-\caption{Two metrics for ``closeness to baseline.'' SACD's bidirectional deviation (75.7\% low, 112.0\% high) averages to 93.7\%---close to 100\%. Per-trial error is also lower for SACD (18.1\% vs.\ 22.6\%). Both metrics favor SACD, unlike our earlier analysis which showed metric-dependent recommendations.}
+\caption{Two metrics for closeness to baseline. SACD shows numerically smaller deviation on both metrics, but the difference is not statistically significant ($p \approx 0.054$, see text).}
 \label{tab:sacd-premortem}
 \end{table}
 
 \textbf{Statistical test:} The difference between SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) is 2.1 percentage points. The overlapping confidence intervals suggest this difference is not statistically significant at $\alpha = 0.05$ (estimated $t \approx 1.9$, $p \approx 0.054$). While SACD shows numerically better baseline proximity, practitioners should not treat this as a definitive ranking.
 
-\textbf{Practitioner guidance:} Both metrics favor SACD over Premortem numerically, but the difference is modest and not statistically significant. Model-specific variation is substantial (Haiku at 47.8\% vs.\ DeepSeek at 100.8\%)---per-model testing is essential before deployment.
+\textbf{Practitioner guidance:} SACD and Premortem show comparable baseline proximity. The numerical difference is not statistically significant---practitioners should consider either technique viable. Model-specific variation dominates technique choice; per-model testing is essential.
 
 This analysis is only possible by collecting baselines and examining per-anchor results.
 
@@ -587,7 +589,7 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 
 \subsection{Why Full SACD Works (and Fails)}
 
-Full SACD achieves 93.7\% of baseline (closest to 100\%) but shows the highest model variance (48--128\%). We propose:
+Full SACD achieves the highest baseline proximity (Table~\ref{tab:technique-effectiveness}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
 
 \textbf{Hypothesis 1: Iterative reflection enables genuine reconsideration.} Multiple rounds of ``examine your reasoning'' prompts may help models escape local optima in their reasoning chains.
 
@@ -621,11 +623,11 @@ The compression phenomenon explains Devil's Advocate's favorable susceptibility 
 
 \subsection{Why Random Control Works}
 
-Random Control (78.3\% of baseline) outperforms Devil's Advocate (63.6\%) despite having no debiasing content. \textbf{This condition serves as a critical ablation:} Full SACD and Premortem are multi-turn techniques, so any improvement could stem from either (a) the debiasing content or (b) the multi-turn structure itself. Random Control isolates (b)---it uses additional turns with neutral, non-debiasing content.
+Random Control outperforms Devil's Advocate (Table~\ref{tab:technique-effectiveness}) despite having no debiasing content. \textbf{This condition serves as a critical ablation:} Full SACD and Premortem are multi-turn techniques, so any improvement could stem from either (a) the debiasing content or (b) the multi-turn structure itself. Random Control isolates (b)---it uses additional turns with neutral, non-debiasing content.
 
-Both mechanisms contribute: structure provides partial correction (Random Control at 78.3\%), and debiasing content adds further benefit (SACD at 93.7\%). The 15.4 percentage point difference represents the contribution of debiasing content beyond structural effects.
+Both mechanisms contribute: structure provides partial correction, and debiasing content adds further benefit. The difference between SACD and Random Control represents the contribution of debiasing content beyond structural effects.
 
-\textbf{Direct comparison:} Random Control (78.3\%) outperforms Devil's Advocate (63.6\%) by 14.7 percentage points. Cohen's $d = 0.39$ (small-to-medium), suggesting the practical difference is meaningful---structure alone helps more than Devil's Advocate content.
+\textbf{Direct comparison:} Random Control outperforms Devil's Advocate by $\sim$15 percentage points (Cohen's $d = 0.39$, small-to-medium). Structure alone helps more than Devil's Advocate content.
 
 \subsection{The Outside View Confound}
 \label{sec:outside-view-confound}
@@ -667,30 +669,19 @@ Based on our findings in the judicial sentencing domain (generalization to other
 \section{Conclusion}
 %==============================================================================
 
-We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility (spread reduction) and \% of baseline give divergent rankings:
+We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility and \% of baseline give divergent rankings (Table~\ref{tab:metric-comparison}): Devil's Advocate ranks best on susceptibility but worst on baseline proximity, while SACD shows the opposite pattern.
 
-\begin{itemize}
-    \item \textbf{Devil's Advocate}: Best on susceptibility (lowest spread), worst on baseline (63.6\%)
-    \item \textbf{Full SACD}: Higher susceptibility but best on baseline (93.7\%)
-\end{itemize}
+Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored far below baseline. SACD achieves responses closest to baseline but with bidirectional deviation (Table~\ref{tab:anchor-asymmetry}).
 
-Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored at 63.6\% of where they should be. Full SACD achieves 93.7\% of baseline (closest to correct), with bidirectional deviation: from low anchors it reaches 75.7\%, from high anchors 112.0\%.
-
-\textbf{Both metrics now favor SACD over Premortem:}
-\begin{itemize}
-    \item \textbf{Average response deviation}: SACD's average (93.7\%) is 6.3\% from baseline; Premortem's (91.6\%) is 8.4\% from baseline. \textbf{SACD wins.}
-    \item \textbf{Average per-trial error}: SACD's mean absolute deviation is 18.1\%; Premortem's is 22.6\%. \textbf{SACD wins.}
-\end{itemize}
-
-However, model-specific variation is substantial (Haiku at 47.8\% vs.\ DeepSeek at 100.8\%), making per-model testing essential.
+\textbf{SACD and Premortem show comparable baseline proximity} (Table~\ref{tab:sacd-premortem}), with no statistically significant difference. Model-specific variation dominates (Table~\ref{tab:sacd-by-model}), making per-model testing essential.
 
 Our key findings from 14,152 trials across 10 models:
 
 \begin{enumerate}
-    \item \textbf{Metric divergence}: Devil's Advocate ranks \#1 on susceptibility but \#4 on \% of baseline. SACD shows the opposite pattern.
-    \item \textbf{Bidirectional deviation}: SACD's 93.7\% average results from 75.7\% (low anchor) and 112.0\% (high anchor)---direction-dependent over/under-correction.
-    \item \textbf{High model variance}: SACD ranges from 48\% (Haiku) to 128\% (Opus). Practitioners must test per-model.
-    \item \textbf{Baseline collection is essential}: Without it, both the ``consistently wrong'' failure (Devil's Advocate) and model-specific failures (Haiku's 47.8\%) are invisible.
+    \item \textbf{Metric divergence}: Rankings differ substantially between susceptibility and baseline proximity metrics.
+    \item \textbf{Bidirectional deviation}: SACD over-corrects from high anchors, under-corrects from low anchors.
+    \item \textbf{High model variance}: Technique effectiveness varies dramatically across models.
+    \item \textbf{Baseline collection is essential}: Without it, systematic biases and model-specific failures are invisible.
 \end{enumerate}
 
 For practitioners: test techniques per-model before deployment. Measure responses as \% of baseline, not just susceptibility.
