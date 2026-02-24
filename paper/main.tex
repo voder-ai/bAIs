@@ -319,7 +319,7 @@ Full SACD & 93.2\% & 94.1\% & 93.8\% \\
 \end{tabular}
 \end{center}
 
-Temperature does not materially affect technique rankings or the metric divergence finding. Note: table values are simple averages across models at each temperature; aggregate results elsewhere are trial-weighted, accounting for slight differences.
+Temperature does not materially affect technique rankings or the metric divergence finding. Note: table values are simple averages across models at each temperature; aggregate results elsewhere use t=1.0 baselines and are trial-weighted, accounting for slight differences (e.g., Devil's Advocate shows 63.6\% in aggregate vs.\ $\sim$65.6\% model-averaged in the temperature table).
 
 \subsubsection{Trial Counts and Procedure}
 
@@ -365,6 +365,8 @@ All comparisons use \textbf{Welch's t-test} (unequal variances assumed) with \te
 \textbf{Analysis is fully deterministic}: all statistics are computed from raw JSONL trial data using scripts in our repository. No manual intervention or selective reporting.
 
 \textbf{Reproducibility:} All trials were collected via OpenRouter API (api.openrouter.ai) during February 2026. Model identifiers follow OpenRouter naming: anthropic/claude-haiku-4.5, anthropic/claude-sonnet-4.6, anthropic/claude-opus-4.6, openai/gpt-4.1, openai/gpt-5.2, openai/o3, openai/o4-mini, deepseek/deepseek-v3.2, moonshotai/kimi-k2.5, zhipu/glm-5. API responses include request IDs logged with each trial for audit.
+
+\textbf{Power analysis:} With $n > 2{,}000$ trials per technique, we are well-powered ($\beta = 0.80$, $\alpha = 0.05$) to detect effects as small as $d = 0.15$. Our observed effects range from $d = 0.39$ (Random Control vs.\ Devil's Advocate) to $d = 1.06$ (SACD vs.\ Devil's Advocate). The SACD--Premortem comparison ($d = 0.08$) requires $n \approx 2{,}450$ per group to achieve 80\% power; our actual $n \approx 2{,}200$ provides $\sim$70\% power, which is intentional---we are testing for equivalence (TOST), not difference.
 
 \subsection{Confounds and Limitations}
 
@@ -772,7 +774,7 @@ Following \citet{lyu2025}, Full SACD implements three iterative steps:
 \item \textbf{Cognitive Debiasing}: ``Rewrite the flagged sentences to remove the bias''
 \end{enumerate}
 
-Steps repeat until no bias is detected or maximum iterations (5) reached. Average iterations to convergence: 2.3.
+Steps repeat until no bias is detected or maximum iterations (5) reached. Average iterations to convergence: 2.5 (median 3). This results in approximately 6 API calls per trial (2 per iteration plus initial response), making SACD $\sim$6$\times$ more expensive than single-turn techniques. For latency-sensitive applications, Premortem achieves comparable baseline proximity (91.6\% vs.\ 93.7\%) in a single turn.
 
 \subsection{Random Control}
 
