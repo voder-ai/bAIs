@@ -351,3 +351,76 @@ _Notes:_
 2. Run anchored conditions (no technique)
 3. Run technique conditions
 4. Validate n≥30 per condition
+
+---
+
+## Archived Data: Wrong Anchors (2026-02-24)
+
+**Location:** `results/archived-wrong-anchors/`
+
+### What Happened
+
+Initial vignette experiments used inconsistent anchor multipliers:
+
+| Vignette | Original Anchors | Correct Anchors |
+|----------|------------------|-----------------|
+| Judicial | ×0.5 / ×1.5 (±50%) | ✓ Correct |
+| Loan | ×0.5 / ×1.5 (±50%) | ✓ Correct |
+| **Salary** | ×0.7 / ×1.3 (±30%) | ✗ Too weak |
+| **Medical** | ×0.6 / ×1.4 (±40%) | ✗ Too weak |
+
+### Why This Matters for the Paper
+
+This "mistake" actually validates our methodology. **Fixed anchors (not relative to baseline) have two risks:**
+
+1. **Asymmetric anchor placement:** Both anchors could end up on the same side of baseline (e.g., strong-low + weak-low instead of low + high)
+
+2. **Weak anchor effect:** Anchors too close to baseline may fail to produce measurable anchoring effects
+
+### Evidence from Archived Data
+
+**Medical with ±40% anchors (archived):**
+- Sonnet baseline: 75
+- Sonnet with low anchor (43): responded 75 (no effect!)
+- Sonnet with high anchor (101): responded 75 (no effect!)
+- Opus: **exactly 72.0 across ALL conditions** (std=0)
+- **Conclusion at the time:** "Medical shows anchoring immunity — safety training overrides bias"
+
+**Medical with ±50% anchors (re-run):**
+- Sonnet baseline: 75
+- Sonnet with low anchor (36): responded **34** (strong anchoring!)
+- Sonnet with high anchor (108): responded **85** (moderate anchoring!)
+- **Revised conclusion:** "Immunity" was methodological artifact of weak anchors
+
+### Paper Discussion Points
+
+1. **Anchor strength matters in safety-sensitive domains** — Even medical/clinical judgments show anchoring with sufficiently strong anchors
+
+2. **"Immunity" claims require anchor strength validation** — Prior claims of model immunity to biases may reflect weak experimental design
+
+3. **Proportional anchors (baseline × multiplier) are more robust** than fixed anchors across domains with different baseline magnitudes
+
+### Files Preserved
+
+```
+archived-wrong-anchors/
+├── vignette-medical/
+│   ├── baseline-*.jsonl      # Shows "immunity" (no anchoring effect)
+│   ├── devils-advocate-*.jsonl
+│   ├── premortem-*.jsonl
+│   ├── random-control-*.jsonl
+│   └── sacd-*.jsonl
+└── vignette-salary/
+    ├── baseline-*.jsonl
+    ├── devils-advocate-*.jsonl
+    ├── premortem-*.jsonl
+    ├── random-control-*.jsonl
+    └── sacd-*.jsonl
+```
+
+**Total archived:** ~1,320 trials (Medical: 658, Salary: 663)
+
+### Commits
+
+- `292ea59` — Archive wrong-anchor data, standardize all vignettes to ±50%
+- `44c9640` — Fix medical baselineEstimate: 50 → 72
