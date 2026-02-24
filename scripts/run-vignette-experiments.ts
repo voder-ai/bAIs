@@ -493,6 +493,10 @@ function getBaseline(vignetteId: string, modelId: string): number | null {
 // MAIN RUNNER
 // ============================================================================
 
+function log(msg: string) {
+  console.log(`[${new Date().toISOString()}] ${msg}`);
+}
+
 async function runCondition(
   vignette: Vignette,
   modelId: string,
@@ -500,6 +504,7 @@ async function runCondition(
   anchorType: 'none' | 'low' | 'high',
   dryRun: boolean
 ): Promise<void> {
+  log(`Starting condition: ${vignette.id}/${technique}/${anchorType} on ${modelId}`);
   const existing = getExistingTrialCount(vignette.id, modelId, technique, anchorType);
   const needed = TARGET_N - existing;
   
@@ -533,7 +538,9 @@ async function runCondition(
   const provider = await createProvider(spec, TEMPERATURE);
   
   // Run trials
+  log(`Running ${needed} trials for ${technique}/${anchorType}`);
   for (let i = 0; i < needed; i++) {
+    log(`Trial ${existing + i + 1}/${TARGET_N} starting...`);
     process.stdout.write(`    Trial ${existing + i + 1}/${TARGET_N}...`);
     
     try {
@@ -574,8 +581,10 @@ async function runCondition(
       
       const rangeWarning = outOfRange ? ' ⚠️OUT_OF_RANGE' : '';
       console.log(` ${result.response ?? 'PARSE_ERROR'}${rangeWarning}`);
+      log(`Trial ${existing + i + 1} complete: ${result.response ?? 'PARSE_ERROR'}`);
       
     } catch (error) {
+      log(`Trial ${existing + i + 1} ERROR: ${error}`);
       console.log(` ERROR: ${error}`);
     }
     
@@ -636,4 +645,8 @@ async function main() {
   console.log('='.repeat(60));
 }
 
-main().catch(console.error);
+main().catch(e => {
+  log(`FATAL ERROR: ${e}`);
+  console.error(e);
+  process.exit(1);
+});
