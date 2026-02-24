@@ -143,7 +143,7 @@ Standard anchoring evaluation compares high-anchor and low-anchor conditions \ci
 \text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
 \]
 
-A technique ``works'' if it reduces this gap. The classic Anchoring Index (AI) from \citet{jacowitz1995} similarly measures anchor influence as the ratio of response movement toward the anchor. Our susceptibility metric is conceptually equivalent but normalized for cross-technique comparison. Neither requires ground truth---both measure susceptibility to anchors, not accuracy of outputs.
+A technique ``works'' if it reduces this gap. The classic Anchoring Index (AI) from \citet{jacowitz1995} measures anchor influence as the ratio of response movement toward the anchor: $\text{AI} = \frac{\text{Response} - \text{Baseline}}{\text{Anchor} - \text{Baseline}}$. Our \% of baseline metric is related but simpler: it directly measures proximity to unanchored judgment without requiring anchor values in the denominator. Both capture the fundamental question of whether responses are appropriately calibrated.
 
 We extend this by introducing \textbf{percentage of baseline}:
 
@@ -185,7 +185,7 @@ These metrics give \textbf{divergent rankings}:
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). \textit{Spread} = gap between high/low anchor responses$^\dagger$. $\Delta$ = change in spread relative to no-technique baseline (negative = reduced susceptibility). 95\% CIs from bootstrap for \% of baseline; spread values are point estimates. $^\dagger$Spread CIs not computed due to anchor-direction stratification complexity; per-anchor CIs in Table~\ref{tab:anchor-asymmetry}.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread $\approx$ 7.5 months given avg baseline of 29mo). \textit{Spread} = gap between high/low anchor responses, expressed in percentage-of-baseline space (multiply by 0.29 for approximate months). $\Delta$ = change in spread relative to no-technique baseline (negative = reduced susceptibility). 95\% CIs from bootstrap for \% of baseline; per-anchor CIs in Table~\ref{tab:anchor-asymmetry}.}
 \label{tab:metric-comparison}
 \begin{tabular}{lcccccc}
 \toprule
@@ -578,7 +578,7 @@ The ranking is robust after accounting for model-level variance.
 
 \subsection{The Metric Divergence}
 
-Table~\ref{tab:metric-comparison} confirms the divergence: Devil's Advocate ranks best on susceptibility but worst on baseline; SACD shows the opposite pattern. The bidirectional deviation in Table~\ref{tab:anchor-asymmetry} reveals that SACD's 93.7\% average results from direction-dependent over/under-correction.
+Table~\ref{tab:metric-comparison} confirms the divergence; Table~\ref{tab:anchor-asymmetry} reveals SACD's bidirectional over/under-correction by anchor direction.
 
 \subsection{The SACD vs.\ Premortem Tradeoff}
 
@@ -598,7 +598,7 @@ Mean absolute per-trial error & 18.1\% & 22.6\% \\
 \label{tab:sacd-premortem}
 \end{table}
 
-\textbf{Statistical test:} The difference between SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) is 2.1 percentage points. The overlapping confidence intervals suggest this difference is not statistically significant at $\alpha = 0.05$ (estimated $t \approx 1.9$, $p \approx 0.054$). While SACD shows numerically better baseline proximity, practitioners should not treat this as a definitive ranking.
+\textbf{Statistical test:} The difference between SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) is 2.1 percentage points. This difference is not statistically significant: uncorrected $p \approx 0.054$ (already above $\alpha = 0.05$); with Bonferroni correction for 5 technique comparisons ($\alpha = 0.01$), the result is clearly non-significant. Practitioners should treat SACD and Premortem as equivalently effective.
 
 \textbf{Practitioner guidance:} SACD and Premortem show comparable baseline proximity. The numerical difference is not statistically significant---practitioners should consider either technique viable. Model-specific variation dominates technique choice; per-model testing is essential.
 
@@ -612,13 +612,7 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 
 Full SACD achieves the highest baseline proximity (Table~\ref{tab:baseline-pct}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
 
-\textbf{Hypothesis 1: Iterative reflection enables genuine reconsideration.} Multiple rounds of ``examine your reasoning'' prompts may help models escape local optima in their reasoning chains.
-
-\textbf{Hypothesis 2: Some models perform ``debiasing theater.''} Opus 4.6 overshoots to 127.8\% of baseline (27.8\% deviation), suggesting the technique can activate surface compliance without genuine reconsideration---the model may be optimizing for \textit{appearing} to reconsider rather than actually doing so.
-
-\textbf{Hypothesis 3: Baseline proximity matters.} Opus 4.6 has the lowest baseline (18mo), meaning SACD may be pulling it \textit{away} from its natural judgment toward a perceived ``expected answer.''
-
-\textbf{Hypothesis 4: Haiku's severe undershoot (47.8\%).} Unlike most models that overshoot, Haiku undershoots dramatically, suggesting SACD can backfire entirely for some model architectures.
+\textbf{Possible mechanisms:} (1) Iterative reflection may help models escape local optima. (2) Some models may perform ``debiasing theater''---Opus overshoots to 127.8\%, potentially optimizing for \textit{appearing} to reconsider. (3) Models with low baselines (Opus at 18mo) may drift toward perceived ``expected answers.'' (4) Haiku's severe undershoot (47.8\%) suggests SACD can backfire entirely for some architectures.
 
 \subsection{Theoretical Grounding}
 
@@ -690,13 +684,9 @@ Based on our findings in the judicial sentencing domain (generalization to other
 \section{Conclusion}
 %==============================================================================
 
-We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility and \% of baseline give divergent rankings (Table~\ref{tab:metric-comparison}): Devil's Advocate ranks best on susceptibility but worst on baseline proximity, while SACD shows the opposite pattern.
+We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility and \% of baseline give divergent rankings (Table~\ref{tab:metric-comparison}). SACD and Premortem show comparable baseline proximity with no significant difference (Table~\ref{tab:sacd-premortem}); model-specific variation dominates (Table~\ref{tab:sacd-by-model}).
 
-Devil's Advocate produces consistent responses that are \textit{consistently wrong}---anchored far below baseline. SACD achieves responses closest to baseline but with bidirectional deviation (Table~\ref{tab:anchor-asymmetry}).
-
-\textbf{SACD and Premortem show comparable baseline proximity} (Table~\ref{tab:sacd-premortem}), with no statistically significant difference. Model-specific variation dominates (Table~\ref{tab:sacd-by-model}), making per-model testing essential.
-
-Our key findings from 14,152 trials across 10 models:
+Key findings from 14,152 trials across 10 models:
 
 \begin{enumerate}
     \item \textbf{Metric divergence}: Rankings differ substantially between susceptibility and baseline proximity metrics.
