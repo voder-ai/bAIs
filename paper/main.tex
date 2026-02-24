@@ -574,6 +574,20 @@ Devil's Advocate & 55.2\% & 79.7\% & 24.6 pp \\
 
 \textbf{Devil's Advocate fails in both directions} but stays consistently below baseline (55--80\%), explaining its low susceptibility (small spread) despite poor baseline alignment.
 
+\subsection{Mixed Effects Analysis}
+
+To account for non-independence of observations within models, we fit a mixed effects model with technique as a fixed effect and model as a random effect. The intraclass correlation coefficient (ICC) is 0.17, indicating that \textbf{17\% of variance} in \% of baseline is attributable to model differences.
+
+\textbf{Fixed effects} (technique, controlling for model):
+\begin{itemize}
+    \item Full SACD: $+24.2\%$ from grand mean (95\% CI [105.9, 110.1])
+    \item Premortem: $+4.8\%$
+    \item Random Control: $-9.4\%$
+    \item Devil's Advocate: $-16.3\%$
+\end{itemize}
+
+The ranking is robust after accounting for model-level variance. This supports treating technique effects as generalizable across models, while the ICC justifies our recommendation to test per-model before deployment.
+
 \subsection{The Metric Inversion}
 
 As shown in Table~\ref{tab:metric-comparison}, susceptibility and baseline metrics give inverted rankings. Devil's Advocate produces consistent responses (low susceptibility) that are consistently anchored at the wrong value (67.5\% of baseline). SACD brings responses close to baseline (108\%) on average despite high variability---but this average masks bidirectional overcorrection (Table~\ref{tab:anchor-asymmetry}).
