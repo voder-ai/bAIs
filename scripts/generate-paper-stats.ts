@@ -465,9 +465,10 @@ if (vignetteTrials.length > 0) {
   
   // 11. Debiasing Effectiveness: % of Baseline vs Spread Reduction
   console.log('## 11. Debiasing Effectiveness Comparison\n');
-  console.log('Two metrics compared:\n');
-  console.log('- **% of Baseline**: How close to unanchored truth? (|response - baseline| / baseline)\n');
-  console.log('- **Spread Reduction**: Does H-L gap shrink? ((H-L)_technique vs (H-L)_baseline)\n');
+  console.log('**Paper metrics (from main.tex):**\n');
+  console.log('- **% of Baseline** = R_technique / R_baseline × 100% (100% = perfect)\n');
+  console.log('- **Deviation** = |% of Baseline - 100%| (0% = perfect)\n');
+  console.log('- **Spread Δ%** = change in H-L gap vs no-technique (negative = reduced susceptibility)\n');
   
   const vignetteTechniquesAll = ['baseline', 'devils-advocate', 'premortem', 'random-control', 'sacd'];
   
@@ -488,8 +489,8 @@ if (vignetteTrials.length > 0) {
     console.log(`**Expected unanchored baseline:** ${expectedBaseline.toFixed(1)}`);
     console.log(`**Baseline spread (H-L):** ${isNaN(baselineSpread) ? '—' : baselineSpread.toFixed(1)}\n`);
     
-    console.log('| Technique | Low Mean | High Mean | Spread (H-L) | Spread Δ% | Low % from baseline | High % from baseline | Avg % from baseline |');
-    console.log('|-----------|----------|-----------|--------------|-----------|---------------------|----------------------|---------------------|');
+    console.log('| Technique | Low Mean | High Mean | Spread | Spread Δ% | Low % of BL | High % of BL | Avg % of BL | Deviation |');
+    console.log('|-----------|----------|-----------|--------|-----------|-------------|--------------|-------------|-----------|');
     
     for (const technique of vignetteTechniquesAll) {
       const techTrials = trials.filter(t => t.technique === technique);
@@ -507,31 +508,35 @@ if (vignetteTrials.length > 0) {
         ? ((techSpread - baselineSpread) / Math.abs(baselineSpread)) * 100 
         : NaN;
       
-      // % deviation from expected baseline (0% = at baseline)
-      const lowPctFromBaseline = !isNaN(lowMean) && expectedBaseline !== 0 
-        ? ((lowMean - expectedBaseline) / expectedBaseline) * 100 
+      // % of Baseline (paper metric: 100% = perfect)
+      const lowPctOfBaseline = !isNaN(lowMean) && expectedBaseline !== 0 
+        ? (lowMean / expectedBaseline) * 100 
         : NaN;
-      const highPctFromBaseline = !isNaN(highMean) && expectedBaseline !== 0 
-        ? ((highMean - expectedBaseline) / expectedBaseline) * 100 
+      const highPctOfBaseline = !isNaN(highMean) && expectedBaseline !== 0 
+        ? (highMean / expectedBaseline) * 100 
         : NaN;
-      const avgPctFromBaseline = !isNaN(lowPctFromBaseline) && !isNaN(highPctFromBaseline)
-        ? (Math.abs(lowPctFromBaseline) + Math.abs(highPctFromBaseline)) / 2
+      const avgPctOfBaseline = !isNaN(lowPctOfBaseline) && !isNaN(highPctOfBaseline)
+        ? (lowPctOfBaseline + highPctOfBaseline) / 2
         : NaN;
+      
+      // Deviation = |% of Baseline - 100%| (paper metric: 0% = perfect)
+      const deviation = !isNaN(avgPctOfBaseline) ? Math.abs(avgPctOfBaseline - 100) : NaN;
       
       const fmtSpreadDelta = isNaN(spreadDeltaPct) ? '—' : (spreadDeltaPct >= 0 ? '+' : '') + spreadDeltaPct.toFixed(0) + '%';
-      const fmtLowPct = isNaN(lowPctFromBaseline) ? '—' : (lowPctFromBaseline >= 0 ? '+' : '') + lowPctFromBaseline.toFixed(1) + '%';
-      const fmtHighPct = isNaN(highPctFromBaseline) ? '—' : (highPctFromBaseline >= 0 ? '+' : '') + highPctFromBaseline.toFixed(1) + '%';
-      const fmtAvgPct = isNaN(avgPctFromBaseline) ? '—' : avgPctFromBaseline.toFixed(1) + '%';
+      const fmtLowPct = isNaN(lowPctOfBaseline) ? '—' : lowPctOfBaseline.toFixed(1) + '%';
+      const fmtHighPct = isNaN(highPctOfBaseline) ? '—' : highPctOfBaseline.toFixed(1) + '%';
+      const fmtAvgPct = isNaN(avgPctOfBaseline) ? '—' : avgPctOfBaseline.toFixed(1) + '%';
+      const fmtDeviation = isNaN(deviation) ? '—' : deviation.toFixed(1) + '%';
       
-      console.log(`| ${technique} | ${isNaN(lowMean) ? '—' : lowMean.toFixed(1)} | ${isNaN(highMean) ? '—' : highMean.toFixed(1)} | ${isNaN(techSpread) ? '—' : techSpread.toFixed(1)} | ${fmtSpreadDelta} | ${fmtLowPct} | ${fmtHighPct} | ${fmtAvgPct} |`);
+      console.log(`| ${technique} | ${isNaN(lowMean) ? '—' : lowMean.toFixed(1)} | ${isNaN(highMean) ? '—' : highMean.toFixed(1)} | ${isNaN(techSpread) ? '—' : techSpread.toFixed(1)} | ${fmtSpreadDelta} | ${fmtLowPct} | ${fmtHighPct} | ${fmtAvgPct} | ${fmtDeviation} |`);
     }
     console.log('');
     
     // Interpretation
-    console.log('**Interpretation:**\n');
-    console.log('- Spread Δ% < 0 means technique reduces anchor spread (good for "reduces spread" metric)');
-    console.log('- Avg % from baseline closer to 0% means closer to unanchored truth (good for "% of baseline" metric)');
-    console.log('- These can conflict: a technique might reduce spread but still be far from baseline\n');
+    console.log('**Rankings:**\n');
+    console.log('- By Spread Δ%: Lower (more negative) = better susceptibility reduction');
+    console.log('- By Deviation: Lower = closer to unanchored baseline (100%)');
+    console.log('- **Key insight from paper:** These rankings can diverge!\n');
   }
   
   // Vignette summary
