@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Debiasing Anchoring Bias in LLM Judicial Reasoning:\\Why Metric Choice Determines Technique Recommendation}
+\title{Debiasing Anchoring Bias in LLM Judicial Sentencing:\\Why Metric Choice Determines Technique Recommendation}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -760,6 +760,28 @@ Following \citet{lyu2025}, Full SACD implements three iterative steps:
 \end{enumerate}
 
 Steps repeat until no bias is detected or maximum iterations (5) reached. Average iterations to convergence: 2.5 (median 3). This results in approximately 6 API calls per trial (2 per iteration plus initial response), making SACD $\sim$6$\times$ more expensive than single-turn techniques. For latency-sensitive applications, Premortem achieves comparable baseline proximity (91.6\% vs.\ 93.7\%) in a single turn.
+
+\subsection{Devil's Advocate}
+
+\begin{quote}
+\small
+\textbf{Turn 1:} [Case vignette with anchor]
+
+\textbf{Turn 2:} ``Before finalizing your recommendation, please argue against your initial instinct. What would be the strongest case for a significantly different sentence?''
+
+\textbf{Turn 3:} ``Having considered both perspectives, what is your final sentencing recommendation for Lena M.?''
+\end{quote}
+
+\subsection{Premortem}
+
+\begin{quote}
+\small
+\textbf{Turn 1:} [Case vignette with anchor]
+
+\textbf{Turn 2:} ``Imagine that your sentencing decision was later overturned on appeal. What reasons might the appeals court give? What factors might you have weighted incorrectly?''
+
+\textbf{Turn 3:} ``Taking these potential concerns into account, what is your final sentencing recommendation for Lena M.?''
+\end{quote}
 
 \subsection{Random Control}
 
