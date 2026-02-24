@@ -185,7 +185,7 @@ These metrics give \textbf{divergent rankings}:
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Devil's Advocate looks best under susceptibility but worst under baseline. \textit{Spread} = high-low response gap (susceptibility). \textit{Anchor correction asymmetry} = qualitative difference in low vs.\ high anchor correction (see Table~\ref{tab:anchor-asymmetry}). 95\% CIs from bootstrap.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{Spread} = gap between high-anchor and low-anchor responses, expressed in percentage-of-baseline space (pp = percentage points of baseline). Lower spread = less susceptible to anchor direction. \textit{Asymmetry} = qualitative pattern of anchor correction (see Table~\ref{tab:anchor-asymmetry}). Both metrics use \% of baseline as the common measurement space. 95\% CIs from bootstrap.}
 \label{tab:metric-comparison}
 \begin{tabular}{lccccc}
 \toprule
@@ -575,7 +575,9 @@ Mean absolute per-trial error & 18.1\% & 22.6\% & SACD \\
 \label{tab:sacd-premortem}
 \end{table}
 
-\textbf{Practitioner guidance:} Both metrics favor SACD over Premortem. However, model-specific variation is substantial (Haiku at 47.8\% vs.\ DeepSeek at 100.8\%)---per-model testing is essential before deployment.
+\textbf{Statistical test:} The difference between SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) is 2.1 percentage points. The overlapping confidence intervals suggest this difference is not statistically significant at $\alpha = 0.05$ (estimated $t \approx 1.9$, $p \approx 0.054$). While SACD shows numerically better baseline proximity, practitioners should not treat this as a definitive ranking.
+
+\textbf{Practitioner guidance:} Both metrics favor SACD over Premortem numerically, but the difference is modest and not statistically significant. Model-specific variation is substantial (Haiku at 47.8\% vs.\ DeepSeek at 100.8\%)---per-model testing is essential before deployment.
 
 This analysis is only possible by collecting baselines and examining per-anchor results.
 
