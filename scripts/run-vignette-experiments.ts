@@ -27,7 +27,7 @@ const TARGET_N = 30;
 const RESULTS_DIR = './results';
 
 const MODELS = [
-  'anthropic/claude-sonnet-4-6',
+  'anthropic/claude-sonnet-4-5',  // Latest Sonnet (4.6 doesn't exist)
   'anthropic/claude-opus-4-6', 
   'anthropic/claude-haiku-4-5',
 ];
@@ -99,7 +99,8 @@ function parseAnswer(response: string): number | null {
   }
   
   // Look for numbers after key phrases like "recommend", "assign", "offer", "approve"
-  const keywordMatch = normalized.match(/(?:recommend|assign|offer|approve|suggest|give)[:\s]+\$?(\d+)/i);
+  // Handle formats like "recommend:\n\n**95**" or "recommend: $115" or "recommend 95"
+  const keywordMatch = normalized.match(/(?:recommend|assign|offer|approve|suggest|give)[:\s\n*]*\$?(\d+)/i);
   if (keywordMatch) {
     return parseInt(keywordMatch[1]);
   }
