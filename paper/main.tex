@@ -550,9 +550,33 @@ Key findings:
     \item \textbf{High variance}: best = 1.8\% deviation, worst = 34.9\%
 \end{enumerate}
 
+\subsection{Asymmetry: High vs.\ Low Anchor}
+
+Aggregate results hide an important asymmetry. Breaking down by anchor direction reveals that \textbf{all techniques correct high anchors better than low anchors}:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Technique & Low Anchor & High Anchor & Asymmetry \\
+\midrule
+Full SACD & 73.7\% & 141.1\% & 67.4 pp \\
+Premortem & 68.5\% & 108.6\% & 40.1 pp \\
+Random Control & 59.1\% & 89.8\% & 30.8 pp \\
+Devil's Advocate & 55.2\% & 79.7\% & 24.6 pp \\
+\bottomrule
+\end{tabular}
+\caption{Technique effectiveness by anchor direction. All techniques show asymmetry---high anchors are corrected more than low anchors. Full SACD shows the largest asymmetry: it undershoots from low anchors (73.7\%) but massively overshoots from high anchors (141.1\%).}
+\label{tab:anchor-asymmetry}
+\end{table}
+
+\textbf{Key insight:} SACD's aggregate 108\% masks bidirectional overcorrection. From low anchors, it undershoots (73.7\%); from high anchors, it overshoots (141.1\%). The average looks good, but the technique amplifies correction in both directions rather than converging on baseline.
+
+\textbf{Devil's Advocate fails in both directions} but stays consistently below baseline (55--80\%), explaining its low susceptibility (small spread) despite poor baseline alignment.
+
 \subsection{The Metric Inversion}
 
-As shown in Table~\ref{tab:metric-comparison}, susceptibility and baseline metrics give inverted rankings. Devil's Advocate produces consistent responses (low susceptibility) that are consistently anchored at the wrong value (67.5\% of baseline). SACD brings responses close to baseline (108\%) despite increasing variability.
+As shown in Table~\ref{tab:metric-comparison}, susceptibility and baseline metrics give inverted rankings. Devil's Advocate produces consistent responses (low susceptibility) that are consistently anchored at the wrong value (67.5\% of baseline). SACD brings responses close to baseline (108\%) on average despite high variability---but this average masks bidirectional overcorrection (Table~\ref{tab:anchor-asymmetry}).
 
 %==============================================================================
 \section{Discussion}
