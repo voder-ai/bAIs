@@ -3,6 +3,7 @@
 ## Overview
 
 Total new trials: 2,121 successful (2,558 total)
+
 - Salary: 663 successful / 1,058 total
 - Loan: 620 successful / 660 total
 - Medical: 658 successful / 660 total
@@ -10,14 +11,14 @@ Total new trials: 2,121 successful (2,558 total)
 
 ## Key Finding 1: Vignette-Dependent Anchoring Susceptibility
 
-| Vignette | Model | Baseline | Low Anchor Effect | High Anchor Effect |
-|----------|-------|----------|-------------------|-------------------|
-| **Salary ($K)** | Opus | $134.7K | **-24.8%** ↓ | +17.6% ↑ |
-| | Sonnet | $98.2K | +12.1% ⚠️ COUNTER | +18.1% ↑ |
-| **Loan ($K)** | Opus | $181.9K | **-53.3%** ↓ | -17.5% ↓ |
-| | Sonnet | $146.5K | **-56.5%** ↓ | +2.4% ↑ |
-| **Medical (1-100)** | Opus | 72.0 | **0.0%** IMMUNE | **0.0%** IMMUNE |
-| | Sonnet | 75.0 | **+13%** COUNTER ↑ | **+13%** COUNTER ↑ |
+| Vignette            | Model  | Baseline | Low Anchor Effect  | High Anchor Effect |
+| ------------------- | ------ | -------- | ------------------ | ------------------ |
+| **Salary ($K)**     | Opus   | $134.7K  | **-24.8%** ↓       | +17.6% ↑           |
+|                     | Sonnet | $98.2K   | +12.1% ⚠️ COUNTER  | +18.1% ↑           |
+| **Loan ($K)**       | Opus   | $181.9K  | **-53.3%** ↓       | -17.5% ↓           |
+|                     | Sonnet | $146.5K  | **-56.5%** ↓       | +2.4% ↑            |
+| **Medical (1-100)** | Opus   | 72.0     | **0.0%** IMMUNE    | **0.0%** IMMUNE    |
+|                     | Sonnet | 75.0     | **+13%** COUNTER ↑ | **+13%** COUNTER ↑ |
 
 ### Interpretation
 
@@ -30,12 +31,14 @@ Total new trials: 2,121 successful (2,558 total)
 ## Key Finding 2: Model-Specific Anchoring Patterns
 
 ### Opus 4.6
+
 - Shows standard bidirectional anchoring on salary (-24.8% low, +17.6% high)
 - Shows strong unidirectional anchoring on loan (both directions pull DOWN)
 - Shows **COMPLETE IMMUNITY on medical** (std=0, always returns 72)
 - SACD breaks the determinism on medical (72 → 63.5 or 86.6)
 
 ### Sonnet 4.5
+
 - Shows counter-anchoring on salary low anchor (strong domain priors resist $69K)
 - Shows strong anchoring on loan low anchor (-56.5%)
 - Shows **COUNTER-anchoring on medical** (both anchors push UP to ~85)
@@ -44,10 +47,10 @@ Total new trials: 2,121 successful (2,558 total)
 
 Via pi-ai OAuth, direct Anthropic access:
 
-| Model | Baseline | Low Effect | High Effect |
-|-------|----------|------------|-------------|
-| Sonnet | 19.2mo | **-3.7mo (19%)** ↓ | -1.6mo (8%) ↓ |
-| Opus | 18.0mo | **-11.0mo (61%)** ↓ | -5.0mo (28%) ↓ |
+| Model  | Baseline | Low Effect          | High Effect    |
+| ------ | -------- | ------------------- | -------------- |
+| Sonnet | 19.2mo   | **-3.7mo (19%)** ↓  | -1.6mo (8%) ↓  |
+| Opus   | 18.0mo   | **-11.0mo (61%)** ↓ | -5.0mo (28%) ↓ |
 
 **Both anchors pull DOWN** - models resist high anchors more than low anchors.
 This suggests "moderation bias" - models avoid extreme/harsh sentences.
@@ -82,6 +85,6 @@ No major confound from API provider choice.
 
 **arxiv 2508.21137** — Paper finding that reasoning models are LESS prone to anchoring (CoT mitigates the effect).
 
-**Contrast with our findings:** Our SACD multi-turn results show different patterns. 
+**Contrast with our findings:** Our SACD multi-turn results show different patterns.
 
 **Hypothesis:** Single-turn reasoning may help debias, but multi-turn reasoning may trigger "ironic process" effects — trying harder to debias can backfire (Wegner 1994). This explains why SACD sometimes worsens anchoring in frontier reasoning models.

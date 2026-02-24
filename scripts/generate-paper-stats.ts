@@ -312,3 +312,163 @@ console.log(`- **Models tested:** ${Object.keys(baselineByModel).length}`);
 console.log(`- **Conditions:** ${conditions.length}`);
 console.log(`- **SACD backfire models:** ${sacdEffects.filter(e => e.delta > 0.5).map(e => e.model).join(', ')}`);
 console.log(`- **Universal winners:** Outside View (11/11 improved)`);
+
+// ============================================
+// VIGNETTE ANALYSIS
+// ============================================
+
+console.log('\n---\n');
+console.log('# Vignette Analysis\n');
+
+interface VignetteTrial {
+  vignetteId: string;
+  model: string;
+  technique: string;
+  anchorType: string;
+  anchor: number;
+  baseline: number;
+  response: number;
+  temperature: number;
+}
+
+function loadVignetteData(): VignetteTrial[] {
+  const trials: VignetteTrial[] = [];
+  const vignetteTypes = ['vignette-loan', 'vignette-medical', 'vignette-salary'];
+  
+  for (const vtype of vignetteTypes) {
+    const dir = join(RESULTS_DIR, vtype);
+    try {
+      const files = readdirSync(dir).filter(f => f.endsWith('.jsonl'));
+      for (const file of files) {
+        const lines = readFileSync(join(dir, file), 'utf-8').split('\n').filter(Boolean);
+        for (const line of lines) {
+          try {
+            const data = JSON.parse(line);
+            if (data.response !== undefined && data.response !== null) {
+              trials.push({
+                vignetteId: data.vignetteId || vtype.replace('vignette-', ''),
+                model: normalizeModel(data.model || ''),
+                technique: data.technique || 'baseline',
+                anchorType: data.anchorType || 'none',
+                anchor: data.anchor || 0,
+                baseline: data.baseline || 0,
+                response: data.response,
+                temperature: data.temperature ?? 0.7
+              });
+            }
+          } catch {}
+        }
+      }
+    } catch {
+      // Directory doesn't exist
+    }
+  }
+  return trials;
+}
+
+const vignetteTrials = loadVignetteData();
+
+if (vignetteTrials.length > 0) {
+  // 7. Vignette trial counts
+  console.log('## 7. Vignette Trial Counts\n');
+  
+  const byVignette = groupBy(vignetteTrials, t => t.vignetteId);
+  console.log('| Vignette | Trials |');
+  console.log('|----------|--------|');
+  for (const [vignette, trials] of Object.entries(byVignette).sort()) {
+    console.log(`| ${vignette} | ${trials.length} |`);
+  }
+  console.log(`| **Total** | **${vignetteTrials.length}** |`);
+  console.log('');
+  
+  // 8. Anchoring effect by vignette
+  console.log('## 8. Anchoring Effect by Vignette\n');
+  
+  console.log('| Vignette | No-anchor | Low-anchor | High-anchor | Effect (H-L) |');
+  console.log('|----------|-----------|------------|-------------|--------------|');
+  
+  for (const [vignette, trials] of Object.entries(byVignette).sort()) {
+    const baselineTrials = trials.filter(t => t.technique === 'baseline');
+    const noAnchor = baselineTrials.filter(t => t.anchorType === 'none').map(t => t.response);
+    const lowAnchor = baselineTrials.filter(t => t.anchorType === 'low').map(t => t.response);
+    const highAnchor = baselineTrials.filter(t => t.anchorType === 'high').map(t => t.response);
+    
+    const noMean = noAnchor.length > 0 ? noAnchor.reduce((a, b) => a + b, 0) / noAnchor.length : NaN;
+    const lowMean = lowAnchor.length > 0 ? lowAnchor.reduce((a, b) => a + b, 0) / lowAnchor.length : NaN;
+    const highMean = highAnchor.length > 0 ? highAnchor.reduce((a, b) => a + b, 0) / highAnchor.length : NaN;
+    const effect = !isNaN(highMean) && !isNaN(lowMean) ? highMean - lowMean : NaN;
+    
+    console.log(`| ${vignette} | ${isNaN(noMean) ? '—' : noMean.toFixed(1)} | ${isNaN(lowMean) ? '—' : lowMean.toFixed(1)} | ${isNaN(highMean) ? '—' : highMean.toFixed(1)} | ${isNaN(effect) ? '—' : (effect >= 0 ? '+' : '') + effect.toFixed(1)} |`);
+  }
+  console.log('');
+  
+  // 9. Debiasing technique effect by vignette
+  console.log('## 9. Debiasing Technique Effect by Vignette\n');
+  
+  const vignetteTechniques = ['baseline', 'devils-advocate', 'premortem', 'random-control', 'sacd'];
+  
+  for (const [vignette, trials] of Object.entries(byVignette).sort()) {
+    console.log(`### ${vignette.charAt(0).toUpperCase() + vignette.slice(1)}\n`);
+    console.log('| Technique | Low-anchor | High-anchor | Δ from baseline (Low) | Δ from baseline (High) |');
+    console.log('|-----------|------------|-------------|----------------------|------------------------|');
+    
+    // Get baseline means for comparison
+    const baselineTrials = trials.filter(t => t.technique === 'baseline');
+    const baselineLow = baselineTrials.filter(t => t.anchorType === 'low').map(t => t.response);
+    const baselineHigh = baselineTrials.filter(t => t.anchorType === 'high').map(t => t.response);
+    const baselineLowMean = baselineLow.length > 0 ? baselineLow.reduce((a, b) => a + b, 0) / baselineLow.length : NaN;
+    const baselineHighMean = baselineHigh.length > 0 ? baselineHigh.reduce((a, b) => a + b, 0) / baselineHigh.length : NaN;
+    
+    for (const technique of vignetteTechniques) {
+      const techTrials = trials.filter(t => t.technique === technique);
+      const lowTrials = techTrials.filter(t => t.anchorType === 'low').map(t => t.response);
+      const highTrials = techTrials.filter(t => t.anchorType === 'high').map(t => t.response);
+      
+      if (lowTrials.length === 0 && highTrials.length === 0) continue;
+      
+      const lowMean = lowTrials.length > 0 ? lowTrials.reduce((a, b) => a + b, 0) / lowTrials.length : NaN;
+      const highMean = highTrials.length > 0 ? highTrials.reduce((a, b) => a + b, 0) / highTrials.length : NaN;
+      
+      const deltaLow = !isNaN(lowMean) && !isNaN(baselineLowMean) ? lowMean - baselineLowMean : NaN;
+      const deltaHigh = !isNaN(highMean) && !isNaN(baselineHighMean) ? highMean - baselineHighMean : NaN;
+      
+      console.log(`| ${technique} | ${isNaN(lowMean) ? '—' : lowMean.toFixed(1)} | ${isNaN(highMean) ? '—' : highMean.toFixed(1)} | ${isNaN(deltaLow) ? '—' : (deltaLow >= 0 ? '+' : '') + deltaLow.toFixed(1)} | ${isNaN(deltaHigh) ? '—' : (deltaHigh >= 0 ? '+' : '') + deltaHigh.toFixed(1)} |`);
+    }
+    console.log('');
+  }
+  
+  // 10. Model comparison within vignettes
+  console.log('## 10. Model Comparison Within Vignettes\n');
+  
+  for (const [vignette, trials] of Object.entries(byVignette).sort()) {
+    console.log(`### ${vignette.charAt(0).toUpperCase() + vignette.slice(1)}\n`);
+    
+    const byModel = groupBy(trials.filter(t => t.technique === 'baseline'), t => t.model);
+    
+    console.log('| Model | No-anchor | Low-anchor | High-anchor | Anchoring Effect |');
+    console.log('|-------|-----------|------------|-------------|------------------|');
+    
+    for (const [model, modelTrials] of Object.entries(byModel).sort()) {
+      const noAnchor = modelTrials.filter(t => t.anchorType === 'none').map(t => t.response);
+      const lowAnchor = modelTrials.filter(t => t.anchorType === 'low').map(t => t.response);
+      const highAnchor = modelTrials.filter(t => t.anchorType === 'high').map(t => t.response);
+      
+      const noMean = noAnchor.length > 0 ? noAnchor.reduce((a, b) => a + b, 0) / noAnchor.length : NaN;
+      const lowMean = lowAnchor.length > 0 ? lowAnchor.reduce((a, b) => a + b, 0) / lowAnchor.length : NaN;
+      const highMean = highAnchor.length > 0 ? highAnchor.reduce((a, b) => a + b, 0) / highAnchor.length : NaN;
+      const effect = !isNaN(highMean) && !isNaN(lowMean) ? highMean - lowMean : NaN;
+      
+      console.log(`| ${model} | ${isNaN(noMean) ? '—' : noMean.toFixed(1)} | ${isNaN(lowMean) ? '—' : lowMean.toFixed(1)} | ${isNaN(highMean) ? '—' : highMean.toFixed(1)} | ${isNaN(effect) ? '—' : (effect >= 0 ? '+' : '') + effect.toFixed(1)} |`);
+    }
+    console.log('');
+  }
+  
+  // Vignette summary
+  console.log('## Vignette Summary\n');
+  console.log(`- **Total vignette trials:** ${vignetteTrials.length}`);
+  console.log(`- **Vignettes:** ${Object.keys(byVignette).join(', ')}`);
+  console.log(`- **Models tested:** ${[...new Set(vignetteTrials.map(t => t.model))].length}`);
+  console.log(`- **Techniques:** ${[...new Set(vignetteTrials.map(t => t.technique))].join(', ')}`);
+} else {
+  console.log('*No vignette data found.*\n');
+}
