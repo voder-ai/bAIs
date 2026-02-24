@@ -290,7 +290,7 @@ Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (mod
 
 \begin{itemize}
     \item \textbf{Total trials}: 14,152
-    \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Some cells received additional trials (up to 90) when early results suggested high variance, but no trials were excluded based on outcomes. Analysis uses all collected data.
+    \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Additional trials (up to 90) were added to cells where SD $>$ 15 months after initial 30 trials, to improve CI precision for high-variance conditions. No trials were excluded based on outcomes; analysis uses all collected data.
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
     \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches
