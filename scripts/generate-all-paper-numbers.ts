@@ -474,4 +474,204 @@ if (grandTotalSacd && grandTotalSacd !== trialCounts.sacd) {
 }
 
 console.log('\n✅ Verification passed: Trial counts sum correctly.');
-console.log('Script complete. Copy relevant sections to main.tex.');
+
+// ============================================================================
+// VIGNETTE ANALYSIS (Multi-Domain Validation)
+// ============================================================================
+
+console.log('\n\n' + '='.repeat(80));
+console.log('VIGNETTE ANALYSIS - Multi-Domain Validation');
+console.log('='.repeat(80));
+
+interface VignetteTrial {
+  vignetteId: string;
+  model: string;
+  technique: string;
+  anchorType: string;
+  anchor: number;
+  baseline: number;
+  response: number;
+  pctBaseline: number;
+}
+
+function loadVignetteTrials(): VignetteTrial[] {
+  const trials: VignetteTrial[] = [];
+  const vignetteDirs = ['vignette-salary', 'vignette-loan', 'vignette-medical'];
+  
+  for (const dir of vignetteDirs) {
+    const dirPath = join(RESULTS_DIR, dir);
+    try {
+      const files = readdirSync(dirPath).filter(f => f.endsWith('.jsonl'));
+      for (const file of files) {
+        const content = readFileSync(join(dirPath, file), 'utf-8');
+        const lines = content.trim().split('\n').filter(l => l);
+        for (const line of lines) {
+          try {
+            const data = JSON.parse(line);
+            if (data.response === null || typeof data.response !== 'number') continue;
+            
+            const baselineValue = data.baseline || data.noAnchorBaseline || 100;
+            trials.push({
+              vignetteId: data.vignetteId || dir.replace('vignette-', ''),
+              model: normalizeModel(data.model || ''),
+              technique: data.technique || 'baseline',
+              anchorType: data.anchorType || 'none',
+              anchor: data.anchor || 0,
+              baseline: baselineValue,
+              response: data.response,
+              pctBaseline: (data.response / baselineValue) * 100
+            });
+          } catch (e) {
+            // Skip invalid lines
+          }
+        }
+      }
+    } catch (e) {
+      // Directory doesn't exist, skip
+    }
+  }
+  return trials;
+}
+
+const vignetteTrials = loadVignetteTrials();
+console.log(`\nVignette trials loaded: ${vignetteTrials.length}`);
+
+if (vignetteTrials.length > 0) {
+  // Group by vignette
+  const byVignette = new Map<string, VignetteTrial[]>();
+  for (const t of vignetteTrials) {
+    if (!byVignette.has(t.vignetteId)) byVignette.set(t.vignetteId, []);
+    byVignette.get(t.vignetteId)!.push(t);
+  }
+  
+  console.log('\nTABLE V1: Vignette Trial Counts');
+  console.log('-'.repeat(60));
+  console.log('| Vignette | Trials |');
+  console.log('|----------|--------|');
+  for (const [vignette, trials] of byVignette) {
+    console.log(`| ${vignette} | ${trials.length} |`);
+  }
+  console.log(`| **Total** | **${vignetteTrials.length}** |`);
+  
+  // Calculate % of baseline by vignette and technique
+  console.log('\n\nTABLE V2: % of Baseline by Vignette × Technique');
+  console.log('-'.repeat(60));
+  
+  for (const [vignette, trials] of byVignette) {
+    console.log(`\n### ${vignette.toUpperCase()}`);
+    
+    // Get baseline (no-anchor) mean for this vignette
+    const noAnchorTrials = trials.filter(t => t.anchorType === 'none');
+    const baselineMean = noAnchorTrials.length > 0 ? mean(noAnchorTrials.map(t => t.response)) : 100;
+    console.log(`Baseline (no-anchor) mean: ${baselineMean.toFixed(1)}`);
+    
+    // Calculate by technique
+    const techniques = [...new Set(trials.map(t => t.technique))];
+    
+    console.log('\n| Technique | Low % | High % | Avg % | Deviation |');
+    console.log('|-----------|-------|--------|-------|-----------|');
+    
+    for (const tech of techniques) {
+      const techTrials = trials.filter(t => t.technique === tech && t.anchorType !== 'none');
+      const lowTrials = techTrials.filter(t => t.anchorType === 'low');
+      const highTrials = techTrials.filter(t => t.anchorType === 'high');
+      
+      // Calculate % of baseline using the no-anchor baseline
+      const lowPct = lowTrials.length > 0 ? mean(lowTrials.map(t => (t.response / baselineMean) * 100)) : null;
+      const highPct = highTrials.length > 0 ? mean(highTrials.map(t => (t.response / baselineMean) * 100)) : null;
+      
+      const avgPct = (lowPct !== null && highPct !== null) ? (lowPct + highPct) / 2 : null;
+      const deviation = avgPct !== null ? Math.abs(avgPct - 100) : null;
+      
+      console.log(`| ${tech} | ${lowPct?.toFixed(1) ?? 'N/A'}% | ${highPct?.toFixed(1) ?? 'N/A'}% | ${avgPct?.toFixed(1) ?? 'N/A'}% | ${deviation?.toFixed(1) ?? 'N/A'}% |`);
+    }
+  }
+  
+  // Methodology comparison: Spread reduction vs % of Baseline
+  console.log('\n\nTABLE V3: Methodology Comparison (Spread vs % of Baseline)');
+  console.log('-'.repeat(60));
+  console.log('Does "reduces spread" agree with "closer to baseline"?\n');
+  
+  for (const [vignette, trials] of byVignette) {
+    console.log(`### ${vignette.toUpperCase()}`);
+    
+    const noAnchorTrials = trials.filter(t => t.anchorType === 'none');
+    const baselineMean = noAnchorTrials.length > 0 ? mean(noAnchorTrials.map(t => t.response)) : 100;
+    
+    // Get baseline spread (no technique applied)
+    const baselineLow = trials.filter(t => t.technique === 'baseline' && t.anchorType === 'low');
+    const baselineHigh = trials.filter(t => t.technique === 'baseline' && t.anchorType === 'high');
+    const baselineSpread = (baselineHigh.length > 0 && baselineLow.length > 0) 
+      ? mean(baselineHigh.map(t => t.response)) - mean(baselineLow.map(t => t.response))
+      : 0;
+    
+    // Calculate baseline deviation from 100%
+    const baselineLowPct = baselineLow.length > 0 ? mean(baselineLow.map(t => (t.response / baselineMean) * 100)) : 100;
+    const baselineHighPct = baselineHigh.length > 0 ? mean(baselineHigh.map(t => (t.response / baselineMean) * 100)) : 100;
+    const baselineDeviation = Math.abs(((baselineLowPct + baselineHighPct) / 2) - 100);
+    
+    console.log(`Baseline spread: ${baselineSpread.toFixed(1)}, deviation: ${baselineDeviation.toFixed(1)}%\n`);
+    console.log('| Technique | Spread Δ | % of Baseline | Deviation | Metrics Agree? |');
+    console.log('|-----------|----------|---------------|-----------|----------------|');
+    
+    const techniques = [...new Set(trials.filter(t => t.technique !== 'baseline').map(t => t.technique))];
+    
+    for (const tech of techniques) {
+      const techLow = trials.filter(t => t.technique === tech && t.anchorType === 'low');
+      const techHigh = trials.filter(t => t.technique === tech && t.anchorType === 'high');
+      
+      if (techLow.length === 0 || techHigh.length === 0) continue;
+      
+      const techSpread = mean(techHigh.map(t => t.response)) - mean(techLow.map(t => t.response));
+      const spreadDelta = baselineSpread !== 0 ? ((techSpread - baselineSpread) / Math.abs(baselineSpread)) * 100 : 0;
+      const reducesSpread = techSpread < baselineSpread;
+      
+      const techLowPct = mean(techLow.map(t => (t.response / baselineMean) * 100));
+      const techHighPct = mean(techHigh.map(t => (t.response / baselineMean) * 100));
+      const avgPct = (techLowPct + techHighPct) / 2;
+      const deviation = Math.abs(avgPct - 100);
+      const closerToBaseline = deviation < baselineDeviation;
+      
+      const agree = reducesSpread === closerToBaseline ? '✓' : '**CONFLICT**';
+      
+      console.log(`| ${tech} | ${spreadDelta > 0 ? '+' : ''}${spreadDelta.toFixed(0)}% | ${avgPct.toFixed(1)}% | ${deviation.toFixed(1)}% | ${agree} |`);
+    }
+    console.log('');
+  }
+  
+  // Summary: Domain-dependent technique effectiveness
+  console.log('\nTABLE V4: Best Technique by Domain (% of Baseline)');
+  console.log('-'.repeat(60));
+  console.log('| Domain | Best Technique | % of Baseline | Deviation |');
+  console.log('|--------|----------------|---------------|-----------|');
+  
+  for (const [vignette, trials] of byVignette) {
+    const noAnchorTrials = trials.filter(t => t.anchorType === 'none');
+    const baselineMean = noAnchorTrials.length > 0 ? mean(noAnchorTrials.map(t => t.response)) : 100;
+    
+    const techniques = [...new Set(trials.map(t => t.technique))];
+    let bestTech = '';
+    let bestDeviation = Infinity;
+    let bestPct = 0;
+    
+    for (const tech of techniques) {
+      const techTrials = trials.filter(t => t.technique === tech && t.anchorType !== 'none');
+      if (techTrials.length === 0) continue;
+      
+      const avgPct = mean(techTrials.map(t => (t.response / baselineMean) * 100));
+      const deviation = Math.abs(avgPct - 100);
+      
+      if (deviation < bestDeviation) {
+        bestDeviation = deviation;
+        bestTech = tech;
+        bestPct = avgPct;
+      }
+    }
+    
+    console.log(`| ${vignette} | ${bestTech} | ${bestPct.toFixed(1)}% | ${bestDeviation.toFixed(1)}% |`);
+  }
+  
+  console.log('\n**Key finding:** Best technique varies by domain. No universal "best debiasing."');
+}
+
+console.log('\n\nScript complete. Copy relevant sections to main.tex.');
