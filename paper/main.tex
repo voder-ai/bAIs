@@ -39,7 +39,7 @@ Following \citet{jacowitz1995}, we collect unanchored baseline responses and mea
 
 Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}: Devil's Advocate ranks \#1 by susceptibility but \#4 by baseline proximity (63.6\%); SACD ranks \#3 by susceptibility but \#1 by baseline proximity (93.7\%). Devil's Advocate produces consistent responses that are consistently far from baseline. SACD achieves responses closest to baseline but shows bidirectional asymmetry.
 
-We extend this analysis to 1,941 additional trials across loan, medical, and salary domains. \textbf{Technique effectiveness is domain-dependent}: SACD ranks \#1 on judicial but \#5 (worst) on loan. On loan, SACD shows the best spread reduction ($-$60\%) but worst baseline proximity (57.7\%)---the opposite conclusion depending on metric. Practitioners must validate per-domain; no technique is universally ``best.''
+We extend this analysis to 2,046 additional trials across loan, medical, and salary domains. \textbf{Technique effectiveness is domain-dependent}: SACD ranks \#1 on judicial and medical but \#5 (worst) on loan (57.1\% of baseline). On salary, no debiasing technique beats doing nothing. Practitioners must validate per-domain; no technique is universally ``best.''
 \end{abstract}
 
 %==============================================================================
@@ -48,7 +48,7 @@ We extend this analysis to 1,941 additional trials across loan, medical, and sal
 
 When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and using only one metric can be insufficient.
 
-We report findings from 16,093 trials across 10 models and 4 domains evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
+We report findings from 16,198 trials across 10 models and 4 domains evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -93,7 +93,7 @@ Premortem & 45.2 (highest) & 91.6\% & 8.4\% \\
 \begin{enumerate}
     \item \textbf{Baseline collection matters for LLM debiasing evaluation.} Following \citet{jacowitz1995}, we collect unanchored baseline responses to complement susceptibility measurement. We show that technique rankings diverge substantially between susceptibility (response consistency) and baseline proximity metrics. This is established methodology in human anchoring research; we demonstrate its importance for LLM debiasing.
     
-    \item \textbf{Empirical comparison of 4 debiasing techniques} across 16,093 total trials (14,152 judicial + 1,941 multi-domain) on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
+    \item \textbf{Empirical comparison of 4 debiasing techniques} across 16,198 total trials (14,152 judicial + 2,046 multi-domain) on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
     
     \item \textbf{Technique effectiveness is domain-dependent.} SACD ranks \#1 on judicial but \#5 (worst) on loan approval. No technique generalizes universally; domain-specific validation is essential.
 \end{enumerate}
@@ -874,7 +874,7 @@ This three-turn structure matches SACD and Premortem turn counts while providing
 %==============================================================================
 \section*{Data and Code Availability}
 
-All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 16,093 trials (14,152 judicial + 1,941 multi-domain vignettes in \texttt{results/vignette-*/}), the canonical analysis script \texttt{generate-all-paper-numbers.ts} which produces all tables from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition.
+All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 16,198 trials (14,152 judicial + 2,046 multi-domain vignettes in \texttt{results/vignette-*/}), the canonical analysis script \texttt{generate-all-paper-numbers.ts} which produces all tables from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
