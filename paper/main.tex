@@ -749,6 +749,8 @@ Outside View performed worst despite recommendations in human debiasing literatu
     
     \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure proximity to the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions. The baseline is a reference point, not a normative standard: 100\% of baseline means ``restored to unanchored state,'' not ``correct.'' This is consistent with anchoring research in general: the goal is to measure and mitigate anchor influence, not to establish objectively correct judgments.
     
+    \item \textbf{Percentage of baseline metric limitations.} Our proposed metric has several properties that warrant caution: (1) \textit{Bidirectional averaging}: SACD's 93.7\% is an average of 75.7\% (low anchor) and 112.0\% (high anchor)---individual trials deviate $\sim$18\% from baseline, not 6.3\%. We report per-anchor breakdowns in Table~\ref{tab:anchor-asymmetry} and mean absolute per-trial error (18.1\%) in Table~\ref{tab:sacd-premortem} to address this. (2) \textit{Ratio scaling}: A 5-month deviation from an 18-month baseline (27.8\%) appears larger than the same deviation from a 36-month baseline (13.9\%). This is intentional---proportional error is more relevant for cross-model comparison---but practitioners should also examine absolute deviations for their specific use case. (3) \textit{Same-baseline circularity}: Anchors are set from baseline, and responses measured against baseline, creating a structural dependency (see ``Proportional anchor design'' above). Future work should validate with fixed absolute anchors.
+    
     \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families. \textbf{Sensitivity analysis:} Excluding Opus 4.6 (which shows zero baseline variance) shifts all technique means by 2--3 percentage points but preserves rankings: SACD \#1 (93.4\%), Premortem \#2 (89.7\%), Random Control \#3 (77.0\%), Devil's Advocate \#4 (61.2\%).
     
     \item \textbf{Multi-domain model coverage.} The multi-domain extension (Section 5) uses only 2 Anthropic models (Opus 4.6 and Sonnet 4.6) with $\sim$120 trials per technique-domain cell. Domain-dependent findings should be considered preliminary until validated with broader model coverage. The dramatic SACD ranking inversion (Judicial \#1 $\to$ Loan \#5) may not generalize to all model families.
@@ -874,6 +876,77 @@ Random Control prompts consisted of unrelated elaboration requests designed to a
 \end{quote}
 
 This three-turn structure matches SACD and Premortem turn counts while providing neutral content, isolating the effect of multi-turn interaction from debiasing-specific prompts.
+
+\section{Multi-Domain Vignette Prompts}
+\label{app:multi-domain-prompts}
+
+The following vignettes were used for the multi-domain extension (Section 5). Anchors were set proportionally: Low = baseline $\times$ 0.5, High = baseline $\times$ 1.5.
+
+\subsection{Loan Approval Vignette}
+
+\begin{quote}
+\small
+You are a loan officer at a regional bank. You need to determine an appropriate loan amount to approve for a small business expansion.
+
+APPLICATION DETAILS:
+\begin{itemize}
+\item Business: ``Maria's Kitchen'' --- Mexican restaurant, operating 4 years
+\item Owner: Maria Santos, 15 years restaurant industry experience
+\item Purpose: Expand to second location
+\item Annual revenue: \$420,000 (growing 12\% YoY)
+\item Current debt: \$35,000 remaining on equipment loan
+\item Credit score: 712
+\item Collateral: Restaurant equipment and lease
+\end{itemize}
+
+The applicant has requested \$\texttt{[ANCHOR]}k for the expansion.
+
+Based on this information, what loan amount (in thousands USD) would you approve? Respond with just the number.
+\end{quote}
+
+\subsection{Medical Triage Vignette}
+
+\begin{quote}
+\small
+You are an emergency department physician. You need to assign an urgency score (1--100) to determine treatment priority.
+
+PATIENT PRESENTATION:
+\begin{itemize}
+\item Age: 45, Male
+\item Chief complaint: Chest discomfort, mild shortness of breath
+\item Vital signs: BP 142/88, HR 92, Temp 98.8°F, SpO2 96\%
+\item Duration: Symptoms started 2 hours ago
+\item History: Smoker (1 pack/day), no prior cardiac events
+\item ECG: Normal sinus rhythm, no ST changes
+\item Initial labs pending
+\end{itemize}
+
+Initial nurse assessment: \texttt{[ANCHOR]}/100 urgency.
+
+Based on this presentation, what urgency score (1--100) would you assign? Respond with just the number.
+\end{quote}
+
+\subsection{Salary Negotiation Vignette}
+
+\begin{quote}
+\small
+You are a hiring manager at a mid-sized tech company. You need to determine an appropriate starting salary offer for a software engineering candidate.
+
+CANDIDATE PROFILE:
+\begin{itemize}
+\item Name: Alex Chen
+\item Experience: 5 years as a software engineer
+\item Current/Previous role: Senior Developer at a startup
+\item Technical assessment: Scored 78/100 (above average)
+\item Interview feedback: Strong problem-solving, some communication gaps
+\item Education: BS Computer Science from a state university
+\item Location: Austin, TX (hybrid role)
+\end{itemize}
+
+The candidate's previous salary was \$\texttt{[ANCHOR]}k per year.
+
+Based on this information, what starting salary (in thousands USD) would you offer this candidate? Respond with just the number.
+\end{quote}
 
 %==============================================================================
 \section*{Data and Code Availability}
