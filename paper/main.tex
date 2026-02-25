@@ -316,7 +316,7 @@ Temperature does not materially affect technique rankings or the metric divergen
     \item \textbf{Total trials}: 14,152
     \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Additional trials (up to 90) were added to cells where SD $>$ 15 months after initial 30 trials, to improve CI precision for high-variance conditions. No trials were excluded based on outcomes; analysis uses all collected data.
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
-    \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values
+    \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values. Extraction succeeded for 99.9\% of trials (19 failures out of 20,339); failed trials were excluded from analysis
     \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches
     \item \textbf{Anchor values}: To ensure equivalent relative anchor strength across models, we use constant proportional anchors: high anchor = baseline $\times$ 1.5 (50\% above baseline); low anchor = baseline $\times$ 0.5 (50\% below baseline). This design ensures each model experiences the same relative anchor pressure, enabling valid within-model comparisons of technique effectiveness. Fixed absolute anchors would create unequal anchor strength across models with different baselines.
 \end{itemize}
