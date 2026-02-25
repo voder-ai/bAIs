@@ -214,7 +214,7 @@ SACD vs.\ Premortem & 0.08 & Negligible \\
 \end{tabular}
 \end{center}
 
-Cohen's $d$ computed on trial-level data using pooled standard deviation. \textbf{Caveat:} With ICC=0.17, effective sample sizes are smaller than raw trial counts; these $d$ values may be inflated by ignoring model clustering. Use mixed-effects estimates (Section~\ref{sec:mixed-effects}) for formal inference. These effect sizes are provided for practical interpretation: the SACD--DA gap ($d=1.06$) represents a meaningful practical difference, while SACD--Premortem ($d=0.08$) does not.
+Cohen's $d$ computed on trial-level data using pooled standard deviation. \textbf{Caveat:} With ICC=0.17 and $\sim$200 trials per model, the design effect is approximately $1 + (200-1) \times 0.17 \approx 35$, yielding effective $n \approx 60$--70 per technique rather than $\sim$2,200. These $d$ values may therefore be inflated; use mixed-effects estimates (Section~\ref{sec:mixed-effects}) for formal inference. We report trial-level $d$ for practical interpretation: the SACD--DA gap ($d=1.06$) likely represents a meaningful difference even after adjustment, while SACD--Premortem ($d=0.08$) clearly does not.
 
 \subsection{Experimental Design}
 
@@ -602,7 +602,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial and Medical but \#5 (worst) on Loan. On Salary, no debiasing technique beats baseline. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. \textbf{Note:} Judicial uses 10 models (14,152 trials); Loan/Medical/Salary use 2 models (Opus 4.6, Sonnet 4.5; $\sim$660 trials each). Cross-domain patterns are preliminary.}
+\caption{Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial and Medical but \#5 (worst) on Loan. On Salary, no debiasing technique beats baseline. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. \textbf{Note:} Judicial uses 10 models (14,152 trials); Loan/Medical/Salary use 2 models (Opus 4.6, Sonnet 4.5; $\sim$660 trials each). CIs omitted for multi-domain due to small $n$; these results are exploratory.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llccc}
 \toprule
