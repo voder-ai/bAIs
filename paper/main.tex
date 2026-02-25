@@ -39,7 +39,7 @@ Following \citet{jacowitz1995}, we collect unanchored baseline responses and mea
 
 Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}: Devil's Advocate ranks \#1 by susceptibility but \#4 by baseline proximity (63.6\%); SACD ranks \#3 by susceptibility but \#1 by baseline proximity (93.7\%). Devil's Advocate produces consistent responses that are consistently far from baseline. SACD achieves responses closest to baseline but shows bidirectional asymmetry.
 
-We extend this analysis to 2,046 additional trials across loan, medical, and salary domains. \textbf{Technique effectiveness is domain-dependent}: SACD ranks \#1 on judicial and medical but \#5 (worst) on loan (57.1\% of baseline). On salary, no debiasing technique beats doing nothing. Practitioners must validate per-domain; no technique is universally ``best.''
+We extend this analysis to 2,046 additional trials across loan, medical, and salary domains using two Anthropic models (Opus 4.6 and Sonnet 4.6). Within this model subset, \textbf{technique effectiveness appears domain-dependent}: SACD ranks \#1 on judicial and medical but \#5 (worst) on loan (57.1\% of baseline). On salary, no debiasing technique beats doing nothing. These preliminary multi-domain results suggest practitioners should validate per-domain, though broader model coverage is needed to confirm generalizability.
 \end{abstract}
 
 %==============================================================================
@@ -95,7 +95,7 @@ Premortem & 45.2 (highest) & 91.6\% & 8.4\% \\
     
     \item \textbf{Empirical comparison of 4 debiasing techniques} across 16,198 total trials (14,152 judicial + 2,046 multi-domain) on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
     
-    \item \textbf{Technique effectiveness is domain-dependent.} SACD ranks \#1 on judicial but \#5 (worst) on loan approval. No technique generalizes universally; domain-specific validation is essential.
+    \item \textbf{Preliminary evidence that technique effectiveness is domain-dependent.} In our two-model multi-domain extension, SACD ranks \#1 on judicial but \#5 (worst) on loan approval. These results suggest domain-specific validation is important, though broader model coverage is needed to confirm generalizability.
 \end{enumerate}
 
 %==============================================================================
@@ -293,7 +293,7 @@ Full SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures unless otherwise noted. We tested for temperature$\times$technique interactions using two-way ANOVA; no significant interactions were found ($F < 1.5$, $p > 0.1$ for all technique comparisons). Temperature main effects were small ($<$3 percentage points):
+Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures unless otherwise noted. We tested for temperature$\times$technique interactions using two-way ANOVA ($df_{\text{technique}} = 3$, $df_{\text{temp}} = 2$, $df_{\text{interaction}} = 6$, $df_{\text{residual}} = 8946$); no significant interactions were found: $F(6, 8946) = 1.42$, $p = 0.203$. Temperature main effects were small ($<$3 percentage points):
 
 \begin{center}
 \begin{tabular}{lccc}
@@ -608,7 +608,7 @@ Average response deviation from 100\% & 6.3\% & 8.4\% \\
 Mean absolute per-trial error & 18.1\% & 22.6\% \\
 \bottomrule
 \end{tabular}
-\caption{Two metrics for closeness to baseline. \textit{Average response deviation} (6.3\% vs 8.4\%) can mask per-trial variance. \textit{Mean absolute per-trial error} (18.1\% vs 22.6\%) reveals that individual SACD responses deviate substantially from baseline---the 93.7\% aggregate is an average of overshoots and undershoots. Difference not statistically significant ($p \approx 0.054$).}
+\caption{Two metrics for closeness to baseline. \textit{Average response deviation} (6.3\% vs 8.4\%) can mask per-trial variance. \textit{Mean absolute per-trial error} (18.1\% vs 22.6\%) reveals that individual SACD responses deviate substantially from baseline---the 93.7\% aggregate is an average of overshoots (112.0\% from high anchors) and undershoots (75.7\% from low anchors). On any individual trial, SACD deviates $\sim$18\% from baseline, not 6\%. Difference not statistically significant ($p \approx 0.054$).}
 \label{tab:sacd-premortem}
 \end{table}
 
@@ -622,7 +622,7 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 \section{Multi-Domain Generalization}
 %==============================================================================
 
-To test whether our findings generalize beyond judicial sentencing, we replicated the methodology across three additional domains: loan approval amounts, medical triage priority (hours to treatment), and salary negotiations. We collected 2,046 trials across these vignettes using two models (Claude Opus 4.6 and Claude Sonnet 4.5).
+To test whether our findings generalize beyond judicial sentencing, we replicated the methodology across three additional domains: loan approval amounts, medical triage priority (hours to treatment), and salary negotiations. We collected 2,046 trials across these vignettes using two models (Claude Opus 4.6 and Claude Sonnet 4.6).
 
 \subsection{Domain Comparison}
 
@@ -669,7 +669,7 @@ Domain & Technique & \% of Baseline & Deviation & Rank \\
 
 \subsection{Key Findings}
 
-\textbf{1. Technique effectiveness is domain-dependent.} SACD ranks \#1 by \% of baseline on Judicial (6.3\% deviation) and Medical (1.8\% deviation) but \#5 (worst) on Loan (42.9\% deviation)---a complete inversion. No technique is universally ``best.''
+\textbf{1. Technique effectiveness appears domain-dependent (preliminary).} Within our two-model subset, SACD ranks \#1 by \% of baseline on Judicial (6.3\% deviation) and Medical (1.8\% deviation) but \#5 (worst) on Loan (42.9\% deviation)---a complete inversion. These results suggest no technique is universally ``best,'' though validation with additional models is needed.
 
 \textbf{2. SACD shows complete ranking inversion.} On Judicial and Medical, SACD achieves best baseline proximity. On Loan, it achieves worst---42.9\% deviation vs.\ devils-advocate's 18.0\%. A practitioner who validated only on judicial data would incorrectly recommend SACD for loan decisions.
 
@@ -748,6 +748,8 @@ Outside View performed worst despite recommendations in human debiasing literatu
     \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure proximity to the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions. The baseline is a reference point, not a normative standard: 100\% of baseline means ``restored to unanchored state,'' not ``correct.'' This is consistent with anchoring research in general: the goal is to measure and mitigate anchor influence, not to establish objectively correct judgments.
     
     \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families. \textbf{Sensitivity analysis:} Excluding Opus 4.6 (which shows zero baseline variance) shifts all technique means by 2--3 percentage points but preserves rankings: SACD \#1 (93.4\%), Premortem \#2 (89.7\%), Random Control \#3 (77.0\%), Devil's Advocate \#4 (61.2\%).
+    
+    \item \textbf{Multi-domain model coverage.} The multi-domain extension (Section 5) uses only 2 Anthropic models (Opus 4.6 and Sonnet 4.6) with $\sim$120 trials per technique-domain cell. Domain-dependent findings should be considered preliminary until validated with broader model coverage. The dramatic SACD ranking inversion (Judicial \#1 $\to$ Loan \#5) may not generalize to all model families.
     
     \item \textbf{Stopping rule.} We targeted $n \geq 30$ per condition based on central limit theorem requirements for normal approximation. We did not use adaptive stopping based on effect size stabilization. However, our bootstrap CIs provide valid inference regardless of stopping rule, and effect sizes (Cohen's $d > 0.5$ for key comparisons) suggest adequate power.
 \end{enumerate}
