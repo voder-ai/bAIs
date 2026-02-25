@@ -747,6 +747,7 @@ Based on our findings in the judicial sentencing domain (generalization to other
     \item \textbf{Test per-model.} Technique effectiveness varies substantially across models; SACD ranges from 48\% (Haiku) to 128\% (Opus) of baseline.
     \item \textbf{Collect baselines.} Following \citet{jacowitz1995}, measure \% of baseline alongside susceptibility. This catches techniques that appear effective but keep responses anchored at wrong values---the Devil's Advocate failure mode we document.
     \item \textbf{Be cautious with reference class prompts.} See Section~\ref{sec:outside-view-confound}.
+    \item \textbf{Consider cost-effectiveness.} SACD requires $\sim$6$\times$ more API calls than single-turn techniques (Appendix~\ref{sec:sacd-algorithm}). Premortem achieves comparable baseline proximity (91.6\% vs.\ 93.7\%, not significantly different) in a single turn---it dominates SACD on cost-effectiveness for most applications.
 \end{enumerate}
 
 %==============================================================================
