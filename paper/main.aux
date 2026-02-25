@@ -82,35 +82,41 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.8}The SACD vs.\ Premortem Tradeoff}{12}{subsection.4.8}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Two metrics for closeness to baseline. \textit  {Average response deviation} (6.3\% vs 8.4\%) can mask per-trial variance. \textit  {Mean absolute per-trial error} (18.1\% vs 22.6\%) reveals that individual SACD responses deviate substantially from baseline---the 93.7\% aggregate is an average of overshoots and undershoots. Difference not statistically significant ($p \approx 0.054$).}}{12}{table.7}\protected@file@percent }
 \newlabel{tab:sacd-premortem}{{7}{12}{Two metrics for closeness to baseline. \textit {Average response deviation} (6.3\% vs 8.4\%) can mask per-trial variance. \textit {Mean absolute per-trial error} (18.1\% vs 22.6\%) reveals that individual SACD responses deviate substantially from baseline---the 93.7\% aggregate is an average of overshoots and undershoots. Difference not statistically significant ($p \approx 0.054$)}{table.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Multi-Domain Generalization}{12}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Domain Comparison}{13}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial and Medical but \#5 (worst) on Loan. On Salary, no debiasing technique beats baseline. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. $n \approx 120$ trials per technique per vignette; see supplementary materials for exact counts.}}{13}{table.8}\protected@file@percent }
+\newlabel{tab:vignette-comparison}{{8}{13}{Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial and Medical but \#5 (worst) on Loan. On Salary, no debiasing technique beats baseline. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. $n \approx 120$ trials per technique per vignette; see supplementary materials for exact counts}{table.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Key Findings}{13}{subsection.5.2}\protected@file@percent }
 \citation{llm-bayesian-2025}
 \citation{llm-judge-overconfidence-2025}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{13}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Why Full SACD Works (and Fails)}{13}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Theoretical Grounding}{13}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Per-Trial Distribution Analysis}{13}{subsection.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Why Random Control Works}{14}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}The Outside View Confound}{14}{subsection.5.5}\protected@file@percent }
-\newlabel{sec:outside-view-confound}{{5.5}{14}{The Outside View Confound}{subsection.5.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Limitations}{14}{subsection.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Implications}{14}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{14}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Why Full SACD Works (and Fails)}{14}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Theoretical Grounding}{14}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Per-Trial Distribution Analysis}{15}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Why Random Control Works}{15}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}The Outside View Confound}{15}{subsection.6.5}\protected@file@percent }
+\newlabel{sec:outside-view-confound}{{6.5}{15}{The Outside View Confound}{subsection.6.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}Limitations}{15}{subsection.6.6}\protected@file@percent }
 \citation{jacowitz1995}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Practical Recommendations}{15}{subsection.5.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{15}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.7}Practical Recommendations}{16}{subsection.6.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{16}{section.7}\protected@file@percent }
 \citation{lyu2025}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{16}{appendix.A}\protected@file@percent }
-\newlabel{app:prompts}{{A}{16}{Prompt Templates}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Case Vignette (All Conditions)}{16}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchor Introduction (High/Low Anchor Conditions)}{16}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Outside View (As Implemented)}{16}{subsection.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Full SACD (Iterative Self-Administered Cognitive Debiasing)}{16}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{17}{appendix.A}\protected@file@percent }
+\newlabel{app:prompts}{{A}{17}{Prompt Templates}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Case Vignette (All Conditions)}{17}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchor Introduction (High/Low Anchor Conditions)}{17}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Outside View (As Implemented)}{17}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Full SACD (Iterative Self-Administered Cognitive Debiasing)}{18}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Devil's Advocate}{18}{subsection.A.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Premortem}{18}{subsection.A.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Random Control}{18}{subsection.A.7}\protected@file@percent }
 \bibstyle{plainnat}
 \bibdata{references}
 \bibcite{binz2023}{{1}{2023}{{Binz and Schulz}}{{}}}
 \bibcite{chen2025cognitive}{{2}{2025}{{Chen et~al.}}{{}}}
 \bibcite{llm-bayesian-2025}{{3}{2025}{{Chlon et~al.}}{{Chlon, Rashidi, Khamis, and Awada}}}
 \bibcite{englich2006}{{4}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Devil's Advocate}{17}{subsection.A.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Premortem}{17}{subsection.A.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Random Control}{17}{subsection.A.7}\protected@file@percent }
 \bibcite{huang2025anchoring}{{5}{2025}{{Huang et~al.}}{{}}}
 \bibcite{jacowitz1995}{{6}{1995}{{Jacowitz and Kahneman}}{{}}}
 \bibcite{jones2022}{{7}{2022}{{Jones and Steinhardt}}{{}}}
@@ -121,4 +127,4 @@
 \bibcite{song2026reasoning}{{12}{2026}{{Song et~al.}}{{Song, Han, and Goodman}}}
 \bibcite{llm-judge-overconfidence-2025}{{13}{2025}{{Tian et~al.}}{{}}}
 \bibcite{tversky1974}{{14}{1974}{{Tversky and Kahneman}}{{}}}
-\gdef \@abspage@last{18}
+\gdef \@abspage@last{19}

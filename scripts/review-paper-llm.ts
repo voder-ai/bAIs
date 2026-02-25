@@ -86,10 +86,10 @@ ${referencesContent}
 
 Provide your detailed review and verdict.`;
 
-  // Use a high-quality model for review
+  // Use a high-quality model for review - prefer Opus 4.6 via pi-ai OAuth
   const modelsToTry = process.env.MODEL
     ? [process.env.MODEL]
-    : ['github-copilot/claude-opus-4.5', 'anthropic/claude-sonnet-4-5', 'openai/gpt-4o'];
+    : ['anthropic/claude-opus-4-6', 'anthropic/claude-sonnet-4-5', 'openai/gpt-4o'];
 
   let provider: LlmProvider | null = null;
   let modelUsed = '';
