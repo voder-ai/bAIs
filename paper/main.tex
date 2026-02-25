@@ -757,20 +757,11 @@ Based on our findings in the judicial sentencing domain (generalization to other
 \section{Conclusion}
 %==============================================================================
 
-We demonstrated that \textbf{metric choice determines technique recommendation}. Susceptibility and \% of baseline give divergent rankings (Table~\ref{tab:metric-comparison}). SACD and Premortem show comparable baseline proximity with no significant difference (Table~\ref{tab:sacd-premortem}); model-specific variation dominates (Table~\ref{tab:sacd-by-model}).
+Metric choice can determine technique recommendation. Across 14,152 trials on 10 models, susceptibility and \% of baseline give divergent rankings (Table~\ref{tab:metric-comparison}): Devil's Advocate appears best under susceptibility but worst under baseline proximity; SACD shows the reverse pattern. Model-specific variation is substantial---SACD ranges from 48\% (Haiku) to 128\% (Opus) of baseline.
 
-Key findings from 14,152 trials across 10 models:
+\textbf{For practitioners:} Test per-model. Measure \textit{both} metrics---susceptibility captures consistency across anchors; baseline proximity captures whether that consistency is at the right value.
 
-\begin{enumerate}
-    \item \textbf{Metric divergence}: Rankings differ substantially between susceptibility and baseline proximity metrics.
-    \item \textbf{Bidirectional deviation}: SACD over-corrects from high anchors, under-corrects from low anchors.
-    \item \textbf{High model variance}: Technique effectiveness varies dramatically across models.
-    \item \textbf{Baseline collection is essential}: Without it, systematic biases and model-specific failures are invisible.
-\end{enumerate}
-
-For practitioners: test techniques per-model before deployment. Measure \textit{both} susceptibility and \% of baseline---they capture different aspects of technique effectiveness (consistency across anchor conditions vs.\ proximity to the model's unanchored judgment).
-
-For researchers: collect baselines without explicit anchors. Susceptibility alone has a blind spot: it can favor techniques that produce consistent responses that are consistently wrong. Baseline proximity complements susceptibility by revealing this failure mode.
+\textbf{For researchers:} Collect unanchored baselines. Susceptibility alone has a blind spot: it favors techniques producing consistent responses that are consistently wrong.
 
 %==============================================================================
 \appendix
