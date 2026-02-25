@@ -622,7 +622,7 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 \section{Multi-Domain Generalization}
 %==============================================================================
 
-To test whether our findings generalize beyond judicial sentencing, we replicated the methodology across three additional domains: loan approval amounts, medical triage priority (hours to treatment), and salary negotiations. We collected 1,941 trials across these vignettes using two models (Claude Opus 4.6 and Claude Sonnet 4.5).
+To test whether our findings generalize beyond judicial sentencing, we replicated the methodology across three additional domains: loan approval amounts, medical triage priority (hours to treatment), and salary negotiations. We collected 2,046 trials across these vignettes using two models (Claude Opus 4.6 and Claude Sonnet 4.5).
 
 \subsection{Domain Comparison}
 
@@ -630,61 +630,61 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial but \#5 (worst) on Loan. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. Spread $\Delta$\% = change in high-low gap vs.\ no-technique baseline; negative = reduced susceptibility. $n \approx 120$ trials per technique per vignette (baseline: $n \approx 180$); see Table V1 for exact counts.$^*$Medical spread percentages are undefined (baseline spread $\approx 0$); shown for completeness but should be ignored.}
+\caption{Debiasing Effectiveness by Domain: \% of Baseline Metric. Best technique differs across domains. SACD ranks \#1 on Judicial and Medical but \#5 (worst) on Loan. On Salary, no debiasing technique beats baseline. Deviation = $|$\% of Baseline $- 100\%|$; lower = better. $n \approx 120$ trials per technique per vignette; see supplementary materials for exact counts.}
 \label{tab:vignette-comparison}
-\begin{tabular}{llcccc}
+\begin{tabular}{llccc}
 \toprule
-Domain & Technique & \% of Baseline & Deviation & Spread $\Delta$\% & Rank by Deviation \\
+Domain & Technique & \% of Baseline & Deviation & Rank \\
 \midrule
 \multirow{5}{*}{Loan} 
-& baseline & 68.3\% & 31.7\% & --- & 4 \\
-& devils-advocate & 82.0\% & \textbf{18.0\%} & +55\% & \textbf{1} \\
-& premortem & 75.9\% & 24.1\% & +37\% & 2 \\
-& random-control & 73.6\% & 26.4\% & +3\% & 3 \\
-& sacd & 57.1\% & 42.9\% & \textbf{$-$60\%} & 5 (worst) \\
+& baseline & 68.3\% & 31.7\% & 4 \\
+& devils-advocate & 82.0\% & \textbf{18.0\%} & \textbf{1} \\
+& premortem & 75.9\% & 24.1\% & 2 \\
+& random-control & 73.6\% & 26.4\% & 3 \\
+& sacd & 57.1\% & 42.9\% & 5 (worst) \\
 \midrule
-\multirow{5}{*}{Medical$^*$}
-& baseline & 106.7\% & 6.7\% & --- & 5 \\
-& devils-advocate & 102.7\% & \textbf{2.7\%} & --- & \textbf{1} \\
-& premortem & 106.2\% & 6.2\% & --- & 3 \\
-& random-control & 106.5\% & 6.5\% & --- & 4 \\
-& sacd & 103.8\% & 3.8\% & --- & 2 \\
+\multirow{5}{*}{Medical}
+& baseline & 102.7\% & 2.7\% & 2 \\
+& devils-advocate & 106.9\% & 6.9\% & 3 \\
+& premortem & 110.1\% & 10.1\% & 4 \\
+& random-control & 111.6\% & 11.6\% & 5 \\
+& sacd & 98.2\% & \textbf{1.8\%} & \textbf{1} \\
 \midrule
 \multirow{5}{*}{Salary}
-& baseline & 104.8\% & \textbf{4.8\%} & --- & \textbf{1} \\
-& devils-advocate & 106.2\% & 6.2\% & $-$44\% & 2 \\
-& premortem & 116.1\% & 16.1\% & $-$16\% & 5 \\
-& random-control & 108.9\% & 8.9\% & $-$24\% & 3 \\
-& sacd & 114.7\% & 14.7\% & \textbf{$-$105\%} & 4 \\
+& baseline & 106.6\% & \textbf{6.6\%} & \textbf{1} \\
+& devils-advocate & 107.0\% & 7.0\% & 2 \\
+& premortem & 115.8\% & 15.8\% & 5 \\
+& random-control & 108.6\% & 8.6\% & 3 \\
+& sacd & 110.2\% & 10.2\% & 4 \\
 \midrule
 \multirow{5}{*}{Judicial}
-& baseline & 72.9\% & 27.1\% & --- & 4 \\
-& devils-advocate & 63.6\% & 36.4\% & $-$9\% & 5 (worst) \\
-& premortem & 91.6\% & 8.4\% & +74\% & 2 \\
-& random-control & 78.3\% & 21.7\% & +16\% & 3 \\
-& sacd & 93.7\% & \textbf{6.3\%} & +40\% & \textbf{1} \\
+& baseline & 72.9\% & 27.1\% & 4 \\
+& devils-advocate & 63.6\% & 36.4\% & 5 (worst) \\
+& premortem & 91.6\% & 8.4\% & 2 \\
+& random-control & 78.3\% & 21.7\% & 3 \\
+& sacd & 93.7\% & \textbf{6.3\%} & \textbf{1} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Key Findings}
 
-\textbf{1. Technique effectiveness is domain-dependent.} SACD ranks \#1 by \% of baseline on judicial (6.3\% deviation) but \#5 on loan (42.9\% deviation)---a complete inversion. No technique is universally ``best.''
+\textbf{1. Technique effectiveness is domain-dependent.} SACD ranks \#1 by \% of baseline on Judicial (6.3\% deviation) and Medical (1.8\% deviation) but \#5 (worst) on Loan (42.9\% deviation)---a complete inversion. No technique is universally ``best.''
 
-\textbf{2. Metric divergence replicates.} On Loan, SACD shows the \textit{best} spread reduction ($-$60\%) but \textit{worst} baseline deviation (42.9\%). A practitioner using spread reduction alone would incorrectly recommend SACD for loan decisions. This replicates our core finding: metric choice determines technique recommendation.
+\textbf{2. SACD shows complete ranking inversion.} On Judicial and Medical, SACD achieves best baseline proximity. On Loan, it achieves worst---42.9\% deviation vs.\ devils-advocate's 18.0\%. A practitioner who validated only on judicial data would incorrectly recommend SACD for loan decisions.
 
-\textbf{3. Medical shows anchoring immunity.} Baseline spread is 0.1---effectively zero. Models refuse to deviate from appropriate treatment timelines regardless of anchor. To our knowledge, this is the first empirical evidence that safety training may override anchoring susceptibility in high-stakes medical contexts.
+\textbf{3. On Salary, no technique beats doing nothing.} Baseline achieves 6.6\% deviation; all debiasing techniques perform worse (7.0\%--15.8\%). Debiasing interventions can introduce rather than remove bias. This is a cautionary finding: well-intentioned debiasing can backfire.
 
-\textbf{4. On Salary, no technique beats doing nothing.} Baseline achieves 4.8\% deviation; all debiasing techniques perform worse (6.2\%--16.1\%). Debiasing interventions can introduce rather than remove bias.
+\textbf{4. Domain susceptibility varies dramatically.} Medical shows strong resistance to anchoring (all techniques within 1.8\%--11.6\% of baseline). Loan shows high susceptibility (best technique still 18.0\% from baseline). Practitioners must calibrate expectations per domain.
 
 \subsection{Implications}
 
 These results strengthen rather than weaken our core argument:
 
 \begin{enumerate}
-    \item \textbf{Metric choice still matters}---spread reduction and \% of baseline give divergent rankings across all domains
-    \item \textbf{Domain-specific validation is essential}---practitioners cannot assume techniques that work in one domain will transfer
-    \item \textbf{The counterfactual matters}---using spread reduction alone for loan decisions would recommend SACD, which actually \textit{increases} distance from the unanchored judgment
+    \item \textbf{Domain-specific validation is essential}---SACD ranks \#1 on Judicial/Medical but \#5 on Loan; practitioners cannot assume techniques transfer across domains
+    \item \textbf{Debiasing can backfire}---on Salary, all techniques increase deviation from baseline; intervening is worse than doing nothing
+    \item \textbf{The counterfactual matters}---validating only on judicial data would lead to recommending SACD for loans, where it performs worst
 \end{enumerate}
 
 %==============================================================================
