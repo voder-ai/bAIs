@@ -229,6 +229,8 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 
 \textbf{Why the divergence?} Devil's Advocate produces \textit{consistent} responses (low susceptibility/spread) that remain \textit{far from the unanchored judgment} (63.6\% of baseline). SACD produces \textit{variable} responses (higher susceptibility) that are \textit{close to the unanchored judgment on average} (93.7\% of baseline---though this average masks bidirectional deviation: 75.7\% from low anchors, 112.0\% from high anchors).
 
+\textbf{Recovery rate perspective:} Without any debiasing, anchored responses reach 72.9\% of baseline---the maximum possible improvement is 27.1 percentage points. SACD achieves 93.7\%, an improvement of 20.8pp, representing a \textbf{77\% recovery rate} (20.8/27.1). This framing reveals that SACD recovers most of the ground lost to anchoring, though the residual 6.3pp deficit and bidirectional variance remain limitations.
+
 \textbf{Effect sizes (Cohen's d):}
 
 \begin{center}
@@ -699,9 +701,9 @@ Full SACD achieves the highest baseline proximity (Table~\ref{tab:baseline-pct})
 
 \textbf{Possible mechanisms:} (1) Iterative reflection may help models escape local optima. (2) Some models may perform ``debiasing theater''---Opus overshoots to 127.8\%, potentially optimizing for \textit{appearing} to reconsider. (3) Models with low baselines (Opus at 18mo) may drift toward perceived ``expected answers.'' (4) Haiku's severe undershoot (47.8\%) suggests SACD can backfire entirely for some architectures.
 
-\subsection{Theoretical Grounding}
+\subsection{Theoretical Grounding (Speculative)}
 
-Recent theoretical work helps explain our empirical findings:
+Recent theoretical work offers \textit{potential} explanations for our empirical findings. The connections below are speculative; we present them to motivate future research rather than as established mechanisms:
 
 \textbf{Positional encoding breaks exchangeability.} \citet{llm-bayesian-2025} show that LLMs are ``Bayesian in expectation, not in realization''---the same evidence presented in different orders yields different posteriors due to positional encoding effects. This may explain SACD's model-dependent effectiveness: iterative self-reflection changes the \textit{order} of reasoning steps, and models with stronger positional biases (potentially Haiku) may amplify rather than correct errors through repeated passes.
 
