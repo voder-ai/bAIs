@@ -73,22 +73,7 @@ The baseline metric directly answers: ``Is the debiased response close to what t
 
 \subsection{The Divergence}
 
-Our key finding (no-technique baseline: 26.0pp spread, 72.9\% of baseline):
-
-\begin{center}
-\begin{tabular}{lcccc}
-\toprule
-Technique & Spread (pp) & $\Delta$ Susceptibility & \% of Baseline & Deviation \\
-\midrule
-Devil's Advocate & \textbf{23.7} (lowest) & $-$8.8\% (only $-$) & 63.6\% & 36.4\% (worst) \\
-Random Control & 30.1 & +15.8\% & 78.3\% & 21.7\% \\
-Full SACD & 36.3 & +39.6\% & \textbf{93.7\%} & 6.3\% (best) \\
-Premortem & 45.2 (highest) & +73.8\% & 91.6\% & 8.4\% \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-Note: Only Devil's Advocate reduces susceptibility ($-$8.8\%); all others \textit{increase} it. Yet Devil's Advocate performs worst on baseline proximity (63.6\%), while techniques that increase susceptibility (SACD, Premortem) achieve best baseline proximity.
+Our key finding (Table~\ref{tab:metric-comparison}): Devil's Advocate is the \textit{only} technique that reduces susceptibility ($-$8.8\%), yet it performs \textit{worst} on baseline proximity (63.6\%). SACD shows the opposite pattern: it \textit{increases} susceptibility (+39.6\%) but achieves \textit{best} baseline proximity (93.7\%). Choosing by susceptibility alone would recommend Devil's Advocate; choosing by baseline proximity would recommend SACD---opposite conclusions from the same data.
 
 \subsection{Contributions}
 
