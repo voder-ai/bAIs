@@ -176,7 +176,7 @@ These metrics give \textbf{divergent rankings}:
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread $\approx$ 7.5 months given avg baseline of 29mo). \textit{Spread} = gap between high/low anchor responses, expressed in percentage-of-baseline space (multiply by 0.29 for approximate months). $\Delta$ = change in spread relative to no-technique baseline (negative = reduced susceptibility). Note: Devil's Advocate (63.6\%) actually performs \textit{worse} than no technique (72.9\%) on baseline proximity---it reduces susceptibility while moving responses further from the unanchored judgment. 95\% CIs from bootstrap for \% of baseline; per-anchor CIs in Table~\ref{tab:anchor-asymmetry}.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). $\Delta$ = change in spread vs.\ no-technique baseline (negative = reduced susceptibility). \textbf{Key observation:} Only Devil's Advocate actually \textit{reduces} susceptibility ($-$8.8\%); the other three techniques \textit{increase} it (+15.8\% to +73.8\%). Yet DA performs \textit{worst} on baseline proximity (63.6\% vs.\ 72.9\% for no-technique)---it reduces susceptibility by moving responses consistently \textit{away} from the unanchored judgment. 95\% CIs from bootstrap.}
 \label{tab:metric-comparison}
 \begin{tabular}{lcccccc}
 \toprule
