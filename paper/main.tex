@@ -214,7 +214,7 @@ SACD vs.\ Premortem & 0.08 & Negligible \\
 \end{tabular}
 \end{center}
 
-Cohen's $d$ computed on trial-level data using pooled standard deviation. Note: trial-level $d$ may be inflated by ignoring model clustering; however, our mixed-effects analysis (Section~\ref{sec:mixed-effects}) accounts for this structure. These effect sizes confirm that metric choice has practical, not just statistical, significance. The SACD--Premortem difference is negligible ($d = 0.08$), supporting our equivalence finding.
+Cohen's $d$ computed on trial-level data using pooled standard deviation. \textbf{Caveat:} With ICC=0.17, effective sample sizes are smaller than raw trial counts; these $d$ values may be inflated by ignoring model clustering. Use mixed-effects estimates (Section~\ref{sec:mixed-effects}) for formal inference. These effect sizes are provided for practical interpretation: the SACD--DA gap ($d=1.06$) represents a meaningful practical difference, while SACD--Premortem ($d=0.08$) does not.
 
 \subsection{Experimental Design}
 
@@ -608,28 +608,28 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 Domain & Technique & \% of Baseline & Deviation & Rank \\
 \midrule
 \multirow{5}{*}{Loan} 
-& baseline & 68.3\% & 31.7\% & 4 \\
+& no-technique & 68.3\% & 31.7\% & 4 \\
 & devils-advocate & 82.0\% & \textbf{18.0\%} & \textbf{1} \\
 & premortem & 75.9\% & 24.1\% & 2 \\
 & random-control & 73.6\% & 26.4\% & 3 \\
 & sacd & 57.1\% & 42.9\% & 5 (worst) \\
 \midrule
 \multirow{5}{*}{Medical}
-& baseline & 102.7\% & 2.7\% & 2 \\
+& no-technique & 102.7\% & 2.7\% & 2 \\
 & devils-advocate & 106.9\% & 6.9\% & 3 \\
 & premortem & 110.1\% & 10.1\% & 4 \\
 & random-control & 111.6\% & 11.6\% & 5 \\
 & sacd & 98.2\% & \textbf{1.8\%} & \textbf{1} \\
 \midrule
 \multirow{5}{*}{Salary}
-& baseline & 106.6\% & \textbf{6.6\%} & \textbf{1} \\
+& no-technique & 106.6\% & \textbf{6.6\%} & \textbf{1} \\
 & devils-advocate & 107.0\% & 7.0\% & 2 \\
 & premortem & 115.8\% & 15.8\% & 5 \\
 & random-control & 108.6\% & 8.6\% & 3 \\
 & sacd & 110.2\% & 10.2\% & 4 \\
 \midrule
 \multirow{5}{*}{Judicial}
-& baseline & 72.9\% & 27.1\% & 4 \\
+& no-technique & 72.9\% & 27.1\% & 4 \\
 & devils-advocate & 63.6\% & 36.4\% & 5 (worst) \\
 & premortem & 91.6\% & 8.4\% & 2 \\
 & random-control & 78.3\% & 21.7\% & 3 \\
