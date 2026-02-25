@@ -152,25 +152,7 @@ This metric directly measures where the debiased response lands relative to the 
 
 \subsection{Evaluation Metrics}
 
-We compare susceptibility (standard) with \% of baseline (following \citealt{jacowitz1995}). Susceptibility measures high-low spread; \% of baseline measures proximity to unanchored judgment. Formulas defined in Section~\ref{sec:two-metrics}.
-
-\textbf{Interpretation of \% of baseline:}
-\begin{itemize}
-    \item 100\% = response matches unanchored judgment (perfect debiasing)
-    \item $<$100\% = response remains below baseline (under-correction or opposite-direction anchor)
-    \item $>$100\% = response overshoots baseline
-\end{itemize}
-
-\textbf{Deviation from baseline} measures how far from perfect:
-\[
-\text{Deviation} = |(\text{\% of Baseline}) - 100\%|
-\]
-
-Lower deviation = better. A technique that produces responses at 93.7\% of baseline (6.3\% deviation) is better than one at 63.6\% (36.4\% deviation).
-
-\textbf{Validation: \% vs.\ absolute deviation.} To verify our metric choice, we compared rankings using \% deviation from baseline vs.\ absolute deviation in months. Rankings are identical: Full SACD ranks \#1 by both metrics (6.3\% deviation), Devil's Advocate ranks \#4 (36.4\%). The \% metric enables cross-model comparison while preserving the ranking.
-
-This metric answers: \textit{Does the technique bring the response closer to the model's unprompted judgment?}
+We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-metrics}). Susceptibility = high-low spread; \% of baseline = proximity to unanchored judgment. Deviation from baseline = $|$(\% of Baseline) $- 100\%|$; lower = better.
 
 \subsubsection{Why Both Metrics Matter}
 
