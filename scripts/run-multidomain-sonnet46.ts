@@ -17,7 +17,7 @@ import { join } from 'path';
 // CONFIGURATION
 // ============================================================================
 
-const MODEL = 'anthropic/claude-sonnet-4-6';  // Changed from 4.5
+const MODEL = 'anthropic/claude-sonnet-4-6';  // Uses dashes, not dots
 const TEMPERATURE = 0.7;
 const TARGET_N = 30;
 const RESULTS_DIR = './results';
