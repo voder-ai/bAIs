@@ -1,4 +1,5 @@
 # LLM Paper Review — Opus 4.6 via pi-ai OAuth
+
 **Date:** 2026-02-25
 **Model:** anthropic/claude-opus-4-6
 **Verdict:** NEEDS REVISION
@@ -16,6 +17,7 @@ This paper argues that evaluating LLM debiasing techniques using only susceptibi
 ## 1. Methodology
 
 ### Strengths
+
 - Well-motivated experimental design grounded in established anchoring literature (Jacowitz & Kahneman 1995, Englich et al. 2006)
 - Thoughtful inclusion of Random Control as an ablation isolating multi-turn structure from debiasing content
 - Proportional anchor design (baseline × 0.5/1.5) is well-justified for cross-model comparison
@@ -48,6 +50,7 @@ This paper argues that evaluating LLM debiasing techniques using only susceptibi
 ## 2. Statistics
 
 ### Strengths
+
 - Bootstrap CIs appropriately stratified by model
 - Bonferroni correction for multiple comparisons
 - TOST equivalence testing for SACD vs. Premortem
@@ -69,7 +72,7 @@ This paper argues that evaluating LLM debiasing techniques using only susceptibi
 
 ## 3. Citations
 
-Pre-verified citations check out. Additional citations (Binz 2023, Englich 2006, Tversky & Kahneman 1974, etc.) are canonical references. 
+Pre-verified citations check out. Additional citations (Binz 2023, Englich 2006, Tversky & Kahneman 1974, etc.) are canonical references.
 
 **One concern:** The references `llm-bayesian-2025` (arXiv:2507.11768) and `llm-judge-overconfidence-2025` (arXiv:2508.06225) have arXiv IDs suggesting July/August 2025 publication. These are plausible but not in my pre-verified list. The Huang 2025 anchoring paper (arXiv:2505.15392) is also unverified but plausible. I flag these as minor—they support discussion points rather than core methodology.
 
@@ -98,6 +101,7 @@ The Maynard 2025 reference listed in verified citations doesn't appear in the pa
 ## 5. Writing Quality
 
 ### Strengths
+
 - Exceptionally clear writing for a methods-heavy paper
 - The core finding (metric divergence) is stated upfront and reinforced throughout
 - Tables and figures are well-designed and informative
@@ -105,6 +109,7 @@ The Maynard 2025 reference listed in verified citations doesn't appear in the pa
 - Practical recommendations are grounded in evidence
 
 ### Concerns
+
 - The paper is repetitive. The core metric divergence table appears (or is referenced) at least 4 times. The same numbers (93.7%, 63.6%) are repeated extensively. This could be tightened.
 - The abstract is slightly too long and could be more concise.
 - Section structure could be streamlined—the "two metrics" exposition appears in both Introduction and Methodology, creating redundancy.
@@ -114,7 +119,7 @@ The Maynard 2025 reference listed in verified citations doesn't appear in the pa
 
 ## 6. Overclaims
 
-1. **"Why Metric Choice Determines Technique Recommendation" (title).** Slightly overclaimed—the paper shows metric choice *can* determine recommendation, demonstrated on one primary vignette. "Can determine" would be more precise.
+1. **"Why Metric Choice Determines Technique Recommendation" (title).** Slightly overclaimed—the paper shows metric choice _can_ determine recommendation, demonstrated on one primary vignette. "Can determine" would be more precise.
 
 2. **Multi-domain claims.** The abstract states "Technique effectiveness is domain-dependent" as a general finding, but this is based on 2 models and ~2K trials. This deserves stronger qualification.
 
@@ -158,6 +163,7 @@ The methodological insight is sound and publishable, but the empirical evidence 
 **NEEDS REVISION**
 
 Key revisions required:
+
 1. **Expand multi-domain evaluation** to include more models (at minimum, the full set from the primary study) and more trials per cell. Alternatively, substantially downweight domain-dependence claims.
 2. **Resolve the Sonnet 4.5 vs. 4.6 discrepancy** in the multi-domain section.
 3. **Foreground per-trial error** (18.1% for SACD) alongside aggregate deviation (6.3%). The current framing overemphasizes the favorable aggregate.

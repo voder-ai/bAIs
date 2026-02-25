@@ -362,12 +362,12 @@ _Notes:_
 
 Initial vignette experiments used inconsistent anchor multipliers:
 
-| Vignette | Original Anchors | Correct Anchors |
-|----------|------------------|-----------------|
-| Judicial | ×0.5 / ×1.5 (±50%) | ✓ Correct |
-| Loan | ×0.5 / ×1.5 (±50%) | ✓ Correct |
-| **Salary** | ×0.7 / ×1.3 (±30%) | ✗ Too weak |
-| **Medical** | ×0.6 / ×1.4 (±40%) | ✗ Too weak |
+| Vignette    | Original Anchors   | Correct Anchors |
+| ----------- | ------------------ | --------------- |
+| Judicial    | ×0.5 / ×1.5 (±50%) | ✓ Correct       |
+| Loan        | ×0.5 / ×1.5 (±50%) | ✓ Correct       |
+| **Salary**  | ×0.7 / ×1.3 (±30%) | ✗ Too weak      |
+| **Medical** | ×0.6 / ×1.4 (±40%) | ✗ Too weak      |
 
 ### Why This Matters for the Paper
 
@@ -380,6 +380,7 @@ This "mistake" actually validates our methodology. **Fixed anchors (not relative
 ### Evidence from Archived Data
 
 **Medical with ±40% anchors (archived):**
+
 - Sonnet baseline: 75
 - Sonnet with low anchor (43): responded 75 (no effect!)
 - Sonnet with high anchor (101): responded 75 (no effect!)
@@ -387,6 +388,7 @@ This "mistake" actually validates our methodology. **Fixed anchors (not relative
 - **Conclusion at the time:** "Medical shows anchoring immunity — safety training overrides bias"
 
 **Medical with ±50% anchors (re-run):**
+
 - Sonnet baseline: 75
 - Sonnet with low anchor (36): responded **34** (strong anchoring!)
 - Sonnet with high anchor (108): responded **85** (moderate anchoring!)
