@@ -73,12 +73,12 @@ The baseline metric directly answers: ``Is the debiased response close to what t
 
 \subsection{The Divergence}
 
-Our key finding (Table~\ref{tab:metric-comparison}): Devil's Advocate is the \textit{only} technique that reduces susceptibility ($-$8.8\%), yet it performs \textit{worst} on baseline proximity (63.6\%). SACD shows the opposite pattern: it \textit{increases} susceptibility (+39.6\%) but achieves \textit{best} baseline proximity (93.7\%). Choosing by susceptibility alone would recommend Devil's Advocate; choosing by baseline proximity would recommend SACD---opposite conclusions from the same data.
+Our key finding (Table~\ref{tab:metric-comparison}): Devil's Advocate is the \textit{only} technique that reduces susceptibility ($-$8.8\%), yet it performs \textit{worst} on baseline proximity (63.6\%). SACD shows the opposite pattern: it \textit{increases} susceptibility (+39.6\%) but achieves \textit{best} aggregate baseline proximity (93.7\%). However, this aggregate masks bidirectional deviation: mean absolute per-trial error is 18.1\%, not 6.3\%. Choosing by susceptibility alone would recommend Devil's Advocate; choosing by baseline proximity would recommend SACD---opposite conclusions from the same data.
 
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{Baseline collection matters for LLM debiasing evaluation.} Following \citet{jacowitz1995}, we collect unanchored baseline responses to complement susceptibility measurement. We show that technique rankings diverge substantially between susceptibility (response consistency) and baseline proximity metrics. This is established methodology in human anchoring research; we demonstrate its importance for LLM debiasing.
+    \item \textbf{Applying established methodology to LLM debiasing.} Following \citet{jacowitz1995}, we collect unanchored baseline responses to complement susceptibility measurement. The \% of baseline metric is standard in human anchoring research; our contribution is demonstrating its importance for LLM debiasing, where technique rankings diverge substantially between susceptibility (response consistency) and baseline proximity.
     
     \item \textbf{Empirical comparison of 4 debiasing techniques} across 16,198 total trials (14,152 judicial + 2,046 multi-domain) on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
     
