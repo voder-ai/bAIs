@@ -568,8 +568,9 @@ if (vignetteTrials.length > 0) {
     // Calculate by technique
     const techniques = [...new Set(trials.map(t => t.technique))];
     
-    console.log('\n| Technique | Low % | High % | Avg % | Deviation |');
-    console.log('|-----------|-------|--------|-------|-----------|');
+    // Judicial TABLE 6 format: Low % | High % | Asymmetry
+    console.log('\n| Technique | Low Anchor | High Anchor | Asymmetry |');
+    console.log('|-----------|------------|-------------|-----------|');
     
     for (const tech of techniques) {
       const techTrials = trials.filter(t => t.technique === tech && t.anchorType !== 'none');
@@ -580,10 +581,10 @@ if (vignetteTrials.length > 0) {
       const lowPct = lowTrials.length > 0 ? mean(lowTrials.map(t => (t.response / baselineMean) * 100)) : null;
       const highPct = highTrials.length > 0 ? mean(highTrials.map(t => (t.response / baselineMean) * 100)) : null;
       
-      const avgPct = (lowPct !== null && highPct !== null) ? (lowPct + highPct) / 2 : null;
-      const deviation = avgPct !== null ? Math.abs(avgPct - 100) : null;
+      // Asymmetry = spread between high and low (like judicial)
+      const asymmetry = (lowPct !== null && highPct !== null) ? Math.abs(highPct - lowPct) : null;
       
-      console.log(`| ${tech} | ${lowPct?.toFixed(1) ?? 'N/A'}% | ${highPct?.toFixed(1) ?? 'N/A'}% | ${avgPct?.toFixed(1) ?? 'N/A'}% | ${deviation?.toFixed(1) ?? 'N/A'}% |`);
+      console.log(`| ${tech} | ${lowPct?.toFixed(1) ?? 'N/A'}% | ${highPct?.toFixed(1) ?? 'N/A'}% | ${asymmetry?.toFixed(1) ?? 'N/A'}pp |`);
     }
   }
   
@@ -639,39 +640,45 @@ if (vignetteTrials.length > 0) {
     console.log('');
   }
   
-  // Summary: Domain-dependent technique effectiveness
-  console.log('\nTABLE V4: Best Technique by Domain (% of Baseline)');
+  // Summary: Domain-dependent technique effectiveness (judicial format)
+  console.log('\nTABLE V4: Cross-Domain Comparison (Judicial Format)');
   console.log('-'.repeat(60));
-  console.log('| Domain | Best Technique | % of Baseline | Deviation |');
-  console.log('|--------|----------------|---------------|-----------|');
+  console.log('| Domain | Technique | Low Anchor | High Anchor | Asymmetry |');
+  console.log('|--------|-----------|------------|-------------|-----------|');
   
   for (const [vignette, trials] of byVignette) {
     const noAnchorTrials = trials.filter(t => t.anchorType === 'none');
     const baselineMean = noAnchorTrials.length > 0 ? mean(noAnchorTrials.map(t => t.response)) : 100;
     
     const techniques = [...new Set(trials.map(t => t.technique))];
-    let bestTech = '';
-    let bestDeviation = Infinity;
-    let bestPct = 0;
+    
+    // Sort by asymmetry (smallest first = best)
+    const techResults: { tech: string; lowPct: number; highPct: number; asymmetry: number }[] = [];
     
     for (const tech of techniques) {
-      const techTrials = trials.filter(t => t.technique === tech && t.anchorType !== 'none');
-      if (techTrials.length === 0) continue;
+      const lowTrials = trials.filter(t => t.technique === tech && t.anchorType === 'low');
+      const highTrials = trials.filter(t => t.technique === tech && t.anchorType === 'high');
       
-      const avgPct = mean(techTrials.map(t => (t.response / baselineMean) * 100));
-      const deviation = Math.abs(avgPct - 100);
+      if (lowTrials.length === 0 || highTrials.length === 0) continue;
       
-      if (deviation < bestDeviation) {
-        bestDeviation = deviation;
-        bestTech = tech;
-        bestPct = avgPct;
-      }
+      const lowPct = mean(lowTrials.map(t => (t.response / baselineMean) * 100));
+      const highPct = mean(highTrials.map(t => (t.response / baselineMean) * 100));
+      const asymmetry = Math.abs(highPct - lowPct);
+      
+      techResults.push({ tech, lowPct, highPct, asymmetry });
     }
     
-    console.log(`| ${vignette} | ${bestTech} | ${bestPct.toFixed(1)}% | ${bestDeviation.toFixed(1)}% |`);
+    // Sort by asymmetry
+    techResults.sort((a, b) => a.asymmetry - b.asymmetry);
+    
+    for (const r of techResults) {
+      console.log(`| ${vignette} | ${r.tech} | ${r.lowPct.toFixed(1)}% | ${r.highPct.toFixed(1)}% | ${r.asymmetry.toFixed(1)}pp |`);
+    }
+    console.log('|--------|-----------|------------|-------------|-----------|');
   }
   
   console.log('\n**Key finding:** Best technique varies by domain. No universal "best debiasing."');
+  console.log('Closer to 100% in both columns = better. Smaller asymmetry = more consistent.');
 }
 
 console.log('\n\nScript complete. Copy relevant sections to main.tex.');
