@@ -705,6 +705,16 @@ Outside View performed worst despite recommendations in human debiasing literatu
 
 \textbf{Practitioner implication:} Reference classes may import unintended anchors.
 
+\subsection{Anchor Strength Matters: A Methodological Validation}
+
+During multi-domain experiments, we initially used inconsistent anchor multipliers: $\pm$30\% for salary, $\pm$40\% for medical, vs.\ $\pm$50\% for judicial/loan. This revealed an important methodological insight.
+
+\textbf{Weak anchors produce false ``immunity'' findings.} With $\pm$40\% anchors on the medical vignette, Sonnet showed \textit{no anchoring effect}---responding identically (75) regardless of anchor. We initially concluded that safety-critical domains might be immune to anchoring. When we re-ran with $\pm$50\% anchors, Sonnet showed \textit{strong} anchoring: low anchor (36) $\to$ response 34; high anchor (108) $\to$ response 85.
+
+\textbf{Implications:} (1) Prior claims of model ``immunity'' to biases may reflect weak experimental design, not genuine robustness. (2) Proportional anchors (baseline $\times$ multiplier) are more robust than fixed absolute anchors across domains with different baseline magnitudes. (3) Researchers should validate anchor strength before concluding that models resist bias.
+
+We archived the weak-anchor data in \texttt{results/archived-wrong-anchors/} for transparency. This experience reinforces our methodological recommendation: use proportional anchors calibrated to each model's baseline.
+
 \subsection{Limitations}
 
 \begin{enumerate}
