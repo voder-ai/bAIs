@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Debiasing Anchoring Bias in LLM Judicial Sentencing:\\Why Metric Choice Determines Technique Recommendation}
+\title{Debiasing Anchoring Bias in LLM Judicial Sentencing:\\How Metric Choice Can Determine Technique Recommendation}
 
 \author{
   Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
@@ -318,7 +318,7 @@ Temperature does not materially affect technique rankings or the metric divergen
 
 \begin{itemize}
     \item \textbf{Total trials}: 14,152
-    \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Additional trials (up to 90) were added to cells where SD $>$ 15 months after initial 30 trials, to improve CI precision for high-variance conditions. No trials were excluded based on outcomes; analysis uses all collected data.
+    \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Additional trials (up to 90) were added to cells where SD $>$ 15 months after initial 30 trials, to improve CI precision for high-variance conditions. No trials were excluded based on outcomes; analysis uses all collected data. \textit{Limitation:} This adaptive stopping means high-variance conditions received more trials, which could differentially affect precision across conditions. Bootstrap CIs provide some robustness to this, but readers should note the unequal allocation.
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values. Extraction succeeded for 99.9\% of trials (19 failures out of 20,339 total API responses including multi-turn iterations); failed trials were excluded. Final analyzed trials: 16,198 (14,152 judicial + 2,046 multi-domain)
     \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches
@@ -353,7 +353,7 @@ All comparisons use \textbf{Welch's t-test} (unequal variances assumed) with \te
 
 \textbf{Bootstrap confidence intervals:} 95\% CIs computed via percentile bootstrap with 10,000 resamples. Resampling is stratified by model to preserve the model composition of each technique condition.
 
-\textbf{Aggregate statistics:} Reported aggregate \% of baseline values (e.g., SACD's 93.7\%) are \textit{trial-weighted} means pooled across all models. The unweighted model-average for SACD is 97.7\% (Table~\ref{tab:sacd-by-model}); the difference reflects that models with more trials (and often lower baselines) pull the weighted mean down. We report trial-weighted aggregates for technique comparisons, but model-level results (Table~\ref{tab:sacd-by-model}) for deployment decisions.
+\textbf{Aggregate statistics:} Reported aggregate \% of baseline values (e.g., SACD's 93.7\%) are \textit{trial-weighted} means pooled across all models. The unweighted model-average for SACD is 97.7\% (Table~\ref{tab:sacd-by-model}); the difference reflects that models with more trials (and often lower baselines) pull the weighted mean down. We report trial-weighted aggregates for technique comparisons, but model-level results (Table~\ref{tab:sacd-by-model}) for deployment decisions. \textit{Choice rationale:} Trial-weighted means answer ``what happens on a random trial?''; model-averaged means answer ``what happens for a typical model?'' Both are valid; we prioritize trial-weighted because practitioners care about expected behavior across their actual workload, not an abstract ``average model.''
 
 \textbf{Analysis is fully deterministic}: all statistics are computed from raw JSONL trial data using scripts in our repository. No manual intervention or selective reporting.
 
@@ -575,7 +575,7 @@ where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor di
 
 \textbf{Technique $\times$ anchor interaction.} Extending the model with a technique $\times$ anchor interaction term reveals significant differences in how techniques respond to anchor direction. The interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$), confirming that techniques do not simply shift all responses uniformly. Premortem shows the largest interaction effect (+45.2 pp high vs.\ low), followed by SACD (+36.3 pp); Devil's Advocate shows minimal asymmetry (+23.7 pp). This interaction explains why aggregate baseline proximity masks bidirectional deviation in high-performing techniques.
 
-The intraclass correlation coefficient (ICC) is 0.17:
+The intraclass correlation coefficient (ICC) is 0.17 (\textit{note:} with only 10 models, variance component estimates may be imprecise; we report ICC for descriptive purposes rather than precise inference):
 \begin{equation}
 \text{ICC} = \frac{\sigma^2_u}{\sigma^2_u + \sigma^2_\epsilon} = \frac{294.9}{294.9 + 1411.1} = 0.17
 \end{equation}
