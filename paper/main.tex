@@ -82,7 +82,7 @@ Our key finding (Table~\ref{tab:metric-comparison}): Devil's Advocate is the \te
     
     \item \textbf{Empirical comparison of 4 debiasing techniques} across 16,198 total trials (14,152 judicial + 2,046 multi-domain) on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
     
-    \item \textbf{Preliminary evidence that technique effectiveness is domain-dependent.} In our two-model multi-domain extension, SACD ranks \#1 on judicial but \#5 (worst) on loan approval. These results suggest domain-specific validation is important, though broader model coverage is needed to confirm generalizability.
+    \item \textbf{Exploratory multi-domain extension (underpowered).} In a two-model pilot, SACD ranking varies by domain (judicial \#1, loan \#5). This motivates domain-specific validation but should not be interpreted as a robust finding---broader model coverage is essential before drawing conclusions about domain dependence.
 \end{enumerate}
 
 %==============================================================================
@@ -360,7 +360,7 @@ Sonnet 4.6 & 24.1mo & 1.3 \\
 Opus 4.6 & 18.0mo & 0.0 \\
 \bottomrule
 \end{tabular}
-\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance (SD=0.0) at all temperatures, consistently responding with exactly 18 months. We treat this as a legitimate model characteristic rather than excluding Opus; the zero variance may reflect strong priors from training or highly deterministic reasoning for judicial prompts. Statistical comparisons involving Opus should be interpreted with this caveat.}
+\caption{Model baselines range from 18.0mo (Opus) to 35.7mo (o4-mini)---a 17.7mo spread. Opus 4.6 shows zero variance (SD=0.0) at all temperatures, consistently responding with exactly 18 months. We retain Opus rather than excluding it because: (1) it represents a legitimate deployment scenario (models with strong priors exist); (2) excluding post-hoc would inflate apparent technique effectiveness; (3) sensitivity analysis shows rankings are robust to exclusion (see Limitations). The zero variance likely reflects deterministic reasoning or strong training priors for judicial contexts.}
 \label{tab:baselines}
 \end{table}
 
