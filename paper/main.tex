@@ -626,8 +626,8 @@ Domain & Technique & \% of Baseline & Deviation & Rank \\
 & sacd & 101.1\% & \textbf{1.1\%} & \textbf{1} \\
 & no-technique & 97.3\% & 2.7\% & 2 \\
 & devils-advocate & 110.2\% & 10.2\% & 3 \\
-& premortem & 116.3\% & 16.3\% & 4 \\
-& random-control & 709.9\%$^*$ & 609.9\% & 5 \\
+& random-control & 111.2\% & 11.2\% & 4 \\
+& premortem & 116.3\% & 16.3\% & 5 \\
 \midrule
 \multirow{5}{*}{Judicial}
 & no-technique & 72.9\% & 27.1\% & 4 \\
@@ -647,9 +647,9 @@ Domain & Technique & \% of Baseline & Deviation & Rank \\
 
 \textbf{3. SACD excels on Medical and Salary.} With the addition of Sonnet 4.6, SACD achieves near-perfect baseline proximity on both domains (1.0\% and 1.1\% deviation respectively). This contrasts sharply with its catastrophic failure on Loan.
 
-\textbf{4. Data quality varies by condition.} Sonnet 4.6 loan/SACD showed $\sim$50\% response extraction failures; salary/random-control showed extreme outliers (709.9\%$^*$, likely erroneous). These findings underscore the importance of monitoring data quality per condition.
+\textbf{4. Loan techniques may amplify anchoring (ironic process).} Debiasing techniques on loan perform \textit{worse} than baseline (2--3\% vs.\ 40.7\%), suggesting multi-turn techniques may increase attention to the anchor value rather than discount it. This is consistent with ironic process effects observed in SACD (Section 4.2): extended reasoning can amplify rather than attenuate bias in some domains.
 
-\noindent$^*$\textit{Salary random-control shows anomalous results likely due to outlier responses; interpret with caution.}
+\textbf{5. Data quality varies by condition.} Sonnet 4.6 loan/SACD showed $\sim$50\% response extraction failures, introducing potential selection bias. Practitioners should monitor extraction rates per condition.
 
 \subsection{Implications}
 
