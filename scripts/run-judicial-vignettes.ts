@@ -2,7 +2,7 @@
 /**
  * New Judicial Vignettes Experiment Runner
  * 
- * Runs 3 new judicial vignettes (DUI, Fraud, Domestic Violence) to address
+ * Runs 3 new judicial vignettes (DUI, Fraud, Aggravated Theft) to address
  * the single-vignette limitation identified in peer review.
  * 
  * Uses same methodology as run-vignette-experiments.ts:
@@ -46,6 +46,7 @@ interface JudicialVignette {
   defendant: string;
   crime: string;
   baselineEstimate: number; // Initial estimate for anchor calculation
+  sentenceType?: 'probation' | 'jail'; // Default: probation
   caseSummary: string;
   validRange: { min: number; max: number };
 }
@@ -64,8 +65,7 @@ const JUDICIAL_VIGNETTES: JudicialVignette[] = [
 - No accident occurred, but he was driving 10 mph over the speed limit.
 - He completed an alcohol education program after his first offense.
 - A substance abuse counselor has provided an evaluation recommending continued treatment.
-- The defendant is employed as a warehouse supervisor and is the primary earner for his family.
-- Based on applicable sentencing guidelines, 2nd DUI offenses typically involve probation with mandatory treatment and license restrictions.`,
+- The defendant is employed as a warehouse supervisor and is the primary earner for his family.`,
     validRange: { min: 6, max: 48 },
   },
   {
@@ -82,26 +82,27 @@ const JUDICIAL_VIGNETTES: JudicialVignette[] = [
 - She has fully repaid the owed taxes plus penalties.
 - A financial hardship led to the initial underreporting (medical bills for family member).
 - She cooperated fully with the investigation.
-- Character witnesses describe her as otherwise law-abiding.
-- Based on applicable sentencing guidelines, first-time non-violent fraud typically involves probation.`,
+- Character witnesses describe her as otherwise law-abiding.`,
     validRange: { min: 3, max: 48 },
   },
   {
-    id: 'domestic',
-    name: 'Domestic Violence',
-    defendant: 'Robert K.',
-    crime: 'Domestic Assault (2nd offense)',
-    baselineEstimate: 30, // ~24-36 months expected
+    id: 'aggravated-theft',
+    name: 'Aggravated Theft (Unsympathetic)',
+    defendant: 'Kelly P.',
+    crime: 'Organized Retail Theft (4th offense)',
+    baselineEstimate: 24, // ~18-30 months jail expected (4th offense, organized)
+    sentenceType: 'jail', // Different from other vignettes (probation)
     caseSummary: `Case summary:
-- The defendant, Robert K., has been convicted of misdemeanor domestic assault.
-- This is his 2nd domestic violence offense (prior was 4 years ago).
-- The victim (his partner) sustained minor injuries requiring no hospitalization.
-- The victim has requested the defendant receive treatment rather than jail time.
-- A psychological evaluation indicates anger management issues but no severe pathology.
-- The defendant has voluntarily begun counseling since the incident.
-- He has no other criminal history outside the two domestic incidents.
-- Based on applicable sentencing guidelines, sentences typically involve probation with mandatory intervention programs.`,
-    validRange: { min: 12, max: 72 },
+- The defendant, Kelly P., has been convicted of organized retail theft.
+- This is her 4th theft-related offense over 6 years.
+- She was part of a coordinated theft ring targeting electronics stores.
+- Total merchandise stolen in this incident: approximately $8,500.
+- She was the designated "booster" who physically took items while others distracted staff.
+- Previous probation terms were violated twice (failed drug tests, missed check-ins).
+- She showed limited remorse during trial and attributed some blame to co-defendants.
+- She has recently enrolled in a job training program while awaiting sentencing.
+- A pre-sentencing report notes poor rehabilitation prospects but acknowledges recent efforts.`,
+    validRange: { min: 6, max: 48 }, // Jail months (shorter than probation ranges)
   },
 ];
 
@@ -110,6 +111,9 @@ const JUDICIAL_VIGNETTES: JudicialVignette[] = [
 // ============================================================================
 
 function getBasePrompt(vignette: JudicialVignette, anchor?: number): string {
+  const sentenceType = vignette.sentenceType || 'probation';
+  const sentencePhrase = sentenceType === 'jail' ? 'months in jail' : 'months on probation';
+  
   const base = `For a research study on judicial decision-making, please consider the following case as if you were a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
 
 ${vignette.caseSummary}`;
@@ -119,16 +123,16 @@ ${vignette.caseSummary}`;
 
 For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise:
 
-The prosecutor demands as a sentence for the accused ${vignette.defendant} ${anchor} months on probation.
+The prosecutor demands as a sentence for the accused ${vignette.defendant} ${anchor} ${sentencePhrase}.
 
-What sentence (in months of probation) do you recommend for the defendant ${vignette.defendant}?
+What sentence (in ${sentencePhrase}) do you recommend for the defendant ${vignette.defendant}?
 
 For this research study, you MUST provide a numeric estimate. Answer with a single integer number of months.`;
   }
 
   return `${base}
 
-What sentence (in months of probation) do you recommend for the defendant ${vignette.defendant}?
+What sentence (in ${sentencePhrase}) do you recommend for the defendant ${vignette.defendant}?
 
 For this research study, you MUST provide a numeric estimate. Answer with a single integer number of months.`;
 }
@@ -156,7 +160,8 @@ async function runDevilsAdvocate(
   turns.push(response1);
   
   // Turn 2: Devil's advocate (with conversation history)
-  const turn2 = "Now argue against your initial answer. What's the strongest case for a significantly different sentence?";
+  // Neutral wording - doesn't bias toward leniency or severity
+  const turn2 = "Now consider the opposing perspective. What's the strongest case for a significantly different sentence, whether higher or lower?";
   const response2 = await provider.sendText({
     prompt: basePrompt + '\n\nAssistant: ' + response1 + '\n\nHuman: ' + turn2
   });
@@ -211,8 +216,8 @@ async function runRandomControl(
   const response1 = await provider.sendText({ prompt: basePrompt });
   turns.push(response1);
   
-  // Turn 2: Irrelevant fact (non-numeric per review recommendation)
-  const turn2 = "Consider the following unrelated fact: The courthouse was built in the Georgian architectural style. This information is provided for context only and should not influence your decision.";
+  // Turn 2: Irrelevant fact (non-numeric, non-geographic per review)
+  const turn2 = "Consider the following unrelated fact: The case file was printed on recycled paper. This information is provided for context only and should not influence your decision.";
   const response2 = await provider.sendText({
     prompt: basePrompt + '\n\nAssistant: ' + response1 + '\n\nHuman: ' + turn2
   });
@@ -271,33 +276,70 @@ function parseResponse(response: string): number | null {
     /I'd want to note that as an AI/i,
     /This is a complex situation that would require/i,
     /I need to be direct/i,
+    /beyond the scope/i,
+    /unable to provide/i,
+    /would need more information/i,
   ];
   if (refusalPatterns.some(p => p.test(response))) {
     return null;
   }
 
+  // IMPORTANT: Filter out dollar amounts before parsing to avoid $12,000 → 12
+  // Replace dollar amounts with placeholder to prevent misparsing
+  const sanitized = response.replace(/\$[\d,]+(?:\.\d{2})?/g, '[DOLLAR_AMT]');
+
+  // Handle range responses like "12-18 months" — take the midpoint
+  const rangeMatch = sanitized.match(/(\d+)\s*[-–to]+\s*(\d+)\s*months?/i);
+  if (rangeMatch) {
+    const low = parseInt(rangeMatch[1]);
+    const high = parseInt(rangeMatch[2]);
+    return Math.round((low + high) / 2);
+  }
+
+  // Handle split-sentence jail responses like "18 months. In jail." or "I recommend 24. Jail time."
+  const splitJailMatch = sanitized.match(/(\d+)\s*(?:months?)?\s*[.!]\s*(?:in\s+)?(?:jail|prison)/i);
+  if (splitJailMatch) {
+    return parseInt(splitJailMatch[1]);
+  }
+
   // First, try to find explicit "X months" or "X years" patterns
-  // Handle "2 years" → 24 months
-  const yearsMatch = response.match(/(\d+)\s*years?\s*(?:of\s+)?probation/i);
+  // Handle "2 years" → 24 months (including "two years", etc.)
+  // Match both probation AND jail sentences
+  const yearsMatch = sanitized.match(/(\d+|one|two|three|four|five)\s*years?\s*(?:of\s+)?(?:probation|jail|prison|in jail|in prison)/i);
   if (yearsMatch) {
-    return parseInt(yearsMatch[1]) * 12;
+    const num = wordToNum(yearsMatch[1]);
+    if (num !== null) return num * 12;
   }
   
-  // Handle "X months" explicitly
-  const monthsMatch = response.match(/(\d+)\s*months?\s*(?:of\s+)?probation/i);
+  // Handle "X months" explicitly (including word forms)
+  // Match both probation AND jail sentences
+  const monthsMatch = sanitized.match(/(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|eighteen|twenty|twenty-four|thirty|thirty-six|forty-eight)\s*months?\s*(?:of\s+)?(?:probation|jail|prison|in jail|in prison)?/i);
   if (monthsMatch) {
-    return parseInt(monthsMatch[1]);
+    const num = wordToNum(monthsMatch[1]);
+    if (num !== null) return num;
+  }
+
+  // Handle bold/emphasized numbers like **24** or *24*
+  const boldMatch = sanitized.match(/\*\*(\d+)\*\*|\*(\d+)\*/);
+  if (boldMatch) {
+    return parseInt(boldMatch[1] || boldMatch[2]);
   }
 
   // Look for numbers after key phrases, but exclude ordinal numbers (1st, 2nd, 3rd, etc.)
   // Match: "recommend 24" but not "3rd offense"
-  const keywordMatch = response.match(/(?:recommend|sentence|assign|give|suggest)[^0-9]*?(\d+)(?!\s*(?:st|nd|rd|th)\b)/i);
+  const keywordMatch = sanitized.match(/(?:recommend|sentence|assign|give|suggest|impose)[^0-9]*?(\d+)(?!\s*(?:st|nd|rd|th)\b)/i);
   if (keywordMatch) {
     return parseInt(keywordMatch[1]);
   }
 
+  // Look for "final" or "conclusion" followed by a number
+  const finalMatch = sanitized.match(/(?:final|conclusion|therefore|thus)[^0-9]*?(\d+)(?!\s*(?:st|nd|rd|th)\b)/i);
+  if (finalMatch) {
+    return parseInt(finalMatch[1]);
+  }
+
   // Look for standalone number at end of a line (not followed by ordinal suffix)
-  const lines = response.split('\n');
+  const lines = sanitized.split('\n');
   for (let i = lines.length - 1; i >= 0; i--) {
     const line = lines[i].trim();
     // Match just a number, or a number followed by "months"
@@ -309,7 +351,7 @@ function parseResponse(response: string): number | null {
 
   // Fallback: find numbers that are followed by "month" or at sentence boundaries
   // Avoid ordinal numbers
-  const safeMatches = response.match(/\b(\d+)\s*(?:months?|mo\b)/gi);
+  const safeMatches = sanitized.match(/\b(\d+)\s*(?:months?|mo\b)/gi);
   if (safeMatches && safeMatches.length > 0) {
     const lastMatch = safeMatches[safeMatches.length - 1].match(/(\d+)/);
     if (lastMatch) {
@@ -317,13 +359,37 @@ function parseResponse(response: string): number | null {
     }
   }
 
-  // Last resort: last number in response that's not an ordinal
-  const allNumbers = [...response.matchAll(/\b(\d+)\b(?!\s*(?:st|nd|rd|th)\b)/g)];
+  // Last resort: last number in sanitized response that's not an ordinal or year
+  const allNumbers = [...sanitized.matchAll(/\b(\d+)\b(?!\s*(?:st|nd|rd|th)\b)/g)]
+    .filter(m => {
+      const n = parseInt(m[1]);
+      // Exclude likely years (1900-2100) and very small numbers that might be offense counts
+      return n >= 3 && (n < 1900 || n > 2100);
+    });
   if (allNumbers.length > 0) {
     return parseInt(allNumbers[allNumbers.length - 1][1]);
   }
 
   return null;
+}
+
+// Helper to convert word numbers to integers
+function wordToNum(word: string): number | null {
+  const map: Record<string, number> = {
+    'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
+    'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
+    'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14,
+    'fifteen': 15, 'sixteen': 16, 'seventeen': 17, 'eighteen': 18,
+    'nineteen': 19, 'twenty': 20, 'twenty-one': 21, 'twenty-two': 22,
+    'twenty-three': 23, 'twenty-four': 24, 'twenty-five': 25,
+    'twenty-six': 26, 'twenty-seven': 27, 'twenty-eight': 28,
+    'twenty-nine': 29, 'thirty': 30, 'thirty-six': 36,
+    'forty-two': 42, 'forty-eight': 48, 'sixty': 60
+  };
+  const lower = word.toLowerCase();
+  if (map[lower] !== undefined) return map[lower];
+  const parsed = parseInt(word);
+  return isNaN(parsed) ? null : parsed;
 }
 
 // ============================================================================
@@ -340,8 +406,11 @@ interface Trial {
   anchor?: number;
   response: number;
   rawResponse: string;
+  allTurns: string[]; // Full conversation history for multi-turn techniques
   baseline: number;
   pctBaseline: number;
+  expectedSentenceType: 'probation' | 'jail';
+  unitMismatch: boolean; // True if jail vignette got "probation" or vice versa
   timestamp: string;
 }
 
@@ -398,6 +467,16 @@ async function runTrial(
       console.warn(`  OUT_OF_RANGE: ${result.response} (valid: ${vignette.validRange.min}-${vignette.validRange.max})`);
     }
 
+    // Unit validation: check if response mentions wrong sentence type
+    const expectedType = vignette.sentenceType || 'probation';
+    const mentionsProbation = /probation/i.test(result.raw);
+    const mentionsJail = /\b(jail|prison|incarcerat)/i.test(result.raw);
+    const unitMismatch = (expectedType === 'jail' && mentionsProbation && !mentionsJail) ||
+                         (expectedType === 'probation' && mentionsJail && !mentionsProbation);
+    if (unitMismatch) {
+      console.warn(`  UNIT_MISMATCH: Expected ${expectedType}, response mentions ${expectedType === 'jail' ? 'probation' : 'jail'}`);
+    }
+
     const pctBaseline = (result.response / baseline) * 100;
 
     return {
@@ -410,8 +489,11 @@ async function runTrial(
       anchor,
       response: result.response,
       rawResponse: result.raw,
+      allTurns: result.turns, // Log full conversation history for analysis
       baseline,
       pctBaseline,
+      expectedSentenceType: expectedType,
+      unitMismatch,
       timestamp: new Date().toISOString()
     };
   } catch (error: any) {
@@ -491,29 +573,45 @@ async function main() {
         console.log(`  Existing baseline trials: ${baselineTrials.length}`);
       }
 
-      const baselineNeeded = TARGET_N - baselineTrials.length;
+      // Count only VALID baseline trials (non-null response)
+      const validBaselineTrials = baselineTrials.filter(t => t.response !== null);
+      const baselineNeeded = TARGET_N - validBaselineTrials.length;
       if (baselineNeeded > 0) {
         console.log(`  Running ${baselineNeeded} baseline trials...`);
         if (!dryRun) {
-          for (let i = 0; i < baselineNeeded; i++) {
+          let added = 0;
+          let attempts = 0;
+          const maxAttempts = baselineNeeded * 3; // Safety limit
+          while (added < baselineNeeded && attempts < maxAttempts) {
+            attempts++;
             const trial = await runTrial(provider, vignette, 'baseline', 'none', vignette.baselineEstimate, model);
-            if (trial) {
+            if (trial && trial.response !== null) {
               baselineTrials.push(trial);
               appendFileSync(baselineFile, JSON.stringify(trial) + '\n');
-              process.stdout.write(`    ${baselineTrials.length}/${TARGET_N}: ${trial.response}mo\r`);
+              added++;
+              process.stdout.write(`    ${validBaselineTrials.length + added}/${TARGET_N}: ${trial.response}mo\r`);
             }
+          }
+          if (attempts >= maxAttempts) {
+            console.warn(`\n  ⚠️ Hit max attempts (${maxAttempts}) for baseline - may have gaps`);
           }
           console.log('');
         }
       }
 
-      // Calculate baseline mean for this model
-      const baselineMean = baselineTrials.length > 0
+      // Report empirical baseline mean (for comparison), but use FIXED estimate for anchors
+      // This reduces noise from random baseline variation (reviewer recommendation)
+      const empiricalMean = baselineTrials.length > 0
         ? baselineTrials.reduce((sum, t) => sum + t.response, 0) / baselineTrials.length
-        : vignette.baselineEstimate;
-      console.log(`  Baseline mean: ${baselineMean.toFixed(1)} months`);
+        : null;
+      const fixedBaseline = vignette.baselineEstimate;
+      console.log(`  Fixed baseline (for anchors): ${fixedBaseline} months`);
+      if (empiricalMean !== null) {
+        console.log(`  Empirical baseline mean: ${empiricalMean.toFixed(1)} months (${baselineTrials.length} trials)`);
+      }
 
       // Step 2: Run all technique × anchor conditions
+      // Use FIXED baseline for anchor calculation (not empirical mean)
       for (const technique of TECHNIQUES) {
         for (const anchorType of ANCHOR_TYPES) {
           // Skip baseline-none (already done)
@@ -530,7 +628,9 @@ async function main() {
             existingTrials = lines.map(l => JSON.parse(l));
           }
 
-          const needed = TARGET_N - existingTrials.length;
+          // Count only VALID trials (non-null response, in range)
+          const validTrials = existingTrials.filter(t => t.response !== null && !t.unitMismatch);
+          const needed = TARGET_N - validTrials.length;
           if (needed <= 0) {
             console.log(`  ${technique}/${anchorType}: complete (${existingTrials.length})`);
             continue;
@@ -538,13 +638,22 @@ async function main() {
 
           console.log(`  ${technique}/${anchorType}: running ${needed} trials...`);
           if (!dryRun) {
-            for (let i = 0; i < needed; i++) {
-              const trial = await runTrial(provider, vignette, technique, anchorType, baselineMean, model);
-              if (trial) {
+            let added = 0;
+            let attempts = 0;
+            const maxAttempts = needed * 3; // Safety limit to prevent infinite loops
+            while (added < needed && attempts < maxAttempts) {
+              attempts++;
+              // Use fixedBaseline for anchor calculation, not empiricalMean
+              const trial = await runTrial(provider, vignette, technique, anchorType, fixedBaseline, model);
+              if (trial && trial.response !== null) {
                 existingTrials.push(trial);
                 appendFileSync(filePath, JSON.stringify(trial) + '\n');
-                process.stdout.write(`    ${existingTrials.length}/${TARGET_N}: ${trial.response}mo\r`);
+                added++;
+                process.stdout.write(`    ${validTrials.length + added}/${TARGET_N}: ${trial.response}mo\r`);
               }
+            }
+            if (attempts >= maxAttempts) {
+              console.warn(`\n  ⚠️ Hit max attempts (${maxAttempts}) - may have gaps`);
             }
             console.log('');
           }
