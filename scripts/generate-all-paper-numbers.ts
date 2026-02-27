@@ -184,6 +184,7 @@ const techniqueStats: Map<string, {
   spreadLow: number;
   spreadHigh: number;
   spreadTotal: number;
+  mad: number;  // Mean Absolute Deviation from 100%
   n: number;
 }> = new Map();
 
@@ -202,12 +203,16 @@ for (const tech of techniques) {
   const highMean = highPcts.length > 0 ? mean(highPcts) : 0;
   const spread = highMean - lowMean;
   
+  // MAD = Mean Absolute Deviation from 100% baseline
+  const mad = (Math.abs(lowMean - 100) + Math.abs(highMean - 100)) / 2;
+  
   techniqueStats.set(tech, {
     pctBaseline: pctMean,
     pctCI,
     spreadLow: lowMean,
     spreadHigh: highMean,
     spreadTotal: spread,
+    mad,
     n: pcts.length
   });
 }
@@ -222,18 +227,25 @@ const noTechSpread = noTechHighMean - noTechLowMean;
 console.log(`No-technique spread: ${noTechSpread.toFixed(1)}mo`);
 console.log('');
 
-// Print table
-console.log('| Technique | % of Baseline | 95% CI | Spread | Suscept. Δ | n |');
-console.log('|-----------|---------------|--------|--------|------------|---|');
+// Print table with MAD as primary metric
+console.log('| Technique | MAD | % of Baseline | 95% CI | Spread | Suscept. Δ | n |');
+console.log('|-----------|-----|---------------|--------|--------|------------|---|');
 
-for (const tech of techniques) {
+// Sort by MAD (lower is better)
+const sortedTechs = [...techniques].sort((a, b) => {
+  const statsA = techniqueStats.get(a);
+  const statsB = techniqueStats.get(b);
+  return (statsA?.mad || 100) - (statsB?.mad || 100);
+});
+
+for (const tech of sortedTechs) {
   const stats = techniqueStats.get(tech);
   if (!stats) continue;
   
   const spreadMo = stats.spreadTotal;
   const susceptDelta = ((spreadMo - noTechSpread) / noTechSpread) * 100;
   
-  console.log(`| ${tech} | ${stats.pctBaseline.toFixed(1)}% | [${stats.pctCI[0].toFixed(0)}, ${stats.pctCI[1].toFixed(0)}] | ${spreadMo.toFixed(1)}mo | ${susceptDelta > 0 ? '+' : ''}${susceptDelta.toFixed(0)}% | ${stats.n} |`);
+  console.log(`| ${tech} | ${stats.mad.toFixed(1)}% | ${stats.pctBaseline.toFixed(1)}% | [${stats.pctCI[0].toFixed(0)}, ${stats.pctCI[1].toFixed(0)}] | ${spreadMo.toFixed(1)}mo | ${susceptDelta > 0 ? '+' : ''}${susceptDelta.toFixed(0)}% | ${stats.n} |`);
 }
 
 // ============================================================================
@@ -399,14 +411,17 @@ Total trials: ${allTrials.length + sacdTrials.reduce((s, t) => s + t.n, 0)}
 Models: ${baselineByModel.size}
 Techniques: ${techniques.length}
 
-SACD: ${sacdStats.pctBaseline.toFixed(1)}% [${sacdStats.pctCI[0].toFixed(0)}, ${sacdStats.pctCI[1].toFixed(0)}]
-Premortem: ${premortStats.pctBaseline.toFixed(1)}% [${premortStats.pctCI[0].toFixed(0)}, ${premortStats.pctCI[1].toFixed(0)}]
-Random Control: ${techniqueStats.get('random-control')!.pctBaseline.toFixed(1)}%
-Devil's Advocate: ${techniqueStats.get('devils-advocate')!.pctBaseline.toFixed(1)}%
+MAD Rankings (Mean Absolute Deviation from baseline - lower is better):
+  1. SACD: ${techniqueStats.get('full-sacd')!.mad.toFixed(1)}%
+  2. Random Control: ${techniqueStats.get('random-control')!.mad.toFixed(1)}%
+  3. Premortem: ${techniqueStats.get('premortem')!.mad.toFixed(1)}%
+  4. Devil's Advocate: ${techniqueStats.get('devils-advocate')!.mad.toFixed(1)}%
 
-SACD vs Premortem Tradeoff:
-  - By avg response: SACD ${sacdAvgDev.toFixed(1)}% vs Premortem ${premortAvgDev.toFixed(1)}%
-  - By per-trial error: SACD ${sacdAbsError.toFixed(1)}% vs Premortem ${premortAbsError.toFixed(1)}%
+Aggregate % of Baseline (can mask bidirectional deviation):
+  SACD: ${sacdStats.pctBaseline.toFixed(1)}% [${sacdStats.pctCI[0].toFixed(0)}, ${sacdStats.pctCI[1].toFixed(0)}]
+  Premortem: ${premortStats.pctBaseline.toFixed(1)}% [${premortStats.pctCI[0].toFixed(0)}, ${premortStats.pctCI[1].toFixed(0)}]
+  Random Control: ${techniqueStats.get('random-control')!.pctBaseline.toFixed(1)}%
+  Devil's Advocate: ${techniqueStats.get('devils-advocate')!.pctBaseline.toFixed(1)}%
 
 No-technique spread: ${noTechSpread.toFixed(1)}mo
 `);
