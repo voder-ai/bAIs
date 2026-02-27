@@ -78,8 +78,11 @@ async function withRetry<T>(
 // Helper to parse the final answer from a response
 // Handles formats like "65/100", "65", "$110,000", "I recommend 65", etc.
 function parseAnswer(response: string): number | null {
+  // Sanitize dollar amounts from vignette text that may be echoed (e.g., "$420,000" → "[DOLLAR_AMT]")
+  let sanitized = response.replace(/\$[\d,]+(?:\.\d{2})?/g, '[DOLLAR_AMT]');
+  
   // Strip commas from numbers (e.g., "110,000" → "110000")
-  const normalized = response.replace(/(\d),(\d)/g, '$1$2');
+  const normalized = sanitized.replace(/(\d),(\d)/g, '$1$2');
   
   // First, check for refusal patterns
   const refusalPatterns = [
