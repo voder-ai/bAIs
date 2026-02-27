@@ -29,6 +29,7 @@ const RESULTS_DIR = './results';
 const MODELS = [
   'anthropic/claude-sonnet-4-6',  // Mid-tier - using 4.6 for version consistency
   'anthropic/claude-opus-4-6',    // Top-tier
+  'codex/gpt-5.2',                // OpenAI via Codex CLI (ChatGPT OAuth)
   // Haiku 4.5 excluded: refuses most vignettes (ethical/safety concerns)
 ];
 
