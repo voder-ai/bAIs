@@ -5,6 +5,7 @@
 The current study uses a single judicial vignette (Lena M., 12th shoplifting offense). Reviewers flagged this as the primary limitation. We need 3 additional vignettes to demonstrate generalizability.
 
 **Design constraints:**
+
 1. Same Englich paradigm (prosecutor demand as randomly-determined anchor)
 2. Same anchor ratios (0.5× and 1.5× baseline)
 3. Different crime types, defendant profiles, circumstances
@@ -76,6 +77,7 @@ Case summary:
 ## Anchor Calculation
 
 For each vignette, we'll collect baseline (no-anchor) responses first, then calculate:
+
 - **Low anchor:** baseline × 0.5
 - **High anchor:** baseline × 1.5
 
@@ -98,6 +100,7 @@ For this research study, you MUST provide a numeric estimate. Answer with a sing
 ```
 
 **Anchor text (when present):**
+
 ```
 For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise:
 
@@ -109,6 +112,7 @@ The prosecutor demands as a sentence for the accused [NAME] [ANCHOR] months on p
 ## Experimental Design
 
 **Conditions per vignette:**
+
 - baseline-none (no anchor)
 - baseline-low (0.5× anchor)
 - baseline-high (1.5× anchor)
@@ -123,7 +127,8 @@ The prosecutor demands as a sentence for the accused [NAME] [ANCHOR] months on p
 
 **Total:** 11 conditions × 30 trials × 3 vignettes × 4 models = 3,960 trials
 
-**Models:** 
+**Models:**
+
 - anthropic/claude-opus-4-6
 - anthropic/claude-sonnet-4-5
 - anthropic/claude-sonnet-4-6
@@ -138,6 +143,7 @@ The prosecutor demands as a sentence for the accused [NAME] [ANCHOR] months on p
 3. **Domestic violence (Robert K.):** Interpersonal violence, victim input factor, treatment vs punishment tension
 
 These cover different:
+
 - Crime categories (traffic, financial, violent)
 - Defendant histories (repeat, first-time, mixed)
 - Mitigating/aggravating factors
