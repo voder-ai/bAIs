@@ -42,7 +42,8 @@ function loadVignetteData(vignetteDir: string): Trial[] {
     for (const line of lines) {
       try {
         const record = JSON.parse(line);
-        if (record.response !== null && typeof record.response === 'number') {
+        // Skip null responses, non-numbers, and out-of-range outliers
+        if (record.response !== null && typeof record.response === 'number' && record.outOfRange !== true) {
           trials.push({
             anchor: record.anchor ?? record.meanAnchor ?? 0,
             baseline: record.baseline ?? record.noAnchorBaseline ?? 0,

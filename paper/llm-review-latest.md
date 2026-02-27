@@ -17,6 +17,7 @@ This paper argues that evaluating LLM debiasing techniques using only susceptibi
 ## 1. Methodology
 
 ### Strengths
+
 - **Well-motivated metric comparison.** The central argument is sound: susceptibility alone can favor techniques that produce consistent but wrong responses. The Jacowitz & Kahneman (1995) grounding is appropriate.
 - **Solid experimental scale.** 14,152 judicial trials across 10 models is substantial. The inclusion of a Random Control condition as an ablation for multi-turn structure is excellent experimental design.
 - **Mixed-effects modeling.** Properly accounts for model clustering (ICC = 0.17). Random slopes analysis strengthens claims about model-specific variation.
@@ -26,7 +27,7 @@ This paper argues that evaluating LLM debiasing techniques using only susceptibi
 
 **Major:**
 
-1. **Proportional anchor circularity is underexplored.** The authors acknowledge this but understate its implications. Anchors are set as baseline × 0.5 and baseline × 1.5, then responses are measured as % of that same baseline. This means the anchor "strength" in proportional terms is identical across models by construction, but the *absolute* anchor distances differ (e.g., ±9 months for Opus vs. ±18 months for o4-mini). The % of baseline metric then normalizes by the same baseline used to set anchors. While the authors argue this enables fair within-model comparison, it means cross-model aggregation (which drives the headline numbers like 93.7%) is mixing fundamentally different experimental conditions. The paper would benefit from showing that key findings hold under fixed absolute anchors for at least a subset of models.
+1. **Proportional anchor circularity is underexplored.** The authors acknowledge this but understate its implications. Anchors are set as baseline × 0.5 and baseline × 1.5, then responses are measured as % of that same baseline. This means the anchor "strength" in proportional terms is identical across models by construction, but the _absolute_ anchor distances differ (e.g., ±9 months for Opus vs. ±18 months for o4-mini). The % of baseline metric then normalizes by the same baseline used to set anchors. While the authors argue this enables fair within-model comparison, it means cross-model aggregation (which drives the headline numbers like 93.7%) is mixing fundamentally different experimental conditions. The paper would benefit from showing that key findings hold under fixed absolute anchors for at least a subset of models.
 
 2. **Single vignette is a serious limitation for a top venue.** All 14,152 judicial trials use the identical "Lena M." case. The paper acknowledges this but the concern is more fundamental than acknowledged: the entire metric divergence finding could be an artifact of this specific case's properties (e.g., the 12th-offense framing may interact differently with different techniques). The multi-domain extension partially addresses this but uses only 2 models.
 
@@ -43,6 +44,7 @@ This paper argues that evaluating LLM debiasing techniques using only susceptibi
 ## 2. Statistics
 
 ### Strengths
+
 - Bootstrap CIs with model-stratified resampling are appropriate.
 - Bonferroni correction applied correctly (6 pairwise comparisons, α = 0.0083).
 - TOST equivalence test for SACD vs. Premortem is a sophisticated and appropriate choice.
@@ -92,6 +94,7 @@ Overall internal consistency is strong—I found no numerical contradictions.
 ## 5. Writing Quality
 
 ### Strengths
+
 - Exceptionally clear structure. The "two metrics, opposite conclusions" framing is immediately compelling.
 - Honest and transparent about limitations (adaptive stopping, single vignette, proportional anchors, Outside View confound, multi-domain being underpowered).
 - Good use of practitioner-oriented guidance.
@@ -134,6 +137,7 @@ Overall internal consistency is strong—I found no numerical contradictions.
 **Core contribution is genuine and well-supported:** The metric divergence finding is important, clearly demonstrated, and practically useful. The experimental scale is impressive. Internal consistency is excellent. Limitations are honestly disclosed.
 
 **Key weaknesses for a top venue:**
+
 1. Single vignette limits generalizability claims
 2. Proportional anchor design creates interpretive complications for cross-model aggregation
 3. Multi-domain extension is too underpowered for the prominence given to it

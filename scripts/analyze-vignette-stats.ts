@@ -59,7 +59,9 @@ function loadVignetteTrials(vignette: string): Trial[] {
     for (const line of content.split('\n').filter(l => l.trim())) {
       try {
         const data = JSON.parse(line);
+        // Skip null responses, non-numbers, and out-of-range outliers
         if (data.response === null || typeof data.response !== 'number') continue;
+        if (data.outOfRange === true) continue;
         
         trials.push({
           vignette,

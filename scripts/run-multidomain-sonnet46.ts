@@ -17,7 +17,11 @@ import { join } from 'path';
 // CONFIGURATION
 // ============================================================================
 
+<<<<<<< HEAD
 const MODEL = 'anthropic/claude-sonnet-4-6';  // Uses dashes, not dots
+=======
+const MODEL = 'anthropic/claude-sonnet-4-6';  // Direct Anthropic API via pi-ai (NOT OpenRouter)
+>>>>>>> 3d680b6 (Add Sonnet 4.6 vignette data (salary/loan/medical))
 const TEMPERATURE = 0.7;
 const TARGET_N = 30;
 const RESULTS_DIR = './results';
@@ -221,11 +225,7 @@ async function runTrial(
   try {
     let lastResponse = '';
     for (const prompt of prompts) {
-      const result = await provider.sendJson({
-        prompt,
-        schema: { response: 'string' }
-      });
-      lastResponse = result.response || '';
+      lastResponse = await provider.sendText({ prompt });
     }
     
     const parsed = vignette.parseResponse(lastResponse);

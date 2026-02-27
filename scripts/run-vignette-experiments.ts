@@ -27,7 +27,7 @@ const TARGET_N = 30;
 const RESULTS_DIR = './results';
 
 const MODELS = [
-  'anthropic/claude-sonnet-4-5',  // Mid-tier (4.6 doesn't exist)
+  'anthropic/claude-sonnet-4-6',  // Mid-tier - using 4.6 for version consistency
   'anthropic/claude-opus-4-6',    // Top-tier
   // Haiku 4.5 excluded: refuses most vignettes (ethical/safety concerns)
 ];
@@ -471,7 +471,7 @@ function appendTrial(
 // BASELINE COLLECTION
 // ============================================================================
 
-function getBaseline(vignetteId: string, modelId: string): number | null {
+function getBaseline(vignetteId: string, modelId: string, validRange?: { min: number; max: number }): number | null {
   const dirPath = join(RESULTS_DIR, `vignette-${vignetteId}`);
   if (!existsSync(dirPath)) return null;
   
@@ -483,16 +483,26 @@ function getBaseline(vignetteId: string, modelId: string): number | null {
   );
   
   const responses: number[] = [];
+  let filtered = 0;
   for (const file of files) {
     const content = readFileSync(join(dirPath, file), 'utf-8');
     for (const line of content.trim().split('\n').filter(l => l)) {
       try {
         const data = JSON.parse(line);
         if (data.response !== null && data.response !== undefined) {
+          // Filter outliers using validRange if provided
+          if (validRange && (data.response < validRange.min || data.response > validRange.max)) {
+            filtered++;
+            continue; // Skip outlier
+          }
           responses.push(data.response);
         }
       } catch {}
     }
+  }
+  
+  if (filtered > 0) {
+    console.log(`    ⚠️ Filtered ${filtered} outliers from baseline calculation`);
   }
   
   if (responses.length === 0) return null;
@@ -527,8 +537,8 @@ async function runCondition(
   
   if (dryRun) return;
   
-  // Get baseline for anchor calculation
-  let baseline = getBaseline(vignette.id, modelId);
+  // Get baseline for anchor calculation (filter outliers using validRange)
+  let baseline = getBaseline(vignette.id, modelId, vignette.validRange);
   if (!baseline && anchorType !== 'none') {
     console.log(`    ❌ SKIPPING: No baseline yet for ${modelId}. Run baseline conditions first!`);
     console.log(`       Expected: results/vignette-${vignette.id}/baseline-none-*-t07.jsonl`);
