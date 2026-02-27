@@ -35,7 +35,12 @@ export function parseModelSpec(spec: string): ModelSpec {
 }
 
 export async function createProvider(spec: ModelSpec, temperature?: number): Promise<LlmProvider> {
-  // Use pi-ai for all providers (unified API with OAuth support)
+  // Use CodexProvider for codex (shells out to codex CLI with ChatGPT OAuth)
+  if (spec.provider.toLowerCase() === 'codex') {
+    const { CodexProvider } = await import('./providers/codex.js');
+    return new CodexProvider(spec.model);
+  }
+  // Use pi-ai for all other providers (unified API with OAuth support)
   const { PiAiProvider } = await import('./providers/pi-ai.js');
   return new PiAiProvider(spec.provider, spec.model, temperature);
 }
