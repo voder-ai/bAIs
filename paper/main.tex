@@ -37,7 +37,7 @@ Large language models exhibit anchoring bias---disproportionate influence of ini
 
 Following \citet{jacowitz1995}, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}. This metric answers: ``How close is the debiased response to the model's unanchored judgment?'' Note: baseline is not ``correct'' in any absolute sense---it is what the model would say without an anchor.
 
-Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Yet Devil's Advocate ranks worst by baseline proximity (63.6\%), while SACD ranks best (93.7\%). The aggregate masks per-trial variance: SACD's mean absolute error is 18.1\%, not 6.3\%.
+Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD as the primary metric for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
 
 We extend this analysis to 3,004 additional trials across loan, medical, and salary domains using three Anthropic models (Opus 4.6, Sonnet 4.5, and Sonnet 4.6). \textbf{Technique effectiveness is domain-dependent}: SACD ranks \#1 on judicial, medical, and salary (1.0--6.3\% deviation) but \#5 (worst) on loan, where \textit{all} techniques fail catastrophically (97--97\% deviation). The loan domain appears fundamentally intractable for current debiasing approaches.
 \end{abstract}
@@ -73,7 +73,7 @@ The baseline metric directly answers: ``Is the debiased response close to what t
 
 \subsection{The Divergence}
 
-Our key finding (Table~\ref{tab:metric-comparison}): Devil's Advocate is the \textit{only} technique that reduces susceptibility ($-$8.8\%), yet it performs \textit{worst} on baseline proximity (63.6\%). SACD shows the opposite pattern: it \textit{increases} susceptibility (+39.6\%) but achieves \textit{best} aggregate baseline proximity (93.7\%). However, this aggregate masks bidirectional deviation: mean absolute per-trial error is 18.1\%, not 6.3\%. Choosing by susceptibility alone would recommend Devil's Advocate; choosing by baseline proximity would recommend SACD---opposite conclusions from the same data.
+Our key finding (Table~\ref{tab:metric-comparison}): Devil's Advocate is the \textit{only} technique that reduces susceptibility ($-$8.8\%), yet it performs \textit{worst} on baseline proximity (63.6\%). SACD shows the opposite pattern: it \textit{increases} susceptibility (+39.6\%) but achieves \textit{best} aggregate baseline proximity (93.7\%). \textbf{However, aggregate metrics are misleading}: Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%---positive and negative errors cancel in the aggregate. We therefore recommend \textbf{MAD as the primary evaluation metric} for debiasing techniques.
 
 \subsection{Contributions}
 
@@ -566,7 +566,7 @@ Average response deviation from 100\% & 6.3\% & 8.4\% \\
 Mean absolute per-trial error & 18.1\% & 22.6\% \\
 \bottomrule
 \end{tabular}
-\caption{Two metrics for closeness to baseline. \textit{Average response deviation} (6.3\% vs 8.4\%) can mask per-trial variance. \textit{Mean absolute per-trial error} (18.1\% vs 22.6\%) reveals that individual SACD responses deviate substantially from baseline---the 93.7\% aggregate is an average of overshoots (112.0\% from high anchors) and undershoots (75.7\% from low anchors). On any individual trial, SACD deviates $\sim$18\% from baseline, not 6\%. Difference not statistically significant ($p \approx 0.054$).}
+\caption{\textbf{Mean Absolute Deviation (MAD) as primary metric.} Average response deviation (6.3\% vs 8.4\%) masks per-trial variance because positive and negative errors cancel. \textbf{MAD} (18.1\% vs 22.6\%) reveals the true per-trial error: individual SACD responses deviate $\sim$18\% from baseline, not 6\%. The 93.7\% aggregate is an average of overshoots (112.0\% from high anchors) and undershoots (75.7\% from low anchors). We recommend MAD as the primary metric for debiasing evaluation. Difference not statistically significant ($p \approx 0.054$).}
 \label{tab:sacd-premortem}
 \end{table}
 
@@ -744,9 +744,9 @@ Based on our findings in the judicial sentencing domain (generalization to other
 
 Metric choice can determine technique recommendation. Across 14,152 trials on 10 models, susceptibility and \% of baseline give divergent rankings (Table~\ref{tab:metric-comparison}): Devil's Advocate appears best under susceptibility but worst under baseline proximity; SACD shows the reverse pattern. Model-specific variation is substantial---SACD ranges from 48\% (Haiku) to 128\% (Opus) of baseline.
 
-\textbf{For practitioners:} Test per-model. Measure \textit{both} metrics---susceptibility captures consistency across anchors; baseline proximity captures whether that consistency is at the right value.
+\textbf{For practitioners:} Test per-model and per-domain. Use \textbf{Mean Absolute Deviation (MAD)} as your primary metric---aggregate baseline proximity can hide bidirectional errors. Measure susceptibility as a secondary check for consistency across anchor directions.
 
-\textbf{For researchers:} Collect unanchored baselines. Susceptibility alone has a blind spot: it favors techniques producing consistent responses that are consistently wrong.
+\textbf{For researchers:} Collect unanchored baselines and report \textbf{MAD}, not just aggregate baseline proximity. Susceptibility alone has a blind spot (consistent but wrong responses); aggregate proximity has a blind spot (bidirectional errors that cancel). MAD captures actual per-trial deviation.
 
 %==============================================================================
 \appendix
