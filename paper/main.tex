@@ -113,23 +113,9 @@ Recent work has also explored debiasing against framing effects \citep{lim2026de
 
 \subsection{Evaluation Methodology}
 
-Standard anchoring evaluation compares high-anchor and low-anchor conditions \citep{englich2006,huang2025anchoring}:
+Standard anchoring evaluation compares high-anchor and low-anchor conditions using \textbf{susceptibility} (Section~\ref{sec:two-metrics}). A technique ``works'' if it reduces this gap. 
 
-\[
-\text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
-\]
-
-A technique ``works'' if it reduces this gap. 
-
-\textbf{Relationship to Anchoring Index.} The classic Anchoring Index (AI) from \citet{jacowitz1995} measures anchor influence: $\text{AI} = \frac{\text{Response} - \text{Baseline}}{\text{Anchor} - \text{Baseline}}$. Unlike AI, which uses baseline in both numerator and denominator (creating circularity concerns), our \% of baseline metric uses baseline only as a reference point, avoiding this issue. The key distinction: AI measures \textit{how much} responses moved toward the anchor; \% of baseline measures \textit{how far} responses are from the unanchored judgment. A technique with AI $\approx 0$ (no anchor influence) and 100\% of baseline is ideal; low AI with poor baseline proximity indicates consistent but wrong responses---precisely the Devil's Advocate failure mode we document.
-
-We extend this by introducing \textbf{percentage of baseline}:
-
-\[
-\text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
-\]
-
-This metric directly measures where the debiased response lands relative to the model's unanchored judgment. A perfect technique produces responses at exactly 100\% of baseline. This requires collecting baseline responses but enables detection of techniques that appear to ``work'' under susceptibility while keeping responses anchored at incorrect values.
+\textbf{Relationship to Anchoring Index.} The classic Anchoring Index (AI) from \citet{jacowitz1995} measures anchor influence: $\text{AI} = \frac{\text{Response} - \text{Baseline}}{\text{Anchor} - \text{Baseline}}$. Unlike AI, which uses baseline in both numerator and denominator (creating circularity concerns), our \textbf{\% of baseline} metric (Section~\ref{sec:two-metrics}) uses baseline only as a reference point, avoiding this issue. The key distinction: AI measures \textit{how much} responses moved toward the anchor; \% of baseline measures \textit{how far} responses are from the unanchored judgment. A technique with AI $\approx 0$ (no anchor influence) and 100\% of baseline is ideal; low AI with poor baseline proximity indicates consistent but wrong responses---precisely the Devil's Advocate failure mode we document.
 
 %==============================================================================
 \section{Methodology}
