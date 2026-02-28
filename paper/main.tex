@@ -49,30 +49,31 @@ Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning
 
 We report findings from 21,139 trials across six domains (salary, loan, medical, three judicial scenarios) using models spanning capability tiers (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). Our core finding: \textbf{no debiasing technique generalizes across domains.} Technique rankings vary dramatically, and bootstrap 95\% CIs overlap for all pairwise comparisons---we cannot statistically distinguish effectiveness within any domain.
 
-\subsection{Two Metrics, Opposite Conclusions}
+We also identify a methodological flaw in prior work: \textbf{susceptibility}---measuring whether responses vary with anchors---conflates consistency with correctness. A technique can show low susceptibility by being consistently wrong.
+
+\subsection{Why Susceptibility Misleads}
 \label{sec:two-metrics}
 
-\textbf{Susceptibility} (standard): Measures the gap between high-anchor and low-anchor responses. Lower gap = less susceptible = ``better.''
+Prior work evaluates debiasing using \textbf{susceptibility}---the gap between high-anchor and low-anchor responses:
 \begin{equation}
 \text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
 \end{equation}
+Lower gap = less susceptible = ``better.'' But this measures \textit{consistency}, not \textit{correctness}. A technique that compresses responses toward the wrong value shows low susceptibility while failing to debias.
 
-\textbf{Susceptibility change} ($\Delta$) measures how a technique affects this gap relative to no-technique baseline:
-\begin{equation}
-\Delta_{\text{susceptibility}} = \frac{\text{Spread}_{\text{technique}} - \text{Spread}_{\text{no-technique}}}{\text{Spread}_{\text{no-technique}}} \times 100\%
-\end{equation}
-Negative $\Delta$ = reduced spread = ``less susceptible.'' Positive $\Delta$ = increased spread.
+\textbf{The problem:} Devil's Advocate reduces susceptibility ($-$8.8\%) but lands at only 63.6\% of baseline---it makes responses \textit{consistently wrong}. This is not debiasing; it is introducing a different bias.
 
-\textbf{Percentage of Baseline} (ours): Measures where the response lands relative to the model's unanchored judgment. Closer to 100\% = ``better.''
+\textbf{Our approach:} We measure \textbf{baseline proximity}---where the response lands relative to the model's unanchored judgment:
 \begin{equation}
 \text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
 \end{equation}
+This directly answers: ``Is the debiased response close to what the model would say without any anchor?''
 
-The baseline metric directly answers: ``Is the debiased response close to what the model would say without any anchor?''
+\subsection{Aggregate Metrics Hide Per-Trial Error}
 
-\subsection{The Divergence}
-
-Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseline proximity (63.6\%). SACD shows the reverse: increases susceptibility (+39.6\%) but best aggregate proximity (93.7\%).\footnote{SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques. Random Control's strong performance (78.3\%) suggests turn count itself affects results; SACD's advantage may partly reflect this confound rather than its specific content. See Limitations.} However, MAD reveals SACD's true per-trial error is 18.1\%, not 6.3\%---bidirectional errors cancel. We recommend \textbf{MAD alongside aggregate metrics}.
+Even baseline proximity can mislead when averaged. SACD achieves 93.7\% aggregate proximity but 18.1\% Mean Absolute Deviation (MAD)---bidirectional errors cancel.\footnote{SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques. Random Control's strong performance (78.3\%) suggests turn count itself affects results; SACD's advantage may partly reflect this confound rather than its specific content. See Limitations.} We recommend \textbf{MAD alongside aggregate metrics}:
+\begin{equation}
+\text{MAD} = \frac{1}{n}\sum_{i=1}^{n}|R_i - R_{baseline}|
+\end{equation}
 
 \subsection{Contributions}
 
@@ -673,10 +674,6 @@ Aggregates mask distributional properties. Devil's Advocate compresses variance 
 \subsection{Why Random Control Works}
 
 Random Control outperforms Devil's Advocate (+15pp, $d=0.39$) despite no debiasing content. Multi-turn structure alone helps more than Devil's Advocate content.
-
-\subsection{Why Human Techniques May Not Transfer}
-
-Human debiasing techniques assume metacognitive capacity---the ability to reason about one's own reasoning. Whether transformer architectures support analogous self-correction mechanisms remains an open question; our results suggest they may not. Debiasing LLMs may require understanding how \textit{transformers} fall prey to bias, not how \textit{humans} do.
 
 \subsection{The Outside View Confound}
 \label{sec:outside-view-confound}
