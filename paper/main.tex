@@ -687,7 +687,7 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
     
     \item \textbf{Percentage of baseline limitations.} Aggregates mask per-trial variance (see Tables~\ref{tab:anchor-asymmetry},~\ref{tab:sacd-premortem}). Ratio scaling exaggerates deviations for low-baseline models. Future: validate with fixed absolute anchors.
     
-    \item \textbf{Model coverage.} 10 models from 4 providers. Excluding Opus 4.6 shifts means 2--3pp but preserves rankings.
+    \item \textbf{Model coverage.} 10 models from 4 providers. \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero baseline variance) shifts means 2--3pp but preserves rankings: SACD 93.4\% (was 93.7\%), Premortem 89.7\% (was 91.6\%), Random Control 77.0\% (was 79.9\%), Devil's Advocate 61.2\% (was 63.6\%).
     
     \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Cross-provider validation confirms patterns are not Anthropic-specific.
     
