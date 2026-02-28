@@ -72,16 +72,16 @@ The baseline metric directly answers: ``Is the debiased response close to what t
 
 \subsection{The Divergence}
 
-Our key finding (Table~\ref{tab:metric-comparison}): Devil's Advocate is the \textit{only} technique that reduces susceptibility ($-$8.8\%), yet it performs \textit{worst} on baseline proximity (63.6\%). SACD shows the opposite pattern: it \textit{increases} susceptibility (+39.6\%) but achieves \textit{best} aggregate baseline proximity (93.7\%). \textbf{However, aggregate metrics are misleading}: Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%---positive and negative errors cancel in the aggregate. We therefore recommend \textbf{MAD as the primary evaluation metric} for debiasing techniques.
+Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseline proximity (63.6\%). SACD shows the reverse: increases susceptibility (+39.6\%) but best aggregate proximity (93.7\%). However, MAD reveals SACD's true per-trial error is 18.1\%, not 6.3\%---bidirectional errors cancel. We recommend \textbf{MAD as primary metric}.
 
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{Applying established methodology to LLM debiasing.} Following \citet{jacowitz1995}, we collect unanchored baseline responses to complement susceptibility measurement. The \% of baseline metric is standard in human anchoring research; our contribution is demonstrating its importance for LLM debiasing, where technique rankings diverge substantially between susceptibility (response consistency) and baseline proximity.
+    \item \textbf{Applying established methodology to LLM debiasing.} Following \citet{jacowitz1995}, we collect unanchored baselines. Rankings diverge substantially between susceptibility and baseline proximity.
     
-    \item \textbf{Empirical comparison of 4 debiasing techniques} across 19,719 total trials (14,152 original judicial + 5,567 multi-domain vignettes) on 10 frontier models (main study) and 3 models (multi-domain), revealing high model-specific variance and bidirectional deviation patterns.
+    \item \textbf{Empirical comparison of 4 techniques} across 19,719 trials on 10 models, revealing high model-specific variance.
     
-    \item \textbf{Exploratory multi-domain extension.} Across 5,567 vignette trials on 3 models (Opus 4.6, Sonnet 4.6, GPT-5.2), we observe that technique rankings \textit{invert} based on metric choice. Under asymmetry, SACD ranks \#1 on 5 of 6 domains. Under MAD, no single technique dominates---different techniques win different domains. While statistical power is limited with 3 models, the pattern is consistent with our core thesis: metric choice influences which technique practitioners would recommend.
+    \item \textbf{Exploratory multi-domain extension.} 5,567 trials on 3 models show technique rankings invert based on metric choice. Under MAD, no single technique dominates.
 \end{enumerate}
 
 %==============================================================================
@@ -94,27 +94,15 @@ Anchoring bias---the disproportionate influence of initial information on subseq
 
 \subsection{Cognitive Biases in LLMs}
 
-Recent work has shown that LLMs exhibit human-like cognitive biases \citep{binz2023,jones2022,chen2025cognitive}. Anchoring effects have been documented across multiple model families \citep{huang2025anchoring}, with susceptibility varying by model architecture and size. \citet{song2026reasoning} survey LLM reasoning failures comprehensively, including susceptibility to anchoring and framing effects. Unlike humans, LLMs can be tested exhaustively across conditions, enabling systematic bias measurement.
+LLMs exhibit human-like cognitive biases \citep{binz2023,jones2022,chen2025cognitive}, including anchoring \citep{huang2025anchoring,song2026reasoning}. Unlike humans, LLMs enable exhaustive systematic testing.
 
 \subsection{Debiasing Techniques}
 
-Several techniques have been proposed for mitigating anchoring:
-
-\textbf{Outside View / Reference Class Forecasting:} Prompting models to consider what typically happens in similar cases \citep{sibony2019}. Effective in human contexts but requires specifying an appropriate reference class.
-
-\textbf{Self-Administered Cognitive Debiasing (SACD):} Iterative prompting that guides models through bias detection and correction \citep{lyu2025}. Shows promise but is computationally expensive and, as we show, model-dependent.
-
-\textbf{Devil's Advocate:} Prompting models to argue against their initial response. Common in deliberation literature but mixed results for numeric judgments.
-
-\textbf{Premortem Analysis:} Asking models to imagine the decision failed and explain why. Drawn from project management practice \citep{klein2007}.
-
-Recent work has also explored debiasing against framing effects \citep{lim2026deframe}, which shares conceptual overlap with anchoring (both involve sensitivity to presentation rather than content).
+We evaluate four techniques: \textbf{Outside View} (reference class forecasting \citep{sibony2019}), \textbf{SACD} (iterative self-correction \citep{lyu2025}), \textbf{Devil's Advocate} (argue against initial response), and \textbf{Premortem} (imagine decision failed \citep{klein2007}). Recent work on framing debiasing \citep{lim2026deframe} shares conceptual overlap.
 
 \subsection{Evaluation Methodology}
 
-Standard anchoring evaluation compares high-anchor and low-anchor conditions using \textbf{susceptibility} (Section~\ref{sec:two-metrics}). A technique ``works'' if it reduces this gap. 
-
-\textbf{Relationship to Anchoring Index.} The classic Anchoring Index (AI) from \citet{jacowitz1995} measures anchor influence: $\text{AI} = \frac{\text{Response} - \text{Baseline}}{\text{Anchor} - \text{Baseline}}$. Unlike AI, which uses baseline in both numerator and denominator (creating circularity concerns), our \textbf{\% of baseline} metric (Section~\ref{sec:two-metrics}) uses baseline only as a reference point, avoiding this issue. The key distinction: AI measures \textit{how much} responses moved toward the anchor; \% of baseline measures \textit{how far} responses are from the unanchored judgment. A technique with AI $\approx 0$ (no anchor influence) and 100\% of baseline is ideal; low AI with poor baseline proximity indicates consistent but wrong responses---precisely the Devil's Advocate failure mode we document.
+Standard anchoring evaluation uses \textbf{susceptibility} (high--low spread). We add \textbf{\% of baseline} (proximity to unanchored judgment). Unlike the classic Anchoring Index \citep{jacowitz1995}, which uses baseline in both numerator and denominator, our metric avoids circularity. Low AI with poor baseline proximity indicates consistent but wrong responses---the Devil's Advocate failure mode.
 
 %==============================================================================
 \section{Methodology}
@@ -130,7 +118,7 @@ We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-m
 \end{equation}
 where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored baseline response, and the sum is over all anchored trials. Lower MAD indicates responses closer to unanchored judgment. Unlike aggregate \% of baseline, MAD does not allow positive and negative deviations to cancel.
 
-\textbf{Why both metrics?} These metrics can give divergent rankings---a technique that reduces spread (susceptibility) may simultaneously move responses away from the unanchored baseline. We present the empirical demonstration of this divergence in Section~\ref{sec:metric-divergence}.
+\textbf{Why both?} Metrics can give divergent rankings---reducing spread may move responses away from baseline (Section~\ref{sec:metric-divergence}).
 
 \subsection{Experimental Design}
 
@@ -180,32 +168,16 @@ Full SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Each technique was tested at three temperatures: t=0 (deterministic), t=0.7 (moderate variance), and t=1.0 (high variance). Baseline responses were collected at all three temperatures. Results are aggregated across temperatures unless otherwise noted. We tested for temperature$\times$technique interactions using two-way ANOVA ($df_{\text{technique}} = 3$, $df_{\text{temp}} = 2$, $df_{\text{interaction}} = 6$, $df_{\text{residual}} = 8944$); no significant interactions were found: $F(6, 8944) = 1.42$, $p = 0.203$. Temperature main effects were small ($<$3 percentage points):
-
-\begin{center}
-\begin{tabular}{lccc}
-\toprule
-Technique & t=0 & t=0.7 & t=1.0 \\
-\midrule
-Devil's Advocate & 64.6\% & 66.0\% & 66.2\% \\
-Random Control & 77.9\% & 80.8\% & 80.7\% \\
-Premortem & 92.1\% & 93.3\% & 95.0\% \\
-Full SACD & 93.2\% & 94.1\% & 93.8\% \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-Temperature does not materially affect technique rankings or the metric divergence finding. \textbf{Baseline methodology:} For \% of baseline calculations, we use temperature-matched baselines (i.e., t=0.7 technique responses are compared to t=0.7 baselines). Table values above are simple model-averaged means at each temperature. Aggregate results elsewhere are trial-weighted across all temperatures, accounting for slight differences (e.g., Devil's Advocate shows 63.6\% trial-weighted vs.\ $\sim$65.6\% model-averaged in the temperature table).
+Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$); temperature effects $<$3pp. Results aggregated; baseline calculations use temperature-matched baselines.
 
 \subsubsection{Trial Counts and Procedure}
 
 \begin{itemize}
-    \item \textbf{Total trials}: 14,152
-    \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Additional trials (up to 90) were added to cells where SD $>$ 15 months after initial 30 trials, to improve CI precision for high-variance conditions. No trials were excluded based on outcomes; analysis uses all collected data. \textit{Limitation:} This adaptive stopping means high-variance conditions received more trials, which could differentially affect precision across conditions. Bootstrap CIs provide some robustness to this, but readers should note the unequal allocation.
-    \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
-    \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values. Extraction succeeded for 99.9\% of trials; failed trials were excluded. Final analyzed trials: 19,719 (14,152 original judicial + 5,567 multi-domain vignettes using paper models)
-    \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches. Trial execution was automated via an AI agent system (see AI Assistance Disclosure)
-    \item \textbf{Anchor values}: To ensure equivalent relative anchor strength across models, we use constant proportional anchors: high anchor = baseline $\times$ 1.5 (50\% above baseline); low anchor = baseline $\times$ 0.5 (50\% below baseline). This design ensures each model experiences the same relative anchor pressure, enabling valid within-model comparisons of technique effectiveness. Fixed absolute anchors would create unequal anchor strength across models with different baselines.
+    \item \textbf{Total}: 14,152 judicial + 5,567 multi-domain = 19,719 analyzed
+    \item \textbf{Per cell}: 30--90 trials (min $n=30$ pre-specified; added trials for high-variance conditions)
+    \item \textbf{Baselines}: 909 trials (~90 per model)
+    \item \textbf{Extraction}: Regex for integer months; 99.9\% success
+    \item \textbf{Anchors}: Proportional (high = 1.5$\times$baseline, low = 0.5$\times$)
 \end{itemize}
 
 \begin{table}[H]
@@ -689,35 +661,25 @@ Aggregates mask distributional properties. Devil's Advocate compresses variance 
 
 \subsection{Why Random Control Works}
 
-Random Control outperforms Devil's Advocate despite no debiasing content. \textbf{Critical ablation:} Multi-turn structure alone provides +15pp improvement. SACD/Premortem benefits come from both structure and content; Random Control isolates the structural contribution.
-
-\textbf{Direct comparison:} Random Control outperforms Devil's Advocate by $\sim$15 percentage points (Cohen's $d = 0.39$, small-to-medium). Structure alone helps more than Devil's Advocate content.
+Random Control outperforms Devil's Advocate (+15pp, $d=0.39$) despite no debiasing content. Multi-turn structure alone helps more than Devil's Advocate content.
 
 \subsection{The Outside View Confound}
 \label{sec:outside-view-confound}
 
-Outside View performed worst despite recommendations in human debiasing literature. Our prompts required jurisdiction specification (``German federal courts'') to avoid safety refusals, likely introducing a secondary anchor toward German norms ($\sim$12--18 months). Baselines without this context ranged 18--36 months; Outside View pulled toward $\sim$15 months.
+Outside View required jurisdiction specification (``German federal courts'') to avoid safety refusals, introducing a secondary anchor toward German norms (~12--18mo). Reference classes may import unintended anchors.
 
-\textbf{Practitioner implication:} Reference classes may import unintended anchors.
+\subsection{Anchor Strength Matters}
 
-\subsection{Anchor Strength Matters: A Methodological Validation}
-
-During multi-domain experiments, we initially used inconsistent anchor multipliers: $\pm$30\% for salary, $\pm$40\% for medical, vs.\ $\pm$50\% for judicial/loan. This revealed an important methodological insight.
-
-\textbf{Weak anchors produce false ``immunity'' findings.} With $\pm$40\% anchors on the medical vignette, Sonnet showed \textit{no anchoring effect}---responding identically (75) regardless of anchor. We initially concluded that safety-critical domains might be immune to anchoring. When we re-ran with $\pm$50\% anchors, Sonnet showed \textit{strong} anchoring: low anchor (36) $\to$ response 34; high anchor (108) $\to$ response 85.
-
-\textbf{Implications:} (1) Prior claims of model ``immunity'' to biases may reflect weak experimental design, not genuine robustness. (2) Proportional anchors (baseline $\times$ multiplier) are more robust than fixed absolute anchors across domains with different baseline magnitudes. (3) Researchers should validate anchor strength before concluding that models resist bias.
-
-We archived the weak-anchor data in \texttt{results/archived-wrong-anchors/} for transparency. This experience reinforces our methodological recommendation: use proportional anchors calibrated to each model's baseline.
+We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $\pm$50\%, strong anchoring appeared (low 36→34, high 108→85). \textbf{Implication:} Prior ``immunity'' claims may reflect weak design. We use proportional anchors ($\pm$50\%) calibrated to each model's baseline.
 
 \subsection{Limitations}
 
 \begin{enumerate}
-    \item \textbf{Vignette coverage.} Original experiments used one judicial case (Lena M., 12th shoplifting offense). We address this limitation with three additional judicial vignettes (DUI, tax fraud, aggravated theft) totaling 3,756 trials across 3 models (Opus 4.6, Sonnet 4.6, GPT-5.2). Rankings vary across case types (Table~\ref{tab:vignette-comparison}), reinforcing that domain-specific validation is essential.
+    \item \textbf{Vignette coverage.} Original: one judicial case. Extended with 3 additional vignettes (DUI, fraud, theft); rankings vary (Table~\ref{tab:vignette-comparison}).
     
-    \item \textbf{Proportional anchor design.} Our anchors scale with each model's baseline (high = baseline $\times$ 1.5, low = baseline $\times$ 0.5). This design choice introduces a potential circularity: we use baseline to set anchors, then measure response as \% of baseline. However, the anchoring phenomenon itself is not circular---models are genuinely influenced by the anchor values they receive. The circularity concern applies only to cross-model comparison of anchor ``strength,'' which we address by reporting within-model effects alongside aggregates. Crucially, the proportional design ensures fair technique comparison within each model; fixed anchors would be needed to compare susceptibility \textit{magnitude} across models, which is not the focus of this work. Future work should validate findings with fixed absolute anchors.
+    \item \textbf{Proportional anchor design.} Anchors scale with baseline (high = 1.5$\times$, low = 0.5$\times$). This introduces potential circularity for cross-model comparison; we report within-model effects alongside aggregates. Future work: validate with fixed absolute anchors.
     
-    \item \textbf{Metric divergence holds without Outside View.} While Outside View shows the most dramatic divergence, the core finding holds even excluding it (Table~\ref{tab:metric-comparison}). Devil's Advocate ranks best on susceptibility but worst on baseline proximity; SACD shows the reverse. Practitioners choosing by susceptibility alone would recommend Devil's Advocate; those choosing by baseline proximity would recommend SACD---opposite conclusions.
+    \item \textbf{Metric divergence holds without Outside View.} Core finding holds even excluding Outside View---Devil's Advocate best on susceptibility, worst on baseline; SACD reverse.
     
     \item \textbf{Outside View confound.} See Section~\ref{sec:outside-view-confound}. Future work should test jurisdiction-neutral prompts.
     
@@ -725,11 +687,11 @@ We archived the weak-anchor data in \texttt{results/archived-wrong-anchors/} for
     
     \item \textbf{Percentage of baseline limitations.} Aggregates mask per-trial variance (see Tables~\ref{tab:anchor-asymmetry},~\ref{tab:sacd-premortem}). Ratio scaling exaggerates deviations for low-baseline models. Future: validate with fixed absolute anchors.
     
-    \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families. \textbf{Sensitivity analysis:} Excluding Opus 4.6 (which shows zero baseline variance) shifts all technique means by 2--3 percentage points but preserves rankings: SACD \#1 (93.4\%), Premortem \#2 (89.7\%), Random Control \#3 (77.0\%), Devil's Advocate \#4 (61.2\%).
+    \item \textbf{Model coverage.} 10 models from 4 providers. Excluding Opus 4.6 shifts means 2--3pp but preserves rankings.
     
     \item \textbf{Multi-domain coverage.} Section 5 uses only 3 models; results are exploratory. Cross-provider validation confirms patterns are not Anthropic-specific.
     
-    \item \textbf{Stopping rule.} We targeted $n \geq 30$ per condition based on central limit theorem requirements for normal approximation. We did not use adaptive stopping based on effect size stabilization. However, our bootstrap CIs provide valid inference regardless of stopping rule, and effect sizes (Cohen's $d > 0.5$ for key comparisons) suggest adequate power.
+    \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition (CLT). Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
 \end{enumerate}
 
 \subsection{Practical Recommendations}
