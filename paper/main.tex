@@ -47,7 +47,7 @@ We extend this analysis with an \textit{exploratory} multi-domain study: 6,987 t
 
 When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and using only one metric can be insufficient.
 
-We report findings from 21,139 trials across 10 models (main study) and 3--4 models (multi-domain) evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
+We report findings from 21,139 trials across 10 models (main study) and 4 models (multi-domain) evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -81,7 +81,7 @@ Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseli
     
     \item \textbf{Empirical comparison of 4 techniques} across 21,139 trials on 10 models, revealing high model-specific variance.
     
-    \item \textbf{Exploratory multi-domain extension.} 6,987 trials on 3--4 models show technique rankings invert based on metric choice. Under MAD, no single technique dominates.
+    \item \textbf{Exploratory multi-domain extension.} 6,987 trials on 4 models show technique rankings invert based on metric choice. Under MAD, no single technique dominates.
 \end{enumerate}
 
 %==============================================================================
@@ -562,7 +562,7 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 
 To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 6,987 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Sonnet 4.6, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Haiku 4.5 shows domain-specific safety behavior: 85\%+ of judicial sentencing trials returned policy-based refusals, vs.\ $<$1\% for other models; valid responses are included in analysis. Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
 
-\textbf{Limitation:} This extension uses 3--4 models compared to 10 in the main study. Results should be considered \textit{exploratory}---they demonstrate that metric-dependent rankings persist across domains, but specific technique rankings (Table~\ref{tab:vignette-comparison}) may not generalize to other models.
+\textbf{Limitation:} This extension uses 4 models compared to 10 in the main study. Results should be considered \textit{exploratory}---they demonstrate that metric-dependent rankings persist across domains, but specific technique rankings (Table~\ref{tab:vignette-comparison}) may not generalize to other models.
 
 \subsection{Domain Comparison}
 
@@ -570,7 +570,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf{Key observation:} No single technique ranks \#1 across all domains---even within the judicial domain, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). Data from \texttt{analyze-vignette-stats.ts} using paper models (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2; Haiku for non-judicial only). \textit{Note:} With 3--4 models, rank differences are not statistically tested. Rankings shown are point estimates; close rankings (e.g., \#2 vs.\ \#3) should not be overinterpreted.}
+\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from \texttt{analyze-vignette-stats.ts} using 4 paper models (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). Rankings are point estimates.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -689,7 +689,7 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
     
     \item \textbf{Model coverage.} 10 models from 4 providers. Excluding Opus 4.6 shifts means 2--3pp but preserves rankings.
     
-    \item \textbf{Multi-domain coverage.} Section 5 uses 3--4 models; results are exploratory. Cross-provider validation confirms patterns are not Anthropic-specific.
+    \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Cross-provider validation confirms patterns are not Anthropic-specific.
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition (CLT). Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
 \end{enumerate}
