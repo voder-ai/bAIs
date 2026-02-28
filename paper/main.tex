@@ -33,9 +33,9 @@
 \maketitle
 
 \begin{abstract}
-Large language models exhibit anchoring bias---disproportionate influence of initial numeric information on subsequent judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between responses under high vs.\ low anchors. We show this metric alone is insufficient.
+Large language models exhibit anchoring bias---disproportionate influence of initial numbers on judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between high and low anchor responses. We show this metric alone is insufficient.
 
-Following \citet{jacowitz1995}, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}. This metric answers: ``How close is the debiased response to the model's unanchored judgment?'' Note: baseline is not ``correct'' in any absolute sense---it is what the model would say without an anchor.
+Following \citet{jacowitz1995}, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}---how close is the debiased response to the model's unanchored judgment?
 
 Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD as the primary metric for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
 
@@ -656,7 +656,7 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 
 \subsection{Implications}
 
-These results dramatically strengthen our core argument:
+These results reinforce our core argument:
 
 \begin{enumerate}
     \item \textbf{Metric choice determines recommendation}---asymmetry says ``use SACD''; MAD says ``do nothing.'' Practitioners must specify which outcome they optimize for.
