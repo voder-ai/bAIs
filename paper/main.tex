@@ -34,7 +34,7 @@
 \begin{abstract}
 Do debiasing techniques for anchoring bias transfer across domains? We evaluate four interventions---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, and Random Control---across 21,139 trials spanning six domains: salary negotiation, loan approval, medical triage, and three judicial sentencing scenarios.
 
-\textbf{Our core finding: we cannot identify a technique that consistently outperforms across domains.} Technique rankings vary by domain. In our cross-domain analysis (4 models, exploratory), bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. The technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4). Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains.
+\textbf{Our core finding: our exploratory cross-domain analysis (4 models) suggests no technique consistently outperforms.} Technique rankings vary by domain, and bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. The technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4). Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains.
 
 We apply Mean Absolute Deviation (MAD) from unanchored baseline as a metric that reveals per-trial error hidden by aggregate measures. SACD's aggregate 93.7\% baseline proximity in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
 
@@ -346,7 +346,7 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 
 \textbf{Why the divergence?} Devil's Advocate produces \textit{consistent} responses (low spread) that remain \textit{far from baseline}. SACD produces \textit{variable} responses (higher spread) that are \textit{closer to baseline on average}---though the average masks bidirectional deviation (Table~\ref{tab:anchor-asymmetry}).
 
-\textbf{Recovery rate perspective:} Without any debiasing, anchored responses reach 72.9\% of baseline---the maximum possible improvement is 27.1 percentage points. SACD achieves 93.7\%, an improvement of 20.8pp, representing a \textbf{77\% recovery rate} (20.8/27.1). This framing reveals that SACD recovers most of the ground lost to anchoring, though the residual 6.3pp deficit and bidirectional variance remain limitations.
+\textbf{Magnitude of improvement:} Without any debiasing, anchored responses reach 72.9\% of baseline---a deficit of 27.1 percentage points from the unanchored judgment. SACD achieves 93.7\%, reducing this deficit to 6.3pp. This represents a reduction of 20.8pp, though the residual deficit and bidirectional variance (MAD=18.1\%) remain limitations.
 
 \textbf{Effect sizes (Cohen's d):}
 
@@ -575,7 +575,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory). Per-domain n shows technique trials only; total 6,987 includes $\sim$1,135 baseline-none reference trials. Rankings are point estimates; bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons.}
+\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory). Per-domain n = technique trials (column sums $\approx$5,852); total 6,987 includes $\sim$1,135 baseline-none reference trials not shown. Rankings are point estimates; bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -629,7 +629,7 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\columnwidth]{figures/mad-heatmap.pdf}
-\caption{MAD by domain and technique. Lower (green) = better calibration to unanchored baseline. Each cell shows deviation percentage; asterisks mark best technique per domain. No technique wins across all domains. Bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons (see supplementary materials).}
+\caption{MAD by domain and technique. Lower (green) = better calibration to unanchored baseline. Each cell shows deviation percentage; asterisks mark \textit{numerically lowest} point estimate per domain (not statistically distinguishable---all pairwise CIs overlap). No technique wins across all domains.}
 \label{fig:mad-heatmap}
 \end{figure}
 
@@ -728,7 +728,7 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
 \section{Conclusion}
 %==============================================================================
 
-Metric choice determines technique recommendation. Our 21,139-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; we cannot identify a technique that consistently outperforms across domains.
+Metric choice determines technique recommendation. Our 21,139-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; our exploratory cross-domain analysis suggests no technique consistently outperforms.
 
 \textbf{For practitioners:} Test per-model, per-domain. Report MAD alongside aggregates; aggregates alone hide bidirectional errors.
 
