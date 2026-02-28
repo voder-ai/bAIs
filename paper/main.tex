@@ -38,7 +38,7 @@ Following \citet{jacowitz1995}, we collect unanchored baseline responses and mea
 
 Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD as the primary metric for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
 
-We extend this analysis with an \textit{exploratory} multi-domain study: 6,597 trials across six domains---loan, medical, salary, and three judicial vignettes (DUI, tax fraud, aggravated theft)---using 4 models (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2; Haiku available for non-judicial domains only). \textbf{The metric choice inverts technique rankings}: Using asymmetry (spread between anchors), SACD appears to rank \#1 on 5 of 6 domains. Using MAD (deviation from unanchored baseline), \textit{no single technique dominates}---even within judicial vignettes, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). SACD ranks \#1 on \textit{zero} domains. This pattern reinforces that metric choice determines recommendation.
+We extend this analysis with an \textit{exploratory} multi-domain study: 6,987 trials across six domains---loan, medical, salary, and three judicial vignettes (DUI, tax fraud, aggravated theft)---using 4 models (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2; Haiku available for non-judicial domains only). \textbf{The metric choice inverts technique rankings}: Using asymmetry (spread between anchors), SACD appears to rank \#1 on 5 of 6 domains. Using MAD (deviation from unanchored baseline), \textit{no single technique dominates}---even within judicial vignettes, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). SACD ranks \#1 on \textit{zero} domains. This pattern reinforces that metric choice determines recommendation.
 \end{abstract}
 
 %==============================================================================
@@ -47,7 +47,7 @@ We extend this analysis with an \textit{exploratory} multi-domain study: 6,597 t
 
 When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and using only one metric can be insufficient.
 
-We report findings from 20,749 trials across 10 models (main study) and 3--4 models (multi-domain) evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
+We report findings from 21,139 trials across 10 models (main study) and 3--4 models (multi-domain) evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -79,9 +79,9 @@ Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseli
 \begin{enumerate}
     \item \textbf{Applying established methodology to LLM debiasing.} Following \citet{jacowitz1995}, we collect unanchored baselines. Rankings diverge substantially between susceptibility and baseline proximity.
     
-    \item \textbf{Empirical comparison of 4 techniques} across 20,749 trials on 10 models, revealing high model-specific variance.
+    \item \textbf{Empirical comparison of 4 techniques} across 21,139 trials on 10 models, revealing high model-specific variance.
     
-    \item \textbf{Exploratory multi-domain extension.} 6,597 trials on 3--4 models show technique rankings invert based on metric choice. Under MAD, no single technique dominates.
+    \item \textbf{Exploratory multi-domain extension.} 6,987 trials on 3--4 models show technique rankings invert based on metric choice. Under MAD, no single technique dominates.
 \end{enumerate}
 
 %==============================================================================
@@ -173,7 +173,7 @@ Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction
 \subsubsection{Trial Counts and Procedure}
 
 \begin{itemize}
-    \item \textbf{Total}: 14,152 judicial + 6,597 multi-domain = 20,749 analyzed
+    \item \textbf{Total}: 14,152 judicial + 6,987 multi-domain = 21,139 analyzed
     \item \textbf{Per cell}: 30--90 trials (min $n=30$ pre-specified; added trials for high-variance conditions)
     \item \textbf{Baselines}: 909 trials (~90 per model)
     \item \textbf{Extraction}: Regex for integer months; 99.9\% success
@@ -560,7 +560,7 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 \section{Multi-Domain Generalization}
 %==============================================================================
 
-To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 6,597 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Sonnet 4.6, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Haiku 4.5 excluded from judicial vignettes due to safety refusals: 85\%+ of trials returned policy-based refusals to engage with sentencing tasks, vs.\ $<$1\% for other models. Haiku performs normally on non-judicial domains (loan, salary, medical). Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
+To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 6,987 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Sonnet 4.6, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Haiku 4.5 excluded from judicial vignettes due to safety refusals: 85\%+ of trials returned policy-based refusals to engage with sentencing tasks, vs.\ $<$1\% for other models. Haiku performs normally on non-judicial domains (loan, salary, medical). Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
 
 \textbf{Limitation:} This extension uses 3--4 models compared to 10 in the main study. Results should be considered \textit{exploratory}---they demonstrate that metric-dependent rankings persist across domains, but specific technique rankings (Table~\ref{tab:vignette-comparison}) may not generalize to other models.
 
@@ -597,12 +597,12 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 & premortem & 97.9\% & 107.3\% & 7.6\% & \#4 \\
 & sacd & 110.1\% & 92.9\% & 12.2\% & \#5 \\
 \midrule
-\multirow{5}{*}{Judicial-DUI (n=900)} 
-& devils-advocate & 71.0\% & 93.3\% & \textbf{21.4\%} & \#1 \\
+\multirow{5}{*}{Judicial-DUI (n=903)} 
+& devils-advocate & 71.0\% & 96.0\% & \textbf{22.6\%} & \#1 \\
 & sacd & 74.2\% & 101.8\% & 22.7\% & \#2 \\
-& no-intervention & 65.0\% & 104.5\% & 23.4\% & \#3 \\
+& no-intervention & 65.1\% & 104.5\% & 23.4\% & \#3 \\
 & random-control & 65.2\% & 101.5\% & 24.6\% & \#4 \\
-& premortem & 64.1\% & 103.8\% & 27.6\% & \#5 \\
+& premortem & 64.1\% & 105.1\% & 28.2\% & \#5 \\
 \midrule
 \multirow{5}{*}{Judicial-Fraud (n=900)} 
 & no-intervention & 36.0\% & 75.7\% & \textbf{44.2\%} & \#1 \\
@@ -708,7 +708,7 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
 \section{Conclusion}
 %==============================================================================
 
-Metric choice determines technique recommendation. Our 20,749-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; no technique generalizes.
+Metric choice determines technique recommendation. Our 21,139-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; no technique generalizes.
 
 \textbf{For practitioners:} Test per-model, per-domain. Use MAD as primary metric; aggregates hide bidirectional errors.
 
@@ -958,7 +958,7 @@ This research was conducted with substantial AI assistance. An autonomous agent 
 %==============================================================================
 \section*{Data and Code Availability}
 
-All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 20,749 analyzed trials (14,152 original judicial + 6,597 multi-domain vignettes in \texttt{results/vignette-*/}), the canonical analysis script \texttt{generate-all-paper-numbers.ts} which produces all tables from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition. Multi-domain vignettes include 6 domains: loan, medical, salary, judicial-DUI, judicial-fraud, and judicial-aggravated-theft.
+All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 21,139 analyzed trials (14,152 original judicial + 6,987 multi-domain vignettes in \texttt{results/vignette-*/}), the canonical analysis script \texttt{generate-all-paper-numbers.ts} which produces all tables from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition. Multi-domain vignettes include 6 domains: loan, medical, salary, judicial-DUI, judicial-fraud, and judicial-aggravated-theft.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
