@@ -77,11 +77,11 @@ Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseli
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{Applying established methodology to LLM debiasing.} Following \citet{jacowitz1995}, we collect unanchored baselines. Rankings diverge substantially between susceptibility and baseline proximity.
+    \item \textbf{Methodology:} Apply \citet{jacowitz1995}'s baseline-relative metrics to LLM debiasing evaluation.
     
-    \item \textbf{Empirical comparison of 4 techniques} across 21,139 trials on 10 models, revealing high model-specific variance.
+    \item \textbf{Empirical:} Compare 4 techniques across 21,139 trials on 10 models, documenting substantial model-specific variance.
     
-    \item \textbf{Exploratory multi-domain extension.} 6,987 trials on 4 models show technique rankings invert based on metric choice. Under MAD, no single technique dominates.
+    \item \textbf{Extension:} Exploratory 6-domain analysis (4 models) showing metric-dependent and domain-dependent rankings.
 \end{enumerate}
 
 %==============================================================================
@@ -636,9 +636,9 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 
 \textbf{1. Metric choice inverts technique rankings.} When switching from asymmetry (high--low spread) to MAD (deviation from baseline), SACD drops from \#1 on 5 domains to \#1 on \textit{zero} domains. This is our paper's core thesis in action: which technique you recommend depends entirely on which metric you use.
 
-\textbf{2. No technique wins across domains.} Random-control ranks \#1 on salary/medical/loan/theft, devils-advocate on DUI, no-intervention on fraud. Practitioners must test per-task.
+\textbf{2. Technique rankings vary by domain.} Point estimates show different techniques ranking \#1 across domains, though bootstrap CIs overlap for all \#1 vs \#2 comparisons. We cannot statistically distinguish technique performance in most domains.
 
-\textbf{3. SACD consistently underperforms.} On 3 of 6 domains, SACD ranks \#5 (worst); on the rest, \#2--\#4.
+\textbf{3. SACD shows domain-dependent performance.} In the main judicial study, SACD achieves best baseline proximity (93.7\%). In multi-domain exploratory analysis, SACD's relative ranking varies from \#2 to \#5. This illustrates the domain-dependence cautioned in Limitation 3.
 
 \textbf{4. Fraud domain shows severe anchoring.} All techniques produce responses at only 29--75\% of baseline. Even baseline shows large distortion (37.2\% low, 74.7\% high). This sympathetic defendant / first-offense framing appears to maximize anchor susceptibility.
 
@@ -703,6 +703,8 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
     \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Rankings lack confidence intervals and significance testing due to small model count---rank differences may not be statistically robust. Cross-provider validation (Anthropic + OpenAI) confirms patterns are not provider-specific.
     
     \item \textbf{Presentation.} Response distributions summarized via statistics and heatmap (Figure~\ref{fig:mad-heatmap}). Full per-trial distributions in supplementary materials.
+    
+    \item \textbf{Turn-count confound.} SACD uses $\sim$6 API calls vs.\ 3 turns for Devil's Advocate/Premortem/Random Control. Random Control's strong performance suggests turn count itself affects responses. We cannot fully disentangle SACD's iterative content from its additional turns.
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition (CLT). Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
 \end{enumerate}
