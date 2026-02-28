@@ -689,7 +689,9 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
     
     \item \textbf{Model coverage.} 10 models from 4 providers. \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero baseline variance) shifts means 2--3pp but preserves rankings: SACD 93.4\% (was 93.7\%), Premortem 89.7\% (was 91.6\%), Random Control 77.0\% (was 79.9\%), Devil's Advocate 61.2\% (was 63.6\%).
     
-    \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Cross-provider validation confirms patterns are not Anthropic-specific.
+    \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Rankings lack confidence intervals and significance testing due to small model count---rank differences may not be statistically robust. Cross-provider validation (Anthropic + OpenAI) confirms patterns are not provider-specific.
+    
+    \item \textbf{Presentation.} Response distributions are summarized via statistics (mean, MAD) rather than visualized. Full distributions available in supplementary materials.
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition (CLT). Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
 \end{enumerate}
