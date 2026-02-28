@@ -14,6 +14,13 @@ import { join, basename } from 'path';
 const RESULTS_DIR = './results';
 const VIGNETTES = ['salary', 'loan', 'medical', 'judicial-dui', 'judicial-fraud', 'judicial-aggravated-theft'];
 
+// Paper uses only these 3 models (per Tom's directive)
+const PAPER_MODELS = new Set([
+  'claude-opus-4-6',
+  'claude-sonnet-4-6', 
+  'gpt-5-2'
+]);
+
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -81,9 +88,19 @@ function loadVignetteTrials(vignette: string): Trial[] {
         if (data.response === null || typeof data.response !== 'number') continue;
         if (data.outOfRange === true) continue;
         
+        // Normalize model name
+        const model = (data.model || 'unknown')
+          .replace('anthropic/', '')
+          .replace('codex/', '')
+          .replace(/\./g, '-')
+          .toLowerCase();
+        
+        // Filter to paper models only
+        if (!PAPER_MODELS.has(model)) continue;
+        
         trials.push({
           vignette,
-          model: data.model?.replace('anthropic/', '') || 'unknown',
+          model,
           technique,
           anchorType,
           anchor: data.anchor || null,
