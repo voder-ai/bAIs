@@ -41,8 +41,9 @@ Be thorough but fair. Focus on methodology, claims vs evidence, and statistical 
   const provider = await createProvider(spec, 0);
   const response = await provider.sendText({ prompt });
   
-  const output = '# LLM Adversarial Review — cc4d022\n\nDate: ' + new Date().toISOString() + '\nModel: claude-sonnet-4.5\n\n' + response;
-  fs.writeFileSync('paper/llm-review-cc4d022.md', output);
+  const commitHash = require('child_process').execSync('git rev-parse --short HEAD').toString().trim();
+  const output = '# LLM Adversarial Review — ' + commitHash + '\n\nDate: ' + new Date().toISOString() + '\nModel: claude-sonnet-4.5\n\n' + response;
+  fs.writeFileSync('paper/llm-review-' + commitHash + '.md', output);
   console.log(response);
 }
 
