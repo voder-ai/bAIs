@@ -125,82 +125,7 @@ Standard anchoring evaluation compares high-anchor and low-anchor conditions usi
 
 We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-metrics}). Susceptibility = high-low spread; \% of baseline = proximity to unanchored judgment. Deviation from baseline = $|$(\% of Baseline) $- 100\%|$; lower = better.
 
-\subsubsection{Why Both Metrics Matter}
-
-These metrics give \textbf{divergent rankings}:
-
-\begin{table}[H]
-\centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). $\Delta$ = change in spread vs.\ no-technique baseline (negative = reduced susceptibility). \textbf{Key observation:} Only Devil's Advocate actually \textit{reduces} susceptibility ($-$8.8\%); the other three techniques \textit{increase} it (+15.8\% to +73.8\%). Yet DA performs \textit{worst} on baseline proximity (63.6\% vs.\ 72.9\% for no-technique)---it reduces susceptibility by moving responses consistently \textit{away} from the unanchored judgment. 95\% CIs from bootstrap.}
-\label{tab:metric-comparison}
-\begin{tabular}{lcccccc}
-\toprule
-Technique & Spread & $\Delta$ & Rank & \% of Baseline & Rank \\
-\midrule
-\textit{No Technique} & \textit{26.0pp} & \textit{ref} & \textit{---} & \textit{72.9\%} & \textit{ref} \\
-\midrule
-Devil's Advocate & 23.7pp & $-$8.8\% & \#1 & 63.6\% [62, 65] & \#4 \\
-Random Control & 30.1pp & +15.8\% & \#2 & 78.3\% [77, 80] & \#3 \\
-Full SACD & 36.3pp & +39.6\% & \#3 & 93.7\% [92, 95] & \#1 \\
-Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    bar width=14pt,
-    width=0.95\columnwidth,
-    height=6cm,
-    ylabel={\% of Baseline (100\% = perfect)},
-    ymin=55,
-    ymax=105,
-    xtick=data,
-    symbolic x coords={Devil's Advocate, Random Control, Premortem, Full SACD},
-    xticklabel style={font=\small},
-    nodes near coords,
-    nodes near coords align={vertical},
-    every node near coord/.append style={font=\footnotesize\bfseries},
-    enlarge x limits=0.15,
-    axis lines*=left,
-    ymajorgrids=true,
-    grid style={dashed,gray!30},
-]
-\addplot[fill=red!60, draw=black] coordinates {(Devil's Advocate, 63.6)};
-\addplot[fill=orange!60, draw=black] coordinates {(Random Control, 78.3)};
-\addplot[fill=blue!50, draw=black] coordinates {(Premortem, 91.6)};
-\addplot[fill=green!60!black, draw=black] coordinates {(Full SACD, 93.7)};
-\draw[dashed, black, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
-\end{axis}
-\end{tikzpicture}
-\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Devil's Advocate keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. Full SACD achieves 93.7\%---closest to the model's unanchored judgment.}
-\label{fig:metric-comparison}
-\end{figure}
-
-\textbf{Why the divergence?} Devil's Advocate produces \textit{consistent} responses (low spread) that remain \textit{far from baseline}. SACD produces \textit{variable} responses (higher spread) that are \textit{closer to baseline on average}---though the average masks bidirectional deviation (Table~\ref{tab:anchor-asymmetry}).
-
-\textbf{Recovery rate perspective:} Without any debiasing, anchored responses reach 72.9\% of baseline---the maximum possible improvement is 27.1 percentage points. SACD achieves 93.7\%, an improvement of 20.8pp, representing a \textbf{77\% recovery rate} (20.8/27.1). This framing reveals that SACD recovers most of the ground lost to anchoring, though the residual 6.3pp deficit and bidirectional variance remain limitations.
-
-\textbf{Effect sizes (Cohen's d):}
-
-\begin{center}
-\begin{tabular}{lcc}
-\toprule
-Comparison & $d$ & Interpretation \\
-\midrule
-SACD vs.\ Devil's Advocate & 1.06 & Large \\
-Premortem vs.\ Devil's Advocate & 0.71 & Medium-large \\
-SACD vs.\ Random Control & 0.51 & Medium \\
-Random Control vs.\ Devil's Advocate & 0.39 & Small-medium \\
-SACD vs.\ Premortem & 0.08 & Negligible \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-Cohen's $d$ computed on trial-level data using pooled standard deviation. \textbf{Caveat:} With ICC=0.17 and $\sim$200 trials per model, the design effect is approximately $1 + (200-1) \times 0.17 \approx 35$, yielding effective $n \approx 60$--70 per technique rather than $\sim$2,200. These $d$ values may therefore be inflated; use mixed-effects estimates (Section~\ref{sec:mixed-effects}) for formal inference. We report trial-level $d$ for practical interpretation: the SACD--DA gap ($d=1.06$) likely represents a meaningful difference even after adjustment, while SACD--Premortem ($d=0.08$) clearly does not.
+\textbf{Why both metrics?} These metrics can give divergent rankings---a technique that reduces spread (susceptibility) may simultaneously move responses away from the unanchored baseline. We present the empirical demonstration of this divergence in Section~\ref{sec:metric-divergence}.
 
 \subsection{Experimental Design}
 
@@ -380,6 +305,84 @@ Opus 4.6 & 18.0mo & 0.0 \\
 \caption{Model baseline variation. Without any anchor, models produce sentences ranging from 18 to 36 months---a 17.7-month spread. This variation motivates per-model anchor calibration.}
 \label{fig:baselines}
 \end{figure}
+
+\subsection{Metric Divergence: Susceptibility vs.\ Baseline Proximity}
+\label{sec:metric-divergence}
+
+Our core empirical finding: susceptibility and baseline proximity give \textbf{divergent technique rankings}.
+
+\begin{table}[H]
+\centering
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). $\Delta$ = change in spread vs.\ no-technique baseline (negative = reduced susceptibility). \textbf{Key observation:} Only Devil's Advocate actually \textit{reduces} susceptibility ($-$8.8\%); the other three techniques \textit{increase} it (+15.8\% to +73.8\%). Yet DA performs \textit{worst} on baseline proximity (63.6\% vs.\ 72.9\% for no-technique)---it reduces susceptibility by moving responses consistently \textit{away} from the unanchored judgment. 95\% CIs from bootstrap.}
+\label{tab:metric-comparison}
+\begin{tabular}{lcccccc}
+\toprule
+Technique & Spread & $\Delta$ & Rank & \% of Baseline & Rank \\
+\midrule
+\textit{No Technique} & \textit{26.0pp} & \textit{ref} & \textit{---} & \textit{72.9\%} & \textit{ref} \\
+\midrule
+Devil's Advocate & 23.7pp & $-$8.8\% & \#1 & 63.6\% [62, 65] & \#4 \\
+Random Control & 30.1pp & +15.8\% & \#2 & 78.3\% [77, 80] & \#3 \\
+Full SACD & 36.3pp & +39.6\% & \#3 & 93.7\% [92, 95] & \#1 \\
+Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=14pt,
+    width=0.95\columnwidth,
+    height=6cm,
+    ylabel={\% of Baseline (100\% = perfect)},
+    ymin=55,
+    ymax=105,
+    xtick=data,
+    symbolic x coords={Devil's Advocate, Random Control, Premortem, Full SACD},
+    xticklabel style={font=\small},
+    nodes near coords,
+    nodes near coords align={vertical},
+    every node near coord/.append style={font=\footnotesize\bfseries},
+    enlarge x limits=0.15,
+    axis lines*=left,
+    ymajorgrids=true,
+    grid style={dashed,gray!30},
+]
+\addplot[fill=red!60, draw=black] coordinates {(Devil's Advocate, 63.6)};
+\addplot[fill=orange!60, draw=black] coordinates {(Random Control, 78.3)};
+\addplot[fill=blue!50, draw=black] coordinates {(Premortem, 91.6)};
+\addplot[fill=green!60!black, draw=black] coordinates {(Full SACD, 93.7)};
+\draw[dashed, black, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
+\end{axis}
+\end{tikzpicture}
+\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Devil's Advocate keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. Full SACD achieves 93.7\%---closest to the model's unanchored judgment.}
+\label{fig:metric-comparison}
+\end{figure}
+
+\textbf{Why the divergence?} Devil's Advocate produces \textit{consistent} responses (low spread) that remain \textit{far from baseline}. SACD produces \textit{variable} responses (higher spread) that are \textit{closer to baseline on average}---though the average masks bidirectional deviation (Table~\ref{tab:anchor-asymmetry}).
+
+\textbf{Recovery rate perspective:} Without any debiasing, anchored responses reach 72.9\% of baseline---the maximum possible improvement is 27.1 percentage points. SACD achieves 93.7\%, an improvement of 20.8pp, representing a \textbf{77\% recovery rate} (20.8/27.1). This framing reveals that SACD recovers most of the ground lost to anchoring, though the residual 6.3pp deficit and bidirectional variance remain limitations.
+
+\textbf{Effect sizes (Cohen's d):}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Comparison & $d$ & Interpretation \\
+\midrule
+SACD vs.\ Devil's Advocate & 1.06 & Large \\
+Premortem vs.\ Devil's Advocate & 0.71 & Medium-large \\
+SACD vs.\ Random Control & 0.51 & Medium \\
+Random Control vs.\ Devil's Advocate & 0.39 & Small-medium \\
+SACD vs.\ Premortem & 0.08 & Negligible \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Cohen's $d$ computed on trial-level data using pooled standard deviation. \textbf{Caveat:} With ICC=0.17 and $\sim$200 trials per model, the design effect is approximately $1 + (200-1) \times 0.17 \approx 35$, yielding effective $n \approx 60$--70 per technique rather than $\sim$2,200. These $d$ values may therefore be inflated; use mixed-effects estimates (Section~\ref{sec:mixed-effects}) for formal inference. We report trial-level $d$ for practical interpretation: the SACD--DA gap ($d=1.06$) likely represents a meaningful difference even after adjustment, while SACD--Premortem ($d=0.08$) clearly does not.
 
 \subsection{High-Anchor Responses (No Technique)}
 
