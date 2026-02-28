@@ -666,6 +666,8 @@ Full SACD achieves the highest baseline proximity (Table~\ref{tab:baseline-pct})
 
 Two recent findings offer potential explanations: (1) \citet{llm-bayesian-2025} show LLMs are ``Bayesian in expectation, not realization''---positional encoding causes order-dependent posteriors. Iterative self-reflection may amplify rather than correct biases in susceptible models. (2) \citet{llm-judge-overconfidence-2025} demonstrate LLMs overstate confidence in self-judgment; external-challenge techniques (Devil's Advocate, Premortem) may outperform internal-iteration (SACD) because they avoid this self-reinforcing loop.
 
+More fundamentally, human debiasing techniques assume metacognitive capacity---the ability to reason about one's own reasoning. Whether transformer architectures support analogous self-correction mechanisms remains an open question; our results suggest they may not. Debiasing LLMs may require understanding how \textit{transformers} fall prey to bias, not how \textit{humans} do.
+
 \subsection{Per-Trial Distribution Analysis}
 
 Aggregates mask distributional properties. Devil's Advocate compresses variance (SD=34.6) toward the wrong target (median=69\%, only 11\% within $\pm$10\% of baseline). Premortem achieves highest proximity (13.9\% within $\pm$10\%) but with higher variance (SD=41.9). All techniques show positive skew.
