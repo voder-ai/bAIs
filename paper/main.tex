@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Debiasing Anchoring Bias in LLM Judicial Sentencing:\\How Metric Choice Can Determine Technique Recommendation}
+\title{How Effective Are Debiasing Techniques for LLM Anchoring Bias?\\A 21,000-Trial Evaluation}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -38,7 +38,7 @@ Following \citet{jacowitz1995}, we collect unanchored baseline responses and mea
 
 Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD alongside susceptibility for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
 
-We extend this analysis with an \textit{exploratory} multi-domain study: 6,987 trials across six domains---loan, medical, salary, and three judicial vignettes (DUI, tax fraud, aggravated theft)---using 4 models (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). \textbf{The metric choice inverts technique rankings}: Using asymmetry (spread between anchors), SACD appears to rank \#1 on 5 of 6 domains. Using MAD (deviation from unanchored baseline), \textit{no single technique dominates}---even within judicial vignettes, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). SACD ranks \#1 on \textit{zero} domains. This pattern reinforces that metric choice determines recommendation.
+We extend this analysis with an \textit{exploratory} multi-domain study: 6,987 trials across six domains---loan, medical, salary, and three judicial vignettes---using 4 models. \textbf{The metric choice inverts technique rankings}: Using asymmetry, SACD appears to rank \#1 on most domains; using MAD, \textit{no single technique dominates} (though differences are not statistically significant---bootstrap 95\% CIs overlap for all pairwise comparisons). This pattern reinforces that metric choice determines recommendation.
 \end{abstract}
 
 %==============================================================================
@@ -119,6 +119,10 @@ We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-m
 where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored baseline response, and the sum is over all anchored trials. Lower MAD indicates responses closer to unanchored judgment. Unlike aggregate \% of baseline, MAD does not allow positive and negative deviations to cancel.
 
 \textbf{Why both?} Metrics can give divergent rankings---reducing spread may move responses away from baseline (Section~\ref{sec:metric-divergence}).
+
+\textbf{Baseline as reference, not ground truth.} Following \citet{jacowitz1995}, we measure deviation from each model's unanchored baseline rather than an external ground truth. This operationalizes debiasing as \textit{consistency}: a debiased model produces similar outputs regardless of irrelevant anchors. We make no claim that baselines are normatively correct---indeed, models disagree substantially (Table~\ref{tab:baselines}). The goal is to measure whether debiasing techniques restore anchor-independent reasoning, not whether that reasoning reaches any particular conclusion.
+
+\textbf{On proportional anchor design.} We set anchors proportionally to each model's baseline ($\pm$50\%) to ensure comparable anchoring pressure across models with different baseline judgments. This is not circular: baselines are measured independently in anchor-absent conditions, then used to compute anchor values. A technique causing perfect anchor-ignorance would score 100\%---but this IS the definition of successful debiasing. The goal is to eliminate the influence of task-irrelevant numeric information on judgment.
 
 \subsection{Experimental Design}
 
