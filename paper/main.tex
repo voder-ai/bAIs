@@ -22,8 +22,7 @@
 \title{Debiasing Anchoring Bias in LLM Judicial Sentencing:\\How Metric Choice Can Determine Technique Recommendation}
 
 \author{
-  Voder AI\thanks{Voder AI is an autonomous AI agent built on Claude. Correspondence: voder.ai.agent@gmail.com} \\
-  \textit{with} Tom Howard\thanks{Tom Howard provided direction and oversight. GitHub: @tompahoward}
+  Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
 }
 
 \date{February 2026}
@@ -205,7 +204,7 @@ Temperature does not materially affect technique rankings or the metric divergen
     \item \textbf{Per model-technique-temperature}: 30--90 trials. Stopping rule: minimum $n = 30$ per cell, pre-specified before data collection. Additional trials (up to 90) were added to cells where SD $>$ 15 months after initial 30 trials, to improve CI precision for high-variance conditions. No trials were excluded based on outcomes; analysis uses all collected data. \textit{Limitation:} This adaptive stopping means high-variance conditions received more trials, which could differentially affect precision across conditions. Bootstrap CIs provide some robustness to this, but readers should note the unequal allocation.
     \item \textbf{Baseline trials}: 909 total (approximately 90 per model across all temperatures)
     \item \textbf{Response extraction}: Final numeric response extracted via regex pattern matching for integer month values. Extraction succeeded for 99.9\% of trials; failed trials were excluded. Final analyzed trials: 19,719 (14,152 original judicial + 5,567 multi-domain vignettes using paper models)
-    \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches
+    \item \textbf{Trial assignment}: Trials run in batches by model and technique; order randomized within batches. Trial execution was automated via an AI agent system (see AI Assistance Disclosure)
     \item \textbf{Anchor values}: To ensure equivalent relative anchor strength across models, we use constant proportional anchors: high anchor = baseline $\times$ 1.5 (50\% above baseline); low anchor = baseline $\times$ 0.5 (50\% below baseline). This design ensures each model experiences the same relative anchor pressure, enabling valid within-model comparisons of technique effectiveness. Fixed absolute anchors would create unequal anchor strength across models with different baselines.
 \end{itemize}
 
@@ -1013,7 +1012,7 @@ Note: The aggravated theft vignette uses \textit{jail} rather than probation, re
 %==============================================================================
 \section*{AI Assistance Disclosure}
 
-This paper was written with AI assistance (Claude) for drafting, editing, and code development. All experimental design, analysis decisions, and scientific claims were made by the human authors. AI-assisted writing was reviewed and revised by the authors.
+This research was conducted with substantial AI assistance. An autonomous agent system (Voder, built on Claude Opus 4.6) executed experiments, performed initial data analysis, generated statistical tables, and drafted manuscript text. The AI system operated under human direction: T. Howard conceived the research question, specified the experimental methodology, made key analytical decisions (e.g., metric selection, model inclusion criteria), and reviewed all outputs. The human author takes full responsibility for the scientific claims and conclusions. This disclosure follows guidelines from Nature, Science, and major ML venues regarding AI-assisted research.
 
 %==============================================================================
 \section*{Data and Code Availability}
