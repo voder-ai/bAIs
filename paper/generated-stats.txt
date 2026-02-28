@@ -12,7 +12,7 @@ No-technique spread: 7.7mo
 |-----------|-----|---------------|--------|--------|------------|---|
 | full-sacd | 18.1% | 93.7% | [92, 95] | 36.3mo | +372% | 2391 |
 | random-control | 21.6% | 78.3% | [77, 80] | 30.1mo | +291% | 2215 |
-| premortem | 22.6% | 91.6% | [90, 93] | 45.2mo | +488% | 2186 |
+| premortem | 22.6% | 91.6% | [90, 94] | 45.2mo | +488% | 2186 |
 | devils-advocate | 36.4% | 63.6% | [62, 65] | 23.7mo | +209% | 2166 |
 
 
@@ -82,7 +82,7 @@ MAD Rankings (Mean Absolute Deviation from baseline - lower is better):
 
 Aggregate % of Baseline (can mask bidirectional deviation):
   SACD: 93.7% [92, 95]
-  Premortem: 91.6% [90, 93]
+  Premortem: 91.6% [90, 94]
   Random Control: 78.3%
   Devil's Advocate: 63.6%
 
@@ -313,6 +313,56 @@ TABLE V4: Cross-Domain Comparison (Judicial Format)
 
 **Key finding:** Best technique varies by domain. No universal "best debiasing."
 Closer to 100% in both columns = better. Smaller asymmetry = more consistent.
+
+
+TABLE V5: MAD by Domain × Technique (Primary Metric)
+------------------------------------------------------------
+MAD = Mean Absolute Deviation from baseline. Lower = better.
+
+| Domain | Technique | MAD | % of Baseline | n |
+|--------|-----------|-----|---------------|---|
+| salary | devils-advocate | 13.7% | 106.5% | 260 |
+| salary | random-control | 13.9% | 110.1% | 280 |
+| salary | premortem | 17.0% | 113.5% | 287 |
+| salary | sacd | 17.3% | 102.3% | 302 |
+| salary | baseline | 27.7% | 97.9% | 291 |
+| loan | random-control | 95.0% | 5.0% | 240 |
+| loan | devils-advocate | 95.1% | 4.9% | 300 |
+| loan | premortem | 95.3% | 4.7% | 301 |
+| loan | sacd | 95.5% | 4.5% | 288 |
+| loan | baseline | 128.7% | 41.3% | 306 |
+| medical | premortem | 9.1% | 105.5% | 234 |
+| medical | random-control | 9.3% | 107.6% | 232 |
+| medical | devils-advocate | 12.8% | 110.6% | 234 |
+| medical | baseline | 13.5% | 104.1% | 238 |
+| medical | sacd | 17.0% | 99.8% | 256 |
+| judicial-dui | sacd | 22.2% | 90.4% | 240 |
+| judicial-dui | baseline | 23.2% | 85.6% | 240 |
+| judicial-dui | random-control | 24.1% | 84.2% | 240 |
+| judicial-dui | devils-advocate | 25.2% | 83.1% | 240 |
+| judicial-dui | premortem | 28.3% | 83.9% | 240 |
+| judicial-fraud | baseline | 44.6% | 56.1% | 240 |
+| judicial-fraud | premortem | 47.7% | 52.3% | 240 |
+| judicial-fraud | sacd | 47.9% | 52.3% | 240 |
+| judicial-fraud | random-control | 48.4% | 51.6% | 240 |
+| judicial-fraud | devils-advocate | 59.1% | 40.9% | 240 |
+| judicial-aggravated-theft | baseline | 23.9% | 87.8% | 240 |
+| judicial-aggravated-theft | premortem | 24.3% | 85.1% | 180 |
+| judicial-aggravated-theft | sacd | 24.4% | 85.5% | 180 |
+| judicial-aggravated-theft | random-control | 25.9% | 88.6% | 180 |
+| judicial-aggravated-theft | devils-advocate | 31.6% | 79.0% | 216 |
+
+
+TABLE V6: Technique Rankings by Domain (MAD metric)
+------------------------------------------------------------
+| Domain | #1 (Best) | #2 | #3 | #4 | #5 (Worst) |
+|--------|-----------|----|----|----|-----------| 
+| salary | devils-advocate | random-control | premortem | sacd | baseline |
+| loan | random-control | devils-advocate | premortem | sacd | baseline |
+| medical | premortem | random-control | devils-advocate | baseline | sacd |
+| judicial-dui | sacd | baseline | random-control | devils-advocate | premortem |
+| judicial-fraud | baseline | premortem | sacd | random-control | devils-advocate |
+| judicial-aggravated-theft | baseline | premortem | sacd | random-control | devils-advocate |
 
 
 Script complete. Copy relevant sections to main.tex.

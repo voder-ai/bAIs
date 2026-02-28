@@ -39,7 +39,7 @@ Following \citet{jacowitz1995}, we collect unanchored baseline responses and mea
 
 Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD as the primary metric for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
 
-We extend this analysis to 8,214 additional trials across six domains---loan, medical, salary, and three new judicial vignettes (DUI, tax fraud, aggravated theft)---using models from Anthropic (Opus 4.6, Sonnet 4.6) and OpenAI (GPT-5.2). \textbf{The metric choice inverts technique rankings}: Using asymmetry (spread between anchors), SACD appears to rank \#1 on 5 of 6 domains. Using MAD (deviation from unanchored baseline), \textit{baseline (no technique) outperforms all debiasing techniques} on all three judicial vignettes, and SACD ranks \#1 on \textit{zero} domains. This is our strongest evidence that metric choice determines recommendation.
+We extend this analysis to 8,214 additional trials across six domains---loan, medical, salary, and three new judicial vignettes (DUI, tax fraud, aggravated theft)---using models from Anthropic (Opus 4.6, Sonnet 4.6) and OpenAI (GPT-5.2). \textbf{The metric choice inverts technique rankings}: Using asymmetry (spread between anchors), SACD appears to rank \#1 on 5 of 6 domains. Using MAD (deviation from unanchored baseline), \textit{no single technique dominates}---even within judicial vignettes, different case types favor different techniques (devils-advocate for DUI, baseline for fraud, random-control for theft). SACD ranks \#1 on \textit{zero} domains. This is our strongest evidence that metric choice determines recommendation.
 \end{abstract}
 
 %==============================================================================
@@ -82,7 +82,7 @@ Our key finding (Table~\ref{tab:metric-comparison}): Devil's Advocate is the \te
     
     \item \textbf{Empirical comparison of 4 debiasing techniques} across 22,366 total trials (14,152 original judicial + 8,214 multi-domain vignettes) on 10 frontier models, revealing high model-specific variance and bidirectional deviation patterns.
     
-    \item \textbf{Multi-domain extension demonstrating metric-dependent rankings.} Across 8,214 vignette trials on models from Anthropic (Opus 4.6, Sonnet 4.6) and OpenAI (GPT-5.2), technique rankings \textit{invert} based on metric choice. Under asymmetry, SACD ranks \#1 on 5 of 6 domains. Under MAD, baseline (no technique) ranks \#1 on all 3 judicial domains, and SACD ranks \#1 on zero domains. This demonstrates our core thesis: metric choice determines which technique practitioners will recommend.
+    \item \textbf{Multi-domain extension demonstrating metric-dependent rankings.} Across 8,214 vignette trials on models from Anthropic (Opus 4.6, Sonnet 4.6) and OpenAI (GPT-5.2), technique rankings \textit{invert} based on metric choice. Under asymmetry, SACD ranks \#1 on 5 of 6 domains. Under MAD, no single technique dominates---even within judicial vignettes, different case types favor different techniques. SACD ranks \#1 on zero domains. This demonstrates our core thesis: metric choice determines which technique practitioners will recommend.
 \end{enumerate}
 
 %==============================================================================
@@ -591,53 +591,53 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf{Key observation:} Baseline (no technique) achieves lowest MAD on all three judicial vignettes. No single technique ranks \#1 across all domains. Data from \texttt{analyze-vignette-stats.ts}. \textit{Note:} With only 3 models in the multi-domain extension, rank differences are not statistically tested. Rankings shown are point estimates; bootstrap resampling confirms top-ranked technique is stable within each domain, but close rankings (e.g., \#2 vs.\ \#3) should not be overinterpreted.}
+\caption{Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf{Key observation:} No single technique ranks \#1 across all domains---even within the judicial domain, different case types favor different techniques (devils-advocate for DUI, baseline for fraud, random-control for theft). Data from \texttt{analyze-vignette-stats.ts} using paper models only (Opus 4.6, Sonnet 4.6, GPT-5.2). \textit{Note:} With only 3 models, rank differences are not statistically tested. Rankings shown are point estimates; close rankings (e.g., \#2 vs.\ \#3) should not be overinterpreted.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
 Domain & Technique & Low \% & High \% & MAD & Rank \\
 \midrule
-\multirow{5}{*}{Salary (n=869)} 
-& random-control & 99.8\% & 119.3\% & \textbf{14.4\%} & \#1 \\
-& sacd & 98.7\% & 107.2\% & 17.3\% & \#2 \\
-& devils-advocate & 95.8\% & 123.0\% & 17.5\% & \#3 \\
-& premortem & 99.4\% & 127.6\% & 20.2\% & \#4 \\
-& baseline & 82.2\% & 115.3\% & 24.9\% & \#5 \\
+\multirow{5}{*}{Salary (n=1,096)} 
+& random-control & 97.3\% & 116.4\% & \textbf{12.5\%} & \#1 \\
+& sacd & 93.0\% & 96.2\% & 12.6\% & \#2 \\
+& devils-advocate & 92.7\% & 115.9\% & 14.4\% & \#3 \\
+& premortem & 94.1\% & 119.6\% & 15.2\% & \#4 \\
+& baseline & 75.5\% & 109.7\% & 23.8\% & \#5 \\
 \midrule
-\multirow{5}{*}{Loan (n=879)} 
-& random-control & 51.6\% & 107.1\% & \textbf{34.2\%} & \#1 \\
-& premortem & 44.1\% & 109.8\% & 37.2\% & \#2 \\
-& devils-advocate & 50.5\% & 114.4\% & 37.7\% & \#3 \\
-& baseline & 54.3\% & 101.8\% & 40.6\% & \#4 \\
-& sacd & 72.0\% & 83.9\% & 41.0\% & \#5 \\
+\multirow{5}{*}{Loan (n=878)} 
+& premortem & 46.4\% & 111.5\% & \textbf{36.0\%} & \#1 \\
+& devils-advocate & 55.2\% & 110.9\% & 36.2\% & \#2 \\
+& random-control & 54.3\% & 106.6\% & 36.3\% & \#3 \\
+& baseline & 61.0\% & 103.8\% & 45.0\% & \#4 \\
+& sacd & 81.0\% & 79.0\% & 45.6\% & \#5 \\
 \midrule
-\multirow{5}{*}{Medical (n=728)} 
-& devils-advocate & 103.8\% & 108.3\% & \textbf{8.5\%} & \#1 \\
-& random-control & 107.9\% & 108.4\% & 9.1\% & \#2 \\
-& premortem & 99.5\% & 112.2\% & 9.9\% & \#3 \\
-& baseline & 98.0\% & 110.3\% & 12.0\% & \#4 \\
-& sacd & 108.0\% & 92.4\% & 15.4\% & \#5 \\
+\multirow{5}{*}{Medical (n=893)} 
+& random-control & 102.3\% & 102.5\% & \textbf{3.7\%} & \#1 \\
+& baseline & 102.3\% & 104.9\% & 5.1\% & \#2 \\
+& devils-advocate & 100.1\% & 106.8\% & 6.7\% & \#3 \\
+& premortem & 97.9\% & 107.3\% & 7.6\% & \#4 \\
+& sacd & 110.1\% & 92.9\% & 12.2\% & \#5 \\
 \midrule
-\multirow{5}{*}{Judicial-DUI (n=1,200)} 
-& baseline & 70.4\% & 103.1\% & \textbf{19.4\%} & \#1 \\
-& random-control & 69.8\% & 100.9\% & 20.6\% & \#2 \\
-& sacd & 79.4\% & 103.9\% & 22.8\% & \#3 \\
-& devils-advocate & 69.8\% & 97.6\% & 23.5\% & \#4 \\
-& premortem & 66.1\% & 103.4\% & 26.6\% & \#5 \\
+\multirow{5}{*}{Judicial-DUI (n=900)} 
+& devils-advocate & 71.0\% & 93.3\% & \textbf{21.4\%} & \#1 \\
+& sacd & 74.2\% & 101.8\% & 22.7\% & \#2 \\
+& baseline & 65.0\% & 104.5\% & 23.4\% & \#3 \\
+& random-control & 65.2\% & 101.5\% & 24.6\% & \#4 \\
+& premortem & 64.1\% & 103.8\% & 27.6\% & \#5 \\
 \midrule
-\multirow{5}{*}{Judicial-Fraud (n=1,200)} 
-& baseline & 37.2\% & 74.7\% & \textbf{44.1\%} & \#1 \\
-& premortem & 35.5\% & 71.2\% & 46.8\% & \#2 \\
-& sacd & 40.5\% & 65.7\% & 46.9\% & \#3 \\
-& random-control & 35.7\% & 68.1\% & 48.1\% & \#4 \\
-& devils-advocate & 29.0\% & 54.4\% & 58.3\% & \#5 \\
+\multirow{5}{*}{Judicial-Fraud (n=900)} 
+& baseline & 36.0\% & 75.7\% & \textbf{44.2\%} & \#1 \\
+& premortem & 35.2\% & 74.4\% & 45.4\% & \#2 \\
+& sacd & 38.4\% & 69.2\% & 46.2\% & \#3 \\
+& random-control & 34.5\% & 67.2\% & 49.1\% & \#4 \\
+& devils-advocate & 28.1\% & 55.2\% & 58.4\% & \#5 \\
 \midrule
-\multirow{5}{*}{Aggravated-Theft (n=816)} 
-& baseline & 73.3\% & 109.0\% & \textbf{23.8\%} & \#1 \\
-& random-control & 63.0\% & 101.9\% & 25.7\% & \#2 \\
-& premortem & 61.1\% & 97.5\% & 25.9\% & \#3 \\
+\multirow{5}{*}{Aggravated-Theft (n=900)} 
+& random-control & 63.0\% & 101.9\% & \textbf{25.7\%} & \#1 \\
+& premortem & 61.1\% & 97.5\% & 25.9\% & \#2 \\
+& baseline & 66.8\% & 104.1\% & 26.6\% & \#3 \\
 & sacd & 63.7\% & 96.4\% & 27.6\% & \#4 \\
-& devils-advocate & 63.2\% & 97.2\% & 30.8\% & \#5 \\
+& devils-advocate & 60.9\% & 97.5\% & 31.7\% & \#5 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -646,9 +646,9 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 
 \textbf{1. Metric choice inverts technique rankings.} When switching from asymmetry (high--low spread) to MAD (deviation from baseline), SACD drops from \#1 on 5 domains to \#1 on \textit{zero} domains. This is our paper's core thesis in action: which technique you recommend depends entirely on which metric you use.
 
-\textbf{2. Baseline outperforms all techniques on judicial vignettes.} Across all three judicial scenarios (DUI, fraud, aggravated theft), doing \textit{nothing} (baseline) produces responses closest to the unanchored judgment. Debiasing techniques make things \textit{worse}, not better. This is the strongest evidence that current techniques do not generalize.
+\textbf{2. Even within judicial domain, rankings vary by case type.} Devils-advocate ranks \#1 on DUI, baseline on fraud, random-control on theft. This granular variation suggests technique effectiveness depends not just on domain but on specific task characteristics within a domain.
 
-\textbf{3. No technique wins across domains.} Random-control ranks \#1 on salary and loan. Devils-advocate ranks \#1 on medical. Baseline ranks \#1 on all judicial domains. There is no universal ``best'' technique.
+\textbf{3. No technique wins across domains.} Random-control ranks \#1 on salary and medical. Premortem ranks \#1 on loan. Different techniques win each judicial subdomain. There is no universal ``best'' technique---practitioners must test per-task.
 
 \textbf{4. SACD consistently underperforms.} On 3 of 6 domains (loan, medical, aggravated-theft), SACD ranks \#5 (worst). On the remaining domains, it ranks \#2--\#4. This contradicts claims that SACD is an effective general-purpose debiasing technique.
 
@@ -660,7 +660,7 @@ These results reinforce our core argument:
 
 \begin{enumerate}
     \item \textbf{Metric choice determines recommendation}---asymmetry says ``use SACD''; MAD says ``do nothing.'' Practitioners must specify which outcome they optimize for.
-    \item \textbf{Debiasing techniques can backfire}---on judicial domains, all tested techniques produce responses \textit{further} from baseline than no intervention. ``Debiasing'' may introduce new distortions.
+    \item \textbf{Debiasing techniques can backfire}---on some domains (e.g., judicial fraud), all tested techniques produce responses \textit{further} from baseline than no intervention. ``Debiasing'' may introduce new distortions.
     \item \textbf{Domain-specific validation is mandatory}---no technique transfers reliably; each domain requires independent evaluation.
     \item \textbf{Cross-provider consistency}---GPT-5.2 shows similar patterns to Anthropic models, suggesting findings reflect fundamental properties of current LLMs rather than provider-specific training.
 \end{enumerate}
