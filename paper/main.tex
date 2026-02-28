@@ -38,7 +38,7 @@ Following \citet{jacowitz1995}, we collect unanchored baseline responses and mea
 
 Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD as the primary metric for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
 
-We extend this analysis with an \textit{exploratory} multi-domain study: 6,597 trials across six domains---loan, medical, salary, and three judicial vignettes (DUI, tax fraud, aggravated theft)---using 4 models (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2; Haiku available for non-judicial domains only). \textbf{The metric choice inverts technique rankings}: Using asymmetry (spread between anchors), SACD appears to rank \#1 on 5 of 6 domains. Using MAD (deviation from unanchored baseline), \textit{no single technique dominates}---even within judicial vignettes, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). SACD ranks \#1 on \textit{zero} domains. While limited to 3 models, this pattern reinforces that metric choice determines recommendation.
+We extend this analysis with an \textit{exploratory} multi-domain study: 6,597 trials across six domains---loan, medical, salary, and three judicial vignettes (DUI, tax fraud, aggravated theft)---using 4 models (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2; Haiku available for non-judicial domains only). \textbf{The metric choice inverts technique rankings}: Using asymmetry (spread between anchors), SACD appears to rank \#1 on 5 of 6 domains. Using MAD (deviation from unanchored baseline), \textit{no single technique dominates}---even within judicial vignettes, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). SACD ranks \#1 on \textit{zero} domains. This pattern reinforces that metric choice determines recommendation.
 \end{abstract}
 
 %==============================================================================
@@ -625,7 +625,7 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 
 \textbf{1. Metric choice inverts technique rankings.} When switching from asymmetry (high--low spread) to MAD (deviation from baseline), SACD drops from \#1 on 5 domains to \#1 on \textit{zero} domains. This is our paper's core thesis in action: which technique you recommend depends entirely on which metric you use.
 
-\textbf{2. No technique wins across domains.} Random-control ranks \#1 on salary/medical, premortem on loan, devils-advocate on DUI, no-intervention on fraud, random-control on theft. Even within judicial vignettes, different case types favor different techniques. Practitioners must test per-task.
+\textbf{2. No technique wins across domains.} Random-control ranks \#1 on salary/medical/loan/theft, devils-advocate on DUI, no-intervention on fraud. Practitioners must test per-task.
 
 \textbf{3. SACD consistently underperforms.} On 3 of 6 domains, SACD ranks \#5 (worst); on the rest, \#2--\#4.
 
