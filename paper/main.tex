@@ -123,7 +123,13 @@ Standard anchoring evaluation compares high-anchor and low-anchor conditions usi
 
 \subsection{Evaluation Metrics}
 
-We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-metrics}). Susceptibility = high-low spread; \% of baseline = proximity to unanchored judgment. Deviation from baseline = $|$(\% of Baseline) $- 100\%|$; lower = better.
+We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-metrics}). Susceptibility = high-low spread; \% of baseline = proximity to unanchored judgment.
+
+\textbf{Mean Absolute Deviation (MAD):} We define MAD as the average per-trial deviation from the model's unanchored baseline:
+\begin{equation}
+\text{MAD} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{r_i}{b_m} - 1 \right| \times 100\%
+\end{equation}
+where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored baseline response, and the sum is over all anchored trials. Lower MAD indicates responses closer to unanchored judgment. Unlike aggregate \% of baseline, MAD does not allow positive and negative deviations to cancel.
 
 \textbf{Why both metrics?} These metrics can give divergent rankings---a technique that reduces spread (susceptibility) may simultaneously move responses away from the unanchored baseline. We present the empirical demonstration of this divergence in Section~\ref{sec:metric-divergence}.
 
