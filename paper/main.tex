@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{How Effective Are Debiasing Techniques for LLM Anchoring Bias?\\A 21,000-Trial Evaluation}
+\title{Debiasing Techniques Don't Transfer:\\A Cross-Domain Evaluation of Anchoring Bias Interventions in LLMs}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -32,22 +32,22 @@
 \maketitle
 
 \begin{abstract}
-Large language models exhibit anchoring bias---disproportionate influence of initial numbers on judgments. How should we evaluate debiasing techniques? The standard approach measures \textbf{susceptibility}: the gap between high and low anchor responses. We show this metric alone is insufficient.
+Do debiasing techniques for anchoring bias transfer across domains? We evaluate four interventions---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, and Random Control---across 21,139 trials spanning six domains: salary negotiation, loan approval, medical triage, and three judicial sentencing scenarios.
 
-Following \citet{jacowitz1995}, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}---how close is the debiased response to the model's unanchored judgment?
+\textbf{Our core finding: no technique generalizes.} Technique rankings vary dramatically by domain, and bootstrap 95\% confidence intervals overlap for all pairwise comparisons---we cannot statistically distinguish technique effectiveness within any domain. The technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4). Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains.
 
-Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); other techniques increase it (Random Control +16\%, SACD +40\%, Premortem +74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD alongside susceptibility for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
+We introduce Mean Absolute Deviation (MAD) from unanchored baseline as a metric that reveals per-trial error hidden by aggregate measures. SACD's aggregate 93.7\% baseline proximity in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
 
-We extend this analysis with an \textit{exploratory} multi-domain study: 6,987 trials across six domains---loan, medical, salary, and three judicial vignettes---using 4 models. \textbf{The metric choice inverts technique rankings}: Using asymmetry, SACD appears to rank \#1 on most domains; using MAD, \textit{no single technique dominates} (though differences are not statistically significant---bootstrap 95\% CIs overlap for all pairwise comparisons). This pattern reinforces that metric choice determines recommendation.
+A deep-dive validation on judicial sentencing (14,152 trials, 10 models) confirms substantial model-specific variance: the same technique can improve one model's responses while degrading another's. Combined with domain dependence, this implies practitioners must test debiasing interventions per-model AND per-task rather than relying on published rankings.
 \end{abstract}
 
 %==============================================================================
 \section{Introduction}
 %==============================================================================
 
-When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and using only one metric can be insufficient.
+Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they transfer across tasks? A technique that works for salary negotiation may fail for medical triage. Prior evaluations typically test single domains; we test six.
 
-We report findings from 21,139 trials across 10 models (main study) and 4 models (multi-domain) evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
+We report findings from 21,139 trials across six domains (salary, loan, medical, three judicial scenarios) using models spanning capability tiers (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). Our core finding: \textbf{no debiasing technique generalizes across domains.} Technique rankings vary dramatically, and bootstrap 95\% CIs overlap for all pairwise comparisons---we cannot statistically distinguish effectiveness within any domain.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -77,11 +77,11 @@ Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseli
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{Methodology:} Apply \citet{jacowitz1995}'s baseline-relative metrics to LLM debiasing evaluation.
+    \item \textbf{Cross-domain evaluation:} 21,139 trials across 6 domains showing no technique generalizes---rankings vary by domain and all pairwise CIs overlap.
     
-    \item \textbf{Empirical:} Compare 4 techniques across 21,139 trials on 10 models, documenting substantial model-specific variance.
+    \item \textbf{MAD metric:} Mean Absolute Deviation reveals per-trial error hidden by aggregate measures (SACD: 93.7\% aggregate, 18.1\% MAD).
     
-    \item \textbf{Extension:} Exploratory 6-domain analysis (4 models) showing metric-dependent and domain-dependent rankings.
+    \item \textbf{Deep validation:} 14,152 judicial trials on 10 models confirms substantial model-specific variance within a single domain.
 \end{enumerate}
 
 %==============================================================================
