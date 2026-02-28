@@ -44,7 +44,7 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Models}{4}{subsubsection.3.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Conditions}{4}{subsubsection.3.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Techniques Evaluated}{4}{subsubsection.3.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Temperature Conditions}{4}{subsubsection.3.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Temperature Conditions}{5}{subsubsection.3.2.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.5}Trial Counts and Procedure}{5}{subsubsection.3.2.5}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Trial distribution. Total unique trials: 14,152. Outside View is included in this count but excluded from technique rankings due to confound (Section\nobreakspace  {}\ref  {sec:outside-view-confound}). Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets.}}{6}{table.1}\protected@file@percent }
 \newlabel{tab:trial-counts}{{1}{6}{Trial distribution. Total unique trials: 14,152. Outside View is included in this count but excluded from technique rankings due to confound (Section~\ref {sec:outside-view-confound}). Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets}{table.1}{}}
@@ -84,47 +84,46 @@
 \newlabel{tab:sacd-premortem}{{7}{13}{\textbf {Mean Absolute Deviation (MAD) as primary metric.} Average response deviation (6.3\% vs 8.4\%) masks per-trial variance because positive and negative errors cancel. \textbf {MAD} (18.1\% vs 22.6\%) reveals the true per-trial error: individual SACD responses deviate $\sim $18\% from baseline, not 6\%. The 93.7\% aggregate is an average of overshoots (112.0\% from high anchors) and undershoots (75.7\% from low anchors). We recommend MAD as the primary metric for debiasing evaluation. Difference not statistically significant ($p \approx 0.054$)}{table.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Multi-Domain Generalization}{13}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Domain Comparison}{13}{subsection.5.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf  {Key observation:} Baseline (no technique) achieves lowest MAD on all three judicial vignettes. No single technique ranks \#1 across all domains. Data from \texttt  {analyze-vignette-stats.ts}. \textit  {Note:} With only 3 models in the multi-domain extension, rank differences are not statistically tested. Rankings shown are point estimates; bootstrap resampling confirms top-ranked technique is stable within each domain, but close rankings (e.g., \#2 vs.\ \#3) should not be overinterpreted.}}{14}{table.8}\protected@file@percent }
-\newlabel{tab:vignette-comparison}{{8}{14}{Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf {Key observation:} Baseline (no technique) achieves lowest MAD on all three judicial vignettes. No single technique ranks \#1 across all domains. Data from \texttt {analyze-vignette-stats.ts}. \textit {Note:} With only 3 models in the multi-domain extension, rank differences are not statistically tested. Rankings shown are point estimates; bootstrap resampling confirms top-ranked technique is stable within each domain, but close rankings (e.g., \#2 vs.\ \#3) should not be overinterpreted}{table.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf  {Key observation:} No single technique ranks \#1 across all domains---even within the judicial domain, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). Data from \texttt  {analyze-vignette-stats.ts} using paper models only (Opus 4.6, Sonnet 4.6, GPT-5.2). \textit  {Note:} With only 3 models, rank differences are not statistically tested. Rankings shown are point estimates; close rankings (e.g., \#2 vs.\ \#3) should not be overinterpreted.}}{14}{table.8}\protected@file@percent }
+\newlabel{tab:vignette-comparison}{{8}{14}{Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf {Key observation:} No single technique ranks \#1 across all domains---even within the judicial domain, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). Data from \texttt {analyze-vignette-stats.ts} using paper models only (Opus 4.6, Sonnet 4.6, GPT-5.2). \textit {Note:} With only 3 models, rank differences are not statistically tested. Rankings shown are point estimates; close rankings (e.g., \#2 vs.\ \#3) should not be overinterpreted}{table.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Key Findings}{14}{subsection.5.2}\protected@file@percent }
 \citation{llm-bayesian-2025}
+\citation{llm-judge-overconfidence-2025}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Implications}{15}{subsection.5.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{15}{section.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Why Full SACD Works (and Fails)}{15}{subsection.6.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Theoretical Grounding (Speculative)}{15}{subsection.6.2}\protected@file@percent }
-\citation{llm-judge-overconfidence-2025}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Per-Trial Distribution Analysis}{16}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Per-Trial Distribution Analysis}{15}{subsection.6.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Why Random Control Works}{16}{subsection.6.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}The Outside View Confound}{17}{subsection.6.5}\protected@file@percent }
-\newlabel{sec:outside-view-confound}{{6.5}{17}{The Outside View Confound}{subsection.6.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}Anchor Strength Matters: A Methodological Validation}{17}{subsection.6.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.7}Limitations}{17}{subsection.6.7}\protected@file@percent }
-\citation{jacowitz1995}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.8}Practical Recommendations}{18}{subsection.6.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}The Outside View Confound}{16}{subsection.6.5}\protected@file@percent }
+\newlabel{sec:outside-view-confound}{{6.5}{16}{The Outside View Confound}{subsection.6.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}Anchor Strength Matters: A Methodological Validation}{16}{subsection.6.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.7}Limitations}{16}{subsection.6.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.8}Practical Recommendations}{17}{subsection.6.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{17}{section.7}\protected@file@percent }
 \citation{lyu2025}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{19}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{19}{appendix.A}\protected@file@percent }
-\newlabel{app:prompts}{{A}{19}{Prompt Templates}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Case Vignette (All Conditions)}{19}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchor Introduction (High/Low Anchor Conditions)}{19}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Outside View (As Implemented)}{19}{subsection.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Full SACD (Iterative Self-Administered Cognitive Debiasing)}{20}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Devil's Advocate}{20}{subsection.A.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Premortem}{20}{subsection.A.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Random Control}{20}{subsection.A.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {B}Multi-Domain Vignette Prompts}{20}{appendix.B}\protected@file@percent }
-\newlabel{app:multi-domain-prompts}{{B}{20}{Multi-Domain Vignette Prompts}{appendix.B}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Loan Approval Vignette}{21}{subsection.B.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Medical Triage Vignette}{21}{subsection.B.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.3}Salary Negotiation Vignette}{21}{subsection.B.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {C}Judicial Vignette Prompts}{22}{appendix.C}\protected@file@percent }
-\newlabel{app:judicial-prompts}{{C}{22}{Judicial Vignette Prompts}{appendix.C}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}DUI Repeat Offender}{22}{subsection.C.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}First-Time Tax Fraud}{22}{subsection.C.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}Aggravated Retail Theft (4th Offense)}{23}{subsection.C.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Templates}{18}{appendix.A}\protected@file@percent }
+\newlabel{app:prompts}{{A}{18}{Prompt Templates}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Case Vignette (All Conditions)}{18}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Anchor Introduction (High/Low Anchor Conditions)}{18}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Outside View (As Implemented)}{18}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Full SACD (Iterative Self-Administered Cognitive Debiasing)}{18}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Devil's Advocate}{19}{subsection.A.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Premortem}{19}{subsection.A.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Random Control}{19}{subsection.A.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Multi-Domain Vignette Prompts}{19}{appendix.B}\protected@file@percent }
+\newlabel{app:multi-domain-prompts}{{B}{19}{Multi-Domain Vignette Prompts}{appendix.B}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Loan Approval Vignette}{19}{subsection.B.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Medical Triage Vignette}{20}{subsection.B.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.3}Salary Negotiation Vignette}{20}{subsection.B.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {C}Judicial Vignette Prompts}{20}{appendix.C}\protected@file@percent }
+\newlabel{app:judicial-prompts}{{C}{20}{Judicial Vignette Prompts}{appendix.C}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}DUI Repeat Offender}{21}{subsection.C.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}First-Time Tax Fraud}{21}{subsection.C.2}\protected@file@percent }
 \bibstyle{plainnat}
 \bibdata{references}
 \bibcite{binz2023}{{1}{2023}{{Binz and Schulz}}{{}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}Aggravated Retail Theft (4th Offense)}{22}{subsection.C.3}\protected@file@percent }
 \bibcite{chen2025cognitive}{{2}{2025}{{Chen et~al.}}{{}}}
 \bibcite{llm-bayesian-2025}{{3}{2025}{{Chlon et~al.}}{{Chlon, Rashidi, Khamis, and Awada}}}
 \bibcite{englich2006}{{4}{2006}{{Englich et~al.}}{{Englich, Mussweiler, and Strack}}}
@@ -138,4 +137,4 @@
 \bibcite{song2026reasoning}{{12}{2026}{{Song et~al.}}{{Song, Han, and Goodman}}}
 \bibcite{llm-judge-overconfidence-2025}{{13}{2025}{{Tian et~al.}}{{}}}
 \bibcite{tversky1974}{{14}{1974}{{Tversky and Kahneman}}{{}}}
-\gdef \@abspage@last{24}
+\gdef \@abspage@last{23}

@@ -17,7 +17,8 @@ const RESULTS_DIR = './results';
 // Paper uses only these 3 models (per Tom's directive)
 const PAPER_MODELS = new Set([
   'claude-opus-4-6',
-  'claude-sonnet-4-6', 
+  'claude-sonnet-4-6',
+  'claude-haiku-4-5',
   'gpt-5-2'
 ]);
 
