@@ -72,7 +72,7 @@ The baseline metric directly answers: ``Is the debiased response close to what t
 
 \subsection{The Divergence}
 
-Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseline proximity (63.6\%). SACD shows the reverse: increases susceptibility (+39.6\%) but best aggregate proximity (93.7\%). However, MAD reveals SACD's true per-trial error is 18.1\%, not 6.3\%---bidirectional errors cancel. We recommend \textbf{MAD alongside aggregate metrics}.
+Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseline proximity (63.6\%). SACD shows the reverse: increases susceptibility (+39.6\%) but best aggregate proximity (93.7\%).\footnote{SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques. Random Control's strong performance (78.3\%) suggests turn count itself affects results; SACD's advantage may partly reflect this confound rather than its specific content. See Limitations.} However, MAD reveals SACD's true per-trial error is 18.1\%, not 6.3\%---bidirectional errors cancel. We recommend \textbf{MAD alongside aggregate metrics}.
 
 \subsection{Contributions}
 
