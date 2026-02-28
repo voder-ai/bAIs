@@ -47,7 +47,7 @@ We extend this analysis with an \textit{exploratory} multi-domain study: 5,567 t
 
 When evaluating debiasing techniques for LLMs, which metric should you use? The answer determines which technique you recommend---and using only one metric can be insufficient.
 
-We report findings from 22,366 trials across 10 models and 6 domains evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
+We report findings from 19,719 trials across 10 models (main study) and 3 models (multi-domain) evaluating four debiasing techniques. Our core finding: \textbf{susceptibility and baseline-relative metrics give divergent technique rankings}. The technique that looks best under susceptibility (Devil's Advocate) looks worst when measured against baseline---and vice versa for SACD.
 
 \subsection{Two Metrics, Opposite Conclusions}
 \label{sec:two-metrics}
@@ -746,7 +746,7 @@ We archived the weak-anchor data in \texttt{results/archived-wrong-anchors/} for
 \section{Conclusion}
 %==============================================================================
 
-Metric choice determines technique recommendation. Our 22,366-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; no technique generalizes.
+Metric choice determines technique recommendation. Our 19,719-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; no technique generalizes.
 
 \textbf{For practitioners:} Test per-model, per-domain. Use MAD as primary metric; aggregates hide bidirectional errors.
 
