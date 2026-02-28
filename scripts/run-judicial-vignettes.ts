@@ -30,6 +30,7 @@ const MODELS = [
   'anthropic/claude-opus-4-6',
   'anthropic/claude-sonnet-4-5',
   'anthropic/claude-sonnet-4-6',
+  // Note: Haiku 4.5 excluded from judicial - 85%+ safety refusal rate on sentencing tasks
   'codex/gpt-5.2',
 ];
 
