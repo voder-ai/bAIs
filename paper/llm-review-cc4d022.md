@@ -1,142 +1,173 @@
-# LLM Adversarial Review — cc4d022
+warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use *-baseline build:
+  https://github.com/oven-sh/bun/releases/download/bun-v1.3.9/bun-darwin-x64-baseline.zip
+Using model: anthropic/claude-opus-4-6
 
-Date: 2026-02-28T12:28:07.063Z
-Model: claude-sonnet-4.5
+Sending paper for review...
 
-# Review of "Debiasing Anchoring Bias in LLM Judicial Sentencing"
+---
+
+=== LLM REVIEW ===
+
+# Detailed Review: "Debiasing Anchoring Bias in LLM Judicial Sentencing: How Metric Choice Can Determine Technique Recommendation"
 
 ## Summary
 
-This paper evaluates four debiasing techniques for anchoring bias in LLMs across 21,139 trials on 10 models. The central claim is that metric choice determines technique recommendations: susceptibility (high-low spread) favors Devil's Advocate, while percentage-of-baseline favors SACD. The authors introduce Mean Absolute Deviation (MAD) to reveal that SACD's aggregate 93.7% baseline proximity masks 18.1% per-trial error due to bidirectional deviations. A multi-domain extension (6,987 trials, 4 models) shows technique rankings vary by domain. The paper argues practitioners must report multiple metrics and test per-model/per-domain.
+This paper argues that the standard metric for evaluating anchoring bias debiasing in LLMs (susceptibility/spread between high and low anchor responses) is insufficient, and that a baseline-relative metric (percentage of unanchored baseline) should be used alongside it. The paper demonstrates that these two metrics produce divergent technique rankings across 21,139 trials on 10 models. It further argues that Mean Absolute Deviation (MAD) should supplement aggregate baseline proximity because bidirectional errors can cancel. A multi-domain extension (6,987 trials, 4 models, 6 domains) shows technique rankings vary by domain.
 
-## Strengths
+---
 
-- **Important methodological contribution**: Applying Jacowitz & Kahneman's (1995) baseline methodology to LLM debiasing is valuable. The field has indeed over-relied on susceptibility metrics.
+## 1. Methodology
 
-- **Rigorous experimental design**: 21,139 trials with proper baselines, temperature controls, and statistical corrections (Bonferroni, bootstrap CIs) demonstrate thoroughness.
+### Strengths
+- **Well-motivated research question.** The observation that metric choice affects technique recommendations is genuinely useful for the field.
+- **Substantial scale.** 21,139 trials across 10 models is commendable.
+- **Proportional anchor design** (anchors scaled to each model's baseline) is a reasonable choice, and the paper correctly identifies its limitations for cross-model comparison.
+- **Random control condition** is a smart inclusion that reveals multi-turn structure effects.
+- **Temperature analysis** (no significant interaction) simplifies interpretation.
+- **Mixed-effects modeling** properly accounts for model clustering.
+- **Honest about limitations.** The paper is unusually transparent about confounds (Outside View), limitations of aggregation, and the exploratory nature of the multi-domain study.
 
-- **Honest reporting of limitations**: The authors acknowledge confounds (Outside View jurisdiction), proportional anchor circularity, and exploratory status of multi-domain results. The Opus sensitivity analysis (footnote) is exemplary.
+### Concerns
 
-- **Practical value**: The finding that Random Control outperforms Devil's Advocate (+15pp, d=0.39) despite no debiasing content is actionable and surprising.
+**Major:**
 
-- **Reproducibility**: Full data/code availability with deterministic analysis pipeline is commendable.
+1. **Single vignette in the main study.** The primary 14,152-trial study uses a single judicial sentencing vignette (Lena M., 12th shoplifting offense). This is a significant threat to external validity. The multi-domain extension partially addresses this but uses only 4 of the 10 models and is explicitly labeled "exploratory." For a top venue, I would expect the main study itself to use multiple vignettes or at least acknowledge more forcefully that conclusions may be vignette-specific.
 
-## Weaknesses
+2. **The core thesis is arguably straightforward.** The claim that "different metrics give different rankings" is important but not deeply surprising. Two metrics measuring different things (spread vs. proximity to baseline) *should* give different rankings when techniques have different failure modes. The paper could strengthen its contribution by providing deeper theoretical analysis of *when* and *why* each metric is appropriate, rather than primarily demonstrating that they diverge.
 
-### Major Issues
+3. **Baseline definition ambiguity.** The paper acknowledges (Limitation 5) that the "baseline" includes the 12th-offense framing, meaning it's not truly unanchored—it just lacks the explicit prosecutor demand. This is a meaningful concern: what the paper calls "unanchored baseline" is itself influenced by the case description's implicit anchors. The paper should discuss whether the baseline represents a "correct" answer or merely a reference point more thoroughly.
 
-1. **Circular metric design (critical flaw)**
-   - The proportional anchor design (high = 1.5×baseline, low = 0.5×baseline) creates circularity: anchors are *defined* relative to baseline, then techniques are evaluated on proximity to baseline. This is not "avoiding circularity" (p.4) but *embedding* it.
-   - **Impact**: A technique that simply ignores anchors and returns baseline would score 100% by construction. The metric rewards baseline-matching, not debiasing.
-   - **Evidence**: Table 7 shows SACD achieves 100.8% for DeepSeek—this could mean perfect debiasing *or* the model is ignoring prompts entirely. The metric cannot distinguish.
-   - **Fix needed**: Validate with fixed absolute anchors (e.g., always 12mo low, 36mo high) to break circularity.
+4. **Proportional anchor circularity.** Anchors are set at 0.5× and 1.5× of each model's baseline. This means models with different baselines receive different absolute anchors, making cross-model comparisons of susceptibility problematic. The paper acknowledges this but still reports cross-model aggregates. The proportional design is defensible for within-model comparisons but weakens aggregate claims.
 
-2. **MAD definition lacks justification**
-   - Equation 4 defines MAD as deviation from *model's* baseline ($b_m$), not ground truth. Why is matching the model's unanchored judgment the goal?
-   - **Problem**: If a model has a biased baseline (e.g., Opus always says 18mo regardless of case details), MAD rewards techniques that preserve this bias.
-   - **Missing**: No validation that baselines are "correct" or even reasonable. The vignette includes "12th offense"—is 18mo (Opus) vs 36mo (o4-mini) a bias or legitimate disagreement?
-   - **Suggestion**: Either (1) justify why model baselines are normative, or (2) reframe MAD as "consistency with unanchored state" rather than "correctness."
+5. **Turn-count confound partially uncontrolled.** SACD uses ~6 API calls vs. 3 turns for Devil's Advocate/Premortem/Random Control. While Random Control controls for multi-turn effects at 3 turns, there's no control for the additional turns SACD uses. The finding that Random Control outperforms Devil's Advocate suggests turn count matters, which means SACD's advantage could partly be a turn-count effect.
 
-3. **Statistical analysis issues**
-   - **Power analysis post-hoc**: Section 3.2 reports power analysis *after* data collection, finding some comparisons (SACD vs Premortem, d=0.08) are underpowered. This should have informed stopping rules.
-   - **ICC=0.17 with n=10 models**: The mixed-effects analysis (Section 4.5) estimates variance components from only 10 clusters. With this small cluster count, ICC estimates are highly unstable (Hox et al., 2010). The reported ICC could easily be 0.10-0.25 with different model samples.
-   - **Multiple comparison correction incomplete**: Bonferroni correction applied to 6 pairwise technique comparisons, but not to the 10 model-specific comparisons in Table 5. With 10 tests, α=0.05 → α_corrected=0.005.
-   - **Bootstrap stratification**: "Resampling is stratified by model" (p.8)—but with unequal sample sizes per model (Table 2), this may not preserve the trial-weighted mean structure. Need clarification.
+**Minor:**
 
-4. **Multi-domain extension underpowered and oversold**
-   - Section 5 uses only 4 models (vs 10 in main study) and lacks significance testing: "Rankings lack confidence intervals and significance testing due to small model count" (p.18).
-   - **Problem**: Table 6 presents rank orderings (#1, #2, etc.) without any indication these differences are reliable. The text states "bootstrap 95% CIs overlap for all #1 vs #2 comparisons" (caption)—so *none* of the rankings are statistically distinguishable.
-   - **Overselling**: Abstract claims "SACD ranks #1 on zero domains" but this is based on point estimates from n=4 models with overlapping CIs. This is exploratory data, not a robust finding.
-   - **Fix**: Either (1) increase model count to n≥10 per domain, or (2) clearly label Section 5 as "preliminary" and remove from abstract/conclusions.
+6. **Haiku 4.5 safety refusals.** 85%+ refusal rate for judicial sentencing is noted in a footnote but could substantially bias results if the surviving responses are non-representative.
 
-5. **Confound handling inadequate**
-   - Outside View required "German federal courts" specification (Section 4.8), introducing a secondary anchor. Authors acknowledge this but still include Outside View in trial counts (Table 2: n=2,423) and figures.
-   - **Problem**: Contaminated data inflates total trial count (14,152 includes Outside View) and may bias aggregate statistics if not properly excluded.
-   - **Evidence**: Table 2 caption says "Outside View is included in this count but excluded from technique rankings"—but Table 3 shows 4 techniques, suggesting proper exclusion. Clarify whether the 14,152 total includes Outside View trials in *any* aggregate calculations.
+7. **Opus 4.6 zero variance** is unusual and warrants more investigation. The sensitivity analysis (excluding Opus) is appreciated, but a model that always outputs exactly 18 months regardless of temperature raises questions about whether it's truly engaging with the task.
 
-### Moderate Issues
+---
 
-6. **Baseline interpretation ambiguity**
-   - The vignette includes "12th shoplifting offense" in the baseline condition (Appendix A.1). This is not "unanchored"—it's a strong numeric anchor.
-   - **Impact**: The baseline may already be anchored, making "100% of baseline" an arbitrary target rather than ground truth.
-   - **Suggestion**: Test a truly unanchored baseline (remove "12th offense") to validate that current baselines are stable.
+## 2. Statistics
 
-7. **Devil's Advocate failure mode under-explored**
-   - DA produces consistent responses (low spread) far from baseline (63.6%). The paper attributes this to "consistent but wrong" (p.6) but doesn't investigate *why*.
-   - **Hypothesis**: DA may trigger adversarial reasoning that systematically underestimates sentences. This is testable: do DA responses cluster around a specific value (e.g., minimum probation)?
-   - **Missing analysis**: Distribution plots for DA (mentioned in limitations: "Full per-trial distributions in supplementary materials") should be in main text.
+### Strengths
+- Bootstrap CIs with stratification by model
+- Bonferroni correction for multiple comparisons
+- Effect sizes reported alongside p-values
+- Power analysis with design effect calculation
+- TOST equivalence testing for SACD vs. Premortem
+- ICC computation and honest reporting of effective sample sizes
 
-8. **Temperature effects dismissed too quickly**
-   - "No significant temperature×technique interaction (F(6,8944)=1.42, p=0.203); temperature effects <3pp" (Section 3.2.4).
-   - **Problem**: 3pp is not trivial—it's ~10% of the 27.1pp gap between anchored (72.9%) and baseline (100%). A 3pp shift could change technique rankings.
-   - **Missing**: Report temperature effects *per technique*. If SACD shows +3pp at t=1.0 but DA shows -3pp, the interaction may be meaningful even if not statistically significant.
+### Concerns
 
-9. **Theoretical grounding speculative and disconnected**
-   - Section 6.2 cites two 2025 papers on Bayesian reasoning and overconfidence, but these are labeled "speculative" and not integrated into the experimental design.
-   - **Problem**: Post-hoc theorizing without pre-registered hypotheses. If these mechanisms were suspected, why not test them (e.g., measure confidence calibration)?
-   - **Suggestion**: Either (1) move to future work, or (2) add exploratory analyses testing these hypotheses.
+1. **Mixed-effects model specification.** The paper reports using residual df rather than Satterthwaite approximation for the interaction F-test, which the authors themselves note is inappropriate given the nested structure. This should be corrected—with only 10 models, Satterthwaite df would likely be much smaller, potentially affecting significance.
 
-10. **Fraud domain anomaly unexplained**
-    - Table 6 shows fraud domain has severe anchoring (all techniques 29-75% of baseline). Authors note this but don't investigate.
-    - **Missing**: Is this due to (1) sympathetic defendant framing, (2) first-offense vs repeat, (3) financial crime vs violent crime, or (4) model-specific behavior? A follow-up experiment varying these factors would strengthen claims.
+2. **Multi-domain significance.** Table 7's caption acknowledges that "bootstrap 95% CIs overlap for all #1 vs #2 comparisons" and differences are not statistically significant. Yet the text states boldly that "SACD drops from #1 on 5 domains to #1 on zero domains." This is based on point-estimate rankings where differences are not significant—this borders on overclaiming.
 
-## Questions for Authors
+3. **Bonferroni correction scope.** The paper corrects for 6 pairwise comparisons among 4 techniques. However, there are many additional comparisons in the paper (anchor direction effects, model-specific analyses, multi-domain comparisons) that don't appear to be corrected. The multiple testing burden is substantially larger than acknowledged.
 
-1. **Circularity**: How do you respond to the concern that proportional anchors (defined relative to baseline) create circularity when evaluating baseline proximity? Can you provide results with fixed absolute anchors?
+4. **The ICC of 0.17 with only 10 models.** The paper correctly notes this estimate may be imprecise. With k=10 clusters, variance component estimates are quite unstable, and the design effect calculation inherits this uncertainty.
 
-2. **MAD normative status**: Why is matching the model's unanchored baseline the correct goal? What if the baseline itself is biased (e.g., Opus's deterministic 18mo)?
+---
 
-3. **Power analysis**: Why was power analysis conducted post-hoc rather than used to determine stopping rules? How do you justify reporting underpowered comparisons (SACD vs Premortem, d=0.08)?
+## 3. Citations
 
-4. **Multi-domain statistical rigor**: Table 6 shows rank orderings from n=4 models with overlapping CIs. Why present these as definitive rankings rather than exploratory findings?
+- Pre-verified citations (Lyu 2025, Chen 2025, Lim 2026, Maynard 2025) are confirmed legitimate. Note: Maynard 2025 is listed as verified but does not appear in the paper or bibliography—this is fine, just noting.
+- Core psychology citations (Tversky & Kahneman 1974, Englich et al. 2006, Jacowitz & Kahneman 1995) are standard and appropriate.
+- `llm-bayesian-2025` (arXiv:2507.11768) and `llm-judge-overconfidence-2025` (arXiv:2508.06225) have July and August 2025 dates—plausible but not pre-verified. These are used only for speculative discussion, so low risk.
+- `song2026reasoning` (arXiv:2602.06176) is cited but not pre-verified. Used for establishing LLM bias literature.
+- `huang2025anchoring` (arXiv:2505.15392) is not pre-verified. Used for establishing anchoring in LLMs.
 
-5. **Outside View contamination**: Does the 14,152 trial count include Outside View trials in any aggregate statistics beyond Table 2? If so, how does this affect results?
+No red flags, but the unverified citations should be checked.
 
-6. **Baseline anchoring**: The vignette includes "12th offense" in baseline condition. Have you tested a truly unanchored baseline (no numeric details) to validate current baselines?
+---
 
-7. **Temperature×technique interaction**: Can you report temperature effects separately per technique? The aggregate F-test may mask technique-specific patterns.
+## 4. Internal Consistency
 
-8. **Devil's Advocate mechanism**: Do DA responses cluster around a specific value (e.g., minimum sentence)? What is the distribution shape?
+### Issues Found
 
-9. **Fraud domain**: What explains the severe anchoring in fraud cases? Can you test whether it's due to sympathetic framing, first-offense status, or crime type?
+1. **Trial count discrepancy.** Abstract says "14,152 judicial sentencing trials on 10 models." Table 1 sums to: 2,389 + 2,423 + 2,215 + 2,186 + 2,166 + 1,864 + 909 = 14,152. ✓ Consistent.
 
-10. **Reproducibility**: The paper states trials were collected via OpenRouter in February 2026. Can you clarify: (1) Is this a typo (should be 2025)? (2) Are model versions frozen/reproducible?
+2. **Multi-domain count.** 6,987 claimed. Table 7 sums: 1,096 + 1,160 + 893 + 903 + 900 + 900 = 5,852. **This does not equal 6,987.** There's a discrepancy of 1,135 trials. This could be due to excluded trials (refusals, extraction failures) not being transparent, or the 6,987 includes additional conditions not shown. This needs explanation.
 
-## Minor Issues
+3. **Total trial count.** 14,152 + 6,987 = 21,139. Matches abstract and conclusion. ✓
 
-- **Table 2 caption**: "Outside View is included in this count but excluded from technique rankings due to confound"—clarify whether it's excluded from *all* analyses or just rankings.
-- **Figure 1 caption**: "Dashed line = 100% (unanchored judgment)"—this is the baseline, not necessarily "unanchored" (see issue #6).
-- **Section 3.2.4**: "Results aggregated; baseline calculations use temperature-matched baselines"—does this mean separate baselines per temperature? Clarify.
-- **Equation 4**: MAD uses $b_m$ (model baseline) but text sometimes refers to "baseline" generically. Use consistent notation.
-- **Table 6**: "Bootstrap 95% CIs overlap for all #1 vs #2 comparisons"—if true, why report ranks at all? Consider reporting CIs in table.
-- **References**: \citet{llm-bayesian-2025} and \citet{llm-judge-overconfidence-2025} appear to be placeholders (no entries in bibliography).
-- **Appendix A.1**: "For experimental purposes, the following prosecutor's sentencing demand was randomly determined"—this framing may itself be a debiasing intervention. Have you tested anchor presentation without this disclaimer?
+4. **Susceptibility values.** Table 3: SACD spread = 36.3pp. Table 5: SACD High-Low = 112.0 - 75.7 = 36.3pp. ✓ Consistent.
+
+5. **Random Control % of baseline.** Table 3 says 78.3%. Table 4 says 78.3%. ✓ But Limitation 7 says "Random Control 77.0% (was 79.9%)"—the 79.9% doesn't match the 78.3% reported elsewhere. **Minor inconsistency.** This appears to be the Opus-excluded sensitivity analysis, but the "was" value doesn't match the main result (78.3% vs. 79.9%).
+
+6. **Recovery rate calculation.** "SACD achieves 93.7%, an improvement of 20.8pp, representing a 77% recovery rate (20.8/27.1)." 93.7 - 72.9 = 20.8; 100 - 72.9 = 27.1; 20.8/27.1 = 76.75% ≈ 77%. ✓
+
+---
+
+## 5. Writing Quality
+
+### Strengths
+- Generally clear and well-organized
+- Good use of tables and figures
+- Honest and transparent about limitations
+- Practical recommendations are helpful
+
+### Concerns
+
+1. **Repetitive.** The core finding (metric divergence) is stated in the abstract, introduction (twice), Section 4.2, Section 4.7, Section 5, and conclusion. The paper would benefit from consolidation.
+
+2. **Length and structure.** At ~8,500 words plus extensive appendices, this is quite long. The multi-domain section (Section 5) feels like a second paper grafted on. Consider whether it strengthens or dilutes the main contribution.
+
+3. **Formatting.** The paper uses `[H]` float specifiers throughout, which is generally discouraged for conference submissions and can produce poor layouts.
+
+4. **Missing related work.** The paper doesn't engage with the broader literature on evaluation metrics in NLP (e.g., the metrics debate in MT, summarization). The insight that "different metrics measure different things" has extensive precedent.
+
+5. **"Ours" claim for % of baseline.** The paper labels % of baseline as "(ours)" in Section 1.1, but immediately cites Jacowitz & Kahneman (1995) as the inspiration. The metric itself (response / baseline × 100) is straightforward. The novelty is in *applying* it to LLM debiasing evaluation, not in the metric itself. The framing should be adjusted.
+
+---
+
+## 6. Overclaims
+
+1. **"Rankings diverge substantially"** — supported for the specific vignette and models tested, but Table 7 shows differences are not statistically significant in the multi-domain extension. The paper should more carefully distinguish between the strong main-study finding and the weaker multi-domain patterns.
+
+2. **"No single technique dominates"** — this is based on point-estimate rankings where CIs overlap. A fairer statement would be: "We cannot distinguish technique performance in most domains."
+
+3. **Multi-domain SACD claims.** "SACD ranks #1 on zero domains" (under MAD) is technically true for point estimates but misleading given overlapping CIs. Similarly, "SACD consistently underperforms" is strong language when differences are often not significant.
+
+4. **"Metric choice determines recommendation"** — this is the paper's central claim and is well-supported for the susceptibility-vs-baseline comparison. However, the implication that this is a novel or surprising finding could be tempered.
+
+5. **Practical recommendations** are stated with more confidence than the evidence supports. "Test per-model, per-domain" is good advice but not uniquely supported by this paper.
+
+---
+
+## Summary of Key Issues
+
+| Issue | Severity |
+|-------|----------|
+| Multi-domain trial count discrepancy (5,852 vs 6,987) | **Major** — needs explanation |
+| Single vignette in main study | **Major** — limits generalizability |
+| Random Control % inconsistency (78.3% vs 79.9%) | **Minor** — likely typo |
+| Multi-domain claims based on non-significant differences | **Significant** — overclaiming |
+| Turn-count confound for SACD | **Significant** — uncontrolled |
+| Core contribution may be incremental for top venue | **Significant** — novelty concern |
+| Mixed-effects df approximation acknowledged as wrong | **Minor** — should fix |
+| Repetitive writing | **Minor** — could tighten |
+
+---
 
 ## Verdict
 
-**MAJOR REVISION**
+**NEEDS REVISION**
 
-This paper addresses an important problem (metric choice in debiasing evaluation) with a large-scale empirical study. However, critical methodological flaws undermine the core claims:
+The paper addresses a real and practical problem (metric choice in debiasing evaluation), executes a large-scale empirical study with commendable transparency, and provides useful practical recommendations. However, several issues prevent me from recommending acceptance in current form:
 
-1. **Proportional anchor circularity** (Issue #1) is a fundamental design flaw that invalidates baseline proximity as currently measured.
-2. **Multi-domain results are underpowered** (Issue #4) and should not be presented as definitive findings in abstract/conclusions.
-3. **Statistical issues** (Issue #3) including post-hoc power analysis and unstable ICC estimates weaken inferential claims.
+1. **The multi-domain trial count doesn't add up** (5,852 in Table 7 vs. 6,987 claimed), which is a data integrity concern that must be resolved.
+2. **Overclaiming in the multi-domain section** — bold claims about SACD ranking #1 on "zero domains" when differences are not statistically significant.
+3. **The core contribution, while useful, may be incremental** for a top main-track venue. The insight that "different metrics measuring different things give different rankings" needs stronger theoretical grounding or more surprising empirical findings to reach the novelty bar.
+4. **The turn-count confound** between SACD (6 calls) and other techniques (3 turns) weakens causal claims about technique effectiveness.
+5. **Minor inconsistencies** in reported numbers need correction.
 
-The paper makes a valuable contribution—demonstrating that susceptibility and baseline metrics diverge—but needs substantial revision to address circularity, validate with fixed anchors, and appropriately scope multi-domain claims.
+The paper would be strengthened by: (a) resolving the trial count discrepancy, (b) adding a turn-matched SACD control, (c) tempering multi-domain claims to match the statistical evidence, (d) providing deeper theoretical analysis of when each metric is appropriate, and (e) tightening the writing to reduce repetition.
 
-**Required for acceptance:**
-- Rerun experiments with fixed absolute anchors to validate baseline proximity metric
-- Reframe multi-domain results as exploratory or increase model count to n≥10
-- Address MAD normative status (Issue #2)
-- Correct statistical issues (multiple comparisons, power analysis)
+=== END REVIEW ===
 
-**Recommended:**
-- Investigate Devil's Advocate failure mode (distribution analysis)
-- Test truly unanchored baseline (remove "12th offense")
-- Add temperature×technique interaction analysis
+Model used: anthropic/claude-opus-4-6
 
-## Confidence
-
-**4/5** (High confidence)
-
-I am confident in identifying the methodological issues (circularity, statistical power, multi-domain limitations) as these are standard concerns in experimental design. The proportional anchor circularity is a clear logical flaw. My confidence is not 5/5 because: (1) I may be missing domain-specific context about why model baselines are normative targets, and (2) the authors' full data/code availability means some concerns might be addressable with clarification rather than new experiments.
+⚠️ VERDICT: Needs revision

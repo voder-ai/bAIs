@@ -574,7 +574,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory). Rankings are point estimates; bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons---differences are not statistically significant.}
+\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory). Per-domain n shows technique trials only; total 6,987 includes $\sim$1,135 baseline-none reference trials. Rankings are point estimates; bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -698,7 +698,7 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
     
     \item \textbf{Percentage of baseline limitations.} Aggregates mask per-trial variance (see Tables~\ref{tab:anchor-asymmetry},~\ref{tab:sacd-premortem}). Ratio scaling exaggerates deviations for low-baseline models. Future: validate with fixed absolute anchors.
     
-    \item \textbf{Model coverage.} 10 models from 4 providers. \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero baseline variance) shifts means 2--3pp but preserves rankings: SACD 93.4\% (was 93.7\%), Premortem 89.7\% (was 91.6\%), Random Control 77.0\% (was 79.9\%), Devil's Advocate 61.2\% (was 63.6\%).
+    \item \textbf{Model coverage.} 10 models from 4 providers. \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero baseline variance) shifts means 2--3pp but preserves rankings: SACD 93.4\% (was 93.7\%), Premortem 89.7\% (was 91.6\%), Random Control 77.0\% (was 78.3\%), Devil's Advocate 61.2\% (was 63.6\%).
     
     \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Rankings lack confidence intervals and significance testing due to small model count---rank differences may not be statistically robust. Cross-provider validation (Anthropic + OpenAI) confirms patterns are not provider-specific.
     
