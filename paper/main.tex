@@ -34,7 +34,7 @@
 \begin{abstract}
 Do debiasing techniques for anchoring bias transfer across domains? We evaluate four interventions---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, and Random Control---across 21,139 trials spanning six domains: salary negotiation, loan approval, medical triage, and three judicial sentencing scenarios.
 
-\textbf{Our core finding: we cannot identify a technique that consistently outperforms across domains.} Technique rankings vary by domain. In our cross-domain analysis, bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. The technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4). Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains.
+\textbf{Our core finding: we cannot identify a technique that consistently outperforms across domains.} Technique rankings vary by domain. In our cross-domain analysis (4 models, exploratory), bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. The technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4). Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains.
 
 We apply Mean Absolute Deviation (MAD) from unanchored baseline as a metric that reveals per-trial error hidden by aggregate measures. SACD's aggregate 93.7\% baseline proximity in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
 
@@ -47,7 +47,7 @@ A deep-dive validation on judicial sentencing (14,152 trials, 10 models) confirm
 
 Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they transfer across tasks? A technique that works for salary negotiation may fail for medical triage. Prior evaluations typically test single domains; we test six.
 
-We report findings from 21,139 trials across six domains (salary, loan, medical, three judicial scenarios) using models spanning capability tiers (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). Our core finding: \textbf{no debiasing technique generalizes across domains.} Technique rankings vary dramatically, and bootstrap 95\% CIs overlap for all pairwise comparisons---we cannot statistically distinguish effectiveness within any domain.
+We report findings from 21,139 trials across six domains (salary, loan, medical, three judicial scenarios) using models spanning capability tiers (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). Our core finding: \textbf{technique rankings vary by domain, and we cannot identify a universally superior approach.} In the cross-domain analysis (4 models), bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain.
 
 We also identify a methodological flaw in prior work: \textbf{susceptibility}---measuring whether responses vary with anchors---conflates consistency with correctness. A technique can show low susceptibility by being consistently wrong.
 
@@ -340,7 +340,7 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 \draw[dashed, black, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
 \end{axis}
 \end{tikzpicture}
-\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Devil's Advocate keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. Full SACD achieves 93.7\%---closest to the model's unanchored judgment.}
+\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Devil's Advocate keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. Full SACD achieves 93.7\%---closest to the model's unanchored judgment. \textit{Note:} SACD's ranking is confounded by turn count ($\sim$6 vs 3 turns); see Limitations.}
 \label{fig:metric-comparison}
 \end{figure}
 
@@ -426,7 +426,7 @@ Opus 4.6 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
 \textbf{Haiku 4.5} & \textbf{47.8\%} & [46, 50] & \textbf{52.2\%} & Severe undershoot \\
 \bottomrule
 \end{tabular}
-\caption{Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. DeepSeek and Kimi achieve near-perfect debiasing ($\sim$100\%). Several models overshoot (Opus, GLM, GPT-5.2), while Haiku severely undershoots (47.8\%---SACD makes it worse). Note: Opus 4.6 shows zero baseline variance (see Table~\ref{tab:baselines}); excluding it does not change rankings (see Limitations).}
+\caption{Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. DeepSeek and Kimi achieve near-perfect debiasing ($\sim$100\%). Several models overshoot (Opus, GLM, GPT-5.2), while Haiku severely undershoots (47.8\%---SACD makes it worse). \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero variance) shifts aggregate means 2--3pp but preserves all rankings (SACD 93.4\%, Premortem 89.7\%, Random Control 77.0\%, DA 61.2\%).}
 \label{tab:sacd-by-model}
 \end{table}
 
