@@ -36,7 +36,7 @@ Large language models exhibit anchoring bias---disproportionate influence of ini
 
 Following \citet{jacowitz1995}, we collect unanchored baseline responses and measure technique effectiveness as \textbf{percentage of baseline}---how close is the debiased response to the model's unanchored judgment?
 
-Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD as the primary metric for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
+Across 14,152 judicial sentencing trials on 10 models, we find that \textbf{susceptibility and baseline metrics give divergent rankings}. Only Devil's Advocate reduces susceptibility ($-$8.8\%); SACD, Premortem, and Random Control all \textit{increase} it (+40--74\%). Crucially, aggregate baseline proximity (93.7\% for SACD) masks per-trial variance: \textbf{Mean Absolute Deviation (MAD) reveals SACD's true per-trial error is 18.1\%, not 6.3\%}. We recommend MAD alongside susceptibility for evaluating debiasing techniques, as aggregate measures can hide bidirectional errors that cancel out.
 
 We extend this analysis with an \textit{exploratory} multi-domain study: 6,987 trials across six domains---loan, medical, salary, and three judicial vignettes (DUI, tax fraud, aggravated theft)---using 4 models (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). \textbf{The metric choice inverts technique rankings}: Using asymmetry (spread between anchors), SACD appears to rank \#1 on 5 of 6 domains. Using MAD (deviation from unanchored baseline), \textit{no single technique dominates}---even within judicial vignettes, different case types favor different techniques (devils-advocate for DUI, no-intervention for fraud, random-control for theft). SACD ranks \#1 on \textit{zero} domains. This pattern reinforces that metric choice determines recommendation.
 \end{abstract}
@@ -72,7 +72,7 @@ The baseline metric directly answers: ``Is the debiased response close to what t
 
 \subsection{The Divergence}
 
-Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseline proximity (63.6\%). SACD shows the reverse: increases susceptibility (+39.6\%) but best aggregate proximity (93.7\%). However, MAD reveals SACD's true per-trial error is 18.1\%, not 6.3\%---bidirectional errors cancel. We recommend \textbf{MAD as primary metric}.
+Devil's Advocate reduces susceptibility ($-$8.8\%) but has \textit{worst} baseline proximity (63.6\%). SACD shows the reverse: increases susceptibility (+39.6\%) but best aggregate proximity (93.7\%). However, MAD reveals SACD's true per-trial error is 18.1\%, not 6.3\%---bidirectional errors cancel. We recommend \textbf{MAD alongside aggregate metrics}.
 
 \subsection{Contributions}
 
@@ -546,7 +546,7 @@ Average response deviation from 100\% & 6.3\% & 8.4\% \\
 Mean absolute per-trial error & 18.1\% & 22.6\% \\
 \bottomrule
 \end{tabular}
-\caption{\textbf{Mean Absolute Deviation (MAD) as primary metric.} Average response deviation (6.3\% vs 8.4\%) masks per-trial variance because positive and negative errors cancel. \textbf{MAD} (18.1\% vs 22.6\%) reveals the true per-trial error: individual SACD responses deviate $\sim$18\% from baseline, not 6\%. The 93.7\% aggregate is an average of overshoots (112.0\% from high anchors) and undershoots (75.7\% from low anchors). We recommend MAD as the primary metric for debiasing evaluation. Difference not statistically significant ($p \approx 0.054$).}
+\caption{\textbf{Mean Absolute Deviation (MAD) complements aggregate metrics.} Average response deviation (6.3\% vs 8.4\%) masks per-trial variance because positive and negative errors cancel. \textbf{MAD} (18.1\% vs 22.6\%) reveals the true per-trial error: individual SACD responses deviate $\sim$18\% from baseline, not 6\%. The 93.7\% aggregate is an average of overshoots (112.0\% from high anchors) and undershoots (75.7\% from low anchors). We recommend MAD alongside susceptibility for debiasing evaluation. Difference not statistically significant ($p \approx 0.054$).}
 \label{tab:sacd-premortem}
 \end{table}
 
@@ -710,7 +710,7 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
 
 Metric choice determines technique recommendation. Our 21,139-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; no technique generalizes.
 
-\textbf{For practitioners:} Test per-model, per-domain. Use MAD as primary metric; aggregates hide bidirectional errors.
+\textbf{For practitioners:} Test per-model, per-domain. Report MAD alongside aggregates; aggregates alone hide bidirectional errors.
 
 \textbf{For researchers:} Report MAD alongside aggregates; collect unanchored baselines.
 
