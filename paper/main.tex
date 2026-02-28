@@ -653,23 +653,20 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 
 \textbf{1. Metric choice inverts technique rankings.} When switching from asymmetry (high--low spread) to MAD (deviation from baseline), SACD drops from \#1 on 5 domains to \#1 on \textit{zero} domains. This is our paper's core thesis in action: which technique you recommend depends entirely on which metric you use.
 
-\textbf{2. Even within judicial domain, rankings vary by case type.} Devils-advocate ranks \#1 on DUI, no-intervention on fraud, random-control on theft. This granular variation suggests technique effectiveness depends not just on domain but on specific task characteristics within a domain.
+\textbf{2. No technique wins across domains.} Random-control ranks \#1 on salary/medical, premortem on loan, devils-advocate on DUI, no-intervention on fraud, random-control on theft. Even within judicial vignettes, different case types favor different techniques. Practitioners must test per-task.
 
-\textbf{3. No technique wins across domains.} Random-control ranks \#1 on salary and medical. Premortem ranks \#1 on loan. Different techniques win each judicial subdomain. There is no universal ``best'' technique---practitioners must test per-task.
+\textbf{3. SACD consistently underperforms.} On 3 of 6 domains, SACD ranks \#5 (worst); on the rest, \#2--\#4.
 
-\textbf{4. SACD consistently underperforms.} On 3 of 6 domains (loan, medical, aggravated-theft), SACD ranks \#5 (worst). On the remaining domains, it ranks \#2--\#4. This contradicts claims that SACD is an effective general-purpose debiasing technique.
-
-\textbf{5. Fraud domain shows severe anchoring.} All techniques produce responses at only 29--75\% of baseline. Even baseline shows large distortion (37.2\% low, 74.7\% high). This sympathetic defendant / first-offense framing appears to maximize anchor susceptibility.
+\textbf{4. Fraud domain shows severe anchoring.} All techniques produce responses at only 29--75\% of baseline. Even baseline shows large distortion (37.2\% low, 74.7\% high). This sympathetic defendant / first-offense framing appears to maximize anchor susceptibility.
 
 \subsection{Implications}
 
 These results reinforce our core argument:
 
 \begin{enumerate}
-    \item \textbf{Metric choice determines recommendation}---asymmetry says ``use SACD''; MAD says ``do nothing.'' Practitioners must specify which outcome they optimize for.
-    \item \textbf{Debiasing techniques can backfire}---on some domains (e.g., judicial fraud), all tested techniques produce responses \textit{further} from baseline than no intervention. ``Debiasing'' may introduce new distortions.
-    \item \textbf{Domain-specific validation is mandatory}---no technique transfers reliably; each domain requires independent evaluation.
-    \item \textbf{Cross-provider consistency}---GPT-5.2 shows similar patterns to Anthropic models, suggesting findings reflect fundamental properties of current LLMs rather than provider-specific training.
+    \item \textbf{Metric choice determines recommendation}---practitioners must specify which outcome they optimize for.
+    \item \textbf{Domain-specific validation is mandatory}---no technique transfers; test per-task.
+    \item \textbf{Cross-provider consistency}---GPT-5.2 patterns match Anthropic models.
 \end{enumerate}
 
 %==============================================================================
@@ -684,31 +681,15 @@ Full SACD achieves the highest baseline proximity (Table~\ref{tab:baseline-pct})
 
 \subsection{Theoretical Grounding (Speculative)}
 
-Recent theoretical work offers \textit{potential} explanations for our empirical findings. The connections below are speculative; we present them to motivate future research rather than as established mechanisms:
-
-\textbf{Positional encoding breaks exchangeability.} \citet{llm-bayesian-2025} show that LLMs are ``Bayesian in expectation, not in realization''---the same evidence presented in different orders yields different posteriors due to positional encoding effects. This may explain SACD's model-dependent effectiveness: iterative self-reflection changes the \textit{order} of reasoning steps, and models with stronger positional biases (potentially Haiku) may amplify rather than correct errors through repeated passes.
-
-\textbf{Self-judgment induces overconfidence.} \citet{llm-judge-overconfidence-2025} demonstrate that LLMs systematically overstate confidence when judging their own outputs. Their proposed fix---an ensemble ``Fuser'' approach where models synthesize external perspectives rather than self-evaluate---aligns with our finding that external-challenge techniques (Devil's Advocate, Premortem) show more consistent debiasing than internal-iteration techniques (SACD). The ``ironic process'' we observe in SACD may be a manifestation of this overconfidence: extended reasoning produces outputs that \textit{sound} more considered while actually drifting further from calibrated judgment.
-
-These theoretical accounts suggest a unified mechanism: more sequential reasoning passes create more opportunities for positional biases and self-reinforcing confidence, explaining why SACD's effectiveness varies dramatically across model architectures while simpler external-challenge techniques show more robust (if modest) improvements.
+Two recent findings offer potential explanations: (1) \citet{llm-bayesian-2025} show LLMs are ``Bayesian in expectation, not realization''---positional encoding causes order-dependent posteriors. Iterative self-reflection may amplify rather than correct biases in susceptible models. (2) \citet{llm-judge-overconfidence-2025} demonstrate LLMs overstate confidence in self-judgment; external-challenge techniques (Devil's Advocate, Premortem) may outperform internal-iteration (SACD) because they avoid this self-reinforcing loop.
 
 \subsection{Per-Trial Distribution Analysis}
 
-Aggregate means can mask important distributional properties. Examining individual trial distributions reveals:
-
-\begin{itemize}
-    \item \textbf{Devil's Advocate compresses variance} toward the wrong target: SD = 34.6, median = 69\%, only 11\% of trials within $\pm$10\% of baseline.
-    \item \textbf{Premortem shows highest baseline proximity}: 13.9\% of trials within $\pm$10\% of baseline, though with higher variance (SD = 41.9).
-    \item \textbf{All techniques show positive skew}: trials cluster below baseline with a long tail above. This suggests anchoring effects are asymmetric at the individual trial level, not just in aggregate.
-\end{itemize}
-
-The compression phenomenon explains Devil's Advocate's favorable susceptibility score---but compression toward 67\% of baseline is not useful.
+Aggregates mask distributional properties. Devil's Advocate compresses variance (SD=34.6) toward the wrong target (median=69\%, only 11\% within $\pm$10\% of baseline). Premortem achieves highest proximity (13.9\% within $\pm$10\%) but with higher variance (SD=41.9). All techniques show positive skew.
 
 \subsection{Why Random Control Works}
 
-Random Control outperforms Devil's Advocate (Table~\ref{tab:baseline-pct}) despite having no debiasing content. \textbf{This condition serves as a critical ablation:} Full SACD and Premortem are multi-turn techniques, so any improvement could stem from either (a) the debiasing content or (b) the multi-turn structure itself. Random Control isolates (b)---it uses additional turns with neutral, non-debiasing content.
-
-Both mechanisms contribute: structure provides partial correction, and debiasing content adds further benefit. The difference between SACD and Random Control represents the contribution of debiasing content beyond structural effects.
+Random Control outperforms Devil's Advocate despite no debiasing content. \textbf{Critical ablation:} Multi-turn structure alone provides +15pp improvement. SACD/Premortem benefits come from both structure and content; Random Control isolates the structural contribution.
 
 \textbf{Direct comparison:} Random Control outperforms Devil's Advocate by $\sim$15 percentage points (Cohen's $d = 0.39$, small-to-medium). Structure alone helps more than Devil's Advocate content.
 
@@ -740,38 +721,36 @@ We archived the weak-anchor data in \texttt{results/archived-wrong-anchors/} for
     
     \item \textbf{Outside View confound.} See Section~\ref{sec:outside-view-confound}. Future work should test jurisdiction-neutral prompts.
     
-    \item \textbf{Baseline interpretation.} Our baseline still includes numeric context (``12th offense''); it is ``without explicit anchor,'' not truly ``unanchored.'' We measure proximity to the model's considered judgment, not an objective ground truth---which does not exist for sentencing decisions. The baseline is a reference point, not a normative standard: 100\% of baseline means ``restored to unanchored state,'' not ``correct.'' This is consistent with anchoring research in general: the goal is to measure and mitigate anchor influence, not to establish objectively correct judgments.
+    \item \textbf{Baseline interpretation.} Baseline includes ``12th offense''---``without explicit anchor,'' not truly unanchored. 100\% = restored to unanchored state, not ``correct.''
     
-    \item \textbf{Percentage of baseline metric limitations.} Our proposed metric has several properties that warrant caution: (1) \textit{Bidirectional averaging}: Aggregates mask per-trial variance; see Tables~\ref{tab:anchor-asymmetry} and~\ref{tab:sacd-premortem} for breakdowns. (2) \textit{Ratio scaling}: A 5-month deviation from an 18-month baseline (27.8\%) appears larger than the same deviation from a 36-month baseline (13.9\%). This is intentional for cross-model comparison, but practitioners should examine absolute deviations for their use case. (3) \textit{Same-baseline circularity}: See ``Proportional anchor design'' above. Future work should validate with fixed absolute anchors.
+    \item \textbf{Percentage of baseline limitations.} Aggregates mask per-trial variance (see Tables~\ref{tab:anchor-asymmetry},~\ref{tab:sacd-premortem}). Ratio scaling exaggerates deviations for low-baseline models. Future: validate with fixed absolute anchors.
     
     \item \textbf{Model coverage.} 10 models from 4 providers is substantial but not exhaustive. Results may not apply to other model families. \textbf{Sensitivity analysis:} Excluding Opus 4.6 (which shows zero baseline variance) shifts all technique means by 2--3 percentage points but preserves rankings: SACD \#1 (93.4\%), Premortem \#2 (89.7\%), Random Control \#3 (77.0\%), Devil's Advocate \#4 (61.2\%).
     
-    \item \textbf{Multi-domain model coverage.} The multi-domain extension (Section 5) includes 5,567 analyzed trials across 6 domains using 3 models (Opus 4.6, Sonnet 4.6, GPT-5.2). Cross-provider validation confirms findings are not Anthropic-specific. However, the loan domain's floor effect (3--7\% of baseline) persists across providers, suggesting a fundamental limitation rather than provider-specific training.
+    \item \textbf{Multi-domain coverage.} Section 5 uses only 3 models; results are exploratory. Cross-provider validation confirms patterns are not Anthropic-specific.
     
     \item \textbf{Stopping rule.} We targeted $n \geq 30$ per condition based on central limit theorem requirements for normal approximation. We did not use adaptive stopping based on effect size stabilization. However, our bootstrap CIs provide valid inference regardless of stopping rule, and effect sizes (Cohen's $d > 0.5$ for key comparisons) suggest adequate power.
 \end{enumerate}
 
 \subsection{Practical Recommendations}
 
-Based on our findings in the judicial sentencing domain (generalization to other domains requires validation):
-
 \begin{enumerate}
-    \item \textbf{Consider structural interventions.} Adding conversation turns (Random Control, +15pp over Devil's Advocate) provides meaningful improvement with minimal prompt engineering.
-    \item \textbf{Test per-model.} Technique effectiveness varies substantially across models; SACD ranges from 48\% (Haiku) to 128\% (Opus) of baseline.
-    \item \textbf{Collect baselines.} Following \citet{jacowitz1995}, measure \% of baseline alongside susceptibility. This catches techniques that appear effective but keep responses anchored at wrong values---the Devil's Advocate failure mode we document.
-    \item \textbf{Be cautious with reference class prompts.} See Section~\ref{sec:outside-view-confound}.
-    \item \textbf{Consider cost-effectiveness.} SACD requires $\sim$6$\times$ more API calls than single-turn techniques (Appendix~\ref{sec:sacd-algorithm}). Premortem achieves comparable baseline proximity (91.6\% vs.\ 93.7\%, not significantly different) in a single turn---it dominates SACD on cost-effectiveness for most applications.
+    \item \textbf{Add conversation turns.} Multi-turn structure alone provides +15pp improvement.
+    \item \textbf{Test per-model.} SACD ranges 48\%--128\% of baseline across models.
+    \item \textbf{Collect baselines.} Susceptibility alone misses Devil's Advocate failure mode.
+    \item \textbf{Avoid reference class prompts} without careful design (Section~\ref{sec:outside-view-confound}).
+    \item \textbf{Consider cost.} Premortem matches SACD in one turn vs.\ six.
 \end{enumerate}
 
 %==============================================================================
 \section{Conclusion}
 %==============================================================================
 
-Metric choice can determine technique recommendation. Across 14,152 trials on 10 models, susceptibility and \% of baseline give divergent rankings (Table~\ref{tab:metric-comparison}): Devil's Advocate appears best under susceptibility but worst under baseline proximity; SACD shows the reverse pattern. Model-specific variation is substantial---SACD ranges from 48\% (Haiku) to 128\% (Opus) of baseline.
+Metric choice determines technique recommendation. Our 22,366-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; no technique generalizes.
 
-\textbf{For practitioners:} Test per-model and per-domain. Use \textbf{Mean Absolute Deviation (MAD)} as your primary metric---aggregate baseline proximity can hide bidirectional errors. Measure susceptibility as a secondary check for consistency across anchor directions.
+\textbf{For practitioners:} Test per-model, per-domain. Use MAD as primary metric; aggregates hide bidirectional errors.
 
-\textbf{For researchers:} Collect unanchored baselines and report \textbf{MAD}, not just aggregate baseline proximity. Susceptibility alone has a blind spot (consistent but wrong responses); aggregate proximity has a blind spot (bidirectional errors that cancel). MAD captures actual per-trial deviation.
+\textbf{For researchers:} Report MAD alongside aggregates; collect unanchored baselines.
 
 %==============================================================================
 \appendix
