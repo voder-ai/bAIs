@@ -14,6 +14,13 @@ import { computeRandomSlopesStats } from './analysis-random-slopes';
 
 const RESULTS_DIR = './results';
 
+// Paper uses only these 3 models (per Tom's directive)
+const PAPER_MODELS = new Set([
+  'claude-opus-4-6',
+  'claude-sonnet-4-6', 
+  'gpt-5-2'
+]);
+
 // ============================================================================
 // DATA LOADING
 // ============================================================================
@@ -22,6 +29,7 @@ function normalizeModel(model: string): string {
   return model
     .replace('anthropic/', '')
     .replace('openai/', '')
+    .replace('codex/', '')  // GPT-5.2 via Codex CLI
     .replace('deepseek/', '')
     .replace('moonshot/', '')
     .replace('moonshotai/', '')  // kimi models
@@ -511,7 +519,10 @@ interface VignetteTrial {
 
 function loadVignetteTrials(): VignetteTrial[] {
   const trials: VignetteTrial[] = [];
-  const vignetteDirs = ['vignette-salary', 'vignette-loan', 'vignette-medical'];
+  const vignetteDirs = [
+    'vignette-salary', 'vignette-loan', 'vignette-medical',
+    'vignette-judicial-dui', 'vignette-judicial-fraud', 'vignette-judicial-aggravated-theft'
+  ];
   
   for (const dir of vignetteDirs) {
     const dirPath = join(RESULTS_DIR, dir);
@@ -548,8 +559,10 @@ function loadVignetteTrials(): VignetteTrial[] {
   return trials;
 }
 
-const vignetteTrials = loadVignetteTrials();
-console.log(`\nVignette trials loaded: ${vignetteTrials.length}`);
+const allVignetteTrials = loadVignetteTrials();
+// Filter to paper models only (Opus 4.6, Sonnet 4.6, GPT-5.2)
+const vignetteTrials = allVignetteTrials.filter(t => PAPER_MODELS.has(t.model));
+console.log(`\nVignette trials loaded: ${vignetteTrials.length} (filtered from ${allVignetteTrials.length})`);
 
 if (vignetteTrials.length > 0) {
   // Group by vignette
@@ -694,6 +707,98 @@ if (vignetteTrials.length > 0) {
   
   console.log('\n**Key finding:** Best technique varies by domain. No universal "best debiasing."');
   console.log('Closer to 100% in both columns = better. Smaller asymmetry = more consistent.');
+
+  // NEW: TABLE V5 - MAD by Domain (reviewer requested)
+  console.log('\n\nTABLE V5: MAD by Domain × Technique (Primary Metric)');
+  console.log('-'.repeat(60));
+  console.log('MAD = Mean Absolute Deviation from baseline. Lower = better.\n');
+  console.log('| Domain | Technique | MAD | % of Baseline | n |');
+  console.log('|--------|-----------|-----|---------------|---|');
+  
+  for (const [vignette, trials] of byVignette) {
+    // Build per-model baselines (Pilot's correct methodology)
+    const models = [...new Set(trials.map(t => t.model))];
+    const perModelBaseline = new Map<string, number>();
+    for (const model of models) {
+      const noAnchorTrials = trials.filter(t => 
+        t.model === model && t.technique === 'baseline' && t.anchorType === 'none'
+      );
+      if (noAnchorTrials.length > 0) {
+        perModelBaseline.set(model, mean(noAnchorTrials.map(t => t.response)));
+      }
+    }
+    
+    const techniques = [...new Set(trials.map(t => t.technique))];
+    
+    // Calculate MAD for each technique
+    const techResults: { tech: string; mad: number; avgPct: number; n: number }[] = [];
+    
+    for (const tech of techniques) {
+      // Include both low and high anchor trials (not none)
+      const anchoredTrials = trials.filter(t => t.technique === tech && t.anchorType !== 'none');
+      
+      if (anchoredTrials.length === 0) continue;
+      
+      // MAD = mean of |response_pct - 100| using PER-MODEL baselines
+      const deviations = anchoredTrials.map(t => {
+        const modelBaseline = perModelBaseline.get(t.model) || 100;
+        return Math.abs((t.response / modelBaseline) * 100 - 100);
+      });
+      const mad = mean(deviations);
+      const avgPct = mean(anchoredTrials.map(t => {
+        const modelBaseline = perModelBaseline.get(t.model) || 100;
+        return (t.response / modelBaseline) * 100;
+      }));
+      
+      techResults.push({ tech, mad, avgPct, n: anchoredTrials.length });
+    }
+    
+    // Sort by MAD (lowest first = best)
+    techResults.sort((a, b) => a.mad - b.mad);
+    
+    for (const r of techResults) {
+      console.log(`| ${vignette} | ${r.tech} | ${r.mad.toFixed(1)}% | ${r.avgPct.toFixed(1)}% | ${r.n} |`);
+    }
+  }
+  
+  // Summary: MAD rankings across domains
+  console.log('\n\nTABLE V6: Technique Rankings by Domain (MAD metric)');
+  console.log('-'.repeat(60));
+  console.log('| Domain | #1 (Best) | #2 | #3 | #4 | #5 (Worst) |');
+  console.log('|--------|-----------|----|----|----|-----------| ');
+  
+  for (const [vignette, trials] of byVignette) {
+    // Build per-model baselines (same as TABLE V5)
+    const models = [...new Set(trials.map(t => t.model))];
+    const perModelBaseline = new Map<string, number>();
+    for (const model of models) {
+      const noAnchorTrials = trials.filter(t => 
+        t.model === model && t.technique === 'baseline' && t.anchorType === 'none'
+      );
+      if (noAnchorTrials.length > 0) {
+        perModelBaseline.set(model, mean(noAnchorTrials.map(t => t.response)));
+      }
+    }
+    
+    const techniques = [...new Set(trials.map(t => t.technique))];
+    const techResults: { tech: string; mad: number }[] = [];
+    
+    for (const tech of techniques) {
+      const anchoredTrials = trials.filter(t => t.technique === tech && t.anchorType !== 'none');
+      if (anchoredTrials.length === 0) continue;
+      const deviations = anchoredTrials.map(t => {
+        const modelBaseline = perModelBaseline.get(t.model) || 100;
+        return Math.abs((t.response / modelBaseline) * 100 - 100);
+      });
+      techResults.push({ tech, mad: mean(deviations) });
+    }
+    
+    techResults.sort((a, b) => a.mad - b.mad);
+    const rankings = techResults.map(r => r.tech).slice(0, 5);
+    while (rankings.length < 5) rankings.push('-');
+    
+    console.log(`| ${vignette} | ${rankings[0]} | ${rankings[1]} | ${rankings[2]} | ${rankings[3]} | ${rankings[4]} |`);
+  }
 }
 
 console.log('\n\nScript complete. Copy relevant sections to main.tex.');
