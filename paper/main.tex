@@ -570,7 +570,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory; see Limitation above). Rankings are point estimates without significance testing; close rankings should not be overinterpreted.}
+\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory). Rankings are point estimates; bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons---differences are not statistically significant.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -620,6 +620,13 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/mad-heatmap.pdf}
+\caption{MAD by domain and technique. Lower (green) = better calibration to unanchored baseline. Each cell shows deviation percentage; asterisks mark best technique per domain. No technique wins across all domains. Bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons (see supplementary materials).}
+\label{fig:mad-heatmap}
+\end{figure}
 
 \subsection{Key Findings}
 
@@ -691,7 +698,7 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
     
     \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Rankings lack confidence intervals and significance testing due to small model count---rank differences may not be statistically robust. Cross-provider validation (Anthropic + OpenAI) confirms patterns are not provider-specific.
     
-    \item \textbf{Presentation.} Response distributions are summarized via statistics (mean, MAD) rather than visualized. Full distributions available in supplementary materials.
+    \item \textbf{Presentation.} Response distributions summarized via statistics and heatmap (Figure~\ref{fig:mad-heatmap}). Full per-trial distributions in supplementary materials.
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition (CLT). Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
 \end{enumerate}
