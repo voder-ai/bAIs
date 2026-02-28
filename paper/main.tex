@@ -585,6 +585,8 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 
 To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We collected 8,214 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Claude Sonnet 4.6) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Sonnet 4.6 loan/SACD condition showed elevated response extraction failures; surviving trials may exhibit selection bias. We report these results with appropriate caution.}
 
+\textbf{Limitation:} This extension uses only 3 models compared to 10 in the main study. Results should be considered \textit{exploratory}---they demonstrate that metric-dependent rankings persist across domains, but specific technique rankings (Table~\ref{tab:vignette-comparison}) may not generalize to other models.
+
 \subsection{Domain Comparison}
 
 Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings vary dramatically by domain.
