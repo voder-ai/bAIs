@@ -12,7 +12,7 @@ import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, basename } from 'path';
 
 const RESULTS_DIR = './results';
-const VIGNETTES = ['salary', 'loan', 'medical'];
+const VIGNETTES = ['salary', 'loan', 'medical', 'judicial-dui', 'judicial-fraud', 'judicial-aggravated-theft'];
 
 // ============================================================================
 // TYPES
@@ -51,9 +51,27 @@ function loadVignetteTrials(vignette: string): Trial[] {
     if (!file.endsWith('.jsonl')) continue;
     
     // Parse filename: technique-anchorType-model-t07.jsonl
-    const parts = basename(file, '.jsonl').split('-');
-    const technique = parts[0];
-    const anchorType = parts[1] as 'none' | 'low' | 'high';
+    // Technique names can contain hyphens (e.g., devils-advocate, random-control)
+    const filename = basename(file, '.jsonl');
+    let technique: string;
+    let anchorType: 'none' | 'low' | 'high';
+    
+    // Find anchor type in filename
+    if (filename.includes('-none-')) {
+      anchorType = 'none';
+      technique = filename.split('-none-')[0];
+    } else if (filename.includes('-low-')) {
+      anchorType = 'low';
+      technique = filename.split('-low-')[0];
+    } else if (filename.includes('-high-')) {
+      anchorType = 'high';
+      technique = filename.split('-high-')[0];
+    } else {
+      // Fallback for old format
+      const parts = filename.split('-');
+      technique = parts[0];
+      anchorType = parts[1] as 'none' | 'low' | 'high';
+    }
     
     const content = readFileSync(join(dir, file), 'utf-8');
     for (const line of content.split('\n').filter(l => l.trim())) {
@@ -221,6 +239,106 @@ function analyzeVignette(vignette: string, trials: Trial[]) {
 }
 
 // ============================================================================
+// MAD COMPUTATION (Mean Absolute Deviation from baseline)
+// ============================================================================
+
+interface MADResult {
+  technique: string;
+  lowPctBaseline: number;
+  highPctBaseline: number;
+  lowMAD: number;
+  highMAD: number;
+  overallMAD: number;
+  n: number;
+}
+
+function computeMAD(vignette: string, trials: Trial[]): MADResult[] {
+  const models = [...new Set(trials.map(t => t.model))].sort();
+  const techniques = [...new Set(trials.map(t => t.technique))].sort();
+  
+  // Get baselines per model
+  const baselineByModel = new Map<string, number>();
+  for (const model of models) {
+    const baselineTrials = trials.filter(t => t.model === model && t.technique === 'baseline' && t.anchorType === 'none');
+    if (baselineTrials.length > 0) {
+      const mean = baselineTrials.reduce((sum, t) => sum + t.response, 0) / baselineTrials.length;
+      baselineByModel.set(model, mean);
+    }
+  }
+  
+  const results: MADResult[] = [];
+  
+  for (const tech of techniques) {
+    const lowTrials = trials.filter(t => t.technique === tech && t.anchorType === 'low');
+    const highTrials = trials.filter(t => t.technique === tech && t.anchorType === 'high');
+    
+    // Calculate % of baseline for each trial
+    const lowPcts: number[] = [];
+    const highPcts: number[] = [];
+    
+    for (const t of lowTrials) {
+      const baseline = baselineByModel.get(t.model);
+      if (baseline && baseline > 0) {
+        lowPcts.push((t.response / baseline) * 100);
+      }
+    }
+    
+    for (const t of highTrials) {
+      const baseline = baselineByModel.get(t.model);
+      if (baseline && baseline > 0) {
+        highPcts.push((t.response / baseline) * 100);
+      }
+    }
+    
+    if (lowPcts.length === 0 && highPcts.length === 0) continue;
+    
+    const lowMean = lowPcts.length > 0 ? lowPcts.reduce((a,b) => a+b, 0) / lowPcts.length : 0;
+    const highMean = highPcts.length > 0 ? highPcts.reduce((a,b) => a+b, 0) / highPcts.length : 0;
+    
+    // MAD = mean absolute deviation from 100% (the ideal)
+    const lowMAD = lowPcts.length > 0 ? lowPcts.reduce((sum, p) => sum + Math.abs(p - 100), 0) / lowPcts.length : 0;
+    const highMAD = highPcts.length > 0 ? highPcts.reduce((sum, p) => sum + Math.abs(p - 100), 0) / highPcts.length : 0;
+    
+    // Overall MAD across both conditions
+    const allPcts = [...lowPcts, ...highPcts];
+    const overallMAD = allPcts.length > 0 ? allPcts.reduce((sum, p) => sum + Math.abs(p - 100), 0) / allPcts.length : 0;
+    
+    results.push({
+      technique: tech,
+      lowPctBaseline: lowMean,
+      highPctBaseline: highMean,
+      lowMAD,
+      highMAD,
+      overallMAD,
+      n: lowPcts.length + highPcts.length
+    });
+  }
+  
+  // Sort by overall MAD (lower is better)
+  results.sort((a, b) => a.overallMAD - b.overallMAD);
+  
+  return results;
+}
+
+function printMADTable(allVignetteResults: Map<string, MADResult[]>) {
+  console.log(`\n${'='.repeat(70)}`);
+  console.log('PAPER TABLE: MAD by Domain and Technique');
+  console.log('(Lower MAD = better calibration to unanchored baseline)');
+  console.log('='.repeat(70));
+  
+  console.log('\n| Domain | Technique | Low % | High % | MAD | Rank | n |');
+  console.log('|--------|-----------|-------|--------|-----|------|---|');
+  
+  for (const [vignette, results] of allVignetteResults) {
+    for (let i = 0; i < results.length; i++) {
+      const r = results[i];
+      const rank = i === 0 ? '**#1**' : `#${i+1}`;
+      console.log(`| ${vignette} | ${r.technique} | ${r.lowPctBaseline.toFixed(1)}% | ${r.highPctBaseline.toFixed(1)}% | ${r.overallMAD.toFixed(1)}% | ${rank} | ${r.n} |`);
+    }
+  }
+}
+
+// ============================================================================
 // MAIN
 // ============================================================================
 
@@ -231,6 +349,7 @@ function main() {
   console.log('='.repeat(70));
   
   let totalTrials = 0;
+  const allMADResults = new Map<string, MADResult[]>();
   
   for (const vignette of VIGNETTES) {
     const trials = loadVignetteTrials(vignette);
@@ -240,7 +359,14 @@ function main() {
     }
     totalTrials += trials.length;
     analyzeVignette(vignette, trials);
+    
+    // Compute MAD for paper table
+    const madResults = computeMAD(vignette, trials);
+    allMADResults.set(vignette, madResults);
   }
+  
+  // Print consolidated MAD table
+  printMADTable(allMADResults);
   
   // Also analyze spot-check if present
   const spotCheckDir = join(RESULTS_DIR, 'spot-check-judicial-piai');
