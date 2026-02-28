@@ -1,5 +1,5 @@
-warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use *-baseline build:
-  https://github.com/oven-sh/bun/releases/download/bun-v1.3.9/bun-darwin-x64-baseline.zip
+warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use \*-baseline build:
+https://github.com/oven-sh/bun/releases/download/bun-v1.3.9/bun-darwin-x64-baseline.zip
 Using model: anthropic/claude-opus-4-6
 
 Sending paper for review...
@@ -19,6 +19,7 @@ This paper argues that the standard metric for evaluating anchoring bias debiasi
 ## 1. Methodology
 
 ### Strengths
+
 - **Well-motivated research question.** The observation that metric choice affects technique recommendations is genuinely useful for the field.
 - **Substantial scale.** 21,139 trials across 10 models is commendable.
 - **Proportional anchor design** (anchors scaled to each model's baseline) is a reasonable choice, and the paper correctly identifies its limitations for cross-model comparison.
@@ -33,7 +34,7 @@ This paper argues that the standard metric for evaluating anchoring bias debiasi
 
 1. **Single vignette in the main study.** The primary 14,152-trial study uses a single judicial sentencing vignette (Lena M., 12th shoplifting offense). This is a significant threat to external validity. The multi-domain extension partially addresses this but uses only 4 of the 10 models and is explicitly labeled "exploratory." For a top venue, I would expect the main study itself to use multiple vignettes or at least acknowledge more forcefully that conclusions may be vignette-specific.
 
-2. **The core thesis is arguably straightforward.** The claim that "different metrics give different rankings" is important but not deeply surprising. Two metrics measuring different things (spread vs. proximity to baseline) *should* give different rankings when techniques have different failure modes. The paper could strengthen its contribution by providing deeper theoretical analysis of *when* and *why* each metric is appropriate, rather than primarily demonstrating that they diverge.
+2. **The core thesis is arguably straightforward.** The claim that "different metrics give different rankings" is important but not deeply surprising. Two metrics measuring different things (spread vs. proximity to baseline) _should_ give different rankings when techniques have different failure modes. The paper could strengthen its contribution by providing deeper theoretical analysis of _when_ and _why_ each metric is appropriate, rather than primarily demonstrating that they diverge.
 
 3. **Baseline definition ambiguity.** The paper acknowledges (Limitation 5) that the "baseline" includes the 12th-offense framing, meaning it's not truly unanchored—it just lacks the explicit prosecutor demand. This is a meaningful concern: what the paper calls "unanchored baseline" is itself influenced by the case description's implicit anchors. The paper should discuss whether the baseline represents a "correct" answer or merely a reference point more thoroughly.
 
@@ -52,6 +53,7 @@ This paper argues that the standard metric for evaluating anchoring bias debiasi
 ## 2. Statistics
 
 ### Strengths
+
 - Bootstrap CIs with stratification by model
 - Bonferroni correction for multiple comparisons
 - Effect sizes reported alongside p-values
@@ -104,6 +106,7 @@ No red flags, but the unverified citations should be checked.
 ## 5. Writing Quality
 
 ### Strengths
+
 - Generally clear and well-organized
 - Good use of tables and figures
 - Honest and transparent about limitations
@@ -119,7 +122,7 @@ No red flags, but the unverified citations should be checked.
 
 4. **Missing related work.** The paper doesn't engage with the broader literature on evaluation metrics in NLP (e.g., the metrics debate in MT, summarization). The insight that "different metrics measure different things" has extensive precedent.
 
-5. **"Ours" claim for % of baseline.** The paper labels % of baseline as "(ours)" in Section 1.1, but immediately cites Jacowitz & Kahneman (1995) as the inspiration. The metric itself (response / baseline × 100) is straightforward. The novelty is in *applying* it to LLM debiasing evaluation, not in the metric itself. The framing should be adjusted.
+5. **"Ours" claim for % of baseline.** The paper labels % of baseline as "(ours)" in Section 1.1, but immediately cites Jacowitz & Kahneman (1995) as the inspiration. The metric itself (response / baseline × 100) is straightforward. The novelty is in _applying_ it to LLM debiasing evaluation, not in the metric itself. The framing should be adjusted.
 
 ---
 
@@ -139,16 +142,16 @@ No red flags, but the unverified citations should be checked.
 
 ## Summary of Key Issues
 
-| Issue | Severity |
-|-------|----------|
-| Multi-domain trial count discrepancy (5,852 vs 6,987) | **Major** — needs explanation |
-| Single vignette in main study | **Major** — limits generalizability |
-| Random Control % inconsistency (78.3% vs 79.9%) | **Minor** — likely typo |
-| Multi-domain claims based on non-significant differences | **Significant** — overclaiming |
-| Turn-count confound for SACD | **Significant** — uncontrolled |
-| Core contribution may be incremental for top venue | **Significant** — novelty concern |
-| Mixed-effects df approximation acknowledged as wrong | **Minor** — should fix |
-| Repetitive writing | **Minor** — could tighten |
+| Issue                                                    | Severity                            |
+| -------------------------------------------------------- | ----------------------------------- |
+| Multi-domain trial count discrepancy (5,852 vs 6,987)    | **Major** — needs explanation       |
+| Single vignette in main study                            | **Major** — limits generalizability |
+| Random Control % inconsistency (78.3% vs 79.9%)          | **Minor** — likely typo             |
+| Multi-domain claims based on non-significant differences | **Significant** — overclaiming      |
+| Turn-count confound for SACD                             | **Significant** — uncontrolled      |
+| Core contribution may be incremental for top venue       | **Significant** — novelty concern   |
+| Mixed-effects df approximation acknowledged as wrong     | **Minor** — should fix              |
+| Repetitive writing                                       | **Minor** — could tighten           |
 
 ---
 

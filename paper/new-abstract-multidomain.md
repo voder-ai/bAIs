@@ -1,9 +1,11 @@
 # New Abstract — Multi-Domain Focus
 
 ## Current Title
+
 "How Effective Are Debiasing Techniques for LLM Anchoring Bias? A 21,000-Trial Evaluation"
 
 ## New Title Options
+
 1. "Debiasing Techniques Don't Transfer: A Cross-Domain Evaluation of Anchoring Bias Interventions in LLMs"
 2. "No Universal Debiasing: Why Anchoring Bias Interventions Fail to Generalize Across Domains"
 3. "Domain-Dependent Debiasing: Evaluating Anchoring Bias Interventions Across 6 Tasks"
@@ -25,15 +27,18 @@ A deep-dive validation on judicial sentencing (14,152 trials, 10 models) confirm
 ## New Intro Structure
 
 ### §1 Introduction
+
 - Hook: "Human debiasing techniques (Devil's Advocate, Premortem) are increasingly applied to LLMs. But do they transfer across tasks?"
 - Gap: Prior work tests single domains; we test 6
 - Finding preview: "No technique generalizes"
 
 ### §1.1 The Transfer Problem
+
 - Different domains have different anchoring patterns
 - What works for salary negotiation may fail for medical triage
 
 ### §1.2 Contributions
+
 1. **Cross-domain evaluation:** 6 domains, 4 models, 6,987 trials
 2. **MAD metric:** Reveals per-trial error hidden by aggregates
 3. **Deep validation:** 14,152 judicial trials on 10 models confirms model-specific variance
@@ -41,21 +46,25 @@ A deep-dive validation on judicial sentencing (14,152 trials, 10 models) confirm
 ### §2 Related Work (condensed)
 
 ### §3 Methodology
+
 - Domains: salary, loan, medical, DUI, fraud, theft
 - Models: Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2 (spanning capability tiers)
 - Techniques: DA, SACD, Premortem, Random Control
 
 ### §4 Results: Cross-Domain Comparison
+
 - Table: MAD by domain × technique (currently Table V, becomes Table 1)
 - Figure: Heatmap (currently Figure 3, becomes Figure 1)
 - Key finding: CI overlap → can't pick winners
 
 ### §5 Deep Dive: Judicial Sentencing
+
 - 10 models, 14,152 trials
 - Model-specific variance
 - SACD vs Premortem equivalence
 
 ### §6 Discussion
+
 - Why techniques don't transfer
 - Practical implications: test per-task
 

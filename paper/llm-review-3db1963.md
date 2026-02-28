@@ -27,19 +27,19 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 The proportional anchor design (high = 1.5×baseline, low = 0.5×baseline) creates fundamental circularity:
 
-- **Problem**: Anchors are *defined* relative to the baseline you're measuring against. A technique that perfectly ignores anchors would score 100% of baseline *by construction*, not because it's "debiased."
+- **Problem**: Anchors are _defined_ relative to the baseline you're measuring against. A technique that perfectly ignores anchors would score 100% of baseline _by construction_, not because it's "debiased."
 
 - **Evidence**: The authors acknowledge this (Section 6.5: "Anchors scale with baseline... introduces potential circularity") but dismiss it too quickly. The "baseline as reference, not ground truth" framing (Section 3.1) doesn't resolve the issue—if anchors are calibrated to each model's baseline, then measuring "distance from baseline" is measuring "distance from the anchor calibration point."
 
 - **Impact**: This undermines the entire percentage-of-baseline metric. The claim that "SACD achieves 93.7% baseline proximity" may simply mean "SACD responses average close to the midpoint between high and low anchors" (which are themselves defined as ±50% of baseline). This is not the same as "SACD restores anchor-independent reasoning."
 
-- **What's needed**: Replication with *fixed absolute anchors* (e.g., always 12 months low, 36 months high, regardless of model baseline). The authors mention this in limitations but don't provide the data.
+- **What's needed**: Replication with _fixed absolute anchors_ (e.g., always 12 months low, 36 months high, regardless of model baseline). The authors mention this in limitations but don't provide the data.
 
 ### 2. **Baseline Measurement Confound**
 
 Section 6.5 acknowledges: "Baseline includes '12th offense'—'without explicit anchor,' not truly unanchored."
 
-- **Problem**: The "baseline" condition still contains a numeric anchor (12th offense). This means you're not measuring deviation from an *unanchored* state, but from a *differently anchored* state.
+- **Problem**: The "baseline" condition still contains a numeric anchor (12th offense). This means you're not measuring deviation from an _unanchored_ state, but from a _differently anchored_ state.
 
 - **Impact**: The entire percentage-of-baseline framework assumes the baseline represents "what the model would say without anchoring." But if the baseline itself is anchored (by "12th offense"), then 100% baseline proximity doesn't mean "debiased"—it means "anchored to 12 instead of to the prosecutor's demand."
 
@@ -47,11 +47,11 @@ Section 6.5 acknowledges: "Baseline includes '12th offense'—'without explicit 
 
 ### 3. **Statistical Power and Multiple Comparisons**
 
-- **Effective sample size**: The authors correctly note (Section 3.2.4) that ICC=0.17 with ~200 trials/model yields n_eff ≈ 60-70 per technique. This is *barely* powered to detect d=0.50 effects.
+- **Effective sample size**: The authors correctly note (Section 3.2.4) that ICC=0.17 with ~200 trials/model yields n*eff ≈ 60-70 per technique. This is \_barely* powered to detect d=0.50 effects.
 
 - **Underpowered comparisons**: The SACD vs. Premortem comparison (d=0.08, p=0.054) is clearly underpowered. The authors run TOST equivalence testing, but the ±5pp equivalence bound is arbitrary ("approximately 1.5 months given average baselines"—but baselines range 18-36 months, so 5pp means different absolute amounts across models).
 
-- **Multiple comparisons**: Bonferroni correction for 6 pairwise comparisons (α=0.0083) is appropriate, but the multi-domain analysis (Section 5) reports *no significance testing at all*. Table 8 shows rankings but states "bootstrap 95% CIs overlap for all pairwise comparisons"—meaning *none* of the domain-specific rankings are statistically distinguishable. This severely undermines claims like "SACD drops from #1 on 5 domains to #1 on zero domains" (Section 5.2).
+- **Multiple comparisons**: Bonferroni correction for 6 pairwise comparisons (α=0.0083) is appropriate, but the multi-domain analysis (Section 5) reports _no significance testing at all_. Table 8 shows rankings but states "bootstrap 95% CIs overlap for all pairwise comparisons"—meaning _none_ of the domain-specific rankings are statistically distinguishable. This severely undermines claims like "SACD drops from #1 on 5 domains to #1 on zero domains" (Section 5.2).
 
 ### 4. **Multi-Domain Analysis is Underpowered and Oversold**
 
@@ -69,15 +69,15 @@ Section 6.5 acknowledges: "Baseline includes '12th offense'—'without explicit 
 
 - **Problem**: This is one of the four main techniques evaluated. Excluding it post-hoc raises concerns about selective reporting. If Outside View was confounded, why include it in the 21,139 trial count and the abstract's "four techniques" claim?
 
-- **Impact**: The paper evaluates *three* techniques cleanly (SACD, Premortem, Devil's Advocate) plus a control (Random Control). The "four techniques" framing is misleading.
+- **Impact**: The paper evaluates _three_ techniques cleanly (SACD, Premortem, Devil's Advocate) plus a control (Random Control). The "four techniques" framing is misleading.
 
 ### 6. **Opus 4.6 Zero-Variance Issue**
 
 Table 2 shows Opus 4.6 has SD=0.0 (always responds 18 months). The authors retain it because "excluding post-hoc would inflate apparent technique effectiveness."
 
-- **Problem**: Including a model with *zero variance* in the baseline distorts all percentage-of-baseline calculations for that model. Any technique response ≠18 months will show large deviation, but this isn't meaningful—it's an artifact of Opus's deterministic behavior.
+- **Problem**: Including a model with _zero variance_ in the baseline distorts all percentage-of-baseline calculations for that model. Any technique response ≠18 months will show large deviation, but this isn't meaningful—it's an artifact of Opus's deterministic behavior.
 
-- **Sensitivity analysis**: The authors report (Section 6.5) that excluding Opus shifts means 2-3pp but preserves rankings. This should be in the main text, not buried in limitations. Better yet: report results *with and without* Opus in parallel.
+- **Sensitivity analysis**: The authors report (Section 6.5) that excluding Opus shifts means 2-3pp but preserves rankings. This should be in the main text, not buried in limitations. Better yet: report results _with and without_ Opus in parallel.
 
 ### 7. **MAD Definition Ambiguity**
 
@@ -86,13 +86,13 @@ $$\text{MAD} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{r_i}{b_m} - 1 \right| \ti
 
 - **Ambiguity**: Is $b_m$ the model's baseline (one value per model), or the trial-specific baseline? The text says "model $m$'s unanchored baseline response," implying one value per model.
 
-- **Problem**: If $b_m$ is constant per model, then MAD is computed *within* each model and then averaged *across* models. But the paper reports a single aggregate MAD (18.1% for SACD). How is this aggregated? Trial-weighted? Model-weighted?
+- **Problem**: If $b_m$ is constant per model, then MAD is computed _within_ each model and then averaged _across_ models. But the paper reports a single aggregate MAD (18.1% for SACD). How is this aggregated? Trial-weighted? Model-weighted?
 
 - **Impact**: Without clarity on aggregation, the MAD values are hard to interpret. This is especially important given the "trial-weighted vs. model-averaged" discussion in Section 3.2.4.
 
 ### 8. **Theoretical Grounding is Weak**
 
-Section 6.2 offers "speculative" mechanisms for why SACD works/fails, citing two 2025 papers on Bayesian reasoning and overconfidence. 
+Section 6.2 offers "speculative" mechanisms for why SACD works/fails, citing two 2025 papers on Bayesian reasoning and overconfidence.
 
 - **Problem**: These citations are speculative and not well-integrated. The paper would be stronger either (a) developing a theoretical framework upfront and testing predictions, or (b) removing the theory section entirely and focusing on empirical patterns.
 
@@ -120,7 +120,7 @@ Section 6.2 offers "speculative" mechanisms for why SACD works/fails, citing two
 
 - **Table 1 caption**: "Outside View is included in this count but excluded from technique rankings due to confound" is confusing on first read. Consider footnoting this or restructuring the table.
 
-- **Figure 1 vs. text**: Figure 1 shows Devil's Advocate at 63.6%, but the text (Section 4.2) emphasizes this is "consistently far from baseline." The figure alone doesn't convey the *direction* of deviation (always below baseline). Consider adding a reference line or annotation.
+- **Figure 1 vs. text**: Figure 1 shows Devil's Advocate at 63.6%, but the text (Section 4.2) emphasizes this is "consistently far from baseline." The figure alone doesn't convey the _direction_ of deviation (always below baseline). Consider adding a reference line or annotation.
 
 - **Section 4.3 title**: "High-Anchor Responses (No Technique)" is vague. Consider "Compression vs. Inflation Patterns Under High Anchors."
 

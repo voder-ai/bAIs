@@ -27,5 +27,6 @@ Current: "Debiasing Anchoring Bias in LLM Judicial Sentencing"
 ## Tom's direction: "show how effective different debiasing techniques are"
 
 Recommended: **Option 2** or **Option 5**
+
 - Option 2: Accessible, clear purpose
 - Option 5: Captures the key methodological contribution

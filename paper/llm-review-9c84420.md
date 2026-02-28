@@ -29,13 +29,13 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 The proportional anchor design (high = 1.5×baseline, low = 0.5×baseline) creates fundamental circularity:
 
-- **Problem**: Anchors are *defined* relative to the baseline you're measuring proximity to. A technique that perfectly ignores anchors would score 100% by construction—but this is tautological. You're measuring "does the technique restore the baseline?" when the baseline *determined* the anchor values.
+- **Problem**: Anchors are _defined_ relative to the baseline you're measuring proximity to. A technique that perfectly ignores anchors would score 100% by construction—but this is tautological. You're measuring "does the technique restore the baseline?" when the baseline _determined_ the anchor values.
 
 - **Impact on claims**: The entire "percentage of baseline" metric becomes suspect. SACD's 93.7% could reflect that SACD responses happen to fall near the arithmetic mean of (0.5×baseline, 1.5×baseline) = baseline, not that SACD successfully "debias."
 
-- **Authors' defense** (Section 3.1): "This is not circular: baselines are measured independently in anchor-absent conditions." This misses the point. The circularity isn't in *measurement order*—it's that the anchor values themselves encode the baseline, creating a mechanical relationship.
+- **Authors' defense** (Section 3.1): "This is not circular: baselines are measured independently in anchor-absent conditions." This misses the point. The circularity isn't in _measurement order_—it's that the anchor values themselves encode the baseline, creating a mechanical relationship.
 
-- **What's needed**: Replication with *fixed absolute anchors* (e.g., always 12 and 36 months) across all models. If SACD still achieves ~100% of baseline under fixed anchors, the claim stands. Currently, we cannot distinguish "SACD debias" from "SACD happens to average the anchors."
+- **What's needed**: Replication with _fixed absolute anchors_ (e.g., always 12 and 36 months) across all models. If SACD still achieves ~100% of baseline under fixed anchors, the claim stands. Currently, we cannot distinguish "SACD debias" from "SACD happens to average the anchors."
 
 **Severity**: This threatens the paper's central contribution. The susceptibility vs. baseline divergence could be an artifact of the anchor design rather than a genuine phenomenon.
 
@@ -43,7 +43,7 @@ The proportional anchor design (high = 1.5×baseline, low = 0.5×baseline) creat
 
 Section 3.2.4 states: "At this effective n, we are powered (β=0.80, α=0.05) to detect effects of d≈0.50 or larger."
 
-- **Problem**: With ICC=0.17 and ~200 trials/model, the design effect is ~35, yielding n_eff ≈ 60-70 *per technique*. For pairwise comparisons, this is n_eff ≈ 30-35 per group.
+- **Problem**: With ICC=0.17 and ~200 trials/model, the design effect is ~35, yielding n*eff ≈ 60-70 \_per technique*. For pairwise comparisons, this is n_eff ≈ 30-35 per group.
 
 - **Actual power**: At n=35/group, α=0.0083 (Bonferroni-corrected), two-tailed, you need d≈0.90 for 80% power, not d=0.50. The SACD-Premortem comparison (d=0.08) is massively underpowered, yet the authors claim equivalence via TOST.
 
@@ -57,11 +57,11 @@ Section 3.2.4 states: "At this effective n, we are powered (β=0.80, α=0.05) to
 
 Table 7 shows SACD ranks #1 on 0/6 domains by MAD, contradicting the main study where SACD ranks #1 by baseline proximity.
 
-- **Authors' framing**: "Exploratory... 4 models vs. 10 in main study." But this isn't just noise—it's a *qualitative reversal*. In the main study, SACD is the clear winner by baseline proximity. In multi-domain, it's middle-of-the-pack.
+- **Authors' framing**: "Exploratory... 4 models vs. 10 in main study." But this isn't just noise—it's a _qualitative reversal_. In the main study, SACD is the clear winner by baseline proximity. In multi-domain, it's middle-of-the-pack.
 
 - **Model composition issue**: The 4-model subset (Opus, Sonnet, Haiku, GPT-5.2) includes Haiku, where SACD catastrophically fails (47.8% in main study). If Haiku dominates the multi-domain sample, this could mechanically pull SACD down. But the authors don't report per-model trial counts for multi-domain.
 
-- **Domain-technique interaction**: The fraud domain shows SACD at #3 (46.2% MAD) while no-intervention is #1 (44.2%). This suggests SACD *increases* error in some domains—directly contradicting the "SACD is best" narrative.
+- **Domain-technique interaction**: The fraud domain shows SACD at #3 (46.2% MAD) while no-intervention is #1 (44.2%). This suggests SACD _increases_ error in some domains—directly contradicting the "SACD is best" narrative.
 
 - **What's needed**: (a) Report per-model trial counts for multi-domain. (b) Test whether the SACD ranking reversal is driven by Haiku oversampling or genuine domain effects. (c) If domain effects are real, the title claim ("How Effective Are Debiasing Techniques") is too broad—it should be "...in Judicial Sentencing."
 
@@ -72,15 +72,17 @@ Table 7 shows SACD ranks #1 on 0/6 domains by MAD, contradicting the main study 
 The authors claim (Section 3.1): "Baseline as reference, not ground truth... We make no claim that baselines are normatively correct."
 
 But then:
+
 - Table 1 caption: "100% = perfect"
 - Figure 2 caption: "Dashed line = 100% (perfect)"
 - Section 4.2: "SACD achieves 93.7%—closest to the model's unanchored judgment" [framed as success]
 
 **Contradiction**: If baseline isn't "correct," why is proximity to it "better"? The paper conflates two goals:
+
 1. **Consistency**: Responses shouldn't vary with irrelevant anchors (valid)
 2. **Accuracy**: Responses should match baseline (only valid if baseline is correct)
 
-The "12th offense" is in the baseline prompt (Limitation 5), so baseline *is* anchored—just not with a prosecutor demand. This makes "100% of baseline" even less interpretable.
+The "12th offense" is in the baseline prompt (Limitation 5), so baseline _is_ anchored—just not with a prosecutor demand. This makes "100% of baseline" even less interpretable.
 
 **What's needed**: Either (a) defend baseline as normatively correct (e.g., "unanchored expert consensus"), or (b) reframe the metric as "consistency" and stop using "perfect" language.
 
@@ -100,7 +102,7 @@ Section 4.5: "Random Control outperforms Devil's Advocate (+15pp, d=0.39) despit
 
 ### 6. **Missing Baselines for Multi-Domain**
 
-Section 5 reports MAD from baseline but doesn't report the *baselines themselves*. Table 7 shows "Low %" and "High %" but not "Baseline %."
+Section 5 reports MAD from baseline but doesn't report the _baselines themselves_. Table 7 shows "Low %" and "High %" but not "Baseline %."
 
 - **Why this matters**: If the salary baseline is $85k and SACD produces $80k (low anchor) and $88k (high anchor), that's MAD=6.5%. But if the baseline is $120k, those same responses yield MAD=32%. We can't interpret Table 7 without knowing the reference point.
 
@@ -112,7 +114,7 @@ Section 5 reports MAD from baseline but doesn't report the *baselines themselves
 
 Opus 4.6 responds with exactly 18 months at all temperatures (SD=0.0). The authors retain it because "excluding post-hoc would inflate apparent technique effectiveness."
 
-- **Problem**: Opus contributes 1/10 of the model sample but has *zero information* about variance. It mechanically pulls all techniques toward 18 months. The sensitivity analysis (excluding Opus shifts means 2-3pp) is reassuring, but the decision to include it is still questionable.
+- **Problem**: Opus contributes 1/10 of the model sample but has _zero information_ about variance. It mechanically pulls all techniques toward 18 months. The sensitivity analysis (excluding Opus shifts means 2-3pp) is reassuring, but the decision to include it is still questionable.
 
 - **Better approach**: Report main results with and without Opus in parallel, or weight models by baseline variance (downweight Opus).
 
@@ -120,7 +122,7 @@ Opus 4.6 responds with exactly 18 months at all temperatures (SD=0.0). The autho
 
 ## Questions for Authors
 
-1. **Proportional anchors**: Can you replicate the key finding (susceptibility vs. baseline divergence) using *fixed absolute anchors* (e.g., 12 and 36 months for all models)? If not, how do you rule out that the divergence is an artifact of the anchor design?
+1. **Proportional anchors**: Can you replicate the key finding (susceptibility vs. baseline divergence) using _fixed absolute anchors_ (e.g., 12 and 36 months for all models)? If not, how do you rule out that the divergence is an artifact of the anchor design?
 
 2. **Multi-domain reversal**: Why does SACD rank #1 in the main study but #3-5 in most multi-domain vignettes? Is this driven by Haiku oversampling, domain effects, or model subset? Please report per-model trial counts for Table 7.
 
@@ -132,7 +134,7 @@ Opus 4.6 responds with exactly 18 months at all temperatures (SD=0.0). The autho
 
 6. **SACD mechanism**: You speculate (Section 6.1) that SACD may cause "debiasing theater" (Opus overshoots to 127.8%). Do you have evidence for this, or is it post-hoc storytelling? Can you test whether SACD responses show markers of "trying to appear debiased" (e.g., explicit mentions of reconsidering)?
 
-7. **Fraud domain**: Why does no-intervention outperform all techniques in the fraud domain (Table 7)? Does this suggest some domains are *harmed* by debiasing attempts?
+7. **Fraud domain**: Why does no-intervention outperform all techniques in the fraud domain (Table 7)? Does this suggest some domains are _harmed_ by debiasing attempts?
 
 8. **MAD vs. susceptibility**: You recommend "MAD alongside susceptibility" (Abstract). But if a practitioner can only optimize one metric, which should they choose? The paper doesn't answer this.
 

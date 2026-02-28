@@ -1,5 +1,5 @@
-warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use *-baseline build:
-  https://github.com/oven-sh/bun/releases/download/bun-v1.3.9/bun-darwin-x64-baseline.zip
+warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use \*-baseline build:
+https://github.com/oven-sh/bun/releases/download/bun-v1.3.9/bun-darwin-x64-baseline.zip
 Using model: anthropic/claude-opus-4-6
 
 Sending paper for review...
@@ -19,6 +19,7 @@ This paper argues that evaluating LLM debiasing techniques requires multiple met
 ## 1. Methodology
 
 ### Strengths
+
 - The core insight—that susceptibility and baseline proximity can diverge—is genuinely useful and well-motivated by the Jacowitz & Kahneman (1995) framework.
 - Proportional anchor design (±50% of model baseline) is well-justified for within-model comparisons.
 - The inclusion of a Random Control condition (multi-turn without debiasing content) is an excellent design choice that yields interesting findings.
@@ -51,6 +52,7 @@ This paper argues that evaluating LLM debiasing techniques requires multiple met
 ## 2. Statistics
 
 ### Strengths
+
 - Bootstrap CIs with stratified resampling by model.
 - Bonferroni correction for multiple comparisons.
 - TOST equivalence test for SACD vs. Premortem.
@@ -90,6 +92,7 @@ This paper argues that evaluating LLM debiasing techniques requires multiple met
 ## 4. Internal Consistency
 
 Numbers are generally consistent across text, tables, and figures. Specific checks:
+
 - Abstract claims match table values.
 - The 93.7% SACD figure is consistent across Tables 3, 4, 5, and text.
 - The "trial-weighted vs. model-averaged" distinction (93.7% vs. 97.7%) is clearly explained.
@@ -102,12 +105,14 @@ Numbers are generally consistent across text, tables, and figures. Specific chec
 ## 5. Writing Quality
 
 ### Strengths
+
 - Exceptionally well-organized with clear signposting.
 - The two-metric framing is immediately accessible.
 - Limitations are thorough and honest—unusually so.
 - Practical recommendations are concrete and actionable.
 
 ### Concerns
+
 1. **Repetitive.** The core finding (metric divergence) is stated in the abstract, introduction, Section 4.2, Section 4.7, Section 5, and conclusion. The paper could be 20-30% shorter.
 2. **Framing overreach in places.** "Our core empirical finding" is stated for the metric divergence, but arguably this is a methodological observation rather than an empirical finding. The actual empirical findings are the technique performance numbers.
 3. **The paper reads more like a technical report than a conference paper.** Heavy on tables and numbers, lighter on conceptual contribution. The "use multiple metrics" recommendation, while sound, is not deeply novel.
@@ -157,6 +162,7 @@ The work would be well-suited for a findings/short paper track, or strengthened 
 **NEEDS REVISION**
 
 Key required changes:
+
 - Soften multi-domain claims to match statistical evidence (overlapping CIs)
 - Resolve the tension between main study SACD recommendation and multi-domain SACD underperformance
 - Reduce repetition (~20% length reduction possible)

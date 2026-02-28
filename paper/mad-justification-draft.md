@@ -1,6 +1,7 @@
 # MAD Justification Draft
 
 ## Reviewer Concern
+
 "Why is matching the model's unanchored baseline the correct goal? What if the baseline itself is biased?"
 
 ## Response
@@ -19,4 +20,4 @@ The goal is not to claim baselines are "correct" but to measure **consistency wi
 
 Add to Section 3.1 (Metrics):
 
-> **Baseline as reference, not ground truth.** Following Jacowitz & Kahneman (1995), we measure deviation from each model's unanchored baseline rather than an external ground truth. This operationalizes debiasing as *consistency*: a debiased model produces similar outputs regardless of irrelevant anchors. We make no claim that baselines are normatively correct—indeed, models disagree substantially (Table~\ref{tab:baselines}). The goal is to measure whether debiasing techniques restore anchor-independent reasoning, not whether that reasoning reaches any particular conclusion.
+> **Baseline as reference, not ground truth.** Following Jacowitz & Kahneman (1995), we measure deviation from each model's unanchored baseline rather than an external ground truth. This operationalizes debiasing as _consistency_: a debiased model produces similar outputs regardless of irrelevant anchors. We make no claim that baselines are normatively correct—indeed, models disagree substantially (Table~\ref{tab:baselines}). The goal is to measure whether debiasing techniques restore anchor-independent reasoning, not whether that reasoning reaches any particular conclusion.

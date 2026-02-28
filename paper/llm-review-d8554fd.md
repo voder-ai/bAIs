@@ -9,6 +9,7 @@ Sending paper for review...
 # Detailed Review: "Debiasing Anchoring Bias in LLM Judicial Sentencing: How Metric Choice Can Determine Technique Recommendation"
 
 ## Summary
+
 This paper argues that evaluating LLM debiasing techniques using only susceptibility (high-low anchor spread) is insufficient, and proposes baseline-relative metrics (% of baseline, MAD) as complements. Across ~21K trials on 10 models, the authors show that technique rankings invert depending on metric choice. The core contribution is methodological: advocating for unanchored baselines and MAD as primary evaluation metrics.
 
 ---
@@ -16,6 +17,7 @@ This paper argues that evaluating LLM debiasing techniques using only susceptibi
 ## 1. Methodology
 
 ### Strengths
+
 - **Well-motivated experimental design.** Collecting unanchored baselines following Jacowitz & Kahneman (1995) is sensible and surprisingly underused in LLM bias evaluation.
 - **Large trial count** (21K+) across diverse models and providers.
 - **Temperature controls** tested and appropriately aggregated after confirming no interaction.
@@ -49,6 +51,7 @@ This paper argues that evaluating LLM debiasing techniques using only susceptibi
 ## 2. Statistics
 
 ### Strengths
+
 - Bonferroni correction applied appropriately.
 - Bootstrap CIs with stratification by model.
 - TOST equivalence test for SACD vs. Premortem—good practice.
@@ -104,6 +107,7 @@ No significant internal inconsistencies detected.
 ## 5. Writing Quality
 
 ### Strengths
+
 - Clear, well-structured, and readable.
 - The core argument (metric choice determines recommendation) is communicated effectively and early.
 - Tables and figures are well-designed and informative.
@@ -111,6 +115,7 @@ No significant internal inconsistencies detected.
 - Practical recommendations are concrete and actionable.
 
 ### Weaknesses
+
 - **Redundancy.** The core finding is stated at least 6-7 times (abstract, intro, Section 1.2, Table 2 caption, Section 4.8, Section 5.2, conclusion). While some repetition aids comprehension, this is excessive.
 - **Abstract is too long** (~280 words). Many venues limit to 200-250. More importantly, it reads like a mini-results section rather than a concise summary.
 - **Section numbering inconsistency.** The multi-domain section is numbered 5 in text but there's no explicit Section 4 header for Results—it says "Results" but the numbering may be off in compilation.
@@ -164,6 +169,7 @@ The paper is above average in rigor and transparency but falls short of what I'd
 ## Verdict: **NEEDS REVISION**
 
 ### Required Changes:
+
 1. Add confidence intervals and significance tests to multi-domain rankings (Table 5). Qualify claims accordingly.
 2. Present the Opus exclusion sensitivity analysis properly, not just in a caption.
 3. Add response distribution visualizations (histograms) for at least the key conditions.
@@ -171,6 +177,7 @@ The paper is above average in rigor and transparency but falls short of what I'd
 5. Either expand the multi-domain study to include more models or substantially caveat the domain-specific rankings.
 
 ### Recommended Changes:
+
 - Tighten the abstract to ≤250 words.
 - Reduce redundancy in stating the core finding.
 - Add a formal Anchoring Index comparison.
