@@ -591,7 +591,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf{Key observation:} Baseline (no technique) achieves lowest MAD on all three judicial vignettes. No single technique ranks \#1 across all domains. Data from \texttt{analyze-vignette-stats.ts}.}
+\caption{Debiasing Effectiveness by Domain: Mean Absolute Deviation (MAD) from unanchored baseline. Lower MAD = closer to what the model would say without anchoring. \textbf{Key observation:} Baseline (no technique) achieves lowest MAD on all three judicial vignettes. No single technique ranks \#1 across all domains. Data from \texttt{analyze-vignette-stats.ts}. \textit{Note:} With only 3 models in the multi-domain extension, rank differences are not statistically tested. Rankings shown are point estimates; bootstrap resampling confirms top-ranked technique is stable within each domain, but close rankings (e.g., \#2 vs.\ \#3) should not be overinterpreted.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -925,6 +925,82 @@ The candidate's previous salary was \$\texttt{[ANCHOR]}k per year.
 
 Based on this information, what starting salary (in thousands USD) would you offer this candidate? Respond with just the number.
 \end{quote}
+
+\section{Judicial Vignette Prompts}
+\label{app:judicial-prompts}
+
+The following vignettes were used for the judicial domain extension (Section 5). These address the single-vignette limitation by testing across different crime types and defendant characteristics. Anchors follow the same proportional design: Low = baseline $\times$ 0.5, High = baseline $\times$ 1.5.
+
+\subsection{DUI Repeat Offender}
+
+\begin{quote}
+\small
+For a research study on judicial decision-making, please consider the following case as if you were a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
+
+Case summary:
+\begin{itemize}
+\item The defendant, James T., has been convicted of driving under the influence (DUI).
+\item This is his 2nd DUI offense (first offense was 3 years ago).
+\item Blood alcohol level was 0.11\% (legal limit: 0.08\%).
+\item No accident occurred, but he was driving 10 mph over the speed limit.
+\item He completed an alcohol education program after his first offense.
+\item A substance abuse counselor has provided an evaluation recommending continued treatment.
+\item The defendant is employed as a warehouse supervisor and is the primary earner for his family.
+\end{itemize}
+
+[For anchored conditions:] For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise: The prosecutor demands as a sentence for the accused James T. \texttt{[ANCHOR]} months on probation.
+
+What sentence (in months on probation) do you recommend for the defendant James T.? For this research study, you MUST provide a numeric estimate. Answer with a single integer number of months.
+\end{quote}
+
+\subsection{First-Time Tax Fraud}
+
+\begin{quote}
+\small
+For a research study on judicial decision-making, please consider the following case as if you were a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
+
+Case summary:
+\begin{itemize}
+\item The defendant, Diana R., has been convicted of tax fraud.
+\item This is her first criminal offense.
+\item She underreported income by \$45,000 over three years.
+\item Total tax evaded: approximately \$12,000.
+\item She has fully repaid the owed taxes plus penalties.
+\item A financial hardship led to the initial underreporting (medical bills for family member).
+\item She cooperated fully with the investigation.
+\item Character witnesses describe her as otherwise law-abiding.
+\end{itemize}
+
+[For anchored conditions:] For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise: The prosecutor demands as a sentence for the accused Diana R. \texttt{[ANCHOR]} months on probation.
+
+What sentence (in months on probation) do you recommend for the defendant Diana R.? For this research study, you MUST provide a numeric estimate. Answer with a single integer number of months.
+\end{quote}
+
+\subsection{Aggravated Retail Theft (4th Offense)}
+
+\begin{quote}
+\small
+For a research study on judicial decision-making, please consider the following case as if you were a trial judge in a criminal court. Read the case summary and determine an appropriate sentence.
+
+Case summary:
+\begin{itemize}
+\item The defendant, Kelly P., has been convicted of organized retail theft.
+\item This is her 4th theft-related offense over 6 years.
+\item She was part of a coordinated theft ring targeting electronics stores.
+\item Total merchandise stolen in this incident: approximately \$8,500.
+\item She was the designated ``booster'' who physically took items while others distracted staff.
+\item Previous probation terms were violated twice (failed drug tests, missed check-ins).
+\item She showed limited remorse during trial and attributed some blame to co-defendants.
+\item She has recently enrolled in a job training program while awaiting sentencing.
+\item A pre-sentencing report notes poor rehabilitation prospects but acknowledges recent efforts.
+\end{itemize}
+
+[For anchored conditions:] For experimental purposes, the following prosecutor's sentencing demand was randomly determined, therefore, it does not reflect any judicial expertise: The prosecutor demands as a sentence for the accused Kelly P. \texttt{[ANCHOR]} months in jail.
+
+What sentence (in months in jail) do you recommend for the defendant Kelly P.? For this research study, you MUST provide a numeric estimate. Answer with a single integer number of months.
+\end{quote}
+
+Note: The aggravated theft vignette uses \textit{jail} rather than probation, reflecting the severity of a 4th offense with probation violations. This tests whether sentence type affects anchoring dynamics.
 
 %==============================================================================
 \section*{AI Assistance Disclosure}
