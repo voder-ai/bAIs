@@ -168,7 +168,7 @@ Outside View & ``What typically happens in similar cases?'' (required jurisdicti
 Devil's Advocate & ``Argue against your initial response'' \\
 Premortem & ``Imagine this sentence was overturned---why?'' \\
 Random Control & Extra conversation turns with neutral content \\
-Full SACD & Iterative self-administered cognitive debiasing \\
+SACD & Iterative self-administered cognitive debiasing \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -196,7 +196,7 @@ Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction
 Condition & $n$ (analysis) \\
 \midrule
 \multicolumn{2}{l}{\textit{Debiasing Techniques}} \\
-\quad Full SACD & 2,389 \\
+\quad SACD & 2,389 \\
 \quad Outside View & 2,423 \\
 \quad Random Control & 2,215 \\
 \quad Premortem & 2,186 \\
@@ -303,13 +303,13 @@ Our core empirical finding: susceptibility and \% of baseline give \textbf{diver
 \label{tab:metric-comparison}
 \begin{tabular}{lcccccc}
 \toprule
-Technique & Spread & $\Delta$ & Rank & \% of Baseline & Rank \\
+Technique & Spread (susceptibility) & $\Delta$ & Rank & \% of Baseline & Rank \\
 \midrule
 \textit{No Technique} & \textit{26.0pp} & \textit{ref} & \textit{---} & \textit{72.9\%} & \textit{ref} \\
 \midrule
 Devil's Advocate & 23.7pp & $-$8.8\% & \#1 & 63.6\% [62, 65] & \#4 \\
 Random Control & 30.1pp & +15.8\% & \#2 & 78.3\% [77, 80] & \#3 \\
-Full SACD & 36.3pp & +39.6\% & \#3 & 93.7\% [92, 95] & \#1 \\
+SACD & 36.3pp & +39.6\% & \#3 & 93.7\% [92, 95] & \#1 \\
 Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 \bottomrule
 \end{tabular}
@@ -327,7 +327,7 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
     ymin=55,
     ymax=105,
     xtick=data,
-    symbolic x coords={Devil's Advocate, Random Control, Premortem, Full SACD},
+    symbolic x coords={Devil's Advocate, Random Control, Premortem, SACD},
     xticklabel style={font=\small},
     nodes near coords,
     nodes near coords align={vertical},
@@ -340,11 +340,11 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 \addplot[fill=red!60, draw=black] coordinates {(Devil's Advocate, 63.6)};
 \addplot[fill=orange!60, draw=black] coordinates {(Random Control, 78.3)};
 \addplot[fill=blue!50, draw=black] coordinates {(Premortem, 91.6)};
-\addplot[fill=green!60!black, draw=black] coordinates {(Full SACD, 93.7)};
+\addplot[fill=green!60!black, draw=black] coordinates {(SACD, 93.7)};
 \draw[dashed, black, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
 \end{axis}
 \end{tikzpicture}
-\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Devil's Advocate keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. Full SACD achieves 93.7\%---closest to the model's unanchored judgment. \textit{Note:} SACD's ranking is confounded by turn count ($\sim$6 vs 3 turns); see Limitations.}
+\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Devil's Advocate keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. SACD achieves 93.7\%---closest to the model's unanchored judgment. \textit{Note:} SACD's ranking is confounded by turn count ($\sim$6 vs 3 turns); see Limitations.}
 \label{fig:metric-comparison}
 \end{figure}
 
@@ -393,7 +393,7 @@ The compression pattern is counterintuitive---high anchors typically pull respon
 \toprule
 Technique & $n$ & \% of Baseline & 95\% CI & Deviation & Rank \\
 \midrule
-\textbf{Full SACD} & 2,389 & \textbf{93.7\%} & [92, 95] & \textbf{6.3\%} & \textbf{\#1} \\
+\textbf{SACD} & 2,389 & \textbf{93.7\%} & [92, 95] & \textbf{6.3\%} & \textbf{\#1} \\
 Premortem & 2,186 & 91.6\% & [90, 93] & 8.4\% & \#2 \\
 Random Control & 2,215 & 78.3\% & [77, 80] & 21.7\% & \#3 \\
 Devil's Advocate & 2,166 & 63.6\% & [62, 65] & 36.4\% & \#4 \\
@@ -401,16 +401,16 @@ Devil's Advocate & 2,166 & 63.6\% & [62, 65] & 36.4\% & \#4 \\
 \textit{Outside View}$^\dagger$ & 2,423 & 51.2\% & [49, 53] & 48.8\% & --- \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. Full SACD is closest to baseline (93.7\%, 95\% CI [92, 95]). Devil's Advocate keeps responses at 63.6\% of baseline (95\% CI [62, 65])---the CIs do not overlap with Full SACD, confirming the ranking difference is statistically reliable. $^\dagger$Outside View confounded. $^\ddagger$\textbf{Caveat:} SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques; turn-count effects are not controlled (see Random Control performance and Limitations).}
+\caption{Technique effectiveness measured as percentage of baseline. 100\% = response matches unanchored judgment. SACD is closest to baseline (93.7\%, 95\% CI [92, 95]). Devil's Advocate keeps responses at 63.6\% of baseline (95\% CI [62, 65])---the CIs do not overlap with SACD, confirming the ranking difference is statistically reliable. $^\dagger$Outside View confounded. $^\ddagger$\textbf{Caveat:} SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques; turn-count effects are not controlled (see Random Control performance and Limitations).}
 \label{tab:baseline-pct}
 \end{table}
 
 % Percentage of baseline visualization
 % Figure removed - redundant with Figure 1 (fig:metric-comparison)
 
-\subsection{Model-Specific Results: Full SACD}
+\subsection{Model-Specific Results: SACD}
 
-Full SACD shows high variance across models:
+SACD shows high variance across models:
 
 \begin{table}[H]
 \centering
@@ -430,7 +430,7 @@ Opus 4.6 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
 \textbf{Haiku 4.5} & \textbf{47.8\%} & [46, 50] & \textbf{52.2\%} & Severe undershoot \\
 \bottomrule
 \end{tabular}
-\caption{Full SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. DeepSeek and Kimi achieve near-perfect debiasing ($\sim$100\%). Several models overshoot (Opus, GLM, GPT-5.2), while Haiku severely undershoots (47.8\%---SACD makes it worse). \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero variance) shifts aggregate means 2--3pp but preserves all rankings (SACD 93.4\%, Premortem 89.7\%, Random Control 77.0\%, DA 61.2\%).}
+\caption{SACD model-specific results (percentage of baseline). 95\% CIs from bootstrap. DeepSeek and Kimi achieve near-perfect debiasing ($\sim$100\%). Several models overshoot (Opus, GLM, GPT-5.2), while Haiku severely undershoots (47.8\%---SACD makes it worse). \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero variance) shifts aggregate means 2--3pp but preserves all rankings (SACD 93.4\%, Premortem 89.7\%, Random Control 77.0\%, DA 61.2\%).}
 \label{tab:sacd-by-model}
 \end{table}
 
@@ -469,7 +469,7 @@ Opus 4.6 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
 \draw[dashed, red, thick] (axis cs:100,0.5) -- (axis cs:100,10.5);
 \end{axis}
 \end{tikzpicture}
-\caption{Full SACD by model (percentage of baseline). Dashed line = 100\% (unanchored baseline). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% over/undershoot. Red = severe undershoot (Haiku at 47.8\%).}
+\caption{SACD by model (percentage of baseline). Dashed line = 100\% (unanchored baseline). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% over/undershoot. Red = severe undershoot (Haiku at 47.8\%).}
 \label{fig:sacd-by-model}
 \end{figure}
 
@@ -491,7 +491,7 @@ Aggregate results hide an important asymmetry. Breaking down by anchor direction
 \toprule
 Technique & Low Anchor & 95\% CI & High Anchor & 95\% CI & Spread$^\dagger$ \\
 \midrule
-Full SACD & 75.7\% & [73, 78] & 112.0\% & [109, 115] & 36.3 pp \\
+SACD & 75.7\% & [73, 78] & 112.0\% & [109, 115] & 36.3 pp \\
 Premortem & 69.0\% & [68, 70] & 114.2\% & [112, 117] & 45.2 pp \\
 Random Control & 63.4\% & [62, 65] & 93.5\% & [90, 96] & 30.1 pp \\
 Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
@@ -527,7 +527,7 @@ This indicates that \textbf{17\% of variance} in \% of baseline is attributable 
 
 \textbf{Fixed effects} (technique, relative to grand mean of 81.8\%):
 \begin{itemize}
-    \item Full SACD: $+11.9$ pp (93.7\% of baseline)
+    \item SACD: $+11.9$ pp (93.7\% of baseline)
     \item Premortem: $+9.8$ pp (91.6\%)
     \item Random Control: $-3.5$ pp (78.3\%)
     \item Devil's Advocate: $-18.2$ pp (63.6\%)
@@ -535,7 +535,7 @@ This indicates that \textbf{17\% of variance} in \% of baseline is attributable 
 
 The ranking is robust after accounting for model-level variance.
 
-\textbf{Random slopes model.} Extending to random slopes ($y_{ij} = \beta_0 + \beta_{\text{technique}} + u_{0j} + u_{\text{technique},j} + \epsilon_{ij}$, where $u_{\text{technique},j}$ allows technique effects to vary by model) reveals substantial model $\times$ technique interaction. Adding random slopes reduces residual variance by 16.9\% compared to random intercepts only ($\chi^2 = 1658$, $df = 26$, $p < 0.001$). Full SACD shows the highest slope variance (SD = 25.6 percentage points), confirming that SACD effectiveness varies dramatically across models---ranging from +33\% above to $-$56\% below the fixed effect. This justifies our recommendation to test per-model before deployment; Table~\ref{tab:sacd-by-model} provides model-specific results.
+\textbf{Random slopes model.} Extending to random slopes ($y_{ij} = \beta_0 + \beta_{\text{technique}} + u_{0j} + u_{\text{technique},j} + \epsilon_{ij}$, where $u_{\text{technique},j}$ allows technique effects to vary by model) reveals substantial model $\times$ technique interaction. Adding random slopes reduces residual variance by 16.9\% compared to random intercepts only ($\chi^2 = 1658$, $df = 26$, $p < 0.001$). SACD shows the highest slope variance (SD = 25.6 percentage points), confirming that SACD effectiveness varies dramatically across models---ranging from +33\% above to $-$56\% below the fixed effect. This justifies our recommendation to test per-model before deployment; Table~\ref{tab:sacd-by-model} provides model-specific results.
 
 \subsection{The Metric Divergence}
 
@@ -661,9 +661,9 @@ These results reinforce our core argument:
 \section{Discussion}
 %==============================================================================
 
-\subsection{Why Full SACD Works (and Fails)}
+\subsection{Why SACD Works (and Fails)}
 
-Full SACD achieves the highest \% of baseline (Table~\ref{tab:baseline-pct}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
+SACD achieves the highest \% of baseline (Table~\ref{tab:baseline-pct}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
 
 \textbf{Possible mechanisms:} (1) Iterative reflection may help models escape local optima. (2) Some models may perform ``debiasing theater''---Opus overshoots to 127.8\%, potentially optimizing for \textit{appearing} to reconsider. (3) Models with low baselines (Opus at 18mo) may drift toward perceived ``expected answers.'' (4) Haiku's severe undershoot (47.8\%) suggests SACD can backfire entirely for some architectures.
 
@@ -778,9 +778,9 @@ In German federal courts, what is the TYPICAL probation sentence for a defendant
 
 \textit{Note: Jurisdiction specification was required to avoid model safety refusals but may have introduced a secondary anchor.}
 
-\subsection{Full SACD (Iterative Self-Administered Cognitive Debiasing)}
+\subsection{SACD (Iterative Self-Administered Cognitive Debiasing)}
 
-Following \citet{lyu2025}, Full SACD implements three iterative steps:
+Following \citet{lyu2025}, SACD implements three iterative steps:
 
 \begin{enumerate}
 \item \textbf{Bias Determination}: ``Analyze the following prompt... For each sentence, determine if it contains a cognitive bias''
