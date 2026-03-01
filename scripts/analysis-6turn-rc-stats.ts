@@ -204,3 +204,43 @@ async function main() {
 }
 
 main().catch(console.error);
+
+// Additional analysis: Anchor-stratified direction of change
+async function anchorStratifiedAnalysis(trials: Trial[]) {
+  console.log('\n=== Anchor-Stratified Direction of Change ===\n');
+  
+  const models = [...new Set(trials.map(t => t.model))];
+  
+  for (const model of models) {
+    const baseline = MODEL_BASELINES[model] || 24;
+    const modelTrials = trials.filter(t => t.model === model);
+    
+    const lowTrials = modelTrials.filter(t => t.anchor <= baseline);
+    const highTrials = modelTrials.filter(t => t.anchor > baseline);
+    
+    const analyzeDirection = (condTrials: Trial[], label: string) => {
+      let toward = 0, away = 0, unchanged = 0;
+      for (const t of condTrials) {
+        if (t.initialSentence === t.finalSentence) {
+          unchanged++;
+        } else {
+          const initialDist = Math.abs(t.initialSentence - baseline);
+          const finalDist = Math.abs(t.finalSentence - baseline);
+          if (finalDist < initialDist) toward++;
+          else away++;
+        }
+      }
+      console.log(`  ${label} (n=${condTrials.length}): ${(toward/condTrials.length*100).toFixed(1)}% toward, ${(away/condTrials.length*100).toFixed(1)}% away, ${(unchanged/condTrials.length*100).toFixed(1)}% unchanged`);
+    };
+    
+    console.log(`${MODEL_SHORT[model]}:`);
+    analyzeDirection(lowTrials, 'Low anchor');
+    analyzeDirection(highTrials, 'High anchor');
+    console.log();
+  }
+}
+
+// Run if called directly
+if (process.argv[1]?.includes('analysis-6turn-rc-stats')) {
+  loadTrials().then(trials => anchorStratifiedAnalysis(trials));
+}
