@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Debiasing Metrics Diverge: Why Susceptibility and Baseline Proximity\\Recommend Different Techniques}
+\title{Human Debiasing Techniques Don't Reliably Transfer to LLMs:\\Evidence from 21,139 Anchoring Bias Trials}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -32,24 +32,28 @@
 \maketitle
 
 \begin{abstract}
-Standard evaluation of LLM debiasing techniques uses \textbf{susceptibility}---the gap between high-anchor and low-anchor responses. We show that susceptibility and baseline-relative metrics produce \textbf{divergent rankings}, and practitioners must choose which outcome to optimize.
+Do human debiasing techniques work on LLMs? We test five techniques from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across 21,139 anchoring bias trials.
 
-\textbf{Our core finding:} Devil's Advocate ranks \#1 under susceptibility (lowest anchor influence) but \#4 under baseline proximity (63.6\% of unanchored judgment). SACD shows the reverse: \#3 under susceptibility but \#1 under baseline proximity (93.7\%) in our judicial deep-dive. Neither metric is inherently correct---susceptibility measures consistency, baseline proximity measures accuracy relative to unanchored judgment. In cross-domain analysis, rankings shift and no technique consistently dominates.
+\textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: Devil's Advocate produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, Devil's Advocate looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
-We evaluate five techniques across 21,139 trials (14,152 judicial deep-dive on 10 models, plus 6,987 cross-domain on 4 models). Using Mean Absolute Deviation (MAD) as a complementary metric, we find aggregates mask per-trial error: SACD's 93.7\% aggregate hides 18.1\% average deviation. Model-specific variance is substantial (SACD: 48\%--128\% of baseline). Practitioners must validate per-model and per-task, and explicitly choose which metric aligns with their goals.
+Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline across models. Rankings shift across domains. No technique consistently outperforms.
+
+\textbf{For practitioners:} Don't assume human debiasing techniques transfer. Test per-model, per-task. Report baseline proximity alongside susceptibility---a technique can reduce anchor sensitivity while moving responses away from the correct answer.
 \end{abstract}
 
 %==============================================================================
 \section{Introduction}
 %==============================================================================
 
-Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But how should we evaluate whether they work?
+Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they actually work?
 
-The standard approach uses \textbf{susceptibility}: does the technique reduce the gap between high-anchor and low-anchor responses? We show that susceptibility and baseline-relative metrics produce divergent rankings.
+We test five techniques from the cognitive bias literature across 21,139 trials. \textbf{The answer: not reliably.}
 
-\textbf{The divergence:} Devil's Advocate reduces susceptibility by 8.8\% but lands responses at only 63.6\% of the model's unanchored judgment. It achieves consistency (low susceptibility) without accuracy (baseline proximity). SACD shows the opposite pattern.
+\textbf{Some help:} SACD achieves 93.7\% of the model's unanchored baseline judgment. Premortem reaches 91.6\%.
 
-We evaluate five techniques across 21,139 trials and find that \textbf{metric choice affects technique recommendation}. Devil's Advocate ranks \#1 under susceptibility but \#4 under baseline proximity. SACD shows the reverse. Which technique is ``best'' depends on which outcome practitioners prioritize.
+\textbf{One hurts:} Devil's Advocate produces responses at only 63.6\% of baseline---worse than doing nothing (72.9\%). It makes responses \textit{consistently wrong}.
+
+\textbf{Variance is large:} SACD ranges from 48\% to 128\% of baseline across models. Rankings shift across domains. No technique consistently outperforms.
 
 \subsection{Two Metrics, Two Rankings}
 \label{sec:two-metrics}
