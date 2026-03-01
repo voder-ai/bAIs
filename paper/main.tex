@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Debiasing Technique Rankings Are Metric- and Domain-Dependent:\\A Cross-Domain Exploration of Anchoring Bias Interventions in LLMs}
+\title{Multi-Turn Structure Beats Debiasing Content:\\Random Control Outperforms Dedicated Techniques for LLM Anchoring Bias}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -32,24 +32,26 @@
 \maketitle
 
 \begin{abstract}
-Do debiasing techniques for anchoring bias transfer across domains? We evaluate five techniques---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, Random Control, and Outside View (excluded from rankings due to confound)---across 21,139 trials spanning seven vignettes: one judicial scenario (deep-dive, 14,152 trials) plus six cross-domain extensions (salary, loan, medical, and three additional judicial scenarios).
+Do debiasing techniques for anchoring bias work because of their \textit{content}, or because they add conversation \textit{turns}? We evaluate five techniques---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, Random Control, and Outside View---across 21,139 trials spanning seven vignettes.
 
-\textbf{Our core finding: techniques show practical equivalence across domains.} Technique rankings vary by domain, with bootstrap 95\% confidence intervals overlapping for all pairwise comparisons---effect sizes are too small to recommend any single technique. Point estimates suggest SACD performs well for salary (12.6\% MAD, rank \#2) but underperforms in fraud (46.2\% MAD, rank \#3). Notably, Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 4 of 6 domains, suggesting multi-turn structure matters more than specific debiasing content.
+\textbf{Our surprising finding: Random Control ranks \#1 in 4 of 6 domains.} This technique provides no debiasing content---only additional conversation turns with neutral filler (German trees, Bavarian capitals, bread varieties). Yet it outperforms dedicated debiasing techniques by point estimate in most domains, suggesting \textbf{multi-turn structure matters more than specific debiasing content}.
 
-We apply Mean Absolute Deviation (MAD) from unanchored baseline as a complementary metric that captures per-trial error obscured by aggregate measures. SACD's aggregate 93.7\% of baseline in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
+We also demonstrate that \textbf{susceptibility}---the standard metric---conflates consistency with correctness. Devil's Advocate reduces susceptibility while producing responses at only 63.6\% of unanchored baseline (consistently wrong). We propose MAD (Mean Absolute Deviation from baseline) as a complementary metric that captures per-trial error obscured by aggregates.
 
-A deep-dive validation on judicial sentencing (14,152 trials, 10 models) confirms substantial model-specific variance: the same technique can improve one model's responses while degrading another's. Combined with domain dependence, this implies practitioners must test debiasing interventions per-model AND per-task rather than relying on published rankings.
+A deep-dive on judicial sentencing (14,152 trials, 10 models) confirms substantial model-specific variance: SACD ranges from 48\% to 128\% of baseline across models. Combined with Random Control's dominance, this implies practitioners should consider whether simple multi-turn structure might suffice---and must validate any technique per-model and per-task rather than relying on published rankings.
 \end{abstract}
 
 %==============================================================================
 \section{Introduction}
 %==============================================================================
 
-Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they transfer across tasks? A technique that works for salary negotiation may fail for medical triage. Prior evaluations typically test single domains; we test six.
+Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do these techniques work because of their \textit{content}, or because they add conversation \textit{turns}?
 
-We report findings from 21,139 trials across seven vignettes (one deep-dive judicial plus six cross-domain: salary, loan, medical, three additional judicial) using models spanning capability tiers (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). Our core finding: \textbf{techniques show practical equivalence---no single approach dominates across domains.} In the cross-domain analysis (4 models), effect sizes between techniques are small (bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons), suggesting practitioners can choose based on cost and complexity rather than expecting large performance differences.
+We designed a control condition to test this: \textbf{Random Control} provides the same multi-turn structure as SACD but replaces debiasing prompts with neutral filler (German trees, Bavarian geography, bread varieties). If debiasing content matters, Random Control should underperform dedicated techniques.
 
-We also identify a methodological flaw in prior work: \textbf{susceptibility}---measuring whether responses vary with anchors---conflates consistency with correctness. A technique can show low susceptibility by being consistently wrong.
+\textbf{It doesn't.} Random Control ranks \#1 in 4 of 6 domains by point estimate, outperforming SACD, Devil's Advocate, and Premortem. Across 21,139 trials spanning seven vignettes, we find that multi-turn structure alone may be sufficient---challenging the assumption that debiasing requires carefully designed prompts.
+
+We also identify a methodological flaw in prior work: \textbf{susceptibility}---measuring whether responses vary with anchors---conflates consistency with correctness. Devil's Advocate reduces susceptibility but produces responses at only 63.6\% of baseline (consistently wrong).
 
 \subsection{Why Susceptibility Misleads}
 \label{sec:two-metrics}
