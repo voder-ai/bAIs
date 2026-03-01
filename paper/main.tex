@@ -32,7 +32,7 @@
 \maketitle
 
 \begin{abstract}
-Do debiasing techniques for anchoring bias transfer across domains? We evaluate five techniques---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, Random Control, and Outside View (excluded from rankings due to confound)---across 21,139 trials spanning six domains: salary negotiation, loan approval, medical triage, and three judicial sentencing scenarios.
+Do debiasing techniques for anchoring bias transfer across domains? We evaluate five techniques---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, Random Control, and Outside View (excluded from rankings due to confound)---across 21,139 trials spanning seven vignettes: one judicial scenario (deep-dive, 14,152 trials) plus six cross-domain extensions (salary, loan, medical, and three additional judicial scenarios).
 
 \textbf{Our core finding: our exploratory cross-domain analysis (4 models) suggests no technique consistently outperforms.} Technique rankings vary by domain, and bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. Point estimates suggest SACD performs well for salary (12.6\% MAD, rank \#2) but underperforms in fraud (46.2\% MAD, rank \#3), though these differences are not statistically significant. Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 4 of 6 domains by point estimate.
 
@@ -47,7 +47,7 @@ A deep-dive validation on judicial sentencing (14,152 trials, 10 models) confirm
 
 Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they transfer across tasks? A technique that works for salary negotiation may fail for medical triage. Prior evaluations typically test single domains; we test six.
 
-We report findings from 21,139 trials across six domains (salary, loan, medical, three judicial scenarios) using models spanning capability tiers (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). Our core finding: \textbf{technique rankings vary by domain, and we cannot identify a universally superior approach.} In the cross-domain analysis (4 models), bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain.
+We report findings from 21,139 trials across seven vignettes (one deep-dive judicial plus six cross-domain: salary, loan, medical, three additional judicial) using models spanning capability tiers (Opus 4.6, Sonnet 4.6, Haiku 4.5, GPT-5.2). Our core finding: \textbf{technique rankings vary by domain, and we cannot identify a universally superior approach.} In the cross-domain analysis (4 models), bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain.
 
 We also identify a methodological flaw in prior work: \textbf{susceptibility}---measuring whether responses vary with anchors---conflates consistency with correctness. A technique can show low susceptibility by being consistently wrong.
 
