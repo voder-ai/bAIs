@@ -47,7 +47,7 @@ A deep-dive on judicial sentencing (14,152 trials, 10 models) confirms substanti
 
 Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do these techniques work because of their \textit{content}, or because they add conversation \textit{turns}?
 
-We designed a control condition to test this: \textbf{Random Control} provides the same multi-turn structure as other techniques but replaces debiasing prompts with neutral filler (courtroom elaboration in the 3-turn version; German trivia in the 6-turn ablation). If debiasing content matters, Random Control should underperform dedicated techniques.
+We designed a control condition to test this: \textbf{Random Control} provides the same multi-turn structure as other techniques but replaces debiasing prompts with filler content. \textit{Caveat:} The 3-turn version uses courtroom elaboration (domain-relevant for judicial cases); only the 6-turn ablation uses truly neutral content (German trivia). If debiasing content matters, Random Control should underperform dedicated techniques.
 
 \textbf{Surprisingly, it performs comparably.} In our exploratory cross-domain analysis (4 models), Random Control ranks \#1 in 4 of 6 domains by point estimate---but all pairwise CIs overlap, so we cannot statistically distinguish techniques. In the deep-dive judicial analysis (10 models), SACD does outperform Random Control (93.7\% vs 78.3\% of baseline, non-overlapping CIs). This mixed evidence suggests multi-turn structure matters, though dedicated debiasing content may still add value.
 
