@@ -234,3 +234,38 @@ async function main() {
 }
 
 main().catch(console.error);
+
+// Extended analysis: revision quality (not just rate)
+async function analyzeRevisionQuality() {
+  const trials = await loadTrials();
+  
+  console.log('\n=== Revision Quality Analysis ===');
+  console.log('(Does revision move toward baseline?)');
+  
+  const models = [...new Set(trials.map(t => t.model))];
+  
+  for (const model of models) {
+    const modelTrials = trials.filter(t => t.model === model);
+    const baseline = MODEL_BASELINES[model] || 24;
+    
+    let improved = 0;
+    let worsened = 0;
+    let unchanged = 0;
+    
+    for (const t of modelTrials) {
+      const initialDist = Math.abs(t.initialSentence - baseline);
+      const finalDist = Math.abs(t.finalSentence - baseline);
+      
+      if (finalDist < initialDist) improved++;
+      else if (finalDist > initialDist) worsened++;
+      else unchanged++;
+    }
+    
+    console.log(`\n${MODEL_SHORT[model] || model} (baseline=${baseline}mo):`);
+    console.log(`  Improved: ${improved}/${modelTrials.length} (${(100*improved/modelTrials.length).toFixed(1)}%)`);
+    console.log(`  Worsened: ${worsened}/${modelTrials.length} (${(100*worsened/modelTrials.length).toFixed(1)}%)`);
+    console.log(`  Unchanged: ${unchanged}/${modelTrials.length} (${(100*unchanged/modelTrials.length).toFixed(1)}%)`);
+  }
+}
+
+analyzeRevisionQuality().catch(console.error);

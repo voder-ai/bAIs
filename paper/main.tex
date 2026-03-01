@@ -724,18 +724,40 @@ Sonnet 4.6 & Low (12mo) & 30 & 9 & 30.0\% & 56.0pp \\
 \end{tabular}
 \end{table}
 
-\textbf{Key finding:} Model response to implicit revision instruction varies dramatically across providers. GPT-5.2 shows 100\% revision rate with filler alone---\textit{exceeding} SACD's 86\%. In contrast, Sonnet revises only 20\% with filler, requiring SACD's explicit bias content. Notably, GPT-5.2's initial judgments show extreme anchor resistance (4mo regardless of anchor), but the \textit{revised} judgments reflect anchor direction (13mo low, 28mo high)---suggesting revision instruction \textit{introduces} anchor sensitivity rather than removing it.
+\textbf{Primary finding: Revision instruction can introduce anchor sensitivity.} GPT-5.2's initial judgments show extreme anchor resistance (4mo regardless of whether anchor was 16mo or 48mo). However, the \textit{revised} judgments reflect anchor direction (13mo low, 28mo high). This suggests the ``provide a revised recommendation'' instruction \textit{introduces} anchor sensitivity rather than removing it---a potential iatrogenic effect of multi-turn debiasing.
 
-This suggests a four-category model taxonomy:
+\textbf{Secondary finding: Model response to implicit revision varies dramatically.} GPT-5.2 revises 100\% of responses with filler alone (exceeding SACD's 86\%). Sonnet revises only 20\% with filler, requiring explicit bias content.
+
+\textbf{Revision quality differs from revision rate.} We define ``improved'' as revisions that move closer to the model's unanchored baseline (Table~\ref{tab:6turn-revision-quality}). Haiku revises 77.6\% of responses but only 15.5\% improve---62.1\% move \textit{away} from baseline. GPT-5.2 shows 100\% improvement, but this reflects its extreme initial anchor resistance (4mo) rather than effective debiasing. Sonnet rarely revises (20\%) but when it does, outcomes are mixed (11.7\% improve, 8.3\% worsen).
+
+\begin{table}[htbp]
+\centering
+\caption{Revision Quality: Does revision move toward baseline?}
+\label{tab:6turn-revision-quality}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Improved} & \textbf{Worsened} & \textbf{Unchanged} \\
+\midrule
+GPT-5.2 & 100.0\% & 0.0\% & 0.0\% \\
+Opus 4.6 & 46.7\% & 16.7\% & 36.7\% \\
+Haiku 4.5 & 15.5\% & \textbf{62.1\%} & 22.4\% \\
+Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textit{Methodological caveats:} (1) GPT-5.2 trials used single-prompt simulation via Codex CLI; Anthropic trials used true multi-turn conversation. Cross-provider comparison is exploratory. (2) We report four observed patterns, not a validated taxonomy:
+
+%This suggests a four-category model taxonomy:
 
 \begin{itemize}
-    \item \textbf{Anchor-resistant, revision-responsive} (GPT-5.2): Ignores anchor initially; 100\% revision rate; revision \textit{introduces} anchor sensitivity. SACD unnecessary ($-$14pp).
-    \item \textbf{Instruction-following} (Haiku): Moderate anchoring; responds to implicit ``revised'' cue; SACD adds marginal benefit (+8pp).
-    \item \textbf{Balanced} (Opus): Moderate anchoring and response; SACD adds substantial benefit (+23pp).
-    \item \textbf{Reasoning-anchored} (Sonnet): Strong anchoring; resists implicit instruction; SACD's explicit bias prompts essential (+66pp).
+    \item \textbf{Pattern A} (GPT-5.2): Low initial anchoring, high revision rate, revision \textit{increases} anchor sensitivity. Gap to SACD: $-$14pp.
+    \item \textbf{Pattern B} (Haiku): Moderate initial anchoring, high revision rate. Gap to SACD: +8pp.
+    \item \textbf{Pattern C} (Opus): Moderate initial anchoring, moderate revision rate. Gap to SACD: +23pp.
+    \item \textbf{Pattern D} (Sonnet): Strong initial anchoring, low revision rate. Gap to SACD: +66pp.
 \end{itemize}
 
-\textbf{Implication:} SACD's effectiveness is model- and provider-dependent. For GPT-5.2, revision instruction alone may be \textit{counterproductive} (introduces anchor sensitivity). For Anthropic's reasoning-optimized models (Sonnet), explicit bias prompts are necessary to overcome anchored confidence.
+\textbf{Exploratory interpretation:} These patterns suggest SACD's effectiveness varies by model architecture. For GPT-5.2 (Pattern A), revision instruction alone may be iatrogenic---the model's anchor resistance is overcome by the revision process itself. For Sonnet (Pattern D), explicit bias prompts appear necessary to elicit revision. These observations require replication with controlled multi-turn protocols before drawing causal conclusions.
 
 \subsection{Limitations}
 
