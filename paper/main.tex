@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Susceptibility Misleads: Why Standard Debiasing Metrics\\Can Recommend the Wrong Technique}
+\title{Debiasing Metrics Diverge: Why Susceptibility and Baseline Proximity\\Recommend Different Techniques}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -32,13 +32,11 @@
 \maketitle
 
 \begin{abstract}
-Standard evaluation of LLM debiasing techniques uses \textbf{susceptibility}---the gap between high-anchor and low-anchor responses. Lower susceptibility is assumed to mean better debiasing. We show this assumption can recommend the wrong technique.
+Standard evaluation of LLM debiasing techniques uses \textbf{susceptibility}---the gap between high-anchor and low-anchor responses. We show that susceptibility and baseline-relative metrics produce \textbf{divergent rankings}, and practitioners must choose which outcome to optimize.
 
-\textbf{Our core finding: susceptibility and baseline-relative metrics produce divergent rankings.} Devil's Advocate ranks \#1 under susceptibility (lowest anchor influence) but \#4 under baseline proximity (responses land at only 63.6\% of unanchored judgment---consistently wrong). SACD shows the reverse: \#3 under susceptibility but \#1 under baseline proximity (93.7\%). Technique rankings depend substantially on which metric you use.
+\textbf{Our core finding:} Devil's Advocate ranks \#1 under susceptibility (lowest anchor influence) but \#4 under baseline proximity (63.6\% of unanchored judgment). SACD shows the reverse: \#3 under susceptibility but \#1 under baseline proximity (93.7\%). Neither metric is inherently correct---susceptibility measures consistency, baseline proximity measures accuracy relative to unanchored judgment.
 
-We evaluate five techniques across 21,139 trials (14,152 judicial deep-dive on 10 models, plus 6,987 cross-domain on 4 models). Using Mean Absolute Deviation (MAD) from unanchored baseline as a complementary metric, we find that aggregate measures can mask substantial per-trial error: SACD's 93.7\% aggregate hides 18.1\% average deviation due to bidirectional errors that cancel.
-
-Model-specific variance is substantial: SACD ranges from 48\% to 128\% of baseline across models. Combined with the metric-dependence of rankings, this implies practitioners must validate debiasing per-model and per-task---and must choose metrics carefully, as standard susceptibility can mislead.
+We evaluate five techniques across 21,139 trials (14,152 judicial deep-dive on 10 models, plus 6,987 cross-domain on 4 models). Using Mean Absolute Deviation (MAD) as a complementary metric, we find aggregates mask per-trial error: SACD's 93.7\% aggregate hides 18.1\% average deviation. Model-specific variance is substantial (SACD: 48\%--128\% of baseline). Practitioners must validate per-model and per-task, and explicitly choose which metric aligns with their goals.
 \end{abstract}
 
 %==============================================================================
@@ -47,20 +45,20 @@ Model-specific variance is substantial: SACD ranges from 48\% to 128\% of baseli
 
 Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But how should we evaluate whether they work?
 
-The standard approach uses \textbf{susceptibility}: does the technique reduce the gap between high-anchor and low-anchor responses? Lower susceptibility is assumed to mean better debiasing. We show this assumption is flawed.
+The standard approach uses \textbf{susceptibility}: does the technique reduce the gap between high-anchor and low-anchor responses? We show that susceptibility and baseline-relative metrics produce divergent rankings.
 
-\textbf{The problem:} A technique can achieve low susceptibility by producing \textit{consistently wrong} responses. Devil's Advocate reduces susceptibility by 8.8\% but lands responses at only 63.6\% of the model's unanchored judgment. It doesn't remove bias---it introduces a different one.
+\textbf{The divergence:} Devil's Advocate reduces susceptibility by 8.8\% but lands responses at only 63.6\% of the model's unanchored judgment. It achieves consistency (low susceptibility) without accuracy (baseline proximity). SACD shows the opposite pattern.
 
-We evaluate five techniques across 21,139 trials and find that \textbf{metric choice determines technique recommendation}. Devil's Advocate ranks \#1 under susceptibility but \#4 under baseline proximity. SACD shows the reverse. The ``best'' technique depends on which metric you trust.
+We evaluate five techniques across 21,139 trials and find that \textbf{metric choice affects technique recommendation}. Devil's Advocate ranks \#1 under susceptibility but \#4 under baseline proximity. SACD shows the reverse. Which technique is ``best'' depends on which outcome practitioners prioritize.
 
-\subsection{Why Susceptibility Misleads}
+\subsection{Two Metrics, Two Rankings}
 \label{sec:two-metrics}
 
 Prior work evaluates debiasing using \textbf{susceptibility}---the gap between high-anchor and low-anchor responses:
 \begin{equation}
 \text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
 \end{equation}
-Lower gap = less susceptible = ``better.'' But this measures \textit{consistency}, not \textit{correctness}. A technique that compresses responses toward the wrong value shows low susceptibility while failing to debias.
+Lower gap = less susceptible. But susceptibility measures \textit{consistency}, not \textit{accuracy}. A technique can achieve low susceptibility while landing far from the unanchored judgment.
 
 \textbf{The problem:} Devil's Advocate reduces susceptibility ($-$8.8\%) but lands at only 63.6\% of baseline---it makes responses \textit{consistently wrong}. This is not debiasing; it is introducing a different bias.
 
