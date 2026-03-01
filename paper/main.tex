@@ -70,7 +70,9 @@ This directly answers: ``Is the debiased response close to what the model would 
 
 \subsection{Aggregate Metrics Hide Per-Trial Error}
 
-Even \% of baseline can mislead when averaged. SACD achieves 93.7\% aggregate but 18.1\% Mean Absolute Deviation (MAD)---bidirectional errors cancel.\footnote{SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques. Random Control's strong performance (78.3\%) suggests turn count itself affects results; SACD's advantage may partly reflect this confound rather than its specific content. See Limitations.} We recommend \textbf{MAD alongside aggregate metrics}:
+Even \% of baseline can mislead when averaged. SACD achieves 93.7\% aggregate but 18.1\% Mean Absolute Deviation (MAD)---bidirectional errors cancel. We recommend \textbf{MAD alongside aggregate metrics}:
+
+\textbf{Turn-count caveat:} SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques. Random Control's strong performance (78.3\%) suggests turn count itself affects results; SACD's advantage may partly reflect this confound rather than its specific content. See Limitations for details.
 \begin{equation}
 \text{MAD} = \frac{1}{n}\sum_{i=1}^{n}|R_i - R_{baseline}|
 \end{equation}
@@ -123,7 +125,7 @@ where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored basel
 
 \textbf{Baseline as reference, not ground truth.} Following \citet{jacowitz1995}, we measure deviation from each model's unanchored baseline rather than an external ground truth. This operationalizes debiasing as \textit{consistency}: a debiased model produces similar outputs regardless of irrelevant anchors. We make no claim that baselines are normatively correct---indeed, models disagree substantially (Table~\ref{tab:baselines}). The goal is to measure whether debiasing techniques restore anchor-independent reasoning, not whether that reasoning reaches any particular conclusion.
 
-\textbf{On proportional anchor design.} We set anchors proportionally to each model's baseline ($\pm$50\%) to ensure comparable anchoring pressure across models with different baseline judgments. This is not circular: baselines are measured independently in anchor-absent conditions, then used to compute anchor values. A technique causing perfect anchor-ignorance would score 100\%---but this IS the definition of successful debiasing. The goal is to eliminate the influence of task-irrelevant numeric information on judgment.
+\textbf{On proportional anchor design.} We set anchors proportionally to each model's baseline ($\pm$50\%) to ensure comparable anchoring pressure across models with different baseline judgments. This is not circular: baselines are measured independently in anchor-absent conditions, then used to compute anchor values. A technique causing complete anchor-ignorance would score 100\%---matching the model's unanchored judgment. The goal is to eliminate the influence of task-irrelevant numeric information on judgment.
 
 \subsection{Experimental Design}
 
@@ -321,7 +323,7 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
     bar width=14pt,
     width=0.95\columnwidth,
     height=6cm,
-    ylabel={\% of Baseline (100\% = perfect)},
+    ylabel={\% of Baseline (100\% = unanchored)},
     ymin=55,
     ymax=105,
     xtick=data,
@@ -467,7 +469,7 @@ Opus 4.6 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
 \draw[dashed, red, thick] (axis cs:100,0.5) -- (axis cs:100,10.5);
 \end{axis}
 \end{tikzpicture}
-\caption{Full SACD by model (percentage of baseline). Dashed line = 100\% (perfect). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% over/undershoot. Red = severe undershoot (Haiku at 47.8\%).}
+\caption{Full SACD by model (percentage of baseline). Dashed line = 100\% (unanchored baseline). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% over/undershoot. Red = severe undershoot (Haiku at 47.8\%).}
 \label{fig:sacd-by-model}
 \end{figure}
 
