@@ -764,7 +764,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 
 Metric choice determines technique recommendation. Our 21,139-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; our exploratory cross-domain analysis suggests no technique consistently outperforms.
 
-\textbf{For practitioners:} Test per-model, per-domain. When aggregate \% of baseline and MAD conflict (e.g., high aggregate with high MAD), prefer MAD---it indicates inconsistent per-trial behavior that aggregates mask. A technique showing 95\% aggregate but 25\% MAD is less reliable than one showing 90\% aggregate with 10\% MAD.
+\textbf{For practitioners:} Test per-model, per-domain. When aggregate and MAD conflict, prefer MAD---it reveals inconsistent per-trial behavior that aggregates mask.
 
 \textbf{For researchers:} Report MAD alongside aggregates; collect unanchored baselines. Aggregates alone hide bidirectional errors.
 
