@@ -765,21 +765,17 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \begin{enumerate}
     \item \textbf{Vignette coverage.} Original: one judicial case. Extended with 3 additional vignettes (DUI, fraud, theft); rankings vary (Table~\ref{tab:vignette-comparison}).
     
-    \item \textbf{Proportional anchor design.} Anchors scale with baseline (high = 1.5$\times$, low = 0.5$\times$). Cross-model susceptibility comparisons are not valid under this design---a model receiving a 27mo anchor (1.5$\times$18mo baseline) faces different anchoring pressure than one receiving 54mo (1.5$\times$36mo). All susceptibility claims are within-model only; technique rankings use aggregates across models. Future work: validate with fixed absolute anchors.
+    \item \textbf{Proportional anchor design.} Anchors scale with baseline ($\pm$50\%). Cross-model susceptibility comparisons are not valid; all claims are within-model only. Aggregates mask per-trial variance. Future work: validate with fixed absolute anchors.
     
-    \item \textbf{Metric divergence holds without Outside View.} Core finding holds even excluding Outside View---Devil's Advocate best on susceptibility, worst on baseline; SACD reverse.
-    
-    \item \textbf{Outside View confound.} See Section~\ref{sec:outside-view-confound}. Future work should test jurisdiction-neutral prompts.
+    \item \textbf{Outside View confound.} Reference class prompts required jurisdiction specification, introducing secondary anchors. Core findings hold excluding Outside View. See Section~\ref{sec:outside-view-confound}.
     
     \item \textbf{Baseline interpretation.} Baseline includes ``12th offense''---a possible implicit anchor per the original \citet{englich2006} design. Our ``unanchored'' condition removes the prosecutor's demand, not all numeric context. 100\% = restored to demand-absent state, not ``correct.''
     
-    \item \textbf{Percentage of baseline limitations.} Aggregates mask per-trial variance (see Tables~\ref{tab:anchor-asymmetry},~\ref{tab:sacd-premortem}). Ratio scaling exaggerates deviations for low-baseline models. Future: validate with fixed absolute anchors.
     
     \item \textbf{Model coverage.} 10 models from 4 providers. \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero baseline variance) shifts means 2--3pp but preserves rankings: SACD 93.4\% (was 93.7\%), Premortem 89.7\% (was 91.6\%), Random Control 77.0\% (was 78.3\%), Devil's Advocate 61.2\% (was 63.6\%).
     
     \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Rankings lack confidence intervals and significance testing due to small model count---rank differences may not be statistically robust. Cross-provider validation (Anthropic + OpenAI) confirms patterns are not provider-specific.
     
-    \item \textbf{Presentation.} Response distributions summarized via statistics and heatmap (Figure~\ref{fig:mad-heatmap}). Full per-trial distributions in supplementary materials.
     
     \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 API calls vs.\ 3 turns for Devil's Advocate/Premortem/Random Control. To isolate content from turn-count effects, we ran a 6-turn Random Control condition (n=238) matching SACD's turn structure with neutral filler content (Table~\ref{tab:6turn-rc-results}). \textbf{Key finding:} Response to implicit revision instruction varies dramatically by model---Haiku revises 77.6\% of responses with filler alone, while Sonnet revises only 20.0\%. SACD's explicit bias prompts close this gap (86\% across all models), suggesting SACD's content is essential for reasoning-anchored models but marginal for instruction-following models. Turn count alone explains $<$3\% of variance (r=0.138, Section~\ref{sec:6turn-rc}).
     
