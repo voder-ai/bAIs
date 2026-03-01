@@ -299,7 +299,7 @@ Our core empirical finding: susceptibility and \% of baseline give \textbf{diver
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). $\Delta$ = change in spread vs.\ no-technique baseline (negative = reduced susceptibility). \textbf{Key observation:} Only Devil's Advocate actually \textit{reduces} susceptibility ($-$8.8\%); the other three techniques \textit{increase} it (+15.8\% to +73.8\%). Yet DA performs \textit{worst} on \% of baseline (63.6\% vs.\ 72.9\% for no-technique)---it reduces susceptibility by moving responses consistently \textit{away} from the unanchored judgment. 95\% CIs from bootstrap.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). $\Delta$ = change in spread vs.\ no-technique baseline (negative = reduced susceptibility). \textbf{Key observation:} Only Devil's Advocate actually \textit{reduces} susceptibility ($-$8.8\%); the other three techniques \textit{increase} it (+15.8\% to +73.8\%). Yet DA performs \textit{worst} on \% of baseline (63.6\% vs.\ 72.9\% for no-technique)---it reduces susceptibility by moving responses consistently \textit{away} from the unanchored judgment. 95\% CIs from bootstrap shown in brackets.}
 \label{tab:metric-comparison}
 \begin{tabular}{lcccccc}
 \toprule
@@ -633,7 +633,7 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\columnwidth]{figures/mad-heatmap.pdf}
-\caption{MAD by domain and technique. Lower (green) = better calibration to unanchored baseline. Each cell shows deviation percentage. \textbf{Caveat:} Visual emphasis (color/asterisks) shows numerically lowest values only---all pairwise \#1 vs \#2 CIs overlap; differences are not statistically distinguishable. No technique wins across all domains.}
+\caption{MAD by domain and technique (exploratory; 4 models). Lower (green) = better calibration to unanchored baseline. Each cell shows deviation percentage. \textbf{Important:} Color/asterisks indicate numerically lowest values \textit{within} each domain, but all pairwise \#1 vs \#2 CIs overlap---ranking differences are not statistically distinguishable. Visualization shows variability, not definitive rankings.}
 \label{fig:mad-heatmap}
 \end{figure}
 
