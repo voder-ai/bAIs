@@ -34,7 +34,7 @@
 \begin{abstract}
 Do debiasing techniques for anchoring bias transfer across domains? We evaluate four interventions---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, and Random Control---across 21,139 trials spanning six domains: salary negotiation, loan approval, medical triage, and three judicial sentencing scenarios.
 
-\textbf{Our core finding: our exploratory cross-domain analysis (4 models) suggests no technique consistently outperforms.} Technique rankings vary by domain, and bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. Point estimates suggest the technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4), though these differences are not statistically significant. Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains by point estimate.
+\textbf{Our core finding: our exploratory cross-domain analysis (4 models) suggests no technique consistently outperforms.} Technique rankings vary by domain, and bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. Point estimates suggest the technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4), though these differences are not statistically significant. Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 4 of 6 domains by point estimate.
 
 We apply Mean Absolute Deviation (MAD) from unanchored baseline as a complementary metric that captures per-trial error obscured by aggregate measures. SACD's aggregate 93.7\% of baseline in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
 
@@ -677,7 +677,7 @@ Aggregates mask distributional properties. Devil's Advocate compresses variance 
 
 Random Control outperforms Devil's Advocate (+15pp, $d=0.39$) despite no debiasing content. Multi-turn structure alone helps more than Devil's Advocate content.
 
-\textbf{Why does neutral content beat active debiasing?} Random Control ranks \#1 in 3--4 of 6 domains by point estimate, outperforming SACD and Premortem. One hypothesis: explicit bias prompts may inadvertently prime models to attend to anchors they would otherwise ignore---an iatrogenic effect similar to the GPT-5.2 revision finding (Section~\ref{sec:6turn-rc}). Asking ``are you being influenced by the prosecutor's demand?'' may \textit{introduce} anchor salience rather than reduce it. Random Control's neutral filler avoids this priming while still providing the multi-turn structure that appears beneficial.
+\textbf{Why does neutral content beat active debiasing?} Random Control ranks \#1 in 4 of 6 domains by point estimate, outperforming SACD and Premortem. One hypothesis: explicit bias prompts may inadvertently prime models to attend to anchors they would otherwise ignore---an iatrogenic effect similar to the GPT-5.2 revision finding (Section~\ref{sec:6turn-rc}). Asking ``are you being influenced by the prosecutor's demand?'' may \textit{introduce} anchor salience rather than reduce it. Random Control's neutral filler avoids this priming while still providing the multi-turn structure that appears beneficial.
 
 \subsection{Why Human Techniques May Not Transfer}
 
