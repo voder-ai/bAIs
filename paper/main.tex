@@ -695,7 +695,7 @@ We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $
 \subsection{Isolating Turn Count from SACD Content}
 \label{sec:6turn-rc}
 
-To test whether SACD's benefit stems from turn count or content, we ran a 6-turn Random Control condition (n=178) matching SACD's Englich anchor format and turn structure, replacing self-reflection prompts with neutral filler (German trees, Bavaria capital, bread varieties). Both conditions use identical Turn 6 phrasing (``provide a revised sentencing recommendation'').
+To test whether SACD's benefit stems from turn count or content, we ran a 6-turn Random Control condition (n=238) matching SACD's Englich anchor format and turn structure, replacing self-reflection prompts with neutral filler (German trees, Bavaria capital, bread varieties). Both conditions use identical Turn 6 phrasing (``provide a revised sentencing recommendation'').
 
 \begin{table}[htbp]
 \centering
@@ -704,6 +704,10 @@ To test whether SACD's benefit stems from turn count or content, we ran a 6-turn
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Model} & \textbf{Anchor} & \textbf{n} & \textbf{Changed} & \textbf{6-Turn RC} & \textbf{Gap to SACD} \\
+\midrule
+GPT-5.2 & Low (16mo) & 30 & 30 & 100.0\% & $-$14.0pp \\
+& High (48mo) & 30 & 30 & 100.0\% & $-$14.0pp \\
+& \textit{Overall} & 60 & 60 & \textbf{100.0\%} & \textbf{$-$14.0pp} \\
 \midrule
 Haiku 4.5 & Low (14mo) & 28 & 20 & 71.4\% & 14.6pp \\
 & High (43mo) & 30 & 25 & 83.3\% & 2.7pp \\
@@ -720,15 +724,18 @@ Sonnet 4.6 & Low (12mo) & 30 & 9 & 30.0\% & 56.0pp \\
 \end{tabular}
 \end{table}
 
-\textbf{Key finding:} Model response to implicit revision instruction varies dramatically. Haiku (instruction-following) revises 77.6\% of responses with filler alone---nearly matching SACD's 86\%. Sonnet (reasoning-optimized) revises only 20.0\% with filler, requiring SACD's explicit bias content to reach 86\%. This suggests a model taxonomy:
+\textbf{Key finding:} Model response to implicit revision instruction varies dramatically across providers. GPT-5.2 shows 100\% revision rate with filler alone---\textit{exceeding} SACD's 86\%. In contrast, Sonnet revises only 20\% with filler, requiring SACD's explicit bias content. Notably, GPT-5.2's initial judgments show extreme anchor resistance (4mo regardless of anchor), but the \textit{revised} judgments reflect anchor direction (13mo low, 28mo high)---suggesting revision instruction \textit{introduces} anchor sensitivity rather than removing it.
+
+This suggests a four-category model taxonomy:
 
 \begin{itemize}
-    \item \textbf{Instruction-following} (Haiku): Responds to implicit ``revised'' cue; SACD adds marginal benefit (+8pp).
-    \item \textbf{Balanced} (Opus): Moderate response; SACD adds substantial benefit (+23pp).
-    \item \textbf{Reasoning-anchored} (Sonnet): Resists implicit instruction; SACD's explicit bias prompts essential (+66pp).
+    \item \textbf{Anchor-resistant, revision-responsive} (GPT-5.2): Ignores anchor initially; 100\% revision rate; revision \textit{introduces} anchor sensitivity. SACD unnecessary ($-$14pp).
+    \item \textbf{Instruction-following} (Haiku): Moderate anchoring; responds to implicit ``revised'' cue; SACD adds marginal benefit (+8pp).
+    \item \textbf{Balanced} (Opus): Moderate anchoring and response; SACD adds substantial benefit (+23pp).
+    \item \textbf{Reasoning-anchored} (Sonnet): Strong anchoring; resists implicit instruction; SACD's explicit bias prompts essential (+66pp).
 \end{itemize}
 
-\textbf{Implication:} SACD's effectiveness is model-dependent. For instruction-following models, simply asking for revision achieves most of the effect. For reasoning-optimized models, explicit bias prompts are necessary to overcome anchored confidence.
+\textbf{Implication:} SACD's effectiveness is model- and provider-dependent. For GPT-5.2, revision instruction alone may be \textit{counterproductive} (introduces anchor sensitivity). For Anthropic's reasoning-optimized models (Sonnet), explicit bias prompts are necessary to overcome anchored confidence.
 
 \subsection{Limitations}
 
