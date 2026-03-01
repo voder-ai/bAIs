@@ -215,11 +215,9 @@ Condition & $n$ (analysis) \\
 
 We use two complementary approaches: \textbf{Welch's t-test} for hypothesis testing (with Bonferroni correction for 6 pairwise comparisons; corrected $\alpha = 0.05 / 6 \approx 0.0083$), and \textbf{percentile bootstrap} (10,000 resamples, stratified by model) for confidence intervals. Effect sizes are reported as Cohen's $d$. Statistical significance ($p < .05$ after correction) does not imply practical significance; we emphasize effect sizes and CIs throughout.
 
-\textbf{Aggregate statistics:} Reported aggregate \% of baseline values (e.g., SACD's 93.7\%) are \textit{trial-weighted} means pooled across all models. The unweighted model-average for SACD is 97.7\% (Table~\ref{tab:sacd-by-model}); the difference reflects that models with more trials (and often lower baselines) pull the weighted mean down. We report trial-weighted aggregates for technique comparisons, but model-level results (Table~\ref{tab:sacd-by-model}) for deployment decisions. \textit{Choice rationale:} Trial-weighted means answer ``what happens on a random trial?''; model-averaged means answer ``what happens for a typical model?'' Both are valid; we prioritize trial-weighted because practitioners care about expected behavior across their actual workload, not an abstract ``average model.''
+\textbf{Aggregate statistics:} Reported aggregates are trial-weighted means pooled across models; model-level results (Table~\ref{tab:sacd-by-model}) for deployment decisions. Analysis is deterministic from raw JSONL data.
 
-\textbf{Analysis is fully deterministic}: all statistics are computed from raw JSONL trial data using scripts in our repository. No manual intervention or selective reporting.
-
-\textbf{Reproducibility:} All trials were collected via OpenRouter API (api.openrouter.ai) during February 2026. Model identifiers follow OpenRouter naming: anthropic/claude-haiku-4.5, anthropic/claude-sonnet-4.6, anthropic/claude-opus-4.6, openai/gpt-4.1, openai/gpt-5.2, openai/o3, openai/o4-mini, deepseek/deepseek-v3.2, moonshotai/kimi-k2.5, zhipu/glm-5. API responses include request IDs logged with each trial for audit.
+\textbf{Reproducibility:} Trials collected via OpenRouter API during February 2026. Model identifiers and request IDs logged for audit. Full details in repository.
 
 \textbf{Power analysis:} While we have $n > 2{,}000$ trials per technique, the design effect from model clustering (ICC=0.17, see Section~\ref{sec:mixed-effects}) reduces effective sample size to approximately $n_{\text{eff}} \approx 60$--70 per technique. At this effective $n$, we are powered ($\beta = 0.80$, $\alpha = 0.05$) to detect effects of $d \approx 0.50$ or larger. Our observed effects range from $d = 0.39$ (Random Control vs.\ Devil's Advocate) to $d = 1.06$ (SACD vs.\ Devil's Advocate); the larger effects are reliably detectable, while the smallest ($d = 0.39$) is at the margin of detectability. The SACD--Premortem comparison ($d = 0.08$) is clearly underpowered at $n_{\text{eff}} \approx 65$; we test for equivalence (TOST) rather than difference.
 
@@ -665,23 +663,15 @@ SACD achieves the highest \% of baseline (Table~\ref{tab:baseline-pct}) but show
 
 \textbf{Possible mechanisms:} (1) Iterative reflection may help models escape local optima. (2) Some models may perform ``debiasing theater''---Opus overshoots to 127.8\%, potentially optimizing for \textit{appearing} to reconsider. (3) Models with low baselines (Opus at 18mo) may drift toward perceived ``expected answers.'' (4) Haiku's severe undershoot (47.8\%) suggests SACD can backfire entirely for some architectures.
 
-\subsection{Theoretical Grounding (Speculative)}
+\subsection{Theoretical Grounding}
 
-Two recent findings offer potential explanations: (1) \citet{llm-bayesian-2025} show LLMs are ``Bayesian in expectation, not realization''---positional encoding causes order-dependent posteriors. Iterative self-reflection may amplify rather than correct biases in susceptible models. (2) \citet{llm-judge-overconfidence-2025} demonstrate LLMs overstate confidence in self-judgment; external-challenge techniques (Devil's Advocate, Premortem) may outperform internal-iteration (SACD) because they avoid this self-reinforcing loop.
-
-\subsection{Per-Trial Distribution Analysis}
-
-Aggregates mask distributional properties. Devil's Advocate compresses variance (SD=34.6) toward the wrong target (median=69\%, only 11\% within $\pm$10\% of baseline). Premortem achieves highest proximity (13.9\% within $\pm$10\%) but with higher variance (SD=41.9). All techniques show positive skew.
+Two recent findings offer potential explanations: (1) \citet{llm-bayesian-2025} show LLMs are ``Bayesian in expectation, not realization''---iterative self-reflection may amplify rather than correct biases. (2) \citet{llm-judge-overconfidence-2025} demonstrate LLMs overstate confidence in self-judgment. At the per-trial level, Devil's Advocate compresses variance toward the wrong target (median=69\%, only 11\% within $\pm$10\% of baseline), while Premortem achieves highest proximity (13.9\% within $\pm$10\%) but with higher variance.
 
 \subsection{Why Random Control Works}
 
 Random Control outperforms Devil's Advocate (+15pp, $d=0.39$) despite no debiasing content. Multi-turn structure alone helps more than Devil's Advocate content.
 
 \textbf{Why does neutral filler perform comparably to active debiasing?} In the exploratory cross-domain analysis, Random Control ranks \#1 in 4 of 6 domains by point estimate---but all pairwise CIs overlap. In the main judicial analysis, SACD outperforms Random Control (93.7\% vs 78.3\%). One hypothesis for Random Control's surprisingly strong performance: explicit bias prompts may inadvertently prime models to attend to anchors they would otherwise ignore---an iatrogenic effect. Asking ``are you being influenced by the prosecutor's demand?'' may \textit{introduce} anchor salience. Random Control's neutral filler avoids this priming while still providing multi-turn structure.
-
-\subsection{Why Human Techniques May Not Transfer}
-
-Human debiasing techniques assume metacognitive capacity---the ability to reason about one's own reasoning. Whether transformer architectures support analogous self-correction mechanisms remains an open question; our results suggest they may not. Debiasing LLMs may require understanding how \textit{transformers} fall prey to bias, not how \textit{humans} do.
 
 \subsection{The Outside View Confound}
 \label{sec:outside-view-confound}
