@@ -722,14 +722,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \noindent\fbox{\parbox{\textwidth}{\textbf{Critical caveat:} GPT-5.2 trials used single-prompt simulation (Codex CLI concatenates conversation history) vs.\ true multi-turn API calls for Anthropic models. Pattern A (GPT-5.2) may reflect this protocol difference rather than model behavior---the ``iatrogenic revision'' finding requires replication with matched protocols before drawing conclusions. We retain GPT-5.2 for cross-provider validation but emphasize that the taxonomy below applies reliably only to Anthropic models (Patterns B--D).}}
 
 \vspace{0.5em}
-\textit{Observed patterns (exploratory, not a validated taxonomy):}
-
-\begin{itemize}
-    \item \textbf{Pattern A} (GPT-5.2, \textit{protocol confounded}): Low initial anchoring, high revision rate, revision \textit{increases} anchor sensitivity. Gap to SACD: $-$14pp. \textit{May be artifact of single-prompt simulation.}
-    \item \textbf{Pattern B} (Haiku): Moderate initial anchoring, high revision rate. Gap to SACD: +8pp.
-    \item \textbf{Pattern C} (Opus): Moderate initial anchoring, moderate revision rate. Gap to SACD: +23pp.
-    \item \textbf{Pattern D} (Sonnet): Strong initial anchoring, low revision rate. Gap to SACD: +66pp.
-\end{itemize}
+\textit{Observed patterns (exploratory):} GPT-5.2 (protocol confounded): high revision, iatrogenic anchor sensitivity. Haiku: high revision, low quality. Opus: moderate both. Sonnet: low revision, requires explicit prompts.
 
 \textbf{Interpretation:} Patterns B--D suggest SACD's effectiveness varies by model architecture within the Anthropic family. For Sonnet (Pattern D), explicit bias prompts appear necessary to elicit revision. Pattern A (GPT-5.2) cannot be interpreted without matched-protocol replication.
 
