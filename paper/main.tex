@@ -763,13 +763,13 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \begin{enumerate}
     \item \textbf{Vignette coverage.} Original: one judicial case. Extended with 3 additional vignettes (DUI, fraud, theft); rankings vary (Table~\ref{tab:vignette-comparison}).
     
-    \item \textbf{Proportional anchor design.} Anchors scale with baseline (high = 1.5$\times$, low = 0.5$\times$). This introduces potential circularity for cross-model comparison; we report within-model effects alongside aggregates. Future work: validate with fixed absolute anchors.
+    \item \textbf{Proportional anchor design.} Anchors scale with baseline (high = 1.5$\times$, low = 0.5$\times$). Cross-model susceptibility comparisons are not valid under this design---a model receiving a 27mo anchor (1.5$\times$18mo baseline) faces different anchoring pressure than one receiving 54mo (1.5$\times$36mo). All susceptibility claims are within-model only; technique rankings use aggregates across models. Future work: validate with fixed absolute anchors.
     
     \item \textbf{Metric divergence holds without Outside View.} Core finding holds even excluding Outside View---Devil's Advocate best on susceptibility, worst on baseline; SACD reverse.
     
     \item \textbf{Outside View confound.} See Section~\ref{sec:outside-view-confound}. Future work should test jurisdiction-neutral prompts.
     
-    \item \textbf{Baseline interpretation.} Baseline includes ``12th offense''---``without explicit anchor,'' not truly unanchored. 100\% = restored to unanchored state, not ``correct.''
+    \item \textbf{Baseline interpretation.} Baseline includes ``12th offense''---a possible implicit anchor per the original \citet{englich2006} design. Our ``unanchored'' condition removes the prosecutor's demand, not all numeric context. 100\% = restored to demand-absent state, not ``correct.''
     
     \item \textbf{Percentage of baseline limitations.} Aggregates mask per-trial variance (see Tables~\ref{tab:anchor-asymmetry},~\ref{tab:sacd-premortem}). Ratio scaling exaggerates deviations for low-baseline models. Future: validate with fixed absolute anchors.
     
