@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Does Debiasing Content Matter?\\Multi-Turn Structure Performs Surprisingly Well for LLM Anchoring Bias}
+\title{Susceptibility Misleads: Why Standard Debiasing Metrics\\Can Recommend the Wrong Technique}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -32,26 +32,26 @@
 \maketitle
 
 \begin{abstract}
-Do debiasing techniques for anchoring bias work because of their \textit{content}, or because they add conversation \textit{turns}? We evaluate five techniques---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, Random Control, and Outside View---across 21,139 trials spanning seven vignettes.
+Standard evaluation of LLM debiasing techniques uses \textbf{susceptibility}---the gap between high-anchor and low-anchor responses. Lower susceptibility is assumed to mean better debiasing. We show this assumption can recommend the wrong technique.
 
-\textbf{Our surprising finding: Random Control performs comparably to dedicated techniques.} This technique provides no debiasing content---only additional conversation turns with neutral filler. In our exploratory cross-domain analysis (4 models), Random Control ranks \#1 in 4 of 6 domains by point estimate, with bootstrap 95\% CIs overlapping for all pairwise comparisons---we cannot statistically distinguish techniques. This suggests \textbf{multi-turn structure may matter as much as specific debiasing content}.
+\textbf{Our core finding: susceptibility and baseline-relative metrics produce opposite rankings.} Devil's Advocate ranks \#1 under susceptibility (lowest anchor influence) but \#4 under baseline proximity (responses land at only 63.6\% of unanchored judgment---consistently wrong). SACD shows the reverse: \#3 under susceptibility but \#1 under baseline proximity (93.7\%). The ``best'' technique depends entirely on which metric you use.
 
-We also demonstrate that \textbf{susceptibility}---the standard metric---conflates consistency with correctness. Devil's Advocate reduces susceptibility while producing responses at only 63.6\% of unanchored baseline (consistently wrong). We propose MAD (Mean Absolute Deviation from baseline) as a complementary metric that captures per-trial error obscured by aggregates.
+We evaluate five techniques across 21,139 trials (14,152 judicial deep-dive on 10 models, plus 6,987 cross-domain on 4 models). Using Mean Absolute Deviation (MAD) from unanchored baseline as a complementary metric, we find that aggregate measures can mask substantial per-trial error: SACD's 93.7\% aggregate hides 18.1\% average deviation due to bidirectional errors that cancel.
 
-A deep-dive on judicial sentencing (14,152 trials, 10 models) confirms substantial model-specific variance: SACD ranges from 48\% to 128\% of baseline across models. Combined with Random Control's strong performance, this implies practitioners should consider whether simple multi-turn structure might suffice---and must validate any technique per-model and per-task rather than relying on published rankings.
+Model-specific variance is substantial: SACD ranges from 48\% to 128\% of baseline across models. Combined with the metric-dependence of rankings, this implies practitioners must validate debiasing per-model and per-task---and must choose metrics carefully, as standard susceptibility can mislead.
 \end{abstract}
 
 %==============================================================================
 \section{Introduction}
 %==============================================================================
 
-Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do these techniques work because of their \textit{content}, or because they add conversation \textit{turns}?
+Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But how should we evaluate whether they work?
 
-We designed a control condition to test this: \textbf{Random Control} provides the same multi-turn structure as other techniques but replaces debiasing prompts with filler content. \textit{Caveat:} The 3-turn version uses courtroom elaboration (domain-relevant for judicial cases); only the 6-turn ablation uses truly neutral content (German trivia). If debiasing content matters, Random Control should underperform dedicated techniques.
+The standard approach uses \textbf{susceptibility}: does the technique reduce the gap between high-anchor and low-anchor responses? Lower susceptibility is assumed to mean better debiasing. We show this assumption is flawed.
 
-\textbf{Surprisingly, it performs comparably.} In our exploratory cross-domain analysis (4 models), Random Control ranks \#1 in 4 of 6 domains by point estimate---but all pairwise CIs overlap, so we cannot statistically distinguish techniques. In the deep-dive judicial analysis (10 models), SACD does outperform Random Control (93.7\% vs 78.3\% of baseline, non-overlapping CIs). This mixed evidence suggests multi-turn structure matters, though dedicated debiasing content may still add value.
+\textbf{The problem:} A technique can achieve low susceptibility by producing \textit{consistently wrong} responses. Devil's Advocate reduces susceptibility by 8.8\% but lands responses at only 63.6\% of the model's unanchored judgment. It doesn't remove bias---it introduces a different one.
 
-We also identify a methodological flaw in prior work: \textbf{susceptibility} conflates consistency with correctness (see Section~\ref{sec:two-metrics}).
+We evaluate five techniques across 21,139 trials and find that \textbf{metric choice determines technique recommendation}. Devil's Advocate ranks \#1 under susceptibility but \#4 under baseline proximity. SACD shows the reverse. The ``best'' technique depends on which metric you trust.
 
 \subsection{Why Susceptibility Misleads}
 \label{sec:two-metrics}
