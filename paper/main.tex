@@ -746,17 +746,19 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \end{tabular}
 \end{table}
 
-\textit{Methodological caveats:} (1) GPT-5.2 trials used single-prompt simulation via Codex CLI; Anthropic trials used true multi-turn conversation. Cross-provider comparison is exploratory. (2) We report four observed patterns, not a validated taxonomy:
+\noindent\fbox{\parbox{\textwidth}{\textbf{Critical caveat:} GPT-5.2 trials used single-prompt simulation (Codex CLI concatenates conversation history) vs.\ true multi-turn API calls for Anthropic models. Pattern A (GPT-5.2) may reflect this protocol difference rather than model behavior---the ``iatrogenic revision'' finding requires replication with matched protocols before drawing conclusions. We retain GPT-5.2 for cross-provider validation but emphasize that the taxonomy below applies reliably only to Anthropic models (Patterns B--D).}}
 
+\vspace{0.5em}
+\textit{Observed patterns (exploratory, not a validated taxonomy):}
 
 \begin{itemize}
-    \item \textbf{Pattern A} (GPT-5.2): Low initial anchoring, high revision rate, revision \textit{increases} anchor sensitivity. Gap to SACD: $-$14pp.
+    \item \textbf{Pattern A} (GPT-5.2, \textit{protocol confounded}): Low initial anchoring, high revision rate, revision \textit{increases} anchor sensitivity. Gap to SACD: $-$14pp. \textit{May be artifact of single-prompt simulation.}
     \item \textbf{Pattern B} (Haiku): Moderate initial anchoring, high revision rate. Gap to SACD: +8pp.
     \item \textbf{Pattern C} (Opus): Moderate initial anchoring, moderate revision rate. Gap to SACD: +23pp.
     \item \textbf{Pattern D} (Sonnet): Strong initial anchoring, low revision rate. Gap to SACD: +66pp.
 \end{itemize}
 
-\textbf{Exploratory interpretation:} These patterns suggest SACD's effectiveness varies by model architecture. For GPT-5.2 (Pattern A), revision instruction alone may be iatrogenic---the model's anchor resistance is overcome by the revision process itself. For Sonnet (Pattern D), explicit bias prompts appear necessary to elicit revision. These observations require replication with controlled multi-turn protocols before drawing causal conclusions.
+\textbf{Interpretation:} Patterns B--D suggest SACD's effectiveness varies by model architecture within the Anthropic family. For Sonnet (Pattern D), explicit bias prompts appear necessary to elicit revision. Pattern A (GPT-5.2) cannot be interpreted without matched-protocol replication.
 
 \subsection{Limitations}
 
