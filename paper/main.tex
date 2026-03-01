@@ -38,7 +38,7 @@ Do debiasing techniques for anchoring bias work because of their \textit{content
 
 We also demonstrate that \textbf{susceptibility}---the standard metric---conflates consistency with correctness. Devil's Advocate reduces susceptibility while producing responses at only 63.6\% of unanchored baseline (consistently wrong). We propose MAD (Mean Absolute Deviation from baseline) as a complementary metric that captures per-trial error obscured by aggregates.
 
-A deep-dive on judicial sentencing (14,152 trials, 10 models) confirms substantial model-specific variance: SACD ranges from 48\% to 128\% of baseline across models. Combined with Random Control's dominance, this implies practitioners should consider whether simple multi-turn structure might suffice---and must validate any technique per-model and per-task rather than relying on published rankings.
+A deep-dive on judicial sentencing (14,152 trials, 10 models) confirms substantial model-specific variance: SACD ranges from 48\% to 128\% of baseline across models. Combined with Random Control's strong performance, this implies practitioners should consider whether simple multi-turn structure might suffice---and must validate any technique per-model and per-task rather than relying on published rankings.
 \end{abstract}
 
 %==============================================================================
@@ -816,7 +816,7 @@ Complete prompts are available in our repository. We summarize the key structure
     \item \textbf{Devil's Advocate:} ``Before answering, consider: What would someone who disagrees with your initial judgment say?''
     \item \textbf{Premortem:} ``Imagine your sentencing recommendation was later found to be seriously flawed. What went wrong?''
     \item \textbf{SACD:} Six-turn iterative reflection with explicit bias acknowledgment (see \citet{lyu2025})
-    \item \textbf{Random Control:} Neutral filler (German trees, Bavarian capital, bread varieties) matching SACD turn count
+    \item \textbf{Random Control:} Neutral filler---courtroom elaboration (3-turn) or German trivia (6-turn ablation)---matching technique turn counts
     \item \textbf{Outside View:} Reference class prompt with German federal court statistics (confounded; excluded from rankings)
 \end{itemize}
 
