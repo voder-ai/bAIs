@@ -51,7 +51,7 @@ We designed a control condition to test this: \textbf{Random Control} provides t
 
 \textbf{Surprisingly, it performs comparably.} In our exploratory cross-domain analysis (4 models), Random Control ranks \#1 in 4 of 6 domains by point estimate---but all pairwise CIs overlap, so we cannot statistically distinguish techniques. In the deep-dive judicial analysis (10 models), SACD does outperform Random Control (93.7\% vs 78.3\% of baseline, non-overlapping CIs). This mixed evidence suggests multi-turn structure matters, though dedicated debiasing content may still add value.
 
-We also identify a methodological flaw in prior work: \textbf{susceptibility}---measuring whether responses vary with anchors---conflates consistency with correctness. Devil's Advocate reduces susceptibility but produces responses at only 63.6\% of baseline (consistently wrong).
+We also identify a methodological flaw in prior work: \textbf{susceptibility} conflates consistency with correctness (see Section~\ref{sec:two-metrics}).
 
 \subsection{Why Susceptibility Misleads}
 \label{sec:two-metrics}
