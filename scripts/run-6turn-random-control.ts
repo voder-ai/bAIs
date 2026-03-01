@@ -18,7 +18,11 @@
  * - Models: Haiku 4.5, Sonnet 4.6, Opus 4.6, GPT-5.2
  * 
  * Usage: npx tsx scripts/run-6turn-random-control.ts <model-spec> <anchor-direction> <temperature> [target=30]
- * Example: npx tsx scripts/run-6turn-random-control.ts anthropic/claude-sonnet-4-6 high 0.7 30
+ * 
+ * Examples:
+ *   npx tsx scripts/run-6turn-random-control.ts anthropic/claude-sonnet-4-6 high 0.7 30
+ *   npx tsx scripts/run-6turn-random-control.ts anthropic/claude-opus-4-6 low 0.7 30
+ *   npx tsx scripts/run-6turn-random-control.ts openai-codex/gpt-5.2 high 0.7 30
  * 
  * Output: results/6turn-rc/6turn-rc-<model>-<anchor-direction>-t<temp>.jsonl
  */
@@ -27,6 +31,10 @@ import { existsSync } from 'node:fs';
 import { createProvider, parseModelSpec } from '../dist/llm/provider.js';
 
 // Model baselines (from existing judicial study)
+// Usage examples:
+//   anthropic/claude-sonnet-4-6
+//   anthropic/claude-opus-4-6
+//   openai-codex/gpt-5.2
 const MODEL_BASELINES: Record<string, number> = {
   'claude-haiku-4-5': 29.1,
   'claude-haiku-4.5': 29.1,
