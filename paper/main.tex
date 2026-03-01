@@ -553,7 +553,7 @@ Average response deviation from 100\% & 6.3\% & 8.4\% \\
 Mean absolute per-trial error & 18.1\% & 22.6\% \\
 \bottomrule
 \end{tabular}
-\caption{\textbf{Mean Absolute Deviation (MAD) complements aggregate metrics.} Average response deviation (6.3\% vs 8.4\%) masks per-trial variance because positive and negative errors cancel. \textbf{MAD} (18.1\% vs 22.6\%) reveals the true per-trial error: individual SACD responses deviate $\sim$18\% from baseline, not 6\%. The 93.7\% aggregate is an average of overshoots (112.0\% from high anchors) and undershoots (75.7\% from low anchors). We recommend MAD alongside susceptibility for debiasing evaluation. Difference not statistically significant ($p \approx 0.054$).}
+\caption{MAD complements aggregate metrics. SACD's 93.7\% aggregate masks 18.1\% per-trial deviation (overshoots/undershoots cancel). Difference not significant ($p \approx 0.054$).}
 \label{tab:sacd-premortem}
 \end{table}
 
@@ -577,7 +577,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory). Per-domain n = technique trials (column sums $\approx$5,852); total 6,987 includes $\sim$1,135 baseline-none reference trials not shown. \textbf{Note:} Rankings are point estimates only; bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons (no statistically distinguishable differences).}
+\caption{Debiasing by Domain (MAD, 4 models, exploratory). Lower = better. No technique ranks \#1 across all domains. Rankings are point estimates; all \#1 vs \#2 CIs overlap.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -631,7 +631,7 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\columnwidth]{figures/mad-heatmap.pdf}
-\caption{MAD by domain and technique (exploratory; 4 models). Lower (green) = better calibration to unanchored baseline. Each cell shows deviation percentage. \textbf{Important:} Color/asterisks indicate numerically lowest values \textit{within} each domain, but all pairwise \#1 vs \#2 CIs overlap---ranking differences are not statistically distinguishable. Visualization shows variability, not definitive rankings.}
+\caption{MAD heatmap (exploratory; 4 models). Lower (green) = better. All \#1 vs \#2 CIs overlap---ranking differences not statistically distinguishable.}
 \label{fig:mad-heatmap}
 \end{figure}
 
