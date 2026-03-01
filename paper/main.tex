@@ -788,7 +788,7 @@ Following \citet{lyu2025}, SACD implements three iterative steps:
 \item \textbf{Cognitive Debiasing}: ``Rewrite the flagged sentences to remove the bias''
 \end{enumerate}
 
-Steps repeat until no bias is detected or maximum iterations (5) reached. Average iterations to convergence: 2.5 (median 3). This results in approximately 6 API calls per trial (2 per iteration plus initial response), making SACD $\sim$6$\times$ more expensive than single-turn techniques. For latency-sensitive applications, Premortem achieves comparable \% of baseline (91.6\% vs.\ 93.7\%) in a single turn.
+Steps repeat until no bias is detected or maximum iterations (5) reached. Median iterations to convergence: 3 (mean 2.5, reflecting left-skewed distribution with some single-iteration convergences). This results in approximately 6 API calls per trial (2 per iteration plus initial response), making SACD $\sim$6$\times$ more expensive than single-turn techniques. For latency-sensitive applications, Premortem achieves comparable \% of baseline (91.6\% vs.\ 93.7\%) in a single turn.
 
 \subsection{Devil's Advocate}
 
