@@ -269,3 +269,31 @@ async function analyzeRevisionQuality() {
 }
 
 analyzeRevisionQuality().catch(console.error);
+
+// Anchor-stratified quality for GPT-5.2
+async function analyzeGPT52Stratified() {
+  const trials = await loadTrials();
+  const gpt = trials.filter(t => t.model === 'openai/gpt-5.2');
+  const baseline = 31.8;
+  
+  console.log('\n=== GPT-5.2 Anchor-Stratified Quality ===');
+  
+  const low = gpt.filter(t => t.anchor < baseline);
+  const high = gpt.filter(t => t.anchor >= baseline);
+  
+  for (const [label, subset] of [['Low anchor', low], ['High anchor', high]]) {
+    const anchor = subset[0]?.anchor || 0;
+    const initMean = subset.reduce((s, t) => s + t.initialSentence, 0) / subset.length;
+    const finalMean = subset.reduce((s, t) => s + t.finalSentence, 0) / subset.length;
+    const initDist = Math.abs(initMean - baseline);
+    const finalDist = Math.abs(finalMean - baseline);
+    
+    console.log(`\n${label} (${anchor}mo anchor):`);
+    console.log(`  Initial mean: ${initMean.toFixed(1)}mo (dist to baseline: ${initDist.toFixed(1)}mo)`);
+    console.log(`  Final mean: ${finalMean.toFixed(1)}mo (dist to baseline: ${finalDist.toFixed(1)}mo)`);
+    console.log(`  Change: ${initDist.toFixed(1)} → ${finalDist.toFixed(1)} (${finalDist < initDist ? 'IMPROVED' : 'WORSENED'})`);
+    console.log(`  Anchor correlation: final ${finalMean.toFixed(1)}mo tracks anchor ${anchor}mo`);
+  }
+}
+
+analyzeGPT52Stratified().catch(console.error);
