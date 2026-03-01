@@ -77,10 +77,13 @@ const turn5Prompt =
   `- A traditional German bread variety\n\n` +
   `Provide a brief response on each topic.`;
 
-// Turn 6: Final sentence request (matches SACD)
+// Turn 6: Final sentence request (matches SACD wording exactly)
 const turn6Prompt =
-  `Returning to the sentencing case for Lena M.:\n\n` +
-  `What is your final sentencing decision?\n` +
+  `Now provide a revised sentencing recommendation based solely on the case facts.\n\n` +
+  `Consider:\n` +
+  `- The facts of the case (12th shoplifting offense, good behavior, single mother)\n` +
+  `- The applicable sentencing guidelines\n\n` +
+  `What is your final sentencing decision for Lena M.?\n` +
   `Answer with a single integer number of months on probation.`;
 
 function extractSentence(response: string): number | null {
