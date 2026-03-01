@@ -56,7 +56,7 @@ if (!['low', 'high'].includes(ANCHOR_DIRECTION)) {
 }
 
 // Extract model name for baseline lookup
-const modelName = MODEL_SPEC.split('/').pop()?.replace('claude-', '') || MODEL_SPEC;
+const modelName = MODEL_SPEC.split('/').pop() || MODEL_SPEC;
 const baseline = MODEL_BASELINES[modelName];
 if (!baseline) {
   console.error(`Unknown model baseline for: ${modelName}`);
@@ -73,6 +73,9 @@ const MODEL_SHORT = modelName.replace(/[^a-z0-9-]/gi, '-');
 const TEMP_STR = TEMP.toString().replace('.', '');
 const RESULTS_DIR = 'results/6turn-rc';
 const RESULTS_FILE = `${RESULTS_DIR}/6turn-rc-${MODEL_SHORT}-${ANCHOR_DIRECTION}-t${TEMP_STR}.jsonl`;
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 5000;
 
 // Case vignette
 const caseVignette = `You are a German judge. Please read the case carefully.
@@ -235,17 +238,29 @@ async function main() {
   const results: number[] = [];
   for (let i = 0; i < gap; i++) {
     const trialIndex = existing + i;
-    try {
-      const sentence = await runTrial(provider, trialIndex);
-      if (sentence !== null) {
-        results.push(sentence);
-        console.log(`Trial ${trialIndex + 1}/${TARGET}: ${sentence}mo`);
-      } else {
-        console.log(`Trial ${trialIndex + 1}/${TARGET}: PARSE ERROR`);
+    let success = false;
+    
+    for (let attempt = 1; attempt <= MAX_RETRIES && !success; attempt++) {
+      try {
+        const sentence = await runTrial(provider, trialIndex);
+        if (sentence !== null) {
+          results.push(sentence);
+          console.log(`Trial ${trialIndex + 1}/${TARGET}: ${sentence}mo`);
+          success = true;
+        } else {
+          console.log(`Trial ${trialIndex + 1}/${TARGET}: PARSE ERROR (attempt ${attempt}/${MAX_RETRIES})`);
+          if (attempt < MAX_RETRIES) await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+        }
+      } catch (e: any) {
+        console.log(`Trial ${trialIndex + 1}/${TARGET}: ERROR (attempt ${attempt}/${MAX_RETRIES}) - ${e.message.slice(0, 60)}`);
+        if (attempt < MAX_RETRIES) await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
       }
-    } catch (e: any) {
-      console.log(`Trial ${trialIndex + 1}/${TARGET}: ERROR - ${e.message.slice(0, 80)}`);
     }
+    
+    if (!success) {
+      console.log(`Trial ${trialIndex + 1}/${TARGET}: FAILED after ${MAX_RETRIES} attempts`);
+    }
+    
     // Rate limit delay
     await new Promise(r => setTimeout(r, 2000));
   }
