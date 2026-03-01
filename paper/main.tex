@@ -36,7 +36,7 @@ Do debiasing techniques for anchoring bias transfer across domains? We evaluate 
 
 \textbf{Our core finding: our exploratory cross-domain analysis (4 models) suggests no technique consistently outperforms.} Technique rankings vary by domain, and bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. Point estimates suggest the technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4), though these differences are not statistically significant. Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains by point estimate.
 
-We apply Mean Absolute Deviation (MAD) from unanchored baseline as a metric that reveals per-trial error hidden by aggregate measures. SACD's aggregate 93.7\% baseline proximity in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
+We apply Mean Absolute Deviation (MAD) from unanchored baseline as a metric that reveals per-trial error hidden by aggregate measures. SACD's aggregate 93.7\% of baseline in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
 
 A deep-dive validation on judicial sentencing (14,152 trials, 10 models) confirms substantial model-specific variance: the same technique can improve one model's responses while degrading another's. Combined with domain dependence, this implies practitioners must test debiasing interventions per-model AND per-task rather than relying on published rankings.
 \end{abstract}
@@ -62,7 +62,7 @@ Lower gap = less susceptible = ``better.'' But this measures \textit{consistency
 
 \textbf{The problem:} Devil's Advocate reduces susceptibility ($-$8.8\%) but lands at only 63.6\% of baseline---it makes responses \textit{consistently wrong}. This is not debiasing; it is introducing a different bias.
 
-\textbf{Our approach:} We measure \textbf{baseline proximity}---where the response lands relative to the model's unanchored judgment:
+\textbf{Our approach:} We measure \textbf{\% of baseline}---where the response lands relative to the model's unanchored judgment:
 \begin{equation}
 \text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
 \end{equation}
@@ -70,7 +70,7 @@ This directly answers: ``Is the debiased response close to what the model would 
 
 \subsection{Aggregate Metrics Hide Per-Trial Error}
 
-Even baseline proximity can mislead when averaged. SACD achieves 93.7\% aggregate proximity but 18.1\% Mean Absolute Deviation (MAD)---bidirectional errors cancel.\footnote{SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques. Random Control's strong performance (78.3\%) suggests turn count itself affects results; SACD's advantage may partly reflect this confound rather than its specific content. See Limitations.} We recommend \textbf{MAD alongside aggregate metrics}:
+Even \% of baseline can mislead when averaged. SACD achieves 93.7\% aggregate but 18.1\% Mean Absolute Deviation (MAD)---bidirectional errors cancel.\footnote{SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques. Random Control's strong performance (78.3\%) suggests turn count itself affects results; SACD's advantage may partly reflect this confound rather than its specific content. See Limitations.} We recommend \textbf{MAD alongside aggregate metrics}:
 \begin{equation}
 \text{MAD} = \frac{1}{n}\sum_{i=1}^{n}|R_i - R_{baseline}|
 \end{equation}
@@ -293,11 +293,11 @@ Opus 4.6 & 18.0mo & 0.0 \\
 \subsection{Metric Divergence: Susceptibility vs.\ Baseline Proximity}
 \label{sec:metric-divergence}
 
-Our core empirical finding: susceptibility and baseline proximity give \textbf{divergent technique rankings}. \textit{Note: Our proportional anchor design (anchors scaled to each model's baseline) enables fair within-model technique comparison but limits cross-model susceptibility comparisons; see Limitations.}
+Our core empirical finding: susceptibility and \% of baseline give \textbf{divergent technique rankings}. \textit{Note: Our proportional anchor design (anchors scaled to each model's baseline) enables fair within-model technique comparison but limits cross-model susceptibility comparisons; see Limitations.}
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). $\Delta$ = change in spread vs.\ no-technique baseline (negative = reduced susceptibility). \textbf{Key observation:} Only Devil's Advocate actually \textit{reduces} susceptibility ($-$8.8\%); the other three techniques \textit{increase} it (+15.8\% to +73.8\%). Yet DA performs \textit{worst} on baseline proximity (63.6\% vs.\ 72.9\% for no-technique)---it reduces susceptibility by moving responses consistently \textit{away} from the unanchored judgment. 95\% CIs from bootstrap.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. \textit{No Technique} row shows anchored responses without debiasing (72.9\% of baseline, 26.0pp spread). $\Delta$ = change in spread vs.\ no-technique baseline (negative = reduced susceptibility). \textbf{Key observation:} Only Devil's Advocate actually \textit{reduces} susceptibility ($-$8.8\%); the other three techniques \textit{increase} it (+15.8\% to +73.8\%). Yet DA performs \textit{worst} on \% of baseline (63.6\% vs.\ 72.9\% for no-technique)---it reduces susceptibility by moving responses consistently \textit{away} from the unanchored judgment. 95\% CIs from bootstrap.}
 \label{tab:metric-comparison}
 \begin{tabular}{lcccccc}
 \toprule
@@ -514,7 +514,7 @@ y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + u_j + \ep
 
 where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, confirming the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
-\textbf{Technique $\times$ anchor interaction.} Extending the model with a technique $\times$ anchor interaction term reveals differences in how techniques respond to anchor direction. The interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$). \textit{Caveat:} This test uses residual df (anti-conservative with 10 clusters); Satterthwaite-corrected df would be smaller, though the large $F$ value suggests significance would likely persist. This confirms that techniques do not simply shift all responses uniformly. Premortem shows the largest interaction effect (+45.2 pp high vs.\ low), followed by SACD (+36.3 pp); Devil's Advocate shows minimal asymmetry (+23.7 pp). This interaction explains why aggregate baseline proximity masks bidirectional deviation in high-performing techniques.
+\textbf{Technique $\times$ anchor interaction.} Extending the model with a technique $\times$ anchor interaction term reveals differences in how techniques respond to anchor direction. The interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$). \textit{Caveat:} This test uses residual df (anti-conservative with 10 clusters); Satterthwaite-corrected df would be smaller, though the large $F$ value suggests significance would likely persist. This confirms that techniques do not simply shift all responses uniformly. Premortem shows the largest interaction effect (+45.2 pp high vs.\ low), followed by SACD (+36.3 pp); Devil's Advocate shows minimal asymmetry (+23.7 pp). This interaction explains why aggregate \% of baseline masks bidirectional deviation in high-performing techniques.
 
 The intraclass correlation coefficient (ICC) is 0.17 (\textit{note:} with only 10 models, variance component estimates may be imprecise; we report ICC for descriptive purposes rather than precise inference):
 \begin{equation}
@@ -559,7 +559,7 @@ Mean absolute per-trial error & 18.1\% & 22.6\% \\
 
 \textbf{Statistical test:} The difference between SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) is 2.1 percentage points. This difference is not statistically significant: uncorrected $p = 0.054$ (above $\alpha = 0.05$); with Bonferroni correction ($\alpha = 0.01$), clearly non-significant. \textbf{Equivalence test (TOST):} Using a practical equivalence bound of $\pm$5 percentage points (approximately 1.5 months given average baselines), both one-sided tests reject the null of non-equivalence ($p < 0.01$). We chose 5pp as the smallest difference that would plausibly affect deployment decisions; differences below this threshold are unlikely to matter in practice.
 
-\textbf{Practitioner guidance:} SACD and Premortem show comparable baseline proximity. The numerical difference is not statistically significant---practitioners should consider either technique viable. Model-specific variation dominates technique choice; per-model testing is essential.
+\textbf{Practitioner guidance:} SACD and Premortem show comparable \% of baseline. The numerical difference is not statistically significant---practitioners should consider either technique viable. Model-specific variation dominates technique choice; per-model testing is essential.
 
 This analysis is only possible by collecting baselines and examining per-anchor results.
 
@@ -641,7 +641,7 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 
 \textbf{2. Technique rankings vary by domain.} Point estimates show different techniques ranking \#1 across domains, though bootstrap CIs overlap for all \#1 vs \#2 comparisons. We cannot statistically distinguish technique performance in most domains.
 
-\textbf{3. SACD shows domain-dependent performance.} In the main judicial study, SACD achieves best baseline proximity (93.7\%). In multi-domain exploratory analysis, SACD's relative ranking varies from \#2 to \#5. This illustrates the domain-dependence cautioned in Limitation 3.
+\textbf{3. SACD shows domain-dependent performance.} In the main judicial study, SACD achieves best \% of baseline (93.7\%). In multi-domain exploratory analysis, SACD's relative ranking varies from \#2 to \#5. This illustrates the domain-dependence cautioned in Limitation 3.
 
 \textbf{4. Fraud domain shows severe anchoring.} All techniques produce responses at only 29--75\% of baseline. Even baseline shows large distortion (37.2\% low, 74.7\% high). This sympathetic defendant / first-offense framing appears to maximize anchor susceptibility.
 
@@ -661,7 +661,7 @@ These results reinforce our core argument:
 
 \subsection{Why Full SACD Works (and Fails)}
 
-Full SACD achieves the highest baseline proximity (Table~\ref{tab:baseline-pct}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
+Full SACD achieves the highest \% of baseline (Table~\ref{tab:baseline-pct}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
 
 \textbf{Possible mechanisms:} (1) Iterative reflection may help models escape local optima. (2) Some models may perform ``debiasing theater''---Opus overshoots to 127.8\%, potentially optimizing for \textit{appearing} to reconsider. (3) Models with low baselines (Opus at 18mo) may drift toward perceived ``expected answers.'' (4) Haiku's severe undershoot (47.8\%) suggests SACD can backfire entirely for some architectures.
 
@@ -786,7 +786,7 @@ Following \citet{lyu2025}, Full SACD implements three iterative steps:
 \item \textbf{Cognitive Debiasing}: ``Rewrite the flagged sentences to remove the bias''
 \end{enumerate}
 
-Steps repeat until no bias is detected or maximum iterations (5) reached. Average iterations to convergence: 2.5 (median 3). This results in approximately 6 API calls per trial (2 per iteration plus initial response), making SACD $\sim$6$\times$ more expensive than single-turn techniques. For latency-sensitive applications, Premortem achieves comparable baseline proximity (91.6\% vs.\ 93.7\%) in a single turn.
+Steps repeat until no bias is detected or maximum iterations (5) reached. Average iterations to convergence: 2.5 (median 3). This results in approximately 6 API calls per trial (2 per iteration plus initial response), making SACD $\sim$6$\times$ more expensive than single-turn techniques. For latency-sensitive applications, Premortem achieves comparable \% of baseline (91.6\% vs.\ 93.7\%) in a single turn.
 
 \subsection{Devil's Advocate}
 
