@@ -34,7 +34,7 @@
 \begin{abstract}
 Standard evaluation of LLM debiasing techniques uses \textbf{susceptibility}---the gap between high-anchor and low-anchor responses. Lower susceptibility is assumed to mean better debiasing. We show this assumption can recommend the wrong technique.
 
-\textbf{Our core finding: susceptibility and baseline-relative metrics produce opposite rankings.} Devil's Advocate ranks \#1 under susceptibility (lowest anchor influence) but \#4 under baseline proximity (responses land at only 63.6\% of unanchored judgment---consistently wrong). SACD shows the reverse: \#3 under susceptibility but \#1 under baseline proximity (93.7\%). The ``best'' technique depends entirely on which metric you use.
+\textbf{Our core finding: susceptibility and baseline-relative metrics produce divergent rankings.} Devil's Advocate ranks \#1 under susceptibility (lowest anchor influence) but \#4 under baseline proximity (responses land at only 63.6\% of unanchored judgment---consistently wrong). SACD shows the reverse: \#3 under susceptibility but \#1 under baseline proximity (93.7\%). Technique rankings depend substantially on which metric you use.
 
 We evaluate five techniques across 21,139 trials (14,152 judicial deep-dive on 10 models, plus 6,987 cross-domain on 4 models). Using Mean Absolute Deviation (MAD) from unanchored baseline as a complementary metric, we find that aggregate measures can mask substantial per-trial error: SACD's 93.7\% aggregate hides 18.1\% average deviation due to bidirectional errors that cancel.
 
@@ -762,7 +762,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \section{Conclusion}
 %==============================================================================
 
-Metric choice determines technique recommendation. Our 21,139-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; our exploratory cross-domain analysis suggests no technique consistently outperforms.
+Metric choice affects technique recommendation. Our 21,139-trial evaluation shows susceptibility and baseline-relative metrics can give divergent rankings. Model and domain variation is substantial; our exploratory cross-domain analysis suggests no technique consistently outperforms.
 
 \textbf{For practitioners:} Test per-model, per-domain. When aggregate and MAD conflict, prefer MAD---it reveals inconsistent per-trial behavior that aggregates mask.
 
