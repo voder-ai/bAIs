@@ -36,7 +36,7 @@ Do debiasing techniques for anchoring bias transfer across domains? We evaluate 
 
 \textbf{Our core finding: our exploratory cross-domain analysis (4 models) suggests no technique consistently outperforms.} Technique rankings vary by domain, and bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. Point estimates suggest the technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4), though these differences are not statistically significant. Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains by point estimate.
 
-We apply Mean Absolute Deviation (MAD) from unanchored baseline as a metric that reveals per-trial error hidden by aggregate measures. SACD's aggregate 93.7\% of baseline in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
+We apply Mean Absolute Deviation (MAD) from unanchored baseline as a complementary metric that captures per-trial error obscured by aggregate measures. SACD's aggregate 93.7\% of baseline in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
 
 A deep-dive validation on judicial sentencing (14,152 trials, 10 models) confirms substantial model-specific variance: the same technique can improve one model's responses while degrading another's. Combined with domain dependence, this implies practitioners must test debiasing interventions per-model AND per-task rather than relying on published rankings.
 \end{abstract}
@@ -82,7 +82,7 @@ Even \% of baseline can mislead when averaged. SACD achieves 93.7\% aggregate bu
 \begin{enumerate}
     \item \textbf{Cross-domain evaluation:} 21,139 trials across 6 domains showing rankings vary by domain---all pairwise \#1 vs \#2 CIs overlap, precluding confident technique recommendations.
     
-    \item \textbf{MAD metric:} Mean Absolute Deviation reveals per-trial error hidden by aggregate measures (SACD: 93.7\% aggregate, 18.1\% MAD).
+    \item \textbf{MAD metric:} Mean Absolute Deviation complements aggregate measures by capturing per-trial error (SACD: 93.7\% aggregate, 18.1\% MAD).
     
     \item \textbf{Deep validation:} 14,152 judicial trials on 10 models confirms substantial model-specific variance within a single domain.
 \end{enumerate}
@@ -211,9 +211,7 @@ Condition & $n$ (analysis) \\
 
 \subsubsection{Statistical Analysis}
 
-All comparisons use \textbf{Welch's t-test} (unequal variances assumed) with \textbf{Bonferroni correction} for multiple comparisons. We perform 6 pairwise technique comparisons (4 techniques $\times$ 3 / 2 = 6); corrected $\alpha = 0.05 / 6 \approx 0.0083$. Effect sizes are reported as Cohen's $d$. Statistical significance ($p < .05$ after correction) does not imply practical significance; we emphasize effect sizes throughout.
-
-\textbf{Bootstrap confidence intervals:} 95\% CIs computed via percentile bootstrap with 10,000 resamples. Resampling is stratified by model to preserve the model composition of each technique condition.
+We use two complementary approaches: \textbf{Welch's t-test} for hypothesis testing (with Bonferroni correction for 6 pairwise comparisons; corrected $\alpha = 0.05 / 6 \approx 0.0083$), and \textbf{percentile bootstrap} (10,000 resamples, stratified by model) for confidence intervals. Effect sizes are reported as Cohen's $d$. Statistical significance ($p < .05$ after correction) does not imply practical significance; we emphasize effect sizes and CIs throughout.
 
 \textbf{Aggregate statistics:} Reported aggregate \% of baseline values (e.g., SACD's 93.7\%) are \textit{trial-weighted} means pooled across all models. The unweighted model-average for SACD is 97.7\% (Table~\ref{tab:sacd-by-model}); the difference reflects that models with more trials (and often lower baselines) pull the weighted mean down. We report trial-weighted aggregates for technique comparisons, but model-level results (Table~\ref{tab:sacd-by-model}) for deployment decisions. \textit{Choice rationale:} Trial-weighted means answer ``what happens on a random trial?''; model-averaged means answer ``what happens for a typical model?'' Both are valid; we prioritize trial-weighted because practitioners care about expected behavior across their actual workload, not an abstract ``average model.''
 
@@ -802,9 +800,9 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 
 Metric choice determines technique recommendation. Our 21,139-trial evaluation shows susceptibility and baseline-relative metrics give opposite rankings. Model and domain variation is substantial; our exploratory cross-domain analysis suggests no technique consistently outperforms.
 
-\textbf{For practitioners:} Test per-model, per-domain. Report MAD alongside aggregates; aggregates alone hide bidirectional errors.
+\textbf{For practitioners:} Test per-model, per-domain. When aggregate \% of baseline and MAD conflict (e.g., high aggregate with high MAD), prefer MAD---it indicates inconsistent per-trial behavior that aggregates mask. A technique showing 95\% aggregate but 25\% MAD is less reliable than one showing 90\% aggregate with 10\% MAD.
 
-\textbf{For researchers:} Report MAD alongside aggregates; collect unanchored baselines.
+\textbf{For researchers:} Report MAD alongside aggregates; collect unanchored baselines. Aggregates alone hide bidirectional errors.
 
 %==============================================================================
 \appendix
