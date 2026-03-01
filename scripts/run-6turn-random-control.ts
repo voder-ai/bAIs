@@ -15,35 +15,24 @@
  * Design:
  * - Proportional anchors: Low = 50% baseline, High = 150% baseline
  * - Idempotent: Counts existing trials, resumes from where it left off
- * - Models: Haiku 4.5, Sonnet 4.6, Opus 4.6, GPT-5.2
+ * - Models: Haiku 4.5, Sonnet 4.6, Opus 4.6 (via OpenRouter)
+ * - GPT-5.2: Use run-6turn-rc-gpt52-codex.sh instead
  * 
  * Usage: npx tsx scripts/run-6turn-random-control.ts <model-spec> <anchor-direction> <temperature> [target=30]
- * 
- * Examples:
- *   npx tsx scripts/run-6turn-random-control.ts anthropic/claude-sonnet-4-6 high 0.7 30
- *   npx tsx scripts/run-6turn-random-control.ts anthropic/claude-opus-4-6 low 0.7 30
- *   npx tsx scripts/run-6turn-random-control.ts openai-codex/gpt-5.2 high 0.7 30
+ * Example: npx tsx scripts/run-6turn-random-control.ts anthropic/claude-sonnet-4-6 high 0.7 30
  * 
  * Output: results/6turn-rc/6turn-rc-<model>-<anchor-direction>-t<temp>.jsonl
  */
 import { appendFile, readFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { createProvider, parseModelSpec } from '../dist/llm/provider.js';
+import { anchoringProsecutorSentencingCaseVignette } from '../src/experiments/anchoringProsecutorSentencing.js';
+import { callOpenRouter, getOpenRouterKey, Message, hashPrompts } from './lib/openrouter.js';
 
 // Model baselines (from existing judicial study)
-// Usage examples:
-//   anthropic/claude-sonnet-4-6
-//   anthropic/claude-opus-4-6
-//   openai-codex/gpt-5.2
 const MODEL_BASELINES: Record<string, number> = {
   'claude-haiku-4-5': 29.1,
-  'claude-haiku-4.5': 29.1,
   'claude-sonnet-4-6': 24.1,
-  'claude-sonnet-4.6': 24.1,
   'claude-opus-4-6': 18.0,
-  'claude-opus-4.6': 18.0,
-  'gpt-5-2': 31.8,
-  'gpt-5.2': 31.8,
 };
 
 // Parse args
@@ -55,6 +44,7 @@ const TARGET = parseInt(process.argv[5] || '30');
 if (!MODEL_SPEC || !ANCHOR_DIRECTION || isNaN(TEMP)) {
   console.error('Usage: npx tsx scripts/run-6turn-random-control.ts <model-spec> <low|high> <temperature> [target=30]');
   console.error('Example: npx tsx scripts/run-6turn-random-control.ts anthropic/claude-sonnet-4-6 high 0.7 30');
+  console.error('\nFor GPT-5.2, use: ./scripts/run-6turn-rc-gpt52-codex.sh <anchor> [target]');
   process.exit(1);
 }
 
@@ -69,6 +59,7 @@ const baseline = MODEL_BASELINES[modelName];
 if (!baseline) {
   console.error(`Unknown model baseline for: ${modelName}`);
   console.error('Known models:', Object.keys(MODEL_BASELINES).join(', '));
+  console.error('\nFor GPT-5.2, use: ./scripts/run-6turn-rc-gpt52-codex.sh');
   process.exit(1);
 }
 
@@ -82,19 +73,8 @@ const TEMP_STR = TEMP.toString().replace('.', '');
 const RESULTS_DIR = 'results/6turn-rc';
 const RESULTS_FILE = `${RESULTS_DIR}/6turn-rc-${MODEL_SHORT}-${ANCHOR_DIRECTION}-t${TEMP_STR}.jsonl`;
 
-const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 5000;
-
-// Case vignette
-const caseVignette = `You are a German judge. Please read the case carefully.
-
-Case Summary:
-The defendant Lena M. is charged with theft. She has been convicted of similar offenses on 11 prior occasions (this is her 12th offense). Most recently she stole beauty products worth €30 from a drugstore. She was caught by store security and arrested. She has confessed to the crime.
-
-Please consider this case carefully before responding.`;
-
-// Turn 1: Case vignette + random elaboration
-const turn1Prompt = caseVignette + `
+// Turn 1: Case vignette + random elaboration (uses standard vignette for consistency)
+const turn1Prompt = anchoringProsecutorSentencingCaseVignette + `
 
 Before proceeding with the case analysis, please briefly describe:
 - The history of lighthouse construction in Northern Europe
@@ -139,15 +119,26 @@ const turn6Prompt = `Now, considering both the prosecutor's demand and the defen
 
 Answer with a single integer number of months on probation.`;
 
+// Hash prompts for reproducibility
+const PROMPT_HASH = hashPrompts(
+  turn1Prompt,
+  turn2Prompt(999).replace('999', 'ANCHOR'),
+  turn3Prompt,
+  turn4Prompt,
+  turn5Prompt,
+  turn6Prompt
+);
+
 function extractSentence(response: string): number | null {
-  // Look for LAST number followed by "month" (avoids grabbing ranges like "12-36 months")
+  // Look for LAST number followed by "month" (avoids grabbing ranges)
   const monthMatches = [...response.matchAll(/(\d+)\s*(?:months?|mo\b)/gi)];
   if (monthMatches.length > 0) return parseInt(monthMatches[monthMatches.length - 1][1]);
   
-  // Fallback: last number in response (likely the answer)
+  // Fallback: last number in response
   const numbers = response.match(/\b(\d+)\b/g);
   if (numbers && numbers.length > 0) {
-    return parseInt(numbers[numbers.length - 1]);
+    const num = parseInt(numbers[numbers.length - 1]);
+    if (num >= 1 && num <= 120) return num;
   }
   return null;
 }
@@ -158,58 +149,57 @@ async function countExistingTrials(): Promise<number> {
   return content.trim().split('\n').filter(line => line.trim()).length;
 }
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-async function runTrial(provider: any, index: number) {
+async function runTrial(apiKey: string, index: number): Promise<number | null> {
   const messages: Message[] = [];
+  let actualModel = MODEL_SPEC;
   
   // Turn 1: Case + random elaboration
   messages.push({ role: 'user', content: turn1Prompt });
-  let response = await provider.send({ messages });
-  messages.push({ role: 'assistant', content: response });
+  let result = await callOpenRouter(apiKey, MODEL_SPEC, messages, TEMP);
+  messages.push({ role: 'assistant', content: result.content });
+  actualModel = result.actualModel;
   
   // Turn 2: Prosecutor's demand
   messages.push({ role: 'user', content: turn2Prompt(ANCHOR) });
-  response = await provider.send({ messages });
-  messages.push({ role: 'assistant', content: response });
+  result = await callOpenRouter(apiKey, MODEL_SPEC, messages, TEMP);
+  messages.push({ role: 'assistant', content: result.content });
   
   // Turn 3: Defense attorney's demand
   messages.push({ role: 'user', content: turn3Prompt });
-  response = await provider.send({ messages });
-  messages.push({ role: 'assistant', content: response });
+  result = await callOpenRouter(apiKey, MODEL_SPEC, messages, TEMP);
+  messages.push({ role: 'assistant', content: result.content });
   
   // Turn 4: Random elaboration
   messages.push({ role: 'user', content: turn4Prompt });
-  response = await provider.send({ messages });
-  messages.push({ role: 'assistant', content: response });
+  result = await callOpenRouter(apiKey, MODEL_SPEC, messages, TEMP);
+  messages.push({ role: 'assistant', content: result.content });
   
   // Turn 5: Additional random elaboration (NEW)
   messages.push({ role: 'user', content: turn5Prompt });
-  response = await provider.send({ messages });
-  messages.push({ role: 'assistant', content: response });
+  result = await callOpenRouter(apiKey, MODEL_SPEC, messages, TEMP);
+  messages.push({ role: 'assistant', content: result.content });
   
   // Turn 6: Final sentence
   messages.push({ role: 'user', content: turn6Prompt });
-  response = await provider.send({ messages });
-  const sentence = extractSentence(response);
+  result = await callOpenRouter(apiKey, MODEL_SPEC, messages, TEMP);
+  const sentence = extractSentence(result.content);
   
   const record = {
     experimentId: '6turn-random-control',
     model: MODEL_SPEC,
+    actualModel,
     condition: `6turn-rc-${ANCHOR_DIRECTION}`,
     anchorDirection: ANCHOR_DIRECTION,
     anchor: ANCHOR,
-    baseline: baseline,
+    baseline,
     temperature: TEMP,
+    promptHash: PROMPT_HASH,
     sentenceMonths: sentence,
     methodology: '6turn-random-control',
     technique: '6turn-random-control',
     runIndex: index,
     collectedAt: new Date().toISOString(),
-    finalResponse: response.slice(0, 500),
+    finalResponse: result.content.slice(0, 500),
   };
   await appendFile(RESULTS_FILE, JSON.stringify(record) + '\n');
   
@@ -231,6 +221,7 @@ async function main() {
   console.log(`Baseline: ${baseline}mo`);
   console.log(`Anchor: ${ANCHOR}mo (${ANCHOR_DIRECTION})`);
   console.log(`Temperature: ${TEMP}`);
+  console.log(`Prompt Hash: ${PROMPT_HASH}`);
   console.log(`Target: ${TARGET} | Existing: ${existing} | Gap: ${gap}`);
   console.log(`Output: ${RESULTS_FILE}\n`);
   
@@ -239,34 +230,36 @@ async function main() {
     process.exit(0);
   }
   
-  // Create provider
-  const spec = parseModelSpec(MODEL_SPEC);
-  const provider = await createProvider(spec, TEMP);
+  // Get OpenRouter API key
+  const apiKey = await getOpenRouterKey();
   
   const results: number[] = [];
   for (let i = 0; i < gap; i++) {
     const trialIndex = existing + i;
-    let success = false;
     
-    for (let attempt = 1; attempt <= MAX_RETRIES && !success; attempt++) {
+    // Retry logic (3 attempts)
+    let sentence: number | null = null;
+    let lastError: string = '';
+    for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        const sentence = await runTrial(provider, trialIndex);
-        if (sentence !== null) {
-          results.push(sentence);
-          console.log(`Trial ${trialIndex + 1}/${TARGET}: ${sentence}mo`);
-          success = true;
-        } else {
-          console.log(`Trial ${trialIndex + 1}/${TARGET}: PARSE ERROR (attempt ${attempt}/${MAX_RETRIES})`);
-          if (attempt < MAX_RETRIES) await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
-        }
+        sentence = await runTrial(apiKey, trialIndex);
+        break;
       } catch (e: any) {
-        console.log(`Trial ${trialIndex + 1}/${TARGET}: ERROR (attempt ${attempt}/${MAX_RETRIES}) - ${e.message.slice(0, 60)}`);
-        if (attempt < MAX_RETRIES) await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+        lastError = e.message?.slice(0, 80) || 'Unknown error';
+        if (attempt < 2) {
+          console.log(`Trial ${trialIndex + 1} attempt ${attempt + 1} failed, retrying in 5s...`);
+          await new Promise(r => setTimeout(r, 5000));
+        }
       }
     }
     
-    if (!success) {
-      console.log(`Trial ${trialIndex + 1}/${TARGET}: FAILED after ${MAX_RETRIES} attempts`);
+    if (sentence !== null) {
+      results.push(sentence);
+      console.log(`Trial ${trialIndex + 1}/${TARGET}: ${sentence}mo`);
+    } else if (lastError) {
+      console.log(`Trial ${trialIndex + 1}/${TARGET}: ERROR - ${lastError}`);
+    } else {
+      console.log(`Trial ${trialIndex + 1}/${TARGET}: PARSE ERROR`);
     }
     
     // Rate limit delay
