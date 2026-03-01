@@ -34,7 +34,7 @@
 \begin{abstract}
 Do debiasing techniques for anchoring bias transfer across domains? We evaluate four interventions---Devil's Advocate, SACD (Self-Ask Chain of Deliberation), Premortem, and Random Control---across 21,139 trials spanning six domains: salary negotiation, loan approval, medical triage, and three judicial sentencing scenarios.
 
-\textbf{Our core finding: our exploratory cross-domain analysis (4 models) suggests no technique consistently outperforms.} Technique rankings vary by domain, and bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. The technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4). Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains.
+\textbf{Our core finding: our exploratory cross-domain analysis (4 models) suggests no technique consistently outperforms.} Technique rankings vary by domain, and bootstrap 95\% confidence intervals overlap for all pairwise \#1 vs \#2 comparisons---we cannot statistically distinguish which technique is ``best'' in any domain. Point estimates suggest the technique that appears best for salary (SACD, 12.0\% MAD) underperforms in fraud cases (46.1\% MAD, rank \#4), though these differences are not statistically significant. Random Control---which provides no debiasing content, only additional conversation turns---ranks \#1 in 3 of 6 domains by point estimate.
 
 We apply Mean Absolute Deviation (MAD) from unanchored baseline as a metric that reveals per-trial error hidden by aggregate measures. SACD's aggregate 93.7\% baseline proximity in judicial sentencing masks 18.1\% per-trial deviation due to bidirectional errors that cancel out.
 
@@ -287,6 +287,8 @@ Opus 4.6 & 18.0mo & 0.0 \\
 \caption{Model baseline variation. Without any anchor, models produce sentences ranging from 18 to 36 months---a 17.7-month spread. This variation motivates per-model anchor calibration.}
 \label{fig:baselines}
 \end{figure}
+
+\textbf{Opus anomaly:} Opus 4.6 shows zero baseline variance (SD=0.0), consistently responding with exactly 18 months regardless of temperature. This may reflect deterministic reasoning or strong training priors for judicial contexts. We retain Opus because: (1) it represents a legitimate deployment scenario; (2) excluding post-hoc would inflate technique effectiveness. Sensitivity analysis (Limitations) shows rankings are robust to Opus exclusion.
 
 \subsection{Metric Divergence: Susceptibility vs.\ Baseline Proximity}
 \label{sec:metric-divergence}
@@ -575,7 +577,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory). Per-domain n = technique trials (column sums $\approx$5,852); total 6,987 includes $\sim$1,135 baseline-none reference trials not shown. Rankings are point estimates; bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons.}
+\caption{Debiasing Effectiveness by Domain: MAD from unanchored baseline. Lower = better. No technique ranks \#1 across all domains. Data from 4 models (exploratory). Per-domain n = technique trials (column sums $\approx$5,852); total 6,987 includes $\sim$1,135 baseline-none reference trials not shown. \textbf{Note:} Rankings are point estimates only; bootstrap 95\% CIs overlap for all \#1 vs \#2 comparisons (no statistically distinguishable differences).}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -629,13 +631,13 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\columnwidth]{figures/mad-heatmap.pdf}
-\caption{MAD by domain and technique. Lower (green) = better calibration to unanchored baseline. Each cell shows deviation percentage; asterisks mark \textit{numerically lowest} point estimate per domain (not statistically distinguishable---all pairwise CIs overlap). No technique wins across all domains.}
+\caption{MAD by domain and technique. Lower (green) = better calibration to unanchored baseline. Each cell shows deviation percentage. \textbf{Caveat:} Visual emphasis (color/asterisks) shows numerically lowest values only---all pairwise \#1 vs \#2 CIs overlap; differences are not statistically distinguishable. No technique wins across all domains.}
 \label{fig:mad-heatmap}
 \end{figure}
 
 \subsection{Key Findings}
 
-\textbf{1. Metric choice inverts technique rankings.} When switching from asymmetry (high--low spread) to MAD (deviation from baseline), SACD drops from \#1 on 5 domains to \#1 on \textit{zero} domains. This is our paper's core thesis in action: which technique you recommend depends entirely on which metric you use.
+\textbf{1. Metric choice inverts technique rankings.} When switching from asymmetry (high--low spread) to MAD (deviation from baseline), SACD drops from \#1 by point estimate on 5 domains to \#1 on \textit{zero} domains. However, this apparent dominance under asymmetry is not statistically robust---CIs overlap for all pairwise comparisons. Metric choice determines recommendation, but neither metric yields a clear winner.
 
 \textbf{2. Technique rankings vary by domain.} Point estimates show different techniques ranking \#1 across domains, though bootstrap CIs overlap for all \#1 vs \#2 comparisons. We cannot statistically distinguish technique performance in most domains.
 
