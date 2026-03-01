@@ -677,7 +677,7 @@ Aggregates mask distributional properties. Devil's Advocate compresses variance 
 
 Random Control outperforms Devil's Advocate (+15pp, $d=0.39$) despite no debiasing content. Multi-turn structure alone helps more than Devil's Advocate content.
 
-\textbf{Why does neutral content beat active debiasing?} Random Control ranks \#1 in 4 of 6 domains by point estimate, outperforming SACD and Premortem. One hypothesis: explicit bias prompts may inadvertently prime models to attend to anchors they would otherwise ignore---an iatrogenic effect similar to the GPT-5.2 revision finding (Section~\ref{sec:6turn-rc}). Asking ``are you being influenced by the prosecutor's demand?'' may \textit{introduce} anchor salience rather than reduce it. Random Control's neutral filler avoids this priming while still providing the multi-turn structure that appears beneficial.
+\textbf{Why does neutral filler perform comparably to active debiasing?} In the exploratory cross-domain analysis, Random Control ranks \#1 in 4 of 6 domains by point estimate---but all pairwise CIs overlap. In the main judicial analysis, SACD outperforms Random Control (93.7\% vs 78.3\%). One hypothesis for Random Control's surprisingly strong performance: explicit bias prompts may inadvertently prime models to attend to anchors they would otherwise ignore---an iatrogenic effect. Asking ``are you being influenced by the prosecutor's demand?'' may \textit{introduce} anchor salience. Random Control's neutral filler avoids this priming while still providing multi-turn structure.
 
 \subsection{Why Human Techniques May Not Transfer}
 
