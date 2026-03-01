@@ -699,7 +699,7 @@ To test whether SACD's benefit stems from turn count or content, we ran a 6-turn
 
 \begin{table}[htbp]
 \centering
-\caption{6-Turn Random Control: Revision Rates by Model. ``Changed'' = trials where final $\neq$ initial sentence. SACD achieves 86\% revision rate across all models.}
+\caption{6-Turn Random Control: Revision Rates by Model. ``Changed'' = trials where final $\neq$ initial sentence. SACD achieves 86\% revision rate across all models. Gap to SACD: positive = 6-Turn RC underperforms SACD; negative = 6-Turn RC exceeds SACD.}
 \label{tab:6turn-rc-results}
 \begin{tabular}{lccccc}
 \toprule
@@ -728,7 +728,7 @@ Sonnet 4.6 & Low (12mo) & 30 & 9 & 30.0\% & 56.0pp \\
 
 \textbf{Secondary finding: Model response to implicit revision varies dramatically.} GPT-5.2 revises 100\% of responses with filler alone (exceeding SACD's 86\%). Sonnet revises only 20\% with filler, requiring explicit bias content.
 
-\textbf{Revision quality differs from revision rate.} We define ``improved'' as revisions that move closer to the model's unanchored baseline (Table~\ref{tab:6turn-revision-quality}). Haiku revises 77.6\% of responses but only 15.5\% improve---62.1\% move \textit{away} from baseline. GPT-5.2 shows 100\% improvement, but this reflects its extreme initial anchor resistance (4mo) rather than effective debiasing. Sonnet rarely revises (20\%) but when it does, outcomes are mixed (11.7\% improve, 8.3\% worsen).
+\textbf{Revision quality differs from revision rate.} We define ``improved'' as revisions that move closer to the model's unanchored baseline (Table~\ref{tab:6turn-revision-quality}). Haiku revises 77.6\% of responses but only 15.5\% improve---62.1\% move \textit{away} from baseline. GPT-5.2 shows 100\% ``improvement'' by this metric, but this is misleading: its initial judgments (4mo) are so far below its baseline (31.8mo) that \textit{any} upward revision counts as improvement. Critically, the \textit{direction} of revision correlates with anchor---revisions average 13mo under low anchor (16mo) but 28mo under high anchor (48mo). Thus GPT-5.2 simultaneously shows improvement (toward baseline) \textit{and} iatrogenic anchor sensitivity (revisions reflect anchor direction). Sonnet rarely revises (20\%) but when it does, outcomes are mixed (11.7\% improve, 8.3\% worsen).
 
 \begin{table}[htbp]
 \centering
@@ -748,7 +748,6 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 
 \textit{Methodological caveats:} (1) GPT-5.2 trials used single-prompt simulation via Codex CLI; Anthropic trials used true multi-turn conversation. Cross-provider comparison is exploratory. (2) We report four observed patterns, not a validated taxonomy:
 
-%This suggests a four-category model taxonomy:
 
 \begin{itemize}
     \item \textbf{Pattern A} (GPT-5.2): Low initial anchoring, high revision rate, revision \textit{increases} anchor sensitivity. Gap to SACD: $-$14pp.
