@@ -495,7 +495,7 @@ To test whether our findings generalize beyond the original judicial sentencing 
 
 \noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory (5 models):} All \#1 vs \#2 CIs overlap; rankings are point estimates only.}}
 
-\textbf{Metric choice:} We report MAD (rather than aggregate \% of baseline) for multi-domain results for three reasons: (1) per-trial error is more informative for comparing heterogeneous domains with different baseline scales; (2) MAD directly addresses our methodological contribution---revealing variance that aggregates mask; (3) with fewer models (5 vs 10), model-specific effects are harder to average out, making per-trial error the more conservative metric.
+\textbf{Metric choice:} We report MAD (rather than aggregate \% of baseline) for multi-domain results for three reasons: (1) per-trial error is more informative for comparing heterogeneous domains with different baseline scales; (2) MAD directly addresses our methodological contribution---revealing variance that aggregates mask; (3) with fewer models (5 vs 10), model-specific effects are harder to average out, making per-trial error the more conservative metric. \textit{Transparency note:} We acknowledge this metric switch could appear selective; however, qualitative conclusions (rankings unstable across domains, CIs overlap, no intervention competitive) hold under either metric.
 
 \subsection{Domain Comparison}
 
@@ -689,7 +689,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 
 Our implementations of human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from $\sim$48\% to $\sim$128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms.
 
-\textbf{For practitioners:} Don't assume human techniques transfer to LLM prompts. Test per-model, per-domain---in 3 of 6 multi-domain tests, no intervention achieved lowest point-estimate MAD (CIs overlap). Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MAD (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
+\textbf{For practitioners:} Don't assume a single prompt implementation of a human debiasing technique transfers across models or domains. Test per-model, per-domain---in 3 of 6 multi-domain tests, no intervention achieved lowest point-estimate MAD (CIs overlap). Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MAD (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
 
 \textbf{For researchers:} Collect unanchored baselines. Report MAD alongside aggregates. Susceptibility alone missed our DA implementation's failure; aggregate \% of baseline alone missed SACD's high variance.
 
