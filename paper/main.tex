@@ -36,7 +36,7 @@ Do human debiasing techniques work on LLMs? We test five techniques from the cog
 
 \textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: our specific Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative DA prompts may perform differently; we test one implementation.
 
-Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline across models. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
+Effectiveness varies dramatically: SACD shows the highest model variance, ranging from 48\% to 128\% of baseline. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
 
 \textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
@@ -109,22 +109,6 @@ We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-m
 \text{MAD} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{r_i}{b_m} - 1 \right| \times 100\%
 \end{equation}
 where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored baseline response, and the sum is over all anchored trials. Lower MAD indicates responses closer to unanchored judgment. Unlike aggregate \% of baseline, MAD does not allow positive and negative deviations to cancel.
-
-\begin{table}[H]
-\centering
-\caption{MAD vs.\ Aggregate \% of Baseline (judicial study). MAD reveals SACD's bidirectional variance---aggregate metrics mask 18.1\% per-trial deviation.}
-\label{tab:mad-derivation}
-\begin{tabular}{lccr}
-\toprule
-Technique & MAD $\downarrow$ & \% of Baseline & $n$ \\
-\midrule
-SACD & \textbf{18.1\%} & 93.7\% & 2,391 \\
-Random Control & 21.6\% & 78.3\% & 2,215 \\
-Premortem & 22.6\% & 91.6\% & 2,186 \\
-Devil's Advocate & 36.4\% & 63.6\% & 2,166 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \textbf{Why both?} Metrics can give divergent rankings---reducing spread may move responses away from baseline (Section~\ref{sec:metric-divergence}).
 
