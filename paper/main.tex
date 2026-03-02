@@ -70,9 +70,7 @@ where $R_{prompt}$ is the mean response under the technique (averaged across anc
 
 \subsection{Contributions}
 
-\textit{Turn-count caveat:} SACD uses $\sim$6 turns vs.\ 3 for others; this confounds comparisons (partially addressed in Section~\ref{sec:6turn-rc}).
-
-(1) \textbf{Aggregate metrics mask bidirectional error.} Standard \% of baseline can hide per-trial variance when overshoots and undershoots cancel (Section~\ref{sec:multi-domain}). We recommend reporting MAD alongside aggregates to reveal this hidden variance.
+(1) \textbf{Aggregate metrics mask bidirectional error.} \textit{(Note: SACD uses $\sim$6 turns vs.\ 3 for others, confounding comparisons; see Section~\ref{sec:6turn-rc}.)} Standard \% of baseline can hide per-trial variance when overshoots and undershoots cancel (Section~\ref{sec:multi-domain}). We recommend reporting MAD alongside aggregates to reveal this hidden variance.
 (2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) showing substantial model-specific variance.
 (3) \textbf{Multi-domain extension:} Cross-domain evaluation (8,621 trials, 6 domains, 5 models) showing prompt rankings vary by domain and metric. Combined total: 22,773 trials.
 
@@ -602,7 +600,7 @@ To isolate turn count from content, we ran a 6-turn Random Control (n=238) match
 \label{tab:6turn-rc-results}
 \begin{tabular}{lccccc}
 \toprule
-\textbf{Model} & \textbf{Anchor} & \textbf{n} & \textbf{Changed} & \textbf{6-Turn RC} & \textbf{Gap to SACD} \\
+\textbf{Model} & \textbf{Anchor} & \textbf{n} & \textbf{Changed} & \textbf{Revision Rate} & \textbf{Gap to SACD} \\
 \midrule
 GPT-5.2 & Low (16mo) & 30 & 30 & 100.0\% & $-$14.0pp \\
 & High (48mo) & 30 & 30 & 100.0\% & $-$14.0pp \\
