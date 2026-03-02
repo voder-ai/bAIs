@@ -82,11 +82,10 @@ describe('parseModelSpec', () => {
 describe('createProvider', () => {
   // Skip API-dependent tests in CI if no API key secret is configured
   it.skipIf(skipCodexTest)(
-    'creates PiAiProvider for codex provider (normalized to openai-codex)',
+    'creates CodexProvider for codex provider',
     async () => {
-      // With pi-ai, 'codex' is normalized to 'openai-codex'
       const provider = await createProvider({ provider: 'codex', model: 'gpt-5.1' });
-      expect(provider.name).toBe('openai-codex/gpt-5.1');
+      expect(provider.name).toBe('codex/gpt-5.1');
     },
   );
 
