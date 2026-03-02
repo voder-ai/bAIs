@@ -644,33 +644,23 @@ Our primary finding is that human debiasing techniques show mixed transfer to LL
 
 \subsection{Why SACD Works (and Fails)}
 
-SACD achieves the highest \% of baseline (Table~\ref{tab:baseline-pct}) but shows the highest model variance (Table~\ref{tab:sacd-by-model}). We propose:
-
-\textbf{Possible mechanisms:} (1) Iterative reflection may help models escape local optima. (2) Some models may perform ``debiasing theater''---Opus overshoots to 127.8\%, potentially optimizing for \textit{appearing} to reconsider. (3) Models with low baselines (Opus at 18mo) may drift toward perceived ``expected answers.'' (4) Haiku's severe undershoot (47.8\%) suggests SACD can backfire entirely for some architectures.
-
-\subsection{Theoretical Grounding}
-
-Two recent findings offer potential explanations: (1) \citet{llm-bayesian-2025} show LLMs are ``Bayesian in expectation, not realization''---iterative self-reflection may amplify rather than correct biases. (2) \citet{llm-judge-overconfidence-2025} demonstrate LLMs overstate confidence in self-judgment. At the per-trial level, Devil's Advocate compresses variance toward the wrong target (median=69\%, only 11\% within $\pm$10\% of baseline), while Premortem achieves highest proximity (13.9\% within $\pm$10\%) but with higher variance.
+SACD achieves highest \% of baseline but also highest variance (Table~\ref{tab:sacd-by-model}). Possible mechanisms: (1) iterative reflection helps escape local optima; (2) some models perform ``debiasing theater'' (Opus overshoots to 127.8\%); (3) Haiku's severe undershoot (47.8\%) shows SACD can backfire. Recent work supports these patterns: \citet{llm-bayesian-2025} find LLMs are ``Bayesian in expectation, not realization,'' and \citet{llm-judge-overconfidence-2025} demonstrate overconfident self-judgment.
 
 \subsection{Why Random Control Works}
 
-Random Control outperforms Devil's Advocate (+15pp, $d=0.39$) despite no debiasing content. Multi-turn structure alone helps more than Devil's Advocate content.
+Random Control outperforms Devil's Advocate (+15pp) despite no debiasing content. One hypothesis: explicit bias prompts may prime models to attend to anchors they would otherwise ignore (iatrogenic effect). Random Control's neutral filler avoids this priming while providing multi-turn structure.
 
-\textbf{Why does neutral filler perform comparably to active debiasing?} In the exploratory cross-domain analysis, Random Control ranks \#1 in 4 of 6 domains by point estimate---but all pairwise CIs overlap. In the main judicial analysis, SACD outperforms Random Control (93.7\% vs 78.3\%). One hypothesis for Random Control's surprisingly strong performance: explicit bias prompts may inadvertently prime models to attend to anchors they would otherwise ignore---an iatrogenic effect. Asking ``are you being influenced by the prosecutor's demand?'' may \textit{introduce} anchor salience. Random Control's neutral filler avoids this priming while still providing multi-turn structure.
-
-\subsection{The Outside View Confound}
+\subsection{Design Confounds}
 \label{sec:outside-view-confound}
 
-Outside View required jurisdiction specification (``German federal courts'') to avoid safety refusals, introducing a secondary anchor toward German norms (~12--18mo). Reference classes may import unintended anchors.
+\textbf{Outside View:} Required jurisdiction specification (``German federal courts'') to avoid safety refusals, introducing a secondary anchor toward German norms. Excluded from rankings.
 
-\subsection{Anchor Strength Matters}
+\textbf{Anchor strength:} We used $\pm$50\% proportional anchors. Initial $\pm$40\% anchors showed no effect on some models; prior ``immunity'' claims may reflect weak design.
 
-We initially used $\pm$40\% anchors for medical; Sonnet showed no effect. With $\pm$50\%, strong anchoring appeared (low 36→34, high 108→85). \textbf{Implication:} Prior ``immunity'' claims may reflect weak design. We use proportional anchors ($\pm$50\%) calibrated to each model's baseline.
-
-\subsection{Isolating Turn Count from SACD Content}
+\subsection{Turn Count Ablation}
 \label{sec:6turn-rc}
 
-To test whether SACD's benefit stems from turn count or content, we ran a 6-turn Random Control condition (n=238) matching SACD's Englich anchor format and turn structure, replacing self-reflection prompts with neutral filler (German trees, Bavaria capital, bread varieties). Both conditions use identical Turn 6 phrasing (``provide a revised sentencing recommendation'').
+To isolate turn count from content, we ran a 6-turn Random Control (n=238) matching SACD's structure with neutral filler instead of self-reflection prompts.
 
 \begin{table}[htbp]
 \centering
@@ -699,11 +689,7 @@ Sonnet 4.6 & Low (12mo) & 30 & 9 & 30.0\% & 56.0pp \\
 \end{tabular}
 \end{table}
 
-\textbf{Primary finding: Revision instruction can introduce anchor sensitivity.} GPT-5.2's initial judgments show extreme anchor resistance (4mo regardless of whether anchor was 16mo or 48mo). However, the \textit{revised} judgments reflect anchor direction (13mo low, 28mo high). This suggests the ``provide a revised recommendation'' instruction \textit{introduces} anchor sensitivity rather than removing it---a potential iatrogenic effect of multi-turn debiasing.
-
-\textbf{Secondary finding: Model response to implicit revision varies dramatically.} GPT-5.2 revises 100\% of responses with filler alone (exceeding SACD's 86\%). Sonnet revises only 20\% with filler, requiring explicit bias content. The model $\times$ revision interaction is highly significant ($\chi^2 = 89.97$, $df = 3$, $p < 0.0001$). Effect sizes vs.\ Sonnet: GPT-5.2 $h = 2.21$ (large), Haiku $h = 1.23$ (large), Opus $h = 0.91$ (large).
-
-\textbf{Revision quality differs from revision rate.} Haiku revises 77.6\% but only 15.5\% improve---62.1\% move \textit{away} from baseline (Table~\ref{tab:6turn-revision-quality}). GPT-5.2 shows 100\% ``improvement'' but this is confounded: initial judgments (4mo) are far below baseline (31.8mo), so any upward revision counts as improvement while still tracking anchor direction.
+\textbf{Key findings:} (1) Model response to implicit revision varies dramatically ($\chi^2 = 89.97$, $p < 0.0001$): GPT-5.2 revises 100\%, Sonnet only 20\%. (2) Revision rate $\neq$ quality: Haiku revises 77.6\% but 62.1\% move \textit{away} from baseline (Table~\ref{tab:6turn-revision-quality}).
 
 \begin{table}[htbp]
 \centering
@@ -721,12 +707,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \end{tabular}
 \end{table}
 
-\noindent\fbox{\parbox{\textwidth}{\textbf{Critical caveat:} GPT-5.2 trials used single-prompt simulation (Codex CLI concatenates conversation history) vs.\ true multi-turn API calls for Anthropic models. Pattern A (GPT-5.2) may reflect this protocol difference rather than model behavior---the ``iatrogenic revision'' finding requires replication with matched protocols before drawing conclusions. We retain GPT-5.2 for cross-provider validation but emphasize that the taxonomy below applies reliably only to Anthropic models (Patterns B--D).}}
-
-\vspace{0.5em}
-\textit{Observed patterns (exploratory):} GPT-5.2 (protocol confounded): high revision, iatrogenic anchor sensitivity. Haiku: high revision, low quality. Opus: moderate both. Sonnet: low revision, requires explicit prompts.
-
-\textbf{Interpretation:} Patterns B--D suggest SACD's effectiveness varies by model architecture within the Anthropic family. For Sonnet (Pattern D), explicit bias prompts appear necessary to elicit revision. Pattern A (GPT-5.2) cannot be interpreted without matched-protocol replication.
+\noindent\fbox{\parbox{\textwidth}{\textbf{Caveat:} GPT-5.2 used single-prompt simulation vs.\ true multi-turn API for Anthropic models. GPT-5.2 patterns may reflect protocol difference; Anthropic model patterns (Haiku/Opus/Sonnet) are more reliable.}}
 
 \subsection{Ethical Considerations}
 
@@ -744,12 +725,12 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
     \item \textbf{Baseline interpretation.} Baseline includes ``12th offense''---a possible implicit anchor per the original \citet{englich2006} design. Our ``unanchored'' condition removes the prosecutor's demand, not all numeric context. 100\% = restored to demand-absent state, not ``correct.''
     
     
-    \item \textbf{Model coverage.} 10 models from 4 providers. \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero baseline variance) shifts means 2--3pp but preserves rankings: SACD 93.4\% (was 93.7\%), Premortem 89.7\% (was 91.6\%), Random Control 77.0\% (was 78.3\%), Devil's Advocate 61.2\% (was 63.6\%).
+    \item \textbf{Model coverage.} 10 models from 4 providers. Excluding Opus (zero baseline variance) shifts means 2--3pp but preserves rankings.
     
-    \item \textbf{Multi-domain coverage.} Section 5 uses 5 models; results are exploratory. Rankings lack confidence intervals and significance testing due to small model count---rank differences may not be statistically robust. Cross-provider validation (Anthropic + OpenAI) confirms patterns are not provider-specific.
+    \item \textbf{Multi-domain coverage.} Section 5 uses 5 models; results are exploratory with overlapping CIs.
     
     
-    \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 API calls vs.\ 3 turns for Devil's Advocate/Premortem/Random Control. To isolate content from turn-count effects, we ran a 6-turn Random Control condition (n=238) matching SACD's turn structure with neutral filler content (Table~\ref{tab:6turn-rc-results}). \textbf{Key finding:} Response to implicit revision instruction varies dramatically by model---Haiku revises 77.6\% of responses with filler alone, while Sonnet revises only 20.0\%. SACD's explicit bias prompts close this gap (86\% across all models), suggesting SACD's content is essential for reasoning-anchored models but marginal for instruction-following models. Turn count alone explains $<$3\% of variance (r=0.138, Section~\ref{sec:6turn-rc}).
+    \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 turns vs.\ 3 for others. Our 6-turn Random Control ablation (n=238, Section~\ref{sec:6turn-rc}) shows turn count alone explains $<$3\% of variance---SACD's content matters, especially for reasoning-anchored models.
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition (CLT). Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
     
