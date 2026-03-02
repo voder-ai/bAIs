@@ -511,7 +511,7 @@ y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + u_j + \ep
 
 where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, confirming the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
-ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$). Fixed effects confirm ranking: SACD $+11.9$ pp, Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
+ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$); denominator df are approximate (not Satterthwaite-adjusted) due to computational constraints with 10 clusters. Fixed effects confirm ranking: SACD $+11.9$ pp, Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
 
 \textbf{Random slopes:} SACD shows highest slope variance (SD = 25.6 pp), confirming effectiveness varies dramatically across models (+33\% to $-$56\% from fixed effect). This justifies per-model testing (Table~\ref{tab:sacd-by-model}).
 
