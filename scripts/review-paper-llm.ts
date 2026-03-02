@@ -5,7 +5,7 @@
  * Uses bAIs LLM infrastructure to get an independent assessment
  */
 
-import { createProvider, parseModelSpec, type LlmProvider } from '../src/llm/provider.js';
+import { createProvider, parseModelSpec, type LlmProvider } from '../dist/llm/provider.js';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
