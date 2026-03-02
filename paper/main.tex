@@ -71,7 +71,7 @@ Even \% of baseline can mislead when averaged (bidirectional errors cancel). SAC
 
 \subsection{Contributions}
 
-(1) \textbf{MAD for debiasing evaluation.} We recommend reporting Mean Absolute Deviation from baseline to capture per-trial error that aggregates mask. SACD achieves 93.7\% aggregate but 18.1\% MAD---bidirectional errors cancel in aggregates but MAD reveals them.
+(1) \textbf{Aggregate metrics mask bidirectional error.} We demonstrate that aggregate \% of baseline can mislead: SACD achieves 93.7\% but 18.1\% MAD, because over/undershoots cancel. We recommend reporting MAD alongside aggregates.
 (2) Cross-domain evaluation (22,773 trials, 6 domains) showing technique rankings vary by domain and metric.
 (3) Deep validation (14,152 judicial trials, 10 models) confirming substantial model-specific variance (SACD: 48\%--128\%).
 
@@ -683,7 +683,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
     \item \textbf{Multi-domain coverage.} Section 5 uses 5 models; results are exploratory with overlapping CIs.
     
     
-    \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 turns vs.\ 3 for others. Our 6-turn Random Control ablation (n=238, Section~\ref{sec:6turn-rc}) shows turn count alone explains $<$3\% of variance---SACD's content matters, especially for reasoning-anchored models.
+    \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 turns vs.\ 3 for others. Multi-turn structure helps (Random Control +5.4pp over single-turn), but our 6-turn ablation (n=238) shows SACD's specific content explains additional variance beyond turn count---especially for reasoning-anchored models.
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition (CLT). Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
     
