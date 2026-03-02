@@ -38,7 +38,9 @@ Do human debiasing techniques work on LLMs? We test five techniques from the cog
 
 Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline across models. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
 
-\textbf{For practitioners:} Don't assume human debiasing techniques transfer. Test per-model, per-task. Report baseline proximity alongside susceptibility---a technique can reduce anchor sensitivity while moving responses away from the correct answer.
+\textbf{Methodological contribution:} We propose \textbf{MAD} (Mean Absolute Deviation from baseline) to capture per-trial error. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
+
+\textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-task. Report MAD alongside aggregates.
 \end{abstract}
 
 %==============================================================================
@@ -72,9 +74,9 @@ Even \% of baseline can mislead when averaged (bidirectional errors cancel). SAC
 
 \subsection{Contributions}
 
-(1) Cross-domain evaluation (22,773 trials, 6 domains) showing rankings vary---CIs overlap.
-(2) MAD metric capturing per-trial error (SACD: 93.7\% aggregate, 18.1\% MAD).
-(3) Deep validation (14,152 judicial trials, 10 models) confirming model-specific variance.
+(1) \textbf{MAD metric for debiasing evaluation.} We propose Mean Absolute Deviation from baseline to capture per-trial error that aggregates mask. SACD achieves 93.7\% aggregate but 18.1\% MAD---bidirectional errors cancel in aggregates but MAD reveals them.
+(2) Cross-domain evaluation (22,773 trials, 6 domains) showing technique rankings vary by domain and metric.
+(3) Deep validation (14,152 judicial trials, 10 models) confirming substantial model-specific variance (SACD: 48\%--128\%).
 
 %==============================================================================
 \section{Related Work}
