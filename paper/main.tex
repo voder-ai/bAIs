@@ -468,7 +468,7 @@ Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
 
 \textbf{Key insight:} SACD's aggregate results from averaging over bidirectional deviation (Table~\ref{tab:anchor-asymmetry}). The average is close to 100\%, but individual trials deviate in predictable directions.
 
-\textbf{No-technique baseline shows asymmetry:} Without any intervention, models respond at 59.9\% of baseline under low anchors and 86.0\% under high anchors (26.1pp gap). This natural pull toward high anchors is what techniques attempt to correct.
+\textbf{No-technique baseline shows asymmetry:} Without any intervention, models respond at 59.9\% under low anchors and 86.0\% under high anchors---both below baseline, but with a 26.1pp gap showing low anchors exert stronger pull.
 
 \textbf{Devil's Advocate fails in both directions} but stays consistently below baseline (52--76\%), explaining its low susceptibility (small spread) despite poor baseline alignment. Rather than correcting the asymmetry, it compresses responses toward a consistently wrong value. \textit{Caveat:} This reflects our specific prompt implementation; alternative phrasings might perform differently.
 
@@ -493,7 +493,7 @@ Table~\ref{tab:metric-comparison} confirms the divergence; Table~\ref{tab:anchor
 
 \subsection{The SACD vs.\ Premortem Tradeoff}
 
-SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) are statistically equivalent (TOST $p < 0.01$, equivalence bound $\pm$5pp---chosen as the smallest difference likely to affect deployment decisions). However, SACD's aggregate masks 18.1\% MAD vs.\ Premortem's 22.6\%. Model-specific variation dominates; per-model testing is essential.
+SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) are statistically equivalent (TOST $p < 0.01$, equivalence bound $\pm$5pp---approximately 1.5 months on a 30-month baseline, below the precision relevant to deployment). However, SACD's aggregate masks 18.1\% MAD vs.\ Premortem's 22.6\%. Model-specific variation dominates; per-model testing is essential.
 
 %==============================================================================
 \section{Multi-Domain Generalization}
@@ -571,7 +571,8 @@ Domain & Technique & MAD & 95\% CI & Rank \\
 
 (1) Rankings depend on metric and domain; all \#1 vs \#2 CIs overlap---practical equivalence.
 (2) SACD's ranking varies \#2 to \#5 across domains despite \#1 in main judicial study.
-(3) Fraud domain shows severe anchoring (29--75\% of baseline across techniques).
+(3) \textbf{No intervention outperforms debiasing prompts in 3 of 6 domains} (Judicial-DUI, Judicial-Fraud, Aggravated-Theft by MAD). Debiasing can increase per-trial error.
+(4) Fraud domain shows severe anchoring (29--75\% of baseline across techniques).
 
 \textbf{Why do studies diverge?} The main study uses \% of baseline (10 models, single vignette); multi-domain uses MAD (5 models, 6 vignettes). Three factors explain the discrepancy: (a) \textit{Metric choice}---SACD's bidirectional variance penalizes it under MAD but cancels under aggregate \%. (b) \textit{Model selection}---multi-domain excludes 5 models from the main study. (c) \textit{Domain effects}---judicial sentencing may be uniquely suited to iterative reflection; loan/medical domains show different patterns. These findings reinforce our core message: technique rankings are metric- and domain-dependent.
 
@@ -673,7 +674,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
     
     \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 turns vs.\ 3 for others. Multi-turn structure helps (Random Control +5.4pp over single-turn), but our 6-turn ablation (n=238) shows SACD's specific content explains additional variance beyond turn count---especially for reasoning-anchored models.
     
-    \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition (CLT). Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
+    \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition as minimum sample size. Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
     
     \item \textbf{Missing baselines.} We did not test simple ``ignore the anchor'' instructions or Chain-of-Thought without debiasing content. These minimal interventions might outperform complex techniques; future work should establish this lower bound.
 \end{enumerate}
