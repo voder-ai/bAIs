@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Testing Human Debiasing Prompts in LLMs:\\Prompt-Level Evidence from 22,773 Anchoring Bias Trials}
+\title{Testing Implementations of Human Debiasing Prompts in LLMs:\\Evidence from 22,773 Anchoring Bias Trials}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -277,7 +277,7 @@ Our core empirical finding: susceptibility and \% of baseline give \textbf{diver
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Our Devil's Advocate implementation reduces susceptibility ($-$8.8\%) yet performs worst on \% of baseline (63.6\%)---it achieves consistency by moving responses away from unanchored judgment. 95\% CIs from bootstrap. Results reflect specific prompt implementations (Appendix).}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Our Devil's Advocate implementation reduces susceptibility ($-$8.8\%) yet performs worst on \% of baseline (63.6\%)---it achieves consistency by moving responses away from unanchored judgment. 95\% CIs from bootstrap. Results reflect specific prompt implementations (Appendix). \textit{Ranking note:} For susceptibility, lower spread = better (\#1); for \% of baseline, higher = better (\#1).}
 \label{tab:metric-comparison}
 \begin{tabular}{lccccc}
 \toprule
@@ -470,7 +470,7 @@ y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + \beta_{\t
 
 where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,956 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, consistent with the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
-ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$). \textbf{Cluster caveat:} With only 10 model clusters, random-effects variance estimates may be unreliable \citep{maas2005}; these results are best treated as descriptive rather than confirmatory. Fixed effects suggest ranking: SACD $+11.9$ pp, Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
+ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction: $F(3, 8950) = 47.3$. \textbf{Cluster caveat:} With only 10 model clusters, denominator df are approximate (likely inflated) and random-effects variance estimates may be unreliable \citep{maas2005}; treat as descriptive. Fixed effects suggest ranking: SACD $+11.9$ pp (percentage points), Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
 
 \textbf{Random slopes:} SACD shows highest slope variance (SD = 25.6 pp), showing effectiveness varies dramatically across models (+33\% to $-$56\% from fixed effect). This justifies per-model testing (Table~\ref{tab:sacd-by-model}).
 
@@ -676,7 +676,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 \section{Conclusion}
 %==============================================================================
 
-Human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation of one prompt per technique finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from 48\% to 128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms.
+Our implementations of human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from 48\% to 128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms.
 
 \textbf{For practitioners:} Don't assume human techniques transfer to LLM prompts. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse.
 
