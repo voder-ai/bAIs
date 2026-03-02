@@ -107,7 +107,7 @@ We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-m
 \begin{equation}
 \text{MAD} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{r_i}{b_m} - 1 \right| \times 100\%
 \end{equation}
-where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored baseline response, and the sum is over all anchored trials. Lower MAD indicates responses closer to unanchored judgment. Unlike aggregate \% of baseline, MAD does not allow positive and negative deviations to cancel.
+where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored baseline response, and the sum is over all anchored trials. Lower MAD indicates responses closer to unanchored judgment. Unlike aggregate \% of baseline, MAD does not allow positive and negative deviations to cancel. \textit{Note:} Because deviations are computed relative to each model's own baseline, MAD aggregates meaningfully across models with different absolute baselines.
 
 \textbf{Why both?} Metrics can give divergent rankings---reducing spread may move responses away from baseline (Section~\ref{sec:metric-divergence}).
 
@@ -374,7 +374,7 @@ Devil's Advocate & 2,166 & 63.6\% & [62, 65] & 36.4\% & 36.4\% & \#4 \\
 
 \subsection{Model-Specific Results: SACD}
 
-SACD shows high variance across models:
+SACD shows high variance across models. \textbf{Important caveat:} Haiku 4.5's extreme result (47.8\%) comes from a highly selected sample---85\%+ of trials returned policy refusals. The surviving responses may not represent typical model behavior. Sensitivity analysis excluding Haiku shifts aggregate SACD to 91.2\% (vs.\ 93.7\% with Haiku); rankings are preserved.
 
 \begin{table}[H]
 \centering
