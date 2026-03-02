@@ -45,20 +45,22 @@ ${VERIFIED_CITATIONS}
 
 ${CURRENT_FACTS}
 
+**CRITICAL CONSTRAINT:** You MUST NOT request additional experiments. The experimental data is final. Evaluate the paper AS-IS. If there are design limitations (e.g., single prompt per technique), assess whether the paper adequately acknowledges and discusses these limitations — but do NOT recommend running more experiments.
+
 Be thorough and critical. Evaluate:
-1. **Methodology** - Are experiments well-designed? Are there confounds or flaws?
+1. **Methodology** - Are experiments well-designed? Are confounds adequately acknowledged?
 2. **Statistics** - Are claims supported by data? Are confidence intervals reported correctly?
 3. **Citations** - Do they appear accurate and verifiable? (Note: citations listed above have been pre-verified)
 4. **Internal consistency** - Do numbers match between text and tables?
 5. **Writing quality** - Is it clear, concise, professional?
-6. **Overclaims** - Does it claim more than evidence supports?
+6. **Overclaims** - Does it claim more than evidence supports? Are limitations properly scoped?
 
 After your analysis, provide a clear verdict with one of these exact phrases:
 - **READY TO PUBLISH** - Meets main track standards. Minor issues only.
-- **NEEDS REVISION** - Significant issues that should be fixed first  
+- **NEEDS REVISION** - Significant TEXT issues that should be fixed first (not experiments)
 - **NOT READY** - Major problems requiring substantial rework
 
-Be specific about any issues you find.`;
+Be specific about any issues you find. Focus on TEXT FIXES, not experimental design changes.`;
 
 async function main() {
   // Read the paper
