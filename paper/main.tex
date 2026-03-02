@@ -40,7 +40,7 @@ Do prompts implementing human debiasing techniques work on LLMs? We test one pro
 
 \textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from baseline than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
-Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from $\sim$48\% to $\sim$128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
+Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from $\sim$48\% to $\sim$128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models. In the multi-domain extension, no intervention achieves lowest MAD in 3 of 6 domains---debiasing prompts can increase per-trial error.
 
 \textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline; not to be confused with the Median Absolute Deviation also abbreviated MAD in some contexts) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
