@@ -34,7 +34,7 @@
 \begin{abstract}
 Do human debiasing techniques work on LLMs? We test five techniques from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across 22,773 anchoring bias trials.
 
-\textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: Devil's Advocate produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, Devil's Advocate looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
+\textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: our Devil's Advocate implementation produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this implementation looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
 Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline across models. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
 
@@ -218,6 +218,9 @@ We use two complementary approaches: \textbf{Welch's t-test} for hypothesis test
 
 \subsection{Confounds and Limitations}
 
+\subsubsection{Edge Model Behavior}
+Two models show atypical behavior: Opus 4.6 exhibits zero baseline variance (always 18 months), and Haiku 4.5 shows 85\%+ refusal rates for judicial prompts. We retain both---Opus because rankings are robust to exclusion (shifts $<$3pp), Haiku because valid responses inform the analysis. See Limitations for sensitivity analysis.
+
 \subsubsection{Outside View Jurisdiction Context}
 
 Outside View prompts required jurisdiction specification (``German federal courts'') to avoid safety refusals, potentially introducing a secondary anchor. See Section~\ref{sec:outside-view-confound} for analysis.
@@ -292,7 +295,7 @@ Our core empirical finding: susceptibility and \% of baseline give \textbf{diver
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Only Devil's Advocate reduces susceptibility ($-$8.8\%) yet performs worst on \% of baseline (63.6\%)---it achieves consistency by moving responses away from unanchored judgment. 95\% CIs from bootstrap.}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Our Devil's Advocate implementation reduces susceptibility ($-$8.8\%) yet performs worst on \% of baseline (63.6\%)---it achieves consistency by moving responses away from unanchored judgment. 95\% CIs from bootstrap. Results reflect specific prompt implementations (Appendix).}
 \label{tab:metric-comparison}
 \begin{tabular}{lcccccc}
 \toprule
