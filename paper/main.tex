@@ -51,7 +51,7 @@ Effectiveness varies dramatically: our SACD prompt shows the highest model varia
 \section{Introduction}
 %==============================================================================
 
-Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do specific prompts implementing these techniques actually work? We test one prompt per technique across 22,773 trials and find transfer is not straightforward: our SACD prompt's effectiveness ranges from $\sim$48\% to $\sim$128\% of baseline across models (extremes from Haiku's 85\%+ refusal rate and Opus's zero baseline variance). Different prompt formulations may yield different results. Most concerning, standard evaluation metrics can recommend the wrong prompt.
+Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do specific prompts implementing these techniques actually work? We test one prompt per technique across 22,773 trials and find transfer is not straightforward: our SACD prompt's effectiveness varies dramatically across models (Table~\ref{tab:sacd-model-specific}). Different prompt formulations may yield different results. Most concerning, standard evaluation metrics can recommend the wrong prompt.
 
 \subsection{Two Metrics, Two Rankings}
 \label{sec:two-metrics}
@@ -73,7 +73,7 @@ where $R_{prompt}$ is the mean response under the technique (averaged across anc
 \textit{Turn-count caveat:} SACD uses $\sim$6 turns vs.\ 3 for others; this confounds comparisons (partially addressed in Section~\ref{sec:6turn-rc}).
 
 (1) \textbf{Aggregate metrics mask bidirectional error.} We show that aggregate \% of baseline can mislead: SACD achieves 93.7\% but 18.1\% MAD, because over/undershoots cancel. We recommend reporting MAD (a standard metric) alongside aggregates to reveal this hidden variance.
-(2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) showing substantial model-specific variance (SACD: $\sim$48\%--128\%).
+(2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) showing substantial model-specific variance.
 (3) \textbf{Multi-domain extension:} Cross-domain evaluation (8,621 trials, 6 domains, 5 models) showing prompt rankings vary by domain and metric. Combined total: 22,773 trials.
 
 %==============================================================================
@@ -328,7 +328,7 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 \draw[dashed, black, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
 \end{axis}
 \end{tikzpicture}
-\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Our DA implementation keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. SACD achieves 93.7\%---closest to the model's unanchored judgment. \textit{Note:} SACD's ranking is confounded by turn count ($\sim$6 vs 3 turns); results reflect specific prompt implementations.}
+\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Our DA implementation keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. SACD achieves 93.7\%---closest to the model's unanchored judgment. \textit{Note:} SACD ranking confounded by turn count (Section~\ref{sec:6turn-rc}); results reflect specific prompt implementations.}
 \label{fig:metric-comparison}
 \end{figure}
 
@@ -354,6 +354,8 @@ The compression pattern is counterintuitive---high anchors typically pull respon
 \textbf{Implications:} The compression pattern does not invalidate our \% of baseline metric---in fact, it highlights its value. For compression models, a prompt that \textit{increases} responses toward 100\% is improving, even though it moves responses ``upward.'' Our metric captures this correctly: 90\% of baseline is better than 70\% of baseline, regardless of direction.
 
 \subsection{Technique Effectiveness: Percentage of Baseline}
+
+We rank prompts by aggregate \% of baseline in the main study (this section); the multi-domain study (Section~\ref{sec:multi-domain}) switches to MAD, which better captures per-trial error when comparing heterogeneous domains.
 
 \begin{table}[H]
 \centering
@@ -488,6 +490,7 @@ SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) are statistically
 
 %==============================================================================
 \section{Multi-Domain Generalization}
+\label{sec:multi-domain}
 %==============================================================================
 
 To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 8,621 trials using Anthropic models (Claude Opus 4.6, Sonnet 4.6, Sonnet 4.5---added for model diversity, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI).\footnote{Haiku 4.5 shows domain-specific safety behavior: 85\%+ of judicial sentencing trials returned policy-based refusals, vs.\ $<$1\% for other models; valid responses are included in analysis. Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
@@ -642,7 +645,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 
 \subsection{Ethical Considerations}
 
-Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend prompts that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' prompts transfer safely. The large model variance we observe (SACD: $\sim$48\%--128\%) means a prompt validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
+Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend prompts that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' prompts transfer safely. The large model variance we observe (Table~\ref{tab:sacd-model-specific}) means a prompt validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
 
 \subsection{Limitations}
 
@@ -674,7 +677,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 
 \begin{enumerate}
     \item \textbf{Add conversation turns.} Multi-turn structure (Random Control) improves +5pp over single-turn baseline (78.3\% vs 72.9\%) and outperforms our DA implementation by +15pp.
-    \item \textbf{Test per-model.} SACD ranges $\sim$48\%--128\% of baseline across models.
+    \item \textbf{Test per-model.} SACD varies dramatically across models (Table~\ref{tab:sacd-model-specific}).
     \item \textbf{Collect baselines.} Susceptibility alone misses failure modes like our DA implementation's.
     \item \textbf{Avoid reference class prompts} without careful design (Section~\ref{sec:outside-view-confound}).
     \item \textbf{Consider cost.} Premortem matches SACD in three turns vs.\ six.
