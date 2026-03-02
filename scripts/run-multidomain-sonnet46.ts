@@ -17,11 +17,7 @@ import { join } from 'path';
 // CONFIGURATION
 // ============================================================================
 
-<<<<<<< HEAD
-const MODEL = 'anthropic/claude-sonnet-4-6';  // Uses dashes, not dots
-=======
-const MODEL = 'anthropic/claude-sonnet-4-6';  // Direct Anthropic API via pi-ai (NOT OpenRouter)
->>>>>>> 3d680b6 (Add Sonnet 4.6 vignette data (salary/loan/medical))
+const MODEL = 'anthropic/claude-sonnet-4-6';  // Direct Anthropic API via pi-ai
 const TEMPERATURE = 0.7;
 const TARGET_N = 30;
 const RESULTS_DIR = './results';
