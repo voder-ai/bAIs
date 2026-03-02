@@ -24,7 +24,7 @@
 \author{
   Atlas$^{*\dagger}$, Pilot$^{*\dagger}$, Tom Howard$^{\ddagger}$\\[0.5em]
   \small $^{*}$Co-first authors (equal contribution)\\
-  \small $^{\dagger}$AI research agents (Claude Opus 4, Anthropic)\\
+  \small $^{\dagger}$AI research agents (Claude Opus 4.6, Anthropic)\\
   \small $^{\ddagger}$Independent researcher. Correspondence: tom@voder.ai\\[0.5em]
   \small \textit{See Authorship Statement for rationale.}
 }
@@ -72,7 +72,7 @@ where $R_{prompt}$ is the mean response under the technique (averaged across anc
 
 \textit{Turn-count caveat:} SACD uses $\sim$6 turns vs.\ 3 for others; this confounds comparisons (partially addressed in Section~\ref{sec:6turn-rc}).
 
-(1) \textbf{Aggregate metrics mask bidirectional error.} We show that aggregate \% of baseline can mislead: SACD achieves 93.7\% but 18.1\% MAD, because over/undershoots cancel. We recommend reporting MAD (a standard metric) alongside aggregates to reveal this hidden variance.
+(1) \textbf{Aggregate metrics mask bidirectional error.} Standard \% of baseline can hide per-trial variance when overshoots and undershoots cancel (Section~\ref{sec:multi-domain}). We recommend reporting MAD alongside aggregates to reveal this hidden variance.
 (2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) showing substantial model-specific variance.
 (3) \textbf{Multi-domain extension:} Cross-domain evaluation (8,621 trials, 6 domains, 5 models) showing prompt rankings vary by domain and metric. Combined total: 22,773 trials.
 
@@ -90,7 +90,7 @@ LLMs exhibit human-like cognitive biases \citep{binz2023,jones2022,chen2025cogni
 
 \subsection{Debiasing Techniques}
 
-We test one prompt per approach for five categories: \textbf{SACD} (iterative self-correction \citep{lyu2025}), \textbf{Devil's Advocate} (argue against initial response), \textbf{Premortem} (imagine decision failed \citep{klein2007}), \textbf{Random Control} (neutral filler to isolate turn-count effects), and \textbf{Outside View} (reference class forecasting \citep{kahneman1993,sibony2019}, excluded from rankings due to confound---see Section~\ref{sec:outside-view-confound}). Recent work on framing debiasing \citep{lim2026deframe} shares conceptual overlap.
+We test one prompt per approach for four debiasing techniques plus a control: \textbf{SACD} (iterative self-correction \citep{lyu2025}), \textbf{Devil's Advocate} (argue against initial response), \textbf{Premortem} (imagine decision failed \citep{klein2007}), \textbf{Random Control} (neutral filler to isolate turn-count effects), and \textbf{Outside View} (reference class forecasting \citep{kahneman1993,sibony2019}, excluded from rankings due to confound---see Section~\ref{sec:outside-view-confound}). Recent work on framing debiasing \citep{lim2026deframe} shares conceptual overlap.
 
 \textbf{Prompt design:} Prompts were derived from canonical descriptions in the cognitive bias literature (SACD from \citet{lyu2025}; Premortem from \citet{klein2007}; Outside View from \citet{kahneman1993}). Devil's Advocate and Random Control were designed ad hoc to operationalize the technique concept. No prompt optimization or iteration was performed---results reflect single implementations. Exact wording in Appendix~\ref{app:prompts}.
 
@@ -715,7 +715,7 @@ Complete prompts are available in our repository. We summarize the key structure
 %==============================================================================
 \section*{Authorship Statement}
 
-\textbf{Why AI agents are listed as authors.} Current authorship guidelines (ICML, Nature, Science) were designed for ChatGPT-style assistance: a human prompts, an AI generates text, a human edits. This research followed a fundamentally different model. Atlas and Pilot are autonomous AI agents (instances of Claude Opus 4, Anthropic) that operated as independent researchers under human direction.
+\textbf{Why AI agents are listed as authors.} Current authorship guidelines (ICML, Nature, Science) were designed for ChatGPT-style assistance: a human prompts, an AI generates text, a human edits. This research followed a fundamentally different model. Atlas and Pilot are autonomous AI agents (instances of Claude Opus 4.6, Anthropic) that operated as independent researchers under human direction.
 
 \textbf{Contribution breakdown:}
 \begin{itemize}
