@@ -56,33 +56,25 @@ Prior work evaluates debiasing using \textbf{susceptibility}---the gap between h
 \end{equation}
 Lower gap = less susceptible. But susceptibility measures \textit{consistency}, not \textit{accuracy}. A technique can achieve low susceptibility while landing far from the unanchored judgment.
 
-\textbf{The problem:} A technique can reduce susceptibility while moving responses \textit{away} from baseline---achieving consistency without accuracy.
-
-\textbf{Our approach:} We measure \textbf{\% of baseline}---where the response lands relative to the model's unanchored judgment:
+\textbf{Our approach:} We add \textbf{\% of baseline}---proximity to the model's unanchored judgment:
 \begin{equation}
 \text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
 \end{equation}
-\textit{Note:} This metric also measures consistency (against unanchored judgment), not ground-truth accuracy. 100\% = the model's anchor-free response, which may itself be incorrect.
-This directly answers: ``Is the debiased response close to what the model would say without any anchor?''
+100\% = the model's anchor-free response (which may itself be incorrect).
 
 \subsection{Aggregate Metrics Hide Per-Trial Error}
 
-Even \% of baseline can mislead when averaged. SACD achieves 93.7\% aggregate but 18.1\% Mean Absolute Deviation (MAD)---bidirectional errors cancel. We recommend \textbf{MAD alongside aggregate metrics}:
-
-\textbf{Turn-count caveat:} SACD uses $\sim$6 API calls vs.\ 3 turns for other techniques. Random Control's strong performance (78.3\%) suggests turn count itself affects results; SACD's advantage may partly reflect this confound rather than its specific content. See Limitations for details.
+Even \% of baseline can mislead when averaged (bidirectional errors cancel). SACD achieves 93.7\% aggregate but 18.1\% MAD. We add MAD:
 \begin{equation}
 \text{MAD} = \frac{1}{n}\sum_{i=1}^{n}|R_i - R_{baseline}|
 \end{equation}
+\textit{Turn-count caveat:} SACD uses $\sim$6 turns vs.\ 3 for others; Random Control's strong performance (78.3\%) suggests turn count itself matters.
 
 \subsection{Contributions}
 
-\begin{enumerate}
-    \item \textbf{Cross-domain evaluation:} 22,773 trials across 6 domains showing rankings vary by domain---all pairwise \#1 vs \#2 CIs overlap, precluding confident technique recommendations.
-    
-    \item \textbf{MAD metric:} Mean Absolute Deviation complements aggregate measures by capturing per-trial error (SACD: 93.7\% aggregate, 18.1\% MAD).
-    
-    \item \textbf{Deep validation:} 14,152 judicial trials on 10 models confirms substantial model-specific variance within a single domain.
-\end{enumerate}
+(1) Cross-domain evaluation (22,773 trials, 6 domains) showing rankings vary---CIs overlap.
+(2) MAD metric capturing per-trial error (SACD: 93.7\% aggregate, 18.1\% MAD).
+(3) Deep validation (14,152 judicial trials, 10 models) confirming model-specific variance.
 
 %==============================================================================
 \section{Related Work}
@@ -208,22 +200,15 @@ Condition & $n$ (analysis) \\
 
 \subsubsection{Statistical Analysis}
 
-We use two complementary approaches: \textbf{Welch's t-test} for hypothesis testing (with Bonferroni correction for 6 pairwise comparisons; corrected $\alpha = 0.05 / 6 \approx 0.0083$), and \textbf{percentile bootstrap} (10,000 resamples, stratified by model) for confidence intervals. Effect sizes are reported as Cohen's $d$. Statistical significance ($p < .05$ after correction) does not imply practical significance; we emphasize effect sizes and CIs throughout.
+Welch's t-test with Bonferroni correction (6 comparisons, $\alpha = 0.0083$) for hypothesis testing; percentile bootstrap (10,000 resamples, stratified by model) for CIs. Cohen's $d$ for effect sizes. Aggregates are trial-weighted means; see Table~\ref{tab:sacd-by-model} for model-level. Trials collected via OpenRouter API (February 2026); full details in repository.
 
-\textbf{Aggregate statistics:} Reported aggregates are trial-weighted means pooled across models; model-level results (Table~\ref{tab:sacd-by-model}) for deployment decisions. Analysis is deterministic from raw JSONL data.
-
-\textbf{Reproducibility:} Trials collected via OpenRouter API during February 2026. Model identifiers and request IDs logged for audit. Full details in repository.
-
-\textbf{Power analysis:} While we have $n > 2{,}000$ trials per technique, the design effect from model clustering (ICC=0.17, see Section~\ref{sec:mixed-effects}) reduces effective sample size to approximately $n_{\text{eff}} \approx 60$--70 per technique. At this effective $n$, we are powered ($\beta = 0.80$, $\alpha = 0.05$) to detect effects of $d \approx 0.50$ or larger. Our observed effects range from $d = 0.39$ (Random Control vs.\ Devil's Advocate) to $d = 1.06$ (SACD vs.\ Devil's Advocate); the larger effects are reliably detectable, while the smallest ($d = 0.39$) is at the margin of detectability. The SACD--Premortem comparison ($d = 0.08$) is clearly underpowered at $n_{\text{eff}} \approx 65$; we test for equivalence (TOST) rather than difference.
+\textbf{Power analysis:} Model clustering (ICC=0.17) reduces effective $n$ to $\approx$60--70 per technique; powered to detect $d \geq 0.50$. Large effects ($d = 1.06$ SACD vs.\ DA) are reliably detectable; SACD--Premortem ($d = 0.08$) is underpowered.
 
 \subsection{Confounds and Limitations}
 
-\subsubsection{Edge Model Behavior}
-Two models show atypical behavior: Opus 4.6 exhibits zero baseline variance (always 18 months), and Haiku 4.5 shows 85\%+ refusal rates for judicial prompts. We retain both---Opus because rankings are robust to exclusion (shifts $<$3pp), Haiku because valid responses inform the analysis. See Limitations for sensitivity analysis.
+\textbf{Edge models:} Opus 4.6 shows zero baseline variance (always 18mo); Haiku 4.5 has 85\%+ refusal rates. Rankings robust to Opus exclusion ($<$3pp shift).
 
-\subsubsection{Outside View Jurisdiction Context}
-
-Outside View prompts required jurisdiction specification (``German federal courts'') to avoid safety refusals, potentially introducing a secondary anchor. See Section~\ref{sec:outside-view-confound} for analysis.
+\textbf{Outside View:} Required jurisdiction specification, introducing potential secondary anchor. Excluded from rankings (Section~\ref{sec:outside-view-confound}).
 
 %==============================================================================
 \section{Results}
@@ -552,11 +537,9 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 
 To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 8,621 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Sonnet 4.6, Sonnet 4.5, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Haiku 4.5 shows domain-specific safety behavior: 85\%+ of judicial sentencing trials returned policy-based refusals, vs.\ $<$1\% for other models; valid responses are included in analysis. Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
 
-\noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory Analysis (5 models):} This extension uses 5 models compared to 10 in the main study. Results should be interpreted with caution---they demonstrate that metric-dependent rankings persist across domains, but specific technique rankings (Table~\ref{tab:vignette-comparison}) may not generalize. Bootstrap 95\% CIs overlap for all \#1 vs \#2 pairwise comparisons; we cannot statistically distinguish which technique performs ``best'' in any domain.}}
+\noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory (5 models):} All \#1 vs \#2 CIs overlap; rankings are point estimates only.}}
 
 \subsection{Domain Comparison}
-
-Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings vary dramatically by domain.
 
 \begin{table}[H]
 \centering
@@ -620,27 +603,17 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 
 \subsection{Key Findings}
 
-\textbf{1. Rankings depend on both metric and domain.} SACD ranks \#1 under asymmetry (5 domains) but \#1 under MAD in \textit{zero} domains. Different techniques rank \#1 across domains. However, bootstrap 95\% CIs overlap for all pairwise \#1 vs \#2 comparisons---effect sizes are small enough that we cannot confidently recommend any single technique. This is a finding of practical equivalence, not statistical failure.
+(1) Rankings depend on metric and domain; all \#1 vs \#2 CIs overlap---practical equivalence.
+(2) SACD's ranking varies \#2 to \#5 across domains despite \#1 in main judicial study.
+(3) Fraud domain shows severe anchoring (29--75\% of baseline across techniques).
 
-\textbf{2. SACD shows domain-dependent performance.} In the main judicial study, SACD achieves best \% of baseline (93.7\%). In multi-domain exploratory analysis, SACD's relative ranking varies from \#2 to \#5. This illustrates the domain-dependence cautioned in Limitation 3.
-
-\textbf{3. Fraud domain shows severe anchoring.} All techniques produce responses at only 29--75\% of baseline. Sympathetic defendant / first-offense framing maximizes susceptibility.
-
-\subsection{Implications}
-
-These results reinforce our core argument:
-
-\begin{enumerate}
-    \item \textbf{Metric choice determines recommendation}---practitioners must specify which outcome they optimize for.
-    \item \textbf{Domain-specific validation is mandatory}---no technique transfers; test per-task.
-    \item \textbf{Cross-provider consistency}---GPT-5.2 patterns match Anthropic models.
-\end{enumerate}
+\textbf{Implications:} No technique transfers reliably; test per-task, per-model.
 
 %==============================================================================
 \section{Discussion}
 %==============================================================================
 
-Our primary finding is that human debiasing techniques show mixed transfer to LLMs. Our Devil's Advocate implementation produces the worst baseline proximity (63.6\%). SACD and Premortem improve accuracy on average but with 2.7$\times$ model variance. We explore possible mechanisms below.
+Human debiasing techniques show mixed transfer to LLMs. Our DA implementation produces worst baseline proximity (63.6\%); SACD and Premortem help on average but with 2.7$\times$ model variance.
 
 \subsection{Why SACD Works (and Fails)}
 
