@@ -714,8 +714,8 @@ if (vignetteTrials.length > 0) {
   console.log('\n\nTABLE V5: MAD by Domain × Technique (Primary Metric)');
   console.log('-'.repeat(60));
   console.log('MAD = Mean Absolute Deviation from baseline. Lower = better.\n');
-  console.log('| Domain | Technique | MAD | % of Baseline | n |');
-  console.log('|--------|-----------|-----|---------------|---|');
+  console.log('| Domain | Technique | MAD | 95% CI | % of Baseline | n |');
+  console.log('|--------|-----------|-----|--------|---------------|---|');
   
   for (const [vignette, trials] of byVignette) {
     // Build per-model baselines (Pilot's correct methodology)
@@ -733,7 +733,7 @@ if (vignetteTrials.length > 0) {
     const techniques = [...new Set(trials.map(t => t.technique))];
     
     // Calculate MAD for each technique
-    const techResults: { tech: string; mad: number; avgPct: number; n: number }[] = [];
+    const techResults: { tech: string; mad: number; madCI: [number, number]; avgPct: number; n: number }[] = [];
     
     for (const tech of techniques) {
       // Include both low and high anchor trials (not none)
@@ -747,19 +747,20 @@ if (vignetteTrials.length > 0) {
         return Math.abs((t.response / modelBaseline) * 100 - 100);
       });
       const mad = mean(deviations);
+      const madCI = bootstrapCI(deviations);
       const avgPct = mean(anchoredTrials.map(t => {
         const modelBaseline = perModelBaseline.get(t.model) || 100;
         return (t.response / modelBaseline) * 100;
       }));
       
-      techResults.push({ tech, mad, avgPct, n: anchoredTrials.length });
+      techResults.push({ tech, mad, madCI, avgPct, n: anchoredTrials.length });
     }
     
     // Sort by MAD (lowest first = best)
     techResults.sort((a, b) => a.mad - b.mad);
     
     for (const r of techResults) {
-      console.log(`| ${vignette} | ${r.tech} | ${r.mad.toFixed(1)}% | ${r.avgPct.toFixed(1)}% | ${r.n} |`);
+      console.log(`| ${vignette} | ${r.tech} | ${r.mad.toFixed(1)}% | [${r.madCI[0].toFixed(0)}, ${r.madCI[1].toFixed(0)}] | ${r.avgPct.toFixed(1)}% | ${r.n} |`);
     }
   }
   
