@@ -45,7 +45,7 @@ Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline ac
 \section{Introduction}
 %==============================================================================
 
-Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they actually work? We test five techniques across 22,773 trials and find transfer is unreliable: effectiveness varies dramatically by model (2.7$\times$) and domain. Most concerning, standard evaluation metrics can recommend the wrong technique.
+Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they actually work? We test five techniques across 22,773 trials and find transfer is unreliable: SACD effectiveness ranges from 48\% to 128\% of baseline across models. Most concerning, standard evaluation metrics can recommend the wrong technique.
 
 \subsection{Two Metrics, Two Rankings}
 \label{sec:two-metrics}
@@ -613,7 +613,7 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 \section{Discussion}
 %==============================================================================
 
-Human debiasing techniques show mixed transfer to LLMs. Our DA implementation produces worst baseline proximity (63.6\%); SACD and Premortem help on average but with 2.7$\times$ model variance.
+Human debiasing techniques show mixed transfer to LLMs. Our DA implementation produces worst baseline proximity (63.6\%); SACD and Premortem help on average but effectiveness ranges 48\%--128\% across models.
 
 \subsection{Why SACD Works (and Fails)}
 
@@ -684,7 +684,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 
 \subsection{Ethical Considerations}
 
-Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend techniques that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' techniques transfer safely. The 2.7$\times$ model variance we observe means a technique validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
+Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend techniques that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' techniques transfer safely. The large model variance we observe (SACD: 48\%--128\%) means a technique validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
 
 \subsection{Limitations}
 
@@ -724,7 +724,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 \section{Conclusion}
 %==============================================================================
 
-Human debiasing techniques show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate implementation makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but effectiveness varies 2.7$\times$ across models (48--128\%). Point-estimate rankings vary across domains (CIs overlap); no technique consistently outperforms.
+Human debiasing techniques show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate implementation makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but SACD ranges from 48\% to 128\% across models. Point-estimate rankings vary across domains (CIs overlap); no technique consistently outperforms.
 
 \textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a technique can look good on standard metrics while making responses worse.
 
