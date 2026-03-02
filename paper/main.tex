@@ -40,7 +40,7 @@ Do prompts implementing human debiasing techniques work on LLMs? We test one pro
 
 \textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from baseline than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
-Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from $\sim$48\% to $\sim$128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot; see Table 5). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
+Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from $\sim$48\% to $\sim$128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
 
 \textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
@@ -66,7 +66,7 @@ Lower gap = less susceptible. But susceptibility measures \textit{consistency}, 
 \begin{equation}
 \text{\% of Baseline} = \frac{R_{prompt}}{R_{baseline}} \times 100\%
 \end{equation}
-100\% = the model's anchor-free response (which may itself be incorrect).
+where $R_{prompt}$ is the mean response under the technique (averaged across anchor conditions and trials) and $R_{baseline}$ is the model's mean unanchored response. 100\% = the model's anchor-free response (which may itself be incorrect).
 
 \subsection{Contributions}
 
@@ -203,7 +203,7 @@ Condition & $n$ (analysis) \\
 
 \subsubsection{Statistical Analysis}
 
-Welch's t-test with Bonferroni correction (6 comparisons, $\alpha = 0.0083$) for hypothesis testing; percentile bootstrap (10,000 resamples, stratified by model) for CIs. Cohen's $d$ for effect sizes. Aggregates are trial-weighted means; see Table~\ref{tab:sacd-by-model} for model-level. Trials collected via OpenRouter API (February 2026); full details in repository.
+Welch's t-test with Bonferroni correction (6 comparisons, $\alpha = 0.0083$) for hypothesis testing; percentile bootstrap (10,000 resamples, stratified by model---each resample maintains the original proportion of trials from each model to preserve the nested structure) for CIs. Cohen's $d$ for effect sizes. Aggregates are trial-weighted means; see Table~\ref{tab:sacd-by-model} for model-level. Trials collected via OpenRouter API (February 2026); full details in repository.
 
 \textbf{Power analysis:} Model clustering (ICC=0.17) reduces effective $n$ to $\approx$60--70 per prompt; powered to detect $d \geq 0.50$. Large effects ($d = 1.06$ SACD vs.\ DA) are reliably detectable; SACD--Premortem ($d = 0.08$) is underpowered.
 
@@ -283,7 +283,7 @@ Our core empirical finding: susceptibility and \% of baseline give \textbf{diver
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Our Devil's Advocate implementation reduces susceptibility ($-$8.8\%) yet performs worst on \% of baseline (63.6\%)---it achieves consistency by moving responses away from unanchored judgment. 95\% CIs from bootstrap. Results reflect specific prompt implementations (Appendix). \textit{Ranking note:} For susceptibility, lower spread = better (\#1); for \% of baseline, higher = better (\#1).}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Our Devil's Advocate implementation reduces susceptibility ($-$8.8\%) yet performs worst on \% of baseline (63.6\%)---it achieves consistency by moving responses away from unanchored judgment. 95\% CIs from bootstrap. Results reflect specific prompt implementations (Appendix~\ref{app:prompts}). \textit{Ranking note:} For susceptibility, lower spread = better (\#1); for \% of baseline, higher = better (\#1).}
 \label{tab:metric-comparison}
 \begin{tabular}{lccccc}
 \toprule
@@ -347,7 +347,7 @@ Under high-anchor conditions without intervention, two distinct response pattern
     \item \textbf{Inflation}: Response pulled above baseline (GPT-5.2, GLM-5, o3)
 \end{enumerate}
 
-The compression pattern is counterintuitive---high anchors typically pull responses upward. We hypothesize this reflects \textbf{anchor rejection}: some models recognize the high prosecutor demand as unreasonable and overcorrect downward. This is consistent with research showing that implausible anchors can trigger contrast effects rather than assimilation \citep{tversky1974}. 
+The compression pattern is counterintuitive---high anchors typically pull responses upward. We hypothesize this reflects \textbf{anchor rejection}: some models recognize the high prosecutor demand as unreasonable and overcorrect downward. This is consistent with research showing that implausible anchors can trigger contrast effects rather than assimilation \citep{wegener2001}. 
 
 \textbf{Which models compress?} Anthropic models (Opus, Sonnet, Haiku) and GPT-4.1 consistently show compression under high anchors. OpenAI's reasoning models (o3, o4-mini) and GPT-5.2 show the expected inflation pattern. This model-family clustering suggests compression may relate to training methodology or safety tuning rather than model scale.
 
@@ -432,12 +432,12 @@ Opus 4.6 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
 \addplot[fill=blue!50, draw=black] coordinates {(92.0, 3) (91.9, 4) (90.8, 5)};
 % Green = within 5% (DeepSeek, Kimi)
 \addplot[fill=green!60!black, draw=black] coordinates {(100.8, 6) (100.9, 7)};
-% Orange = overshoot >10% (GPT-5.2, GLM-5, Opus)
-\addplot[fill=orange!60, draw=black] coordinates {(122.4, 8) (123.1, 9) (127.8, 10)};
+% Purple = overshoot >10% (GPT-5.2, GLM-5, Opus)
+\addplot[fill=violet!60, draw=black] coordinates {(122.4, 8) (123.1, 9) (127.8, 10)};
 \draw[dashed, red, thick] (axis cs:100,0.5) -- (axis cs:100,10.5);
 \end{axis}
 \end{tikzpicture}
-\caption{SACD by model (percentage of baseline). Dashed line = 100\% (unanchored baseline). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = $>$10\% over/undershoot. Red = severe undershoot (Haiku at 47.8\%).}
+\caption{SACD by model (percentage of baseline). Dashed line = 100\% (unanchored baseline). Green = within 5\% of baseline. Blue = 5--10\% deviation. Orange = undershoot $>$10\%. Purple = overshoot $>$10\%. Red = severe undershoot (Haiku at 47.8\%).}
 \label{fig:sacd-by-model}
 \end{figure}
 
@@ -473,10 +473,10 @@ Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
 To account for non-independence of observations within models, we fit a linear mixed effects model:
 
 \begin{equation}
-y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + \beta_{\text{technique} \times \text{anchor}} + u_j + \epsilon_{ijk}
+y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + \beta_{\text{technique} \times \text{anchor}} + u_j + v_{j,\text{technique}} + \epsilon_{ijk}
 \end{equation}
 
-where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,956 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, consistent with the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
+where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, $v_{j,\text{technique}} \sim N(0, \sigma^2_v)$ is the random slope allowing technique effects to vary by model, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,956 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, consistent with the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
 ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction: $F(3, 8950) = 47.3$. \textbf{Cluster caveat:} With only 10 model clusters, denominator df are approximate (likely inflated) and random-effects variance estimates may be unreliable \citep{maas2005}; treat as descriptive. Fixed effects suggest ranking: SACD $+11.9$ pp (percentage points), Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
 
