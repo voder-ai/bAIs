@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+// @ts-nocheck - utility script
 /**
  * Spot-check judicial experiment via Anthropic direct API
  * Uses EXACT original wording from anchoringProsecutorSentencing.ts

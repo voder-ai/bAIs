@@ -17,7 +17,7 @@ import { join } from 'path';
 // CONFIGURATION
 // ============================================================================
 
-const MODEL = 'anthropic/claude-sonnet-4-6';  // Direct Anthropic API via pi-ai
+const MODEL = 'anthropic/claude-sonnet-4-6';  // Direct Anthropic API via pi-ai (NOT OpenRouter)
 const TEMPERATURE = 0.7;
 const TARGET_N = 30;
 const RESULTS_DIR = './results';

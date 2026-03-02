@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck - utility script, not production code
 /**
  * Comprehensive Validation Script for bAIs Paper
  * 

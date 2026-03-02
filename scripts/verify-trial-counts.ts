@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck - utility script, not production code
 /**
  * TRIAL COUNT VERIFICATION
  * Ensures all numbers in paper are traceable and sum correctly

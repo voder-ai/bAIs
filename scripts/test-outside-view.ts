@@ -1,4 +1,5 @@
 #!/usr/bin/env npx tsx
+// @ts-nocheck - utility script
 /**
  * Quick test of Outside View to see raw responses
  */

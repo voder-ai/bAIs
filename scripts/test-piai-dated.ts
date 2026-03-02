@@ -1,3 +1,4 @@
+// @ts-nocheck - utility script
 import { complete, getModel } from '@mariozechner/pi-ai';
 
 async function main() {

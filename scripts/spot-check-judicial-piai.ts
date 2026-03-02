@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+// @ts-nocheck - utility script
 /**
  * Spot-check judicial experiment via pi-ai OAuth
  * Uses EXACT original wording from anchoringProsecutorSentencing.ts
