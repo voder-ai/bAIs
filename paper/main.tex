@@ -32,9 +32,9 @@
 \maketitle
 
 \begin{abstract}
-Do human debiasing techniques work on LLMs? We test one prompt implementation per technique for five approaches from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across two studies totaling 22,773 anchoring bias trials (14,152 main study + 8,621 multi-domain extension).
+Do human debiasing techniques work on LLMs? We test one prompt implementation per technique for four approaches from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View---plus a Random Control---across two studies totaling 22,773 anchoring bias trials (14,152 main study + 8,621 multi-domain extension).
 
-\textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative prompt formulations may perform differently.
+\textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from baseline than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative prompt formulations may perform differently.
 
 Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from 48\% to 128\% of baseline. Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
 
@@ -90,7 +90,7 @@ We test one prompt per approach for five categories: \textbf{SACD} (iterative se
 
 \subsection{Evaluation Methodology}
 
-Standard anchoring evaluation uses \textbf{susceptibility} (high--low spread). We add \textbf{\% of baseline} (proximity to unanchored judgment). Unlike the classic Anchoring Index \citep{jacowitz1995}, which uses baseline in both numerator and denominator, our metric avoids circularity. Low AI with poor baseline proximity indicates consistent but wrong responses---the failure mode we observe with our DA implementation. We use free-form numeric responses rather than MCQs to avoid position and label biases documented in benchmark evaluations \citep{nowak2026abcd}.
+Standard anchoring evaluation uses \textbf{susceptibility} (high--low spread). We add \textbf{\% of baseline} (proximity to unanchored judgment). Unlike the classic Anchoring Index \citep{jacowitz1995}, which uses baseline in both numerator and denominator, our metric avoids circularity. Low Anchoring Index with poor baseline proximity indicates consistent but wrong responses---the failure mode we observe with our DA implementation. We use free-form numeric responses rather than MCQs to avoid position and label biases documented in benchmark evaluations \citep{nowak2026abcd}.
 
 %==============================================================================
 \section{Methodology}
@@ -117,7 +117,7 @@ where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored basel
 
 \subsubsection{Models}
 
-We evaluated 10 models across 4 providers:
+We evaluated 10 models across 5 providers:
 
 \begin{table}[H]
 \centering
@@ -557,7 +557,7 @@ Domain & Technique & MAD & 95\% CI & Rank \\
 \subsection{Key Findings}
 
 (1) Rankings depend on metric and domain; all \#1 vs \#2 CIs overlap---practical equivalence.
-(2) SACD's ranking varies \#2 to \#5 across domains despite \#1 in main judicial study.
+(2) SACD's ranking varies from \#2 to \#5 across domains despite \#1 in main judicial study.
 (3) \textbf{No intervention outperforms debiasing prompts in 3 of 6 domains} (Judicial-DUI, Judicial-Fraud, Aggravated-Theft by MAD). Debiasing can increase per-trial error.
 (4) Fraud domain shows severe anchoring (29--75\% of baseline across prompts).
 
@@ -582,7 +582,7 @@ Random Control outperforms our DA implementation (+15pp) despite no debiasing co
 
 \textbf{Outside View:} Required jurisdiction specification (``German federal courts'') to avoid safety refusals, introducing a secondary anchor toward German norms. Excluded from rankings.
 
-\textbf{Anchor strength:} We used $\pm$50\% proportional anchors. Initial $\pm$40\% anchors showed no effect on some models; prior ``immunity'' claims may reflect weak design.
+\textbf{Anchor strength:} We used $\pm$50\% proportional anchors. Initial $\pm$40\% anchors showed no effect on some models; some prior claims of LLM immunity to anchoring may reflect weak anchor design.
 
 \subsection{Turn Count Ablation}
 \label{sec:6turn-rc}
@@ -652,12 +652,12 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
     \item \textbf{Baseline interpretation.} Baseline includes ``12th offense''---a possible implicit anchor per the original \citet{englich2006} design. Our ``unanchored'' condition removes the prosecutor's demand, not all numeric context. 100\% = restored to demand-absent state, not ``correct.''
     
     
-    \item \textbf{Model coverage.} 10 models from 4 providers. Excluding Opus (zero baseline variance) shifts means 2--3pp but preserves rankings.
+    \item \textbf{Model coverage.} 10 models from 5 providers. Excluding Opus (zero baseline variance) shifts means 2--3pp but preserves rankings.
     
     \item \textbf{Multi-domain coverage.} Section 5 uses 5 models; results are exploratory with overlapping CIs.
     
     
-    \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 turns vs.\ 3 for others. Multi-turn structure helps (Random Control +5.4pp over single-turn), but our 6-turn ablation (n=238) shows SACD's specific content explains additional variance beyond turn count---especially for reasoning-anchored models.
+    \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 turns vs.\ 3 for others. Multi-turn structure helps (Random Control +5.4pp over single-turn), but our 6-turn ablation (n=238) shows SACD's specific content explains additional variance beyond turn count---especially for models less prone to implicit revision.
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition as minimum sample size. Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
     
