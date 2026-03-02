@@ -283,7 +283,7 @@ Our core empirical finding: susceptibility and \% of baseline give \textbf{diver
 
 \begin{table}[H]
 \centering
-\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Our Devil's Advocate implementation reduces susceptibility ($-$8.8\%) yet performs worst on \% of baseline (63.6\%)---it achieves consistency by moving responses away from unanchored judgment. 95\% CIs from bootstrap. Results reflect specific prompt implementations (Appendix~\ref{app:prompts}). \textit{Ranking note:} For susceptibility, lower spread = better (\#1); for \% of baseline, closer to 100\% = better (\#1, where $>$100\% indicates overshoot).}
+\caption{Susceptibility vs.\ \% of Baseline: Rankings diverge. Our Devil's Advocate implementation reduces susceptibility ($-$8.8\%) yet performs worst on \% of baseline (63.6\%)---it achieves consistency by moving responses away from unanchored judgment. 95\% CIs from bootstrap. Results reflect specific prompt implementations (Appendix~\ref{app:prompts}). \textit{Ranking note:} For susceptibility, lower spread = better (\#1); for \% of baseline, closer to 100\% = better (\#1, where $>$100\% indicates overshoot). \textit{Susceptibility caveat:} Spread values depend on proportional anchor design ($\pm$50\% of baseline); absolute magnitudes are not directly comparable to fixed-anchor studies.}
 \label{tab:metric-comparison}
 \begin{tabular}{lccccc}
 \toprule
@@ -349,7 +349,7 @@ Under high-anchor conditions without intervention, two distinct response pattern
 
 The compression pattern is counterintuitive---high anchors typically pull responses upward. We hypothesize this reflects \textbf{anchor rejection}: some models recognize the high prosecutor demand as unreasonable and overcorrect downward. This is consistent with research showing that implausible anchors can trigger contrast effects rather than assimilation \citep{wegener2001}. 
 
-\textbf{Which models compress?} Anthropic models (Opus, Sonnet, Haiku) and GPT-4.1 consistently show compression under high anchors. OpenAI's reasoning models (o3, o4-mini) and GPT-5.2 show the expected inflation pattern. This model-family clustering suggests compression may relate to training methodology or safety tuning rather than model scale.
+\textbf{Which models compress?} Anthropic models (Opus, Sonnet, Haiku) and GPT-4.1 consistently show compression under high anchors. OpenAI's reasoning models (o3, o4-mini) and GPT-5.2 show the expected inflation pattern. This model-family clustering is \textit{speculative}---it may relate to training methodology or safety tuning, but our data cannot establish causation.
 
 \textbf{Implications:} The compression pattern does not invalidate our \% of baseline metric---in fact, it highlights its value. For compression models, a prompt that \textit{increases} responses toward 100\% is improving, even though it moves responses ``upward.'' Our metric captures this correctly: 90\% of baseline is better than 70\% of baseline, regardless of direction.
 
