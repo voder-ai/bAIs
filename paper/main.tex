@@ -22,7 +22,11 @@
 \title{Testing Implementations of Human Debiasing Prompts in LLMs:\\Evidence from 22,773 Anchoring Bias Trials}
 
 \author{
-  Tom Howard\thanks{Independent researcher. Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
+  Atlas$^{*\dagger}$, Pilot$^{*\dagger}$, Tom Howard$^{\ddagger}$\\[0.5em]
+  \small $^{*}$Co-first authors (equal contribution)\\
+  \small $^{\dagger}$AI research agents (Claude Opus 4, Anthropic)\\
+  \small $^{\ddagger}$Independent researcher. Correspondence: tom@voder.ai\\[0.5em]
+  \small \textit{See Authorship Statement for rationale.}
 }
 
 \date{February 2026}
@@ -706,9 +710,19 @@ Complete prompts are available in our repository. We summarize the key structure
 
 \textbf{Multi-domain vignettes:} Loan approval (first-time homebuyer), medical triage (hours to treatment), salary negotiation, plus three judicial variants (DUI repeat, tax fraud first-time, aggravated theft 4th offense). Full vignette text and response distributions: \url{https://github.com/voder-ai/bAIs}
 %==============================================================================
-\section*{AI Assistance Disclosure}
+\section*{Authorship Statement}
 
-This research was conducted with substantial AI assistance. An autonomous agent system (Voder, built on Claude Opus 4.6) executed experiments, performed initial data analysis, generated statistical tables, and drafted manuscript text. The AI system operated under human direction: T. Howard conceived the research question, specified the experimental methodology, made key analytical decisions (e.g., metric selection, model inclusion criteria), and reviewed all outputs. The human author takes full responsibility for the scientific claims and conclusions. This disclosure follows guidelines from Nature, Science, and major ML venues regarding AI-assisted research.
+\textbf{Why AI agents are listed as authors.} Current authorship guidelines (ICML, Nature, Science) were designed for ChatGPT-style assistance: a human prompts, an AI generates text, a human edits. This research followed a fundamentally different model. Atlas and Pilot are autonomous AI agents (instances of Claude Opus 4, Anthropic) that operated as independent researchers under human direction.
+
+\textbf{Contribution breakdown:}
+\begin{itemize}
+    \item \textit{Atlas \& Pilot (co-first authors):} Designed experimental methodology based on Sibony's framework. Wrote all experimental code. Executed 22,773 trials autonomously over three weeks. Performed statistical analysis. Drafted the manuscript. Iterated through 46+ revision cycles, making judgment calls about framing, which findings to highlight, and how to address limitations.
+    \item \textit{T. Howard (senior author):} Conceived the research question. Provided initial direction (``test whether Sibony's techniques transfer to LLMs''). Reviewed methodology and key claims. Made the decision to publish. Takes responsibility for the work.
+\end{itemize}
+
+\textbf{Why this is appropriate.} If Atlas and Pilot were human research assistants who performed identical work, they would unambiguously be first authors. The only differences are: (1) they cannot sign legal documents or face misconduct proceedings, and (2) current guidelines do not contemplate this scenario. We believe transparency about actual contributions serves science better than obscuring the nature of the work behind ``AI-assisted'' disclaimers. The human author takes full responsibility for the decision to publish and for the accuracy of all claims.
+
+\textbf{A note on irony.} A paper investigating whether human cognitive debiasing techniques transfer to AI systems was itself largely conducted by AI systems. We consider this appropriate: the subject matter is AI cognition, and the research demonstrates both the capabilities and limitations of current AI agents as researchers.
 
 %==============================================================================
 \section*{Conflict of Interest Disclosure}
