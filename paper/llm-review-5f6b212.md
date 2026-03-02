@@ -27,7 +27,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 The proportional anchor design (anchors = baseline × 0.5/1.5) creates fundamental circularity:
 
-- **Problem**: Anchors are calibrated to the very baseline used to evaluate debiasing success. A technique that moves responses toward 100% of baseline is *by construction* moving them toward the midpoint between the anchors.
+- **Problem**: Anchors are calibrated to the very baseline used to evaluate debiasing success. A technique that moves responses toward 100% of baseline is _by construction_ moving them toward the midpoint between the anchors.
 
 - **Consequence**: The "% of baseline" metric may simply measure regression to the mean between anchor values rather than genuine debiasing. The authors acknowledge this (Limitation 2, 6) but don't adequately address it.
 
@@ -60,11 +60,11 @@ The proportional anchor design (anchors = baseline × 0.5/1.5) creates fundament
 
 - **Normative claim**: The authors state "we make no claim that baselines are normatively correct" (p.6) but then optimize techniques to match baseline. If baselines are wrong, why is 100% of baseline the goal?
 
-- **Alternative interpretation**: Perhaps SACD's "overshoot" (112% from high anchors) is actually *correcting* an overly lenient baseline. Without ground truth, we can't distinguish debiasing from introducing new bias.
+- **Alternative interpretation**: Perhaps SACD's "overshoot" (112% from high anchors) is actually _correcting_ an overly lenient baseline. Without ground truth, we can't distinguish debiasing from introducing new bias.
 
 ### 5. **Model Selection and Generalizability** (Moderate)
 
-- **Opus anomaly**: Opus 4.6 has zero variance (SD=0.0) and produces exactly 18 months in all baseline trials. The authors retain it because "excluding post-hoc would inflate technique effectiveness" (p.8), but this is backwards—including a deterministic model *deflates* variance estimates and may mask technique effects.
+- **Opus anomaly**: Opus 4.6 has zero variance (SD=0.0) and produces exactly 18 months in all baseline trials. The authors retain it because "excluding post-hoc would inflate technique effectiveness" (p.8), but this is backwards—including a deterministic model _deflates_ variance estimates and may mask technique effects.
 
 - **Sensitivity analysis**: The authors report that excluding Opus shifts means 2-3pp but preserves rankings (Limitation 7). However, they don't report whether confidence intervals change or whether previously NS comparisons become significant.
 

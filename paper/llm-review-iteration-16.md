@@ -14,13 +14,13 @@ The paper argues that standard susceptibility metrics (high-low anchor spread) f
 
 ### 1. The "baseline as ground truth" problem is insufficiently resolved
 
-The paper repeatedly states baselines are not ground truth, yet the entire ranking system and all practical recommendations depend on baseline proximity being the better metric. The paper's core claim is that susceptibility "misleads" while % of baseline gives the "right" answer—but this is an assumption, not a proven fact. If a model's unanchored baseline is itself biased (e.g., by the "12th offense" implicit anchor the authors acknowledge in Limitation 4), then a technique that moves responses *away* from baseline could be improving judgment.
+The paper repeatedly states baselines are not ground truth, yet the entire ranking system and all practical recommendations depend on baseline proximity being the better metric. The paper's core claim is that susceptibility "misleads" while % of baseline gives the "right" answer—but this is an assumption, not a proven fact. If a model's unanchored baseline is itself biased (e.g., by the "12th offense" implicit anchor the authors acknowledge in Limitation 4), then a technique that moves responses _away_ from baseline could be improving judgment.
 
 **Fix needed:** Stronger philosophical defense of why baseline proximity should be preferred, OR reframe as "these metrics disagree, and practitioners must choose" rather than "susceptibility misleads."
 
 ### 2. Title overclaims
 
-"Susceptibility Misleads" implies susceptibility is generally wrong. The paper shows susceptibility and baseline proximity *can* diverge—not that susceptibility is wrong. The paper's own argument is that both metrics are informative and practitioners should choose based on their goals.
+"Susceptibility Misleads" implies susceptibility is generally wrong. The paper shows susceptibility and baseline proximity _can_ diverge—not that susceptibility is wrong. The paper's own argument is that both metrics are informative and practitioners should choose based on their goals.
 
 **Fix needed:** Soften title, e.g., "When Susceptibility Metrics Diverge from Baseline Accuracy: ..."
 
@@ -30,7 +30,7 @@ The paper repeatedly states baselines are not ground truth, yet the entire ranki
 
 ### 4. Internal tension between aggregate % of baseline and MAD rankings
 
-SACD at 112% for high anchors and 75.7% for low anchors averages to ~93.7%, but this average hides that the technique is *not actually debiasing*—it's just producing errors in both directions that happen to cancel. If you use MAD consistently, SACD never ranks #1 in multi-domain. This tension is acknowledged but not fully resolved.
+SACD at 112% for high anchors and 75.7% for low anchors averages to ~93.7%, but this average hides that the technique is _not actually debiasing_—it's just producing errors in both directions that happen to cancel. If you use MAD consistently, SACD never ranks #1 in multi-domain. This tension is acknowledged but not fully resolved.
 
 ### 5. Limited conceptual novelty
 

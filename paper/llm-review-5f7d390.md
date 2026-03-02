@@ -11,7 +11,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 ## Strengths
 
-- **Important methodological contribution**: The susceptibility vs. baseline proximity divergence (Table 2) is genuinely valuable. Showing that Devil's Advocate reduces spread while moving responses *away* from unanchored judgment is a clear failure mode that prior work would miss.
+- **Important methodological contribution**: The susceptibility vs. baseline proximity divergence (Table 2) is genuinely valuable. Showing that Devil's Advocate reduces spread while moving responses _away_ from unanchored judgment is a clear failure mode that prior work would miss.
 
 - **Impressive scale**: 21,139 trials across 10 models and 6 domains represents substantial empirical effort. The multi-domain extension (Section 5) directly addresses generalization.
 
@@ -29,13 +29,13 @@ The paper's central metric—percentage of baseline—suffers from severe circul
 
 - **The problem**: Anchors are set proportionally to each model's baseline (±50%). Then effectiveness is measured as proximity to... that same baseline. This is circular by construction.
 
-- **Why it matters**: A model with baseline=18mo gets anchors at 9mo/27mo. A model with baseline=36mo gets 18mo/54mo. These are *completely different anchoring pressures*. The first model faces a 9-month absolute spread; the second faces 36 months. Claiming they're "comparable" because both are "±50%" is statistically invalid.
+- **Why it matters**: A model with baseline=18mo gets anchors at 9mo/27mo. A model with baseline=36mo gets 18mo/54mo. These are _completely different anchoring pressures_. The first model faces a 9-month absolute spread; the second faces 36 months. Claiming they're "comparable" because both are "±50%" is statistically invalid.
 
-- **The defense fails**: Section 3.2.4 states "This is not circular: baselines are measured independently in anchor-absent conditions." But independence of *measurement* doesn't solve circularity of *design*. You're still evaluating "does the technique return responses to the baseline" when the baseline *determined the anchor values*.
+- **The defense fails**: Section 3.2.4 states "This is not circular: baselines are measured independently in anchor-absent conditions." But independence of _measurement_ doesn't solve circularity of _design_. You're still evaluating "does the technique return responses to the baseline" when the baseline _determined the anchor values_.
 
 - **Consequence**: The aggregate statistics (93.7% for SACD, etc.) are uninterpretable. What does "93.7% of baseline" mean when baselines range from 18-36 months? For Opus (baseline=18mo), 93.7% = 16.9mo. For o4-mini (baseline=36mo), 93.7% = 33.7mo. These are 17-month different absolute outcomes being treated as "equivalent effectiveness."
 
-**Required fix**: Rerun with *fixed absolute anchors* (e.g., 12mo/36mo for all models) and report both absolute deviation and percentage metrics. The current design can only support *within-model* comparisons, not the cross-model aggregates that dominate the paper.
+**Required fix**: Rerun with _fixed absolute anchors_ (e.g., 12mo/36mo for all models) and report both absolute deviation and percentage metrics. The current design can only support _within-model_ comparisons, not the cross-model aggregates that dominate the paper.
 
 ---
 
@@ -43,7 +43,7 @@ The paper's central metric—percentage of baseline—suffers from severe circul
 
 Section 5, Table 6 claims technique rankings vary by domain, but:
 
-- **Missing significance tests**: "Rankings are point estimates; bootstrap 95\% CIs overlap for all #1 vs #2 comparisons" (Table 6 caption). If all pairwise CIs overlap, you *cannot claim* the rankings differ. Overlapping CIs mean the rank order could be noise.
+- **Missing significance tests**: "Rankings are point estimates; bootstrap 95\% CIs overlap for all #1 vs #2 comparisons" (Table 6 caption). If all pairwise CIs overlap, you _cannot claim_ the rankings differ. Overlapping CIs mean the rank order could be noise.
 
 - **Exploratory sample**: Only 4 models in Section 5 vs. 10 in main study. The caption admits "results should be considered exploratory" and "rank differences may not be statistically robust." This directly contradicts the abstract's claim: "technique rankings vary dramatically by domain."
 
@@ -61,7 +61,7 @@ The paper acknowledges (Limitation 9, footnote 1) that SACD uses ~6 API calls vs
 
 - **Why it's fatal**: The paper's #1 ranked technique may just be "ask the model more times." This is a trivial finding dressed up as a debiasing intervention.
 
-- **The defense fails**: Footnote 1 says "we cannot fully disentangle SACD's iterative content from its additional turns" but then proceeds to rank SACD #1 anyway. If you can't disentangle, you can't claim SACD's *content* works.
+- **The defense fails**: Footnote 1 says "we cannot fully disentangle SACD's iterative content from its additional turns" but then proceeds to rank SACD #1 anyway. If you can't disentangle, you can't claim SACD's _content_ works.
 
 **Required fix**: Add a 6-turn Random Control condition to match SACD's turn count. If 6-turn Random Control matches SACD's 93.7%, the paper's main finding evaporates.
 
@@ -71,7 +71,7 @@ The paper acknowledges (Limitation 9, footnote 1) that SACD uses ~6 API calls vs
 
 The paper claims baseline is not ground truth (Limitation 5: "We make no claim that baselines are normatively correct"), but then:
 
-- **Contradiction**: The entire evaluation framework treats 100% of baseline as the *goal*. Table 3 color-codes DeepSeek's 100.8% as "near-perfect" (green). The metric is literally "deviation from baseline."
+- **Contradiction**: The entire evaluation framework treats 100% of baseline as the _goal_. Table 3 color-codes DeepSeek's 100.8% as "near-perfect" (green). The metric is literally "deviation from baseline."
 
 - **The problem**: Why should we believe unanchored responses are "correct"? Table 1 shows baselines range from 18-36 months—a 2× spread. These can't all be correct. Opus gives 18mo for a 12th offense shoplifter; o4-mini gives 36mo. One (or both) is wrong.
 
@@ -85,9 +85,9 @@ The paper claims baseline is not ground truth (Limitation 5: "We make no claim t
 
 Section 1.2 introduces MAD as a contribution: "We introduce Mean Absolute Deviation (MAD) from unanchored baseline as a metric that reveals per-trial error hidden by aggregate measures."
 
-- **The problem**: MAD is a standard statistical measure (mean absolute deviation from a reference point). The paper doesn't introduce it; it just *applies* it to this context.
+- **The problem**: MAD is a standard statistical measure (mean absolute deviation from a reference point). The paper doesn't introduce it; it just _applies_ it to this context.
 
-- **What's actually novel**: Using MAD *alongside* aggregate percentage to detect bidirectional cancellation (Table 5: SACD 93.7% aggregate but 18.1% MAD). This is the real contribution, but it's buried.
+- **What's actually novel**: Using MAD _alongside_ aggregate percentage to detect bidirectional cancellation (Table 5: SACD 93.7% aggregate but 18.1% MAD). This is the real contribution, but it's buried.
 
 **Suggested fix**: Reframe as "We demonstrate that MAD complements aggregate metrics by revealing..." rather than "We introduce MAD."
 
@@ -96,7 +96,7 @@ Section 1.2 introduces MAD as a contribution: "We introduce Mean Absolute Deviat
 ### 6. **Model Selection Bias** (MODERATE)
 
 - **Opus zero-variance**: Table 1 shows Opus has SD=0.0 (always responds 18mo). The paper retains it because "excluding post-hoc would inflate apparent technique effectiveness" (caption). But:
-  - Opus contributes 909 trials (Table 3). With zero variance, it *cannot* show anchoring effects—any "debiasing" is measuring noise.
+  - Opus contributes 909 trials (Table 3). With zero variance, it _cannot_ show anchoring effects—any "debiasing" is measuring noise.
   - The sensitivity analysis (Limitation 6) shows excluding Opus shifts means 2-3pp. This is non-trivial for a paper claiming 2.1pp differences matter (SACD vs Premortem).
 
 - **Haiku refusal rate**: Footnote in Section 5 notes Haiku shows 85%+ refusals in judicial sentencing. The surviving 15% may be systematically different (e.g., cases where Haiku's safety filters didn't trigger). This is selection bias.
@@ -107,7 +107,7 @@ Section 1.2 introduces MAD as a contribution: "We introduce Mean Absolute Deviat
 
 ### 7. **Overstated Causal Claims** (MODERATE)
 
-- **Section 4.2**: "Devil's Advocate *produces* consistent responses that remain far from baseline" (emphasis added). This is causal language, but the design is observational—you don't manipulate Devil's Advocate content independently of its structure.
+- **Section 4.2**: "Devil's Advocate _produces_ consistent responses that remain far from baseline" (emphasis added). This is causal language, but the design is observational—you don't manipulate Devil's Advocate content independently of its structure.
 
 - **Section 6.1**: "Iterative reflection may help models escape local optima" vs. "models may perform 'debiasing theater.'" These are post-hoc explanations without evidence. The paper doesn't test mechanisms.
 
@@ -127,7 +127,7 @@ The paper concludes "test per-model, per-domain" but doesn't provide:
 
 ### 9. **Statistical Issues**
 
-- **Power analysis post-hoc**: Section 3.2.4 reports power analysis *after* data collection. This is backwards—power analysis should inform sample size *before* collection. The reported effective n≈60-70 suggests the study is underpowered for small effects.
+- **Power analysis post-hoc**: Section 3.2.4 reports power analysis _after_ data collection. This is backwards—power analysis should inform sample size _before_ collection. The reported effective n≈60-70 suggests the study is underpowered for small effects.
 
 - **Multiple testing**: Bonferroni correction for 6 pairwise comparisons (α=0.0083) is mentioned, but Table 2 doesn't report corrected p-values. Which comparisons survive correction?
 
@@ -196,11 +196,13 @@ This paper tackles an important problem (debiasing technique evaluation) and mak
 3. **Unsupported generalization claim**: The abstract claims "technique rankings vary dramatically by domain," but Section 5 shows overlapping CIs for all pairwise comparisons and uses only 4 models (vs. 10 in main study). This is exploratory at best.
 
 **Required for acceptance**:
+
 - Rerun with fixed absolute anchors OR restrict claims to within-model comparisons
 - Add 6-turn Random Control to match SACD's turn count
 - Either provide statistical tests for cross-domain rank differences OR soften claims to "exploratory"
 
 **Recommended**:
+
 - Validate baselines against external ground truth (actual sentencing data)
 - Report results with/without Opus and Haiku as robustness checks
 - Add practical guidance (sample sizes, decision thresholds, cost-benefit)

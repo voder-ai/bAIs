@@ -9,6 +9,7 @@ Sending paper for review...
 ## Detailed Review
 
 ### Summary
+
 This paper tests whether prompt implementations of human debiasing techniques (Devil's Advocate, SACD, Premortem, Outside View, Random Control) reduce anchoring bias in LLMs, using a judicial sentencing paradigm across 22,773 trials. The key finding is that susceptibility (standard metric) and % of baseline (proposed metric) give divergent rankings, and that no single prompt reliably transfers across models or domains. The paper advocates reporting MAD alongside aggregate metrics.
 
 ---
@@ -16,6 +17,7 @@ This paper tests whether prompt implementations of human debiasing techniques (D
 ### 1. Methodology
 
 **Strengths:**
+
 - Well-motivated experimental design adapting Englich et al. (2006)
 - Proportional anchors (±50% of baseline) are a reasonable design choice, well-justified
 - 10 models across 5 providers gives decent breadth
@@ -25,18 +27,21 @@ This paper tests whether prompt implementations of human debiasing techniques (D
 - Outside View exclusion due to confound is appropriately handled
 
 **Concerns:**
+
 - **Single prompt per technique** is the elephant in the room. The paper acknowledges this repeatedly, but the title and framing still read as evaluating "techniques" rather than "specific prompt implementations." The abstract says "one prompt implementation per technique" but the title says "Human Debiasing Prompts" which could be read more broadly. The paper does well acknowledging this in the body but could be more careful in the title.
 - **ICC = 0.17 with 10 clusters:** The paper correctly flags that denominator df are approximate and random-effects estimates may be unreliable. This is a real limitation but is adequately acknowledged.
 - **Haiku's 85%+ refusal rate** creates severe selection bias for that model. The paper acknowledges this but still includes Haiku in aggregates and in Table 5 (SACD by model). The 47.8% figure for Haiku is based on survivors of an 85%+ filtering process — this probably deserves stronger flagging than a parenthetical caveat.
 - **GPT-5.2 protocol difference** (single-prompt simulation vs. true multi-turn) is acknowledged but somewhat buried. This affects the 6-turn ablation results meaningfully.
 
 **Minor methodological issues:**
+
 - The stopping rule (min n=30, added trials for high-variance conditions) is a form of optional stopping. The paper mentions this in Limitations but doesn't discuss whether it could bias results. Bootstrap CIs partially mitigate this.
 - The "12th offense" in the base vignette as a potential implicit anchor is noted — good.
 
 ### 2. Statistics
 
 **Strengths:**
+
 - Bootstrap CIs throughout
 - Bonferroni correction applied
 - Power analysis with design effect calculation
@@ -45,6 +50,7 @@ This paper tests whether prompt implementations of human debiasing techniques (D
 - The F-test caveat about model clustering inflating df is excellent self-awareness
 
 **Concerns:**
+
 - **Table 3 (metric comparison):** CIs are shown for % of baseline but not for susceptibility spread. This is asymmetric reporting — the susceptibility values should also have CIs to support claims about ranking divergence.
 - **Mixed effects model (Eq. 4):** With only 10 model clusters, this model is somewhat unreliable as acknowledged. The fixed effects are reported as point estimates without CIs or SEs — these should be included for a main-track publication.
 - **MAD definition (Eq. 3):** The formula divides by the model's baseline $b_m$, making MAD a relative measure. But the text doesn't discuss what happens when baselines are very different across models — aggregating relative MAD across models with baselines from 18 to 36 months could weight models unequally. This isn't discussed.
@@ -63,6 +69,7 @@ This paper tests whether prompt implementations of human debiasing techniques (D
 ### 4. Internal Consistency
 
 **Checked and consistent:**
+
 - Table 3 and Table 4 spread values match (DA: 23.7pp, RC: 30.1pp, SACD: 36.3pp, PM: 45.2pp) ✓
 - Table 6 anchor asymmetry: SACD spread = 112.0 - 75.7 = 36.3pp, matches Table 3 ✓
 - Figure 1 values match Table 3 % of baseline values ✓
@@ -70,12 +77,14 @@ This paper tests whether prompt implementations of human debiasing techniques (D
 - Main study n = 14,152 ✓
 
 **Potential inconsistency:**
+
 - Abstract says "93.7% of unanchored baseline, though confounded by its 6-turn structure vs. 3 turns for others" — consistent with tables ✓
-- Abstract says DA "at only 63.6% of baseline—*further from baseline than doing nothing* (72.9%)" — 63.6% < 72.9% ✓
+- Abstract says DA "at only 63.6% of baseline—_further from baseline than doing nothing_ (72.9%)" — 63.6% < 72.9% ✓
 
 ### 5. Writing Quality
 
 **Strengths:**
+
 - Exceptionally transparent about limitations — among the most honest self-assessments I've seen
 - Clear signposting of confounds throughout
 - The boxed caveats are effective for highlighting key limitations
@@ -83,6 +92,7 @@ This paper tests whether prompt implementations of human debiasing techniques (D
 - Practical recommendations are concrete and actionable
 
 **Weaknesses:**
+
 - **The paper is somewhat repetitive.** The key findings (DA worse than no intervention, SACD high variance, metric divergence) are restated many times — abstract, intro, results, discussion, conclusion. Some consolidation would improve readability.
 - **Section structure:** The paper jumps between main study and multi-domain extension in ways that can be confusing. The multi-domain section uses different models and a different primary metric (MAD vs. % of baseline), which is justified but adds cognitive load.
 - **"Percentage points" vs. "percent":** Generally handled well with "pp" notation, though some passages could be clearer.

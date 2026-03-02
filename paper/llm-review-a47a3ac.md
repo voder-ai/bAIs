@@ -29,7 +29,7 @@ The proportional anchor design (high = 1.5×baseline, low = 0.5×baseline) creat
 - **Authors acknowledge this** (Limitation 2, Section 3.2) but then report aggregate statistics pooling across models as if they're comparable. Table 2's "spread" column mixes models with different anchor strengths.
 - **Fix required**: Rerun with fixed absolute anchors (e.g., always 12mo low, 36mo high) to validate that rankings hold.
 
-**Section 3.2 defense is insufficient**: "This is not circular: baselines are measured independently" misses the point. The circularity isn't in *measurement order*, it's in *using baseline to define the test condition*. You're essentially asking "does the model return to its prior?" when you've calibrated the perturbation to that prior's strength.
+**Section 3.2 defense is insufficient**: "This is not circular: baselines are measured independently" misses the point. The circularity isn't in _measurement order_, it's in _using baseline to define the test condition_. You're essentially asking "does the model return to its prior?" when you've calibrated the perturbation to that prior's strength.
 
 ### 2. **Turn-Count Confound Invalidates SACD Comparison**
 
@@ -100,7 +100,7 @@ Opus 4.6 shows SD=0.0 across all conditions (Table 1). The authors:
 
 - **No comparison to simple prompting improvements**: What if you just add "Think carefully about whether the prosecutor's demand is reasonable"?
 - **No comparison to few-shot examples**: Prior work shows few-shot can reduce biases
-- **No analysis of *why* techniques fail**: SACD makes Haiku worse (47.8%)—why? Speculation in Discussion is insufficient.
+- **No analysis of _why_ techniques fail**: SACD makes Haiku worse (47.8%)—why? Speculation in Discussion is insufficient.
 
 ### 9. **Presentation Issues**
 
@@ -114,6 +114,7 @@ Opus 4.6 shows SD=0.0 across all conditions (Table 1). The authors:
 Abstract: "Our core finding: we cannot identify a technique that consistently outperforms across domains."
 
 **But**:
+
 - Main study: 1 domain (judicial), 10 models → SACD ranks #1
 - Multi-domain: 6 domains, 4 models, exploratory → rankings vary but CIs overlap
 
@@ -129,11 +130,11 @@ Abstract: "Our core finding: we cannot identify a technique that consistently ou
 
 4. **Multi-domain CIs**: Table 7 lacks confidence intervals. Can you provide bootstrap CIs for all pairwise comparisons in each domain? If they all overlap, the "rankings vary by domain" claim is not statistically supported.
 
-5. **Baseline validity**: You claim baseline is not ground truth, but then rank techniques by proximity to baseline. If Opus's 18mo baseline is "wrong" (too lenient), is SACD's 127.8% (23mo) actually *better* than Devil's Advocate's 75.5% (14mo)? How should practitioners interpret this?
+5. **Baseline validity**: You claim baseline is not ground truth, but then rank techniques by proximity to baseline. If Opus's 18mo baseline is "wrong" (too lenient), is SACD's 127.8% (23mo) actually _better_ than Devil's Advocate's 75.5% (14mo)? How should practitioners interpret this?
 
 6. **Outside View**: Was the exclusion of Outside View from rankings pre-specified, or decided post-hoc after seeing the results?
 
-7. **Haiku failure mode**: SACD makes Haiku worse (47.8%). Can you provide qualitative analysis of *why*? Are there patterns in the SACD iterations that explain the failure?
+7. **Haiku failure mode**: SACD makes Haiku worse (47.8%). Can you provide qualitative analysis of _why_? Are there patterns in the SACD iterations that explain the failure?
 
 8. **Equivalence bound**: The 5pp TOST bound is arbitrary. How sensitive are your equivalence conclusions to this choice? Would 3pp or 10pp change the conclusion?
 
@@ -144,7 +145,7 @@ Abstract: "Our core finding: we cannot identify a technique that consistently ou
 ## Minor Issues
 
 - **Table 1 caption**: "Opus 4.6 shows zero variance (SD=0.0)"—this deserves more than a footnote. It's a major anomaly.
-- **Equation 3 (MAD)**: The formula uses $r_i / b_m - 1$, but text describes it as "deviation from baseline." Clarify that this is *relative* deviation (percentage points).
+- **Equation 3 (MAD)**: The formula uses $r_i / b_m - 1$, but text describes it as "deviation from baseline." Clarify that this is _relative_ deviation (percentage points).
 - **Figure 3 (heatmap)**: Asterisks mark "best" but CIs overlap—this is misleading. Use different notation for "numerically lowest point estimate."
 - **Section 4.2**: "Recovery rate" is introduced without definition, then used as if it's a standard metric. Define it formally or remove it.
 - **References**: \citet{llm-bayesian-2025} and \citet{llm-judge-overconfidence-2025} are cited but not in bibliography. Are these real papers or placeholders?
@@ -163,6 +164,7 @@ This paper makes a valuable contribution (metric-dependence in debiasing evaluat
 4. **Exploratory multi-domain analysis** framed as confirmatory
 
 **Required for acceptance**:
+
 - Rerun with fixed absolute anchors OR clearly limit claims to within-model comparisons
 - Add 6-turn Random Control OR remove SACD from rankings with caveat
 - Reframe multi-domain analysis as exploratory with appropriate caveats in abstract
@@ -170,6 +172,7 @@ This paper makes a valuable contribution (metric-dependence in debiasing evaluat
 - Tone down claims about "cannot identify a superior technique" to match statistical evidence
 
 **Optional but recommended**:
+
 - Exclude Opus from aggregates (report separately)
 - Add qualitative analysis of failure modes (Haiku/SACD)
 - Simplify presentation (merge redundant figures, summarize Table 7)

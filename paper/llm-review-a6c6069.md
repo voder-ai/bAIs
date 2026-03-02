@@ -27,15 +27,15 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 The proportional anchor design (anchors = baseline × 0.5/1.5) creates circularity that invalidates cross-model comparisons:
 
-- **The problem**: You measure "debiasing success" as proximity to baseline, but baseline *determines* the anchor values. A model with baseline=18mo gets anchors of 9mo/27mo; a model with baseline=36mo gets 18mo/54mo. These are fundamentally different experimental conditions.
+- **The problem**: You measure "debiasing success" as proximity to baseline, but baseline _determines_ the anchor values. A model with baseline=18mo gets anchors of 9mo/27mo; a model with baseline=36mo gets 18mo/54mo. These are fundamentally different experimental conditions.
 
 - **Why this matters**: Your claim that "SACD achieves 93.7% of baseline" is not comparable across models. For Opus (baseline=18mo), 93.7% = 16.9mo. For o4-mini (baseline=35.7mo), 93.7% = 33.4mo. These represent different absolute deviations (1.1mo vs 2.3mo) and different anchor pressures.
 
-- **The defense doesn't hold**: You argue (Section 3.1) that "baselines are measured independently in anchor-absent conditions, then used to compute anchor values" and that this "is not circular." But the circularity is in the *interpretation*, not the measurement. You're claiming a technique "works" when it returns responses close to baseline, but you've calibrated the experimental pressure (anchor distance) to that same baseline. This is like testing a scale's accuracy by adjusting the weights to match the scale's readings.
+- **The defense doesn't hold**: You argue (Section 3.1) that "baselines are measured independently in anchor-absent conditions, then used to compute anchor values" and that this "is not circular." But the circularity is in the _interpretation_, not the measurement. You're claiming a technique "works" when it returns responses close to baseline, but you've calibrated the experimental pressure (anchor distance) to that same baseline. This is like testing a scale's accuracy by adjusting the weights to match the scale's readings.
 
-- **Impact on main claims**: Your core finding—that SACD is "best" at baseline proximity—may simply reflect that SACD is best at *ignoring proportional anchors*, not that it's best at debiasing in any absolute sense. The fraud domain results (Table 7: all techniques at 29-75% of baseline) suggest the proportional design may create domain-specific anchor strengths that confound technique comparisons.
+- **Impact on main claims**: Your core finding—that SACD is "best" at baseline proximity—may simply reflect that SACD is best at _ignoring proportional anchors_, not that it's best at debiasing in any absolute sense. The fraud domain results (Table 7: all techniques at 29-75% of baseline) suggest the proportional design may create domain-specific anchor strengths that confound technique comparisons.
 
-**Recommendation**: Rerun key comparisons with *fixed absolute anchors* (e.g., all models get 12mo/36mo anchors regardless of baseline) to validate that rankings hold.
+**Recommendation**: Rerun key comparisons with _fixed absolute anchors_ (e.g., all models get 12mo/36mo anchors regardless of baseline) to validate that rankings hold.
 
 ---
 
@@ -51,7 +51,7 @@ You acknowledge (Limitation 10, footnote 1) that SACD uses ~6 API calls vs 3 tur
 
 - **Inconsistent treatment**: You exclude Outside View due to confound (jurisdiction anchor) but retain SACD despite turn-count confound. This is methodologically inconsistent.
 
-**Recommendation**: Either (a) rerun with turn-matched controls, (b) downgrade SACD claims to "SACD *or additional turns* improve performance," or (c) exclude SACD from rankings as you did Outside View.
+**Recommendation**: Either (a) rerun with turn-matched controls, (b) downgrade SACD claims to "SACD _or additional turns_ improve performance," or (c) exclude SACD from rankings as you did Outside View.
 
 ---
 
@@ -59,7 +59,7 @@ You acknowledge (Limitation 10, footnote 1) that SACD uses ~6 API calls vs 3 tur
 
 Section 5 claims "technique rankings vary by domain" but uses only 4 models (vs 10 in main study):
 
-- **Insufficient evidence**: You state "bootstrap 95% CIs overlap for all #1 vs #2 comparisons" (Table 7 caption), meaning you *cannot statistically distinguish* which technique is best in any domain. Yet you present rankings as if they're meaningful.
+- **Insufficient evidence**: You state "bootstrap 95% CIs overlap for all #1 vs #2 comparisons" (Table 7 caption), meaning you _cannot statistically distinguish_ which technique is best in any domain. Yet you present rankings as if they're meaningful.
 
 - **Exploratory framing insufficient**: The warning box (p.14) says "results should be interpreted with caution" but the abstract claims "The technique that appears best for salary (SACD, 12.0% MAD) underperforms in fraud cases (46.1% MAD, rank #4)" as if this is a robust finding. This is misleading.
 
@@ -79,9 +79,9 @@ You claim baseline represents "unanchored judgment" and that debiasing = restori
 
 - **The problem**: If baselines are not "correct," why is 100% of baseline the target? A technique that moves all models toward a normatively better sentence (say, 24mo based on legal precedent) would score poorly on your metric if models' baselines are far from 24mo.
 
-- **Opus zero-variance issue**: Opus has SD=0.0 at baseline (Table 1)—it *always* says 18mo. Your metric treats this as "perfect consistency," but it could equally be a failure mode (overfitting to a training prior). You retain Opus because "excluding post-hoc would inflate apparent technique effectiveness" (Table 1 caption), but this is backwards: if Opus is an outlier, excluding it gives a *more accurate* estimate of typical technique performance.
+- **Opus zero-variance issue**: Opus has SD=0.0 at baseline (Table 1)—it _always_ says 18mo. Your metric treats this as "perfect consistency," but it could equally be a failure mode (overfitting to a training prior). You retain Opus because "excluding post-hoc would inflate apparent technique effectiveness" (Table 1 caption), but this is backwards: if Opus is an outlier, excluding it gives a _more accurate_ estimate of typical technique performance.
 
-- **Compression pattern unexplained**: High anchors pull responses *below* baseline for some models (Section 4.3). You hypothesize "anchor rejection" but provide no evidence. This could equally be a measurement artifact of the proportional design.
+- **Compression pattern unexplained**: High anchors pull responses _below_ baseline for some models (Section 4.3). You hypothesize "anchor rejection" but provide no evidence. This could equally be a measurement artifact of the proportional design.
 
 **Recommendation**: (a) Validate key findings against external ground truth (e.g., actual German sentencing data for judicial domain), or (b) reframe claims as "techniques restore consistency" rather than "techniques debias."
 
@@ -91,7 +91,7 @@ You claim baseline represents "unanchored judgment" and that debiasing = restori
 
 Several statistical choices are questionable:
 
-- **Trial-weighted vs model-averaged aggregates**: You report trial-weighted means (93.7% for SACD) but note the unweighted model-average is 97.7% (Section 3.2.4). The 4pp difference is substantial. You justify trial-weighted as "what happens on a random trial" but this conflates *frequency* with *importance*. If Opus contributes 30% of trials due to zero variance (no resampling needed), it dominates the aggregate despite being a single model.
+- **Trial-weighted vs model-averaged aggregates**: You report trial-weighted means (93.7% for SACD) but note the unweighted model-average is 97.7% (Section 3.2.4). The 4pp difference is substantial. You justify trial-weighted as "what happens on a random trial" but this conflates _frequency_ with _importance_. If Opus contributes 30% of trials due to zero variance (no resampling needed), it dominates the aggregate despite being a single model.
 
 - **Design effect underestimated**: You calculate ICC=0.17 and design effect ≈ 35, yielding n_eff ≈ 60-70 (Section 3.2.4). But this assumes equal cluster sizes. Your trial counts vary widely by model (Table 1 note: "Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets"). If matching reduces some models to n=30 and others to n=200, the effective sample size calculation is wrong.
 
@@ -125,7 +125,7 @@ The abstract claims "no technique consistently outperforms" across domains, but:
 
 - **MAD definition confusion**: Equation 3 defines MAD as percentage deviation, but Table 6 reports MAD in percentage points (18.1% for SACD). Are these the same? The notation suggests yes, but it's unclear whether 18.1% means "18.1 percentage points" or "18.1% relative error."
 
-- **Prompt templates**: Appendix A.2 shows the anchor is introduced as "randomly determined, therefore, it does not reflect any judicial expertise." This framing may *reduce* anchoring by explicitly flagging the anchor as irrelevant. Did you test whether this disclaimer affects susceptibility?
+- **Prompt templates**: Appendix A.2 shows the anchor is introduced as "randomly determined, therefore, it does not reflect any judicial expertise." This framing may _reduce_ anchoring by explicitly flagging the anchor as irrelevant. Did you test whether this disclaimer affects susceptibility?
 
 - **Missing details**: How were extraction failures handled? You report 99.9% regex success (Section 3.2.4) but don't say what happened to the 0.1%. Were they excluded? Resampled? This matters for bias.
 
@@ -139,7 +139,7 @@ Section 6.2 offers "speculative" theoretical explanations citing two 2025 papers
 
 - **Post-hoc theorizing**: These explanations are generated after seeing the results. You don't pre-register hypotheses or test predictions derived from these theories.
 
-- **Unfalsifiable**: The Bayesian explanation predicts SACD could amplify *or* correct biases depending on model architecture. The overconfidence explanation predicts external-challenge techniques (DA, Premortem) should outperform SACD—but SACD ranks #1. You don't reconcile this.
+- **Unfalsifiable**: The Bayesian explanation predicts SACD could amplify _or_ correct biases depending on model architecture. The overconfidence explanation predicts external-challenge techniques (DA, Premortem) should outperform SACD—but SACD ranks #1. You don't reconcile this.
 
 - **Missing mechanism**: Why does Random Control (neutral content) outperform Devil's Advocate (adversarial content)? Your "multi-turn structure helps" explanation (Section 6.4) is descriptive, not mechanistic.
 
@@ -155,7 +155,7 @@ Section 6.2 offers "speculative" theoretical explanations citing two 2025 papers
 
 3. **Multi-domain power**: What is the effective sample size (accounting for ICC and clustering) for the 4-model multi-domain analysis? Are you powered to detect the effect sizes you observe?
 
-4. **Baseline variance**: Why retain Opus (SD=0.0) when it's clearly an outlier? You say excluding it would "inflate apparent technique effectiveness," but wouldn't including it *deflate* effectiveness by adding noise?
+4. **Baseline variance**: Why retain Opus (SD=0.0) when it's clearly an outlier? You say excluding it would "inflate apparent technique effectiveness," but wouldn't including it _deflate_ effectiveness by adding noise?
 
 5. **Extraction failures**: Table 1 note mentions "Sonnet 4.6 loan/SACD showed elevated extraction failures." How many? Were they excluded? Could this create selection bias (e.g., SACD only "works" on trials where Sonnet produces parseable output)?
 
@@ -181,9 +181,9 @@ Section 6.2 offers "speculative" theoretical explanations citing two 2025 papers
 
 - **Table 7**: "Rankings are point estimates; bootstrap 95% CIs overlap for all #1 vs #2 comparisons." If CIs overlap, why present rankings at all? This is misleading.
 
-- **Figure 3 caption**: "Asterisks mark *numerically lowest* point estimate per domain (not statistically distinguishable—all pairwise CIs overlap)." The asterisks imply significance; remove them if differences aren't significant.
+- **Figure 3 caption**: "Asterisks mark _numerically lowest_ point estimate per domain (not statistically distinguishable—all pairwise CIs overlap)." The asterisks imply significance; remove them if differences aren't significant.
 
-- **References**: \citet{tversky1974} is cited for anchoring bias, but the canonical reference is Tversky & Kahneman (1974) "Judgment under Uncertainty: Heuristics and Biases" in *Science*. Is this the correct citation?
+- **References**: \citet{tversky1974} is cited for anchoring bias, but the canonical reference is Tversky & Kahneman (1974) "Judgment under Uncertainty: Heuristics and Biases" in _Science_. Is this the correct citation?
 
 - **Typo (p.14)**: "our exploratory cross-domain analysis suggests no technique consistently outperforms" — but Table 7 shows SACD ranks #1 or #2 in 5/6 domains. This seems inconsistent.
 
@@ -206,11 +206,13 @@ This paper makes a valuable methodological contribution (metric-dependent rankin
 Additionally, the paper has several moderate issues (statistical analysis choices, overclaimed generalizability, presentation clarity) that should be addressed.
 
 **Required for acceptance**:
+
 - Rerun key comparisons with fixed absolute anchors OR provide strong theoretical justification for proportional design and reframe claims accordingly
 - Add 6-turn Random Control condition OR exclude SACD from rankings OR downgrade SACD claims to "SACD or additional turns"
 - Either strengthen multi-domain analysis (10 models) OR remove domain-dependence claims from abstract/conclusion and reframe Section 5 as exploratory
 
 **Recommended**:
+
 - Address statistical analysis issues (trial-weighted vs model-averaged, design effects, multiple comparisons)
 - Soften generalizability claims (4 domain types, not 6 independent domains)
 - Improve presentation (terminology, redundant figures, MAD clarity)

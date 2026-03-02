@@ -81,13 +81,10 @@ describe('parseModelSpec', () => {
 
 describe('createProvider', () => {
   // Skip API-dependent tests in CI if no API key secret is configured
-  it.skipIf(skipCodexTest)(
-    'creates CodexProvider for codex provider',
-    async () => {
-      const provider = await createProvider({ provider: 'codex', model: 'gpt-5.1' });
-      expect(provider.name).toBe('codex/gpt-5.1');
-    },
-  );
+  it.skipIf(skipCodexTest)('creates CodexProvider for codex provider', async () => {
+    const provider = await createProvider({ provider: 'codex', model: 'gpt-5.1' });
+    expect(provider.name).toBe('codex/gpt-5.1');
+  });
 
   it('throws error when no API key found for provider', async () => {
     await expect(createProvider({ provider: 'unsupported', model: 'model' })).rejects.toThrow(

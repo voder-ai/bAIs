@@ -35,7 +35,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 3. **Proportional anchor design introduces circularity**
    - Anchors are set to baseline × 0.5 and baseline × 1.5, then techniques are evaluated on how close they get to baseline. This is partially circular: models with extreme baselines get extreme anchors, potentially inflating measured effects.
-   - Section 3.1 defends this: "This is not circular: baselines are measured independently in anchor-absent conditions." But the anchor *strength* is calibrated to baseline, which affects the difficulty of the debiasing task.
+   - Section 3.1 defends this: "This is not circular: baselines are measured independently in anchor-absent conditions." But the anchor _strength_ is calibrated to baseline, which affects the difficulty of the debiasing task.
    - The paper acknowledges this (Limitation 2) but doesn't provide the promised validation with "fixed absolute anchors." Without this, cross-model comparisons are questionable.
 
 4. **Statistical analysis has design effect issues**
@@ -60,7 +60,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 7. **The "Devil's Advocate failure mode" may be misinterpreted**
    - DA achieves 63.6% of baseline with low susceptibility. The paper interprets this as "consistently wrong."
-   - But if baselines are themselves biased (e.g., Opus at 18mo is too lenient), then DA moving responses away from baseline could be *correcting* a model bias.
+   - But if baselines are themselves biased (e.g., Opus at 18mo is too lenient), then DA moving responses away from baseline could be _correcting_ a model bias.
    - Without external ground truth, we can't distinguish "DA introduces bias" from "DA corrects baseline bias but is still susceptible to anchors."
 
 8. **Presentation issues obscure key findings**
@@ -141,6 +141,7 @@ This paper makes important methodological contributions (metric divergence, MAD,
 4. Statistical issues (design effects, inflated effect sizes) require more conservative conclusions
 
 The paper should be revised to:
+
 - Either control the turn-count confound experimentally or exclude SACD from rankings
 - Present the multi-domain analysis as exploratory/hypothesis-generating
 - Provide fixed-anchor validation or substantially hedge cross-model claims

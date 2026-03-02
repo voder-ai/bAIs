@@ -11,10 +11,13 @@
 **Replace categorical claims with observational framing:**
 
 Instead of:
+
 > "We identify four distinct model categories: instruction-following, balanced, reasoning-anchored, and anchor-resistant."
 
 Use:
+
 > "We observe four distinct response patterns in our sample:
+>
 > 1. **High implicit responsiveness** (Haiku 4.5): High revision rate (78%) in response to implicit "revised" framing, though revisions do not consistently improve accuracy.
 > 2. **Moderate responsiveness** (Opus 4.6): Moderate revision rate (63%) with majority of changes improving accuracy.
 > 3. **Low implicit responsiveness** (Sonnet 4.6): Low revision rate (20%) in response to implicit framing; requires explicit bias prompts.
@@ -26,6 +29,6 @@ Use:
 
 **Lead the Results section with:**
 
-> A central finding is that revision rate does not equate to debiasing quality. Haiku 4.5 showed the second-highest revision rate (77.6%) but was the only model where revisions worsened accuracy: 62% of changes moved the response *away* from baseline, increasing mean absolute deviation by 5.57 months. In contrast, GPT-5.2's 100% revision rate was accompanied by 100% of changes moving *toward* baseline, improving MAD by 15.05 months.
+> A central finding is that revision rate does not equate to debiasing quality. Haiku 4.5 showed the second-highest revision rate (77.6%) but was the only model where revisions worsened accuracy: 62% of changes moved the response _away_ from baseline, increasing mean absolute deviation by 5.57 months. In contrast, GPT-5.2's 100% revision rate was accompanied by 100% of changes moving _toward_ baseline, improving MAD by 15.05 months.
 >
 > This dissociation between revision frequency and revision quality suggests that implicit revision prompts ("revised sentencing recommendation") can trigger action without triggering improvement, particularly in models optimized for instruction-following.

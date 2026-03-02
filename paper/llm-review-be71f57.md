@@ -25,6 +25,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 **Problem**: The abstract claims "bootstrap 95% confidence intervals overlap for all pairwise comparisons—we cannot statistically distinguish technique effectiveness within any domain." Yet Table 2 shows SACD [92, 95] vs. Devil's Advocate [62, 65]—these CIs do **not** overlap. The authors later report effect sizes (d=1.06 for SACD vs. DA) and claim statistical significance.
 
 **Evidence**:
+
 - Abstract: "we cannot statistically distinguish technique effectiveness"
 - Table 2: SACD 93.7% [92, 95] vs. DA 63.6% [62, 65] — non-overlapping CIs
 - Section 4.3: "Cohen's d = 1.06" (large effect)
@@ -32,7 +33,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 **Impact**: The core claim of indistinguishability is contradicted by the paper's own data. This is not a minor inconsistency—it's the central empirical finding.
 
-**Required fix**: Either (1) revise abstract to clarify that *some* pairwise comparisons are distinguishable, or (2) explain why non-overlapping CIs don't constitute statistical distinction. The current framing is misleading.
+**Required fix**: Either (1) revise abstract to clarify that _some_ pairwise comparisons are distinguishable, or (2) explain why non-overlapping CIs don't constitute statistical distinction. The current framing is misleading.
 
 ---
 
@@ -53,6 +54,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 **Problem**: Section 5 claims "technique rankings vary dramatically by domain" but uses only **4 models** (vs. 10 in main study). Table 4 shows point-estimate rankings but admits "bootstrap 95\% CIs overlap for all #1 vs #2 comparisons." The authors call this "exploratory" but still draw strong conclusions.
 
 **Evidence**:
+
 - Section 5: "Rankings vary dramatically" (strong claim)
 - Table 4 caption: "Rankings are point estimates; bootstrap 95% CIs overlap for all #1 vs #2 comparisons" (contradicts strong claim)
 - Limitation 8: "results are exploratory... rank differences may not be statistically robust"
@@ -78,12 +80,13 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 **Problem**: The paper treats baseline (no anchor) as the "correct" response, but baseline includes "12th offense"—a strong implicit anchor. The authors acknowledge this (Limitation 5) but don't address the implication: **100% of baseline doesn't mean "unbiased," it means "consistent with a different anchor."**
 
 **Evidence**:
+
 - Limitation 5: "Baseline includes '12th offense'—'without explicit anchor,' not truly unanchored"
 - Table 1: Baselines range 18–36 months—if this were truly unanchored, why such variance?
 
 **Impact**: The entire "% of baseline" metric assumes baseline is normatively correct. If baseline is itself anchored, then techniques that achieve 100% baseline proximity may simply be reinforcing a different bias.
 
-**Suggested fix**: Acknowledge that baseline proximity measures *consistency*, not *correctness*. Reframe claims accordingly.
+**Suggested fix**: Acknowledge that baseline proximity measures _consistency_, not _correctness_. Reframe claims accordingly.
 
 ---
 
@@ -92,6 +95,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 **Problem**: Section 4.6 reports ICC=0.17 (17% variance from model differences) but doesn't report the key result: **technique fixed effects after accounting for model clustering**. The paper reports trial-level Cohen's d but admits these are "inflated" due to clustering.
 
 **What's missing**:
+
 - Technique fixed effects from the mixed model (not just trial-weighted means)
 - Confidence intervals on fixed effects
 - Likelihood ratio test for technique effect after accounting for model variance
@@ -114,6 +118,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 ### 8. **Overclaimed Generalization (Moderate)**
 
 **Problem**: The title claims techniques "don't transfer" but evidence is mixed:
+
 - Main study (judicial): 10 models, robust findings
 - Multi-domain: 4 models, overlapping CIs, "exploratory"
 
@@ -169,12 +174,14 @@ This paper addresses an important question and provides valuable insights (metri
 4. **Turn-count confound**: SACD's advantage may be turn count, not content
 
 **Required for acceptance**:
+
 - Fix statistical claims (abstract vs. results consistency)
 - Re-run with fixed absolute anchors OR restrict claims to within-model comparisons
 - Add 6-turn Random Control OR remove SACD from rankings
 - Downgrade multi-domain claims to "exploratory" throughout (not just limitations)
 
 **Optional improvements**:
+
 - Report mixed-effects estimates with proper SEs
 - Add power analysis for key comparisons
 - Streamline presentation (reduce redundant figures/tables)

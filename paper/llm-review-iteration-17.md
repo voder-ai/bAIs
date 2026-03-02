@@ -28,7 +28,7 @@ The divergence is clear for Devil's Advocate (consistency without accuracy). But
 
 - "Contribution #1: Cross-domain evaluation" is overclaimed given it's 4 models and marked exploratory
 - Abstract confident, body tentative
-- Paper implies baseline proximity is *better* than susceptibility while claiming neutrality
+- Paper implies baseline proximity is _better_ than susceptibility while claiming neutrality
 
 ### 4. Model handling
 
@@ -71,6 +71,7 @@ Entire paper hinges on baseline proximity as correct reference. Defense of why b
 **NEEDS REVISION**
 
 The core insight is valuable but overclaiming relative to evidence needs addressing. Key fixes:
+
 1. Tighter framing: DA pathology + domain dependence, not general divergence
 2. Proper mixed-effects reporting with adjusted df and effect sizes
 3. Either exclude or more carefully handle Opus and Haiku

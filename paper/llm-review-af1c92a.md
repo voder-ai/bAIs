@@ -65,7 +65,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
    - **Recommendation**: Report all main results with and without Opus, not just sensitivity checks
 
 7. **Compression pattern under-explored** (Section 4.3)
-   - High anchors causing responses *below* baseline is counterintuitive and potentially important
+   - High anchors causing responses _below_ baseline is counterintuitive and potentially important
    - Authors hypothesize "anchor rejection" but provide no evidence (e.g., qualitative analysis of model reasoning, correlation with anchor magnitude)
    - This pattern affects 4/10 models (Anthropic + GPT-4.1) but receives only 2 paragraphs
    - **Missed opportunity**: This could be a major finding about model-family differences in anchor processing
@@ -96,7 +96,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 12. **Missing details**:
     - No inter-rater reliability for response extraction (though 99.9% regex success suggests this is minor)
     - No discussion of how temperature conditions (0, 0.7, 1.0) were aggregated—simple averaging? Weighted by n?
-    - Table 2: "Opus 4.6 shows zero variance (SD=0.0)" but no investigation of *why* (deterministic sampling? Strong prior?)
+    - Table 2: "Opus 4.6 shows zero variance (SD=0.0)" but no investigation of _why_ (deterministic sampling? Strong prior?)
 
 13. **Reproducibility concerns**:
     - "All trials were collected via OpenRouter API during February 2026" but OpenRouter is a proxy—underlying model versions may have changed during data collection
@@ -141,12 +141,14 @@ This paper addresses an important problem (debiasing technique evaluation) and m
 3. **SACD turn-count confound**: The #1-ranked technique's advantage may be entirely due to uncontrolled turn count
 
 **Required revisions**:
+
 - Add fixed absolute anchor conditions to validate that findings hold without circularity
 - Either increase multi-domain model count to 10 or downgrade claims to "preliminary evidence"
 - Add 6-turn Random Control to isolate SACD's content contribution
 - Provide comprehensive sensitivity analyses (with/without Opus, different equivalence bounds, different MAD thresholds)
 
 **Optional but recommended**:
+
 - Qualitative analysis of compression pattern
 - Validation that MAD correlates with downstream task performance
 - Comprehensive multiple testing correction across domains and metrics

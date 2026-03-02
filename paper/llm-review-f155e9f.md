@@ -29,7 +29,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 - **Section 4.2**: Reports Cohen's d=1.06 (large effect) for SACD vs Devil's Advocate, but then claims in the abstract and multi-domain section that differences are "not statistically significant." This is contradictory.
 
-- **Confidence interval overlap ≠ non-significance**: The authors repeatedly use CI overlap as a test of significance, which is incorrect. Two means can have non-overlapping CIs and still not be significantly different at α=0.05, and vice versa. The proper test is whether the CI for the *difference* excludes zero.
+- **Confidence interval overlap ≠ non-significance**: The authors repeatedly use CI overlap as a test of significance, which is incorrect. Two means can have non-overlapping CIs and still not be significantly different at α=0.05, and vice versa. The proper test is whether the CI for the _difference_ excludes zero.
 
 - **Multiple comparisons**: Bonferroni correction is mentioned (α=0.0083 for 6 comparisons) but then ignored. Table 2 shows SACD [92, 95] vs DA [62, 65]—these CIs clearly don't overlap, yet the text claims we "cannot statistically distinguish" techniques.
 
@@ -76,6 +76,7 @@ Section 5 presents 6 domains × 4 techniques but uses only **4 models** (vs 10 i
 - **Overclaimed generalization**: The abstract states findings are "across six domains" but the multi-domain analysis is explicitly labeled "exploratory" in a warning box (Section 5)
 
 **Specific issues**:
+
 - Medical domain (n=893, 4 models): Random Control ranks #1 with MAD=3.7%, but with effective n≈15, this could easily be noise
 - Fraud domain shows all techniques at 29-75% of baseline, suggesting the vignette itself is problematic (acknowledged in Section 5.2), yet it's included in the "6 domains" count
 - Figure 2 (MAD heatmap) uses visual emphasis (green shading, asterisks) to highlight "best" techniques despite admitting differences aren't statistically distinguishable
@@ -89,7 +90,7 @@ The paper measures "debiasing" as returning to each model's unanchored baseline,
 - **Baselines vary wildly**: 18mo (Opus) to 35.7mo (o4-mini)—a 17.7-month spread (Table 1)
 - **Baselines may be wrong**: The vignette includes "12th offense," which is itself an anchor. The authors acknowledge this (Limitation #5) but don't address the implication: if baselines are anchored, then "100% of baseline" isn't debiased, it's just consistently anchored.
 
-- **Opus zero-variance anomaly**: Opus responds with exactly 18mo at all temperatures (SD=0.0). The authors retain it because "excluding post-hoc would inflate technique effectiveness," but this is backwards—including a model that never varies *deflates* variance estimates and makes techniques appear more effective than they are.
+- **Opus zero-variance anomaly**: Opus responds with exactly 18mo at all temperatures (SD=0.0). The authors retain it because "excluding post-hoc would inflate technique effectiveness," but this is backwards—including a model that never varies _deflates_ variance estimates and makes techniques appear more effective than they are.
 
 **Example**: SACD achieves 127.8% of baseline for Opus (Table 5). But Opus's baseline is 18mo (suspiciously low), so SACD pushes it to 23mo. Is this "overshooting" or "correcting an underestimate"? We can't know without ground truth.
 
@@ -105,7 +106,7 @@ Section 3.3.1 and 6.1 acknowledge that Outside View required jurisdiction specif
 
 **Problem**: These 2,423 trials are contaminated data. They should be excluded from aggregate statistics (e.g., "21,139 trials") or clearly marked as invalid. Including them inflates the apparent sample size.
 
-**Missed opportunity**: The authors could have tested Outside View *without* jurisdiction (accepting some safety refusals) to determine if the technique itself works. As presented, we learn nothing about Outside View except that their implementation was confounded.
+**Missed opportunity**: The authors could have tested Outside View _without_ jurisdiction (accepting some safety refusals) to determine if the technique itself works. As presented, we learn nothing about Outside View except that their implementation was confounded.
 
 ### 7. **Mixed Effects Model is Underspecified**
 
@@ -130,7 +131,7 @@ Section 4.6 presents a mixed effects model but:
 Section 6.2 cites two 2025 papers on Bayesian reasoning and overconfidence to explain SACD's variance, but:
 
 - These citations are labeled "speculative" by the authors themselves
-- No mechanism is proposed for *why* iterative reflection would amplify biases
+- No mechanism is proposed for _why_ iterative reflection would amplify biases
 - The "debiasing theater" hypothesis (Opus overshoots to appear thoughtful) is interesting but untested
 
 **Missed opportunity**: The paper could have tested predictions from these theories (e.g., does SACD variance correlate with model confidence scores? Do models with stronger priors show more overshoot?). As written, Section 6.2 reads like post-hoc storytelling.
@@ -188,6 +189,7 @@ This paper makes valuable methodological contributions (susceptibility vs baseli
 4. **Circular design**: Proportional anchors create circularity that may invalidate cross-model comparisons.
 
 The paper should be revised to:
+
 - Conduct proper significance testing with Bonferroni correction and report which comparisons are significant
 - Add a 6-turn Random Control condition to isolate SACD's content from turn-count effects
 - Either expand multi-domain analysis to 10 models OR clearly limit claims to judicial domain

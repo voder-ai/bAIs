@@ -17,6 +17,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## 1. Methodology
 
 **Strengths:**
+
 - Large trial count (22,773) across 10 models and 6 domains provides substantial empirical grounding.
 - Proportional anchor design (±50% of each model's baseline) is well-motivated and correctly described as enabling within-model comparisons.
 - The paper is unusually thorough in identifying and disclosing confounds: turn-count differences, Outside View's jurisdiction confound, Haiku's refusal rates, Opus's zero variance, GPT-5.2's protocol difference.
@@ -24,6 +25,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 - Temperature interaction tested and reported.
 
 **Concerns:**
+
 - **Single prompt per technique is the fundamental limitation.** The paper tests one implementation of each debiasing technique and generalizes to the technique category. While the authors acknowledge this repeatedly ("results reflect specific prompt implementations"), the framing—especially in the title and abstract—sometimes slips into implying findings about the techniques themselves rather than specific prompts. The title says "Human Debiasing Prompts" but really this is "Five Specific Prompts." The abstract's "Do prompts implementing human debiasing techniques work on LLMs?" frames this as a broader question than one-prompt-per-technique can answer. This tension is acknowledged but could be handled more carefully in framing.
 - **ICC = 0.17 with only 10 clusters** is a genuine statistical concern. The paper acknowledges this (citing Maas 2005), but then still reports F-tests and mixed-effects results that may be unreliable with so few clusters. The "treat as descriptive" caveat is appropriate but somewhat undermined by presenting these results prominently.
 - **The proportional anchor design** means that different models receive different absolute anchors. This is well-motivated for within-model comparisons but limits the interpretability of cross-model aggregates—a point the paper acknowledges but could emphasize more, since the headline numbers (93.7%, 63.6%, etc.) are cross-model aggregates.
@@ -31,6 +33,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## 2. Statistics
 
 **Strengths:**
+
 - Bootstrap CIs reported throughout, with stratification by model.
 - Bonferroni correction applied.
 - Power analysis acknowledges the clustering issue and reports effective sample sizes.
@@ -38,6 +41,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 - MAD as a complementary metric is a genuine methodological contribution, though it's a standard measure being applied to a new context rather than a novel statistic.
 
 **Concerns:**
+
 - **Table 4 (metric comparison):** CIs are reported for % of baseline but not for susceptibility. This asymmetry is unexplained.
 - **Mixed-effects model (Eq. 4):** The F-test reports $F(3, 8950)$. With 10 model clusters, the denominator degrees of freedom should be much smaller under proper mixed-effects inference (Kenward-Roger or Satterthwaite approximations would give df closer to 6-9). The paper flags this as "approximate" but still presents the statistic prominently.
 - **Table 6 (anchor asymmetry):** The spread column values match Table 4's susceptibility values, which is internally consistent. Good.
@@ -46,6 +50,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## 3. Citations
 
 All pre-verified citations check out. Additional citations:
+
 - Binz & Schulz 2023 (PNAS) — legitimate and correctly cited.
 - Englich et al. 2006 — legitimate, correctly cited.
 - Tversky & Kahneman 1974 — foundational, correct.
@@ -62,6 +67,7 @@ All pre-verified citations check out. Additional citations:
 ## 4. Internal Consistency
 
 **Checked and consistent:**
+
 - Trial counts: 14,152 + 8,621 = 22,773 ✓
 - Table 2 trial counts: 2,389 + 2,423 + 2,215 + 2,186 + 2,166 + 1,864 + 909 = 14,152 ✓
 - Table 4 susceptibility spreads match Table 6 spread column ✓
@@ -71,6 +77,7 @@ All pre-verified citations check out. Additional citations:
 - Opus zero variance mentioned in Table 3, text, and limitations ✓
 
 **Potential inconsistency:**
+
 - Table 5 lists 9 models for SACD (missing one). Checking: Haiku, o4-mini, o3, Sonnet, GPT-4.1, DeepSeek, Kimi, GPT-5.2, GLM-5, Opus = 10. Wait—Table 5 has exactly 10 rows. ✓
 - The abstract says "93.7% of unanchored baseline" for SACD. Table 4 confirms. ✓
 - Abstract: "63.6%" for DA. Table 4 confirms. ✓
@@ -81,6 +88,7 @@ All pre-verified citations check out. Additional citations:
 ## 5. Writing Quality
 
 **Strengths:**
+
 - Exceptionally well-organized with clear signposting.
 - Caveats and limitations are surfaced proactively, often in-line rather than buried.
 - The boxed caveats (e.g., "Exploratory (5 models)") are effective.
@@ -88,6 +96,7 @@ All pre-verified citations check out. Additional citations:
 - Figures are well-designed and informative.
 
 **Concerns:**
+
 - **Length and repetition:** The paper repeats key numbers excessively. "63.6%" appears ~8 times, "93.7%" ~7 times, "72.9%" ~5 times, "~48% to ~128%" ~5 times. While some repetition aids readability, this borders on padding. A single-column 11pt format with this much content would be very long for a conference paper. Significant tightening is needed.
 - **Section 4.3 (High-Anchor Responses)** is interesting but somewhat tangential. The "compression" finding is speculative and not directly connected to the debiasing evaluation.
 - **The AI Assistance Disclosure** is appropriate and transparent.
@@ -126,6 +135,7 @@ All pre-verified citations check out. Additional citations:
 ## Summary of Issues Requiring Text Fixes
 
 ### Significant:
+
 1. **Tighten repetitive number citations** — key statistics repeated 5-8 times each.
 2. **Abstract should qualify that the ~48%–128% range comes from the two most problematic models** (zero-variance Opus and 85%+ refusal-rate Haiku).
 3. **Mixed-effects F-test denominator df** (8950) is likely inflated given 10 clusters; the "treat as descriptive" caveat should be stronger, or the df should be corrected.
@@ -134,6 +144,7 @@ All pre-verified citations check out. Additional citations:
 6. **Cohen's d values** mentioned in power analysis should be reported in results.
 
 ### Minor:
+
 7. Maintain consistent qualified language ("our DA implementation" vs. "Devil's Advocate") throughout.
 8. Klein 2007 citation could be more specific to the premortem technique.
 9. Section 4.3 (compression finding) could be shortened or moved to discussion.

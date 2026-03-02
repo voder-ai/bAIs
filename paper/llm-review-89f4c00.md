@@ -27,7 +27,7 @@ This paper evaluates four debiasing techniques for anchoring bias in LLMs across
 
 The proportional anchor design (anchors = baseline × 0.5/1.5) creates fundamental circularity:
 
-- **Problem**: You measure "debiasing success" as proximity to baseline, but baseline *determines* the anchor values. A technique that perfectly ignores anchors scores 100%—but this is definitionally what you're measuring. The metric cannot distinguish "restored to unanchored state" from "coincidentally landed near baseline."
+- **Problem**: You measure "debiasing success" as proximity to baseline, but baseline _determines_ the anchor values. A technique that perfectly ignores anchors scores 100%—but this is definitionally what you're measuring. The metric cannot distinguish "restored to unanchored state" from "coincidentally landed near baseline."
 
 - **Evidence of circularity**: Section 3.2 states "This is not circular: baselines are measured independently" but then admits "A technique causing perfect anchor-ignorance would score 100%—but this IS the definition of successful debiasing." This is exactly the circularity problem.
 
@@ -98,17 +98,17 @@ a) **Zero variance violates assumptions**: Your percentage-of-baseline metric re
 
 b) **Sensitivity analysis not shown**: You claim rankings are robust to exclusion (Section 6.6) but only report aggregate shifts (2-3pp). Show the full re-analysis or move Opus to supplementary.
 
-c) **Ratio scaling exaggeration**: Section 6.6 acknowledges "Ratio scaling exaggerates deviations for low-baseline models" but Opus has the *lowest* baseline (18mo). A 9-month response is 50% of baseline for Opus but would be 25% for o4-mini (36mo baseline). This is not a minor scaling issue.
+c) **Ratio scaling exaggeration**: Section 6.6 acknowledges "Ratio scaling exaggerates deviations for low-baseline models" but Opus has the _lowest_ baseline (18mo). A 9-month response is 50% of baseline for Opus but would be 25% for o4-mini (36mo baseline). This is not a minor scaling issue.
 
 **Severity**: Including Opus biases results in unknown ways; excluding it should be the primary analysis.
 
 ### 6. **"Debiasing" Definition Is Circular**
 
-Section 3.1 states: "Baseline as reference, not ground truth... This operationalizes debiasing as *consistency*: a debiased model produces similar outputs regardless of irrelevant anchors."
+Section 3.1 states: "Baseline as reference, not ground truth... This operationalizes debiasing as _consistency_: a debiased model produces similar outputs regardless of irrelevant anchors."
 
 **Problem**: This defines debiasing as "returning to baseline" but baseline itself may be biased. You acknowledge this ("We make no claim that baselines are normatively correct") but then use baseline proximity as your primary success metric.
 
-**Implication**: A technique that moves responses *away* from a biased baseline toward a normatively correct answer would be scored as "worse" under your metric. You're measuring consistency, not correctness, but framing it as debiasing.
+**Implication**: A technique that moves responses _away_ from a biased baseline toward a normatively correct answer would be scored as "worse" under your metric. You're measuring consistency, not correctness, but framing it as debiasing.
 
 **Example**: If models systematically under-sentence (baseline = 18mo when normative range is 24-36mo), a technique that increases sentences would score poorly on your metric despite being normatively better.
 

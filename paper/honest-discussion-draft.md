@@ -8,7 +8,7 @@
 
 Human anchoring debiasing techniques don't reliably transfer to LLMs. Our 21,139-trial evaluation reveals:
 
-1. **Devil's Advocate fails dramatically.** Despite achieving the best susceptibility score (#1), DA produces the worst baseline proximity (63.6%, vs 72.9% no-technique baseline). The technique makes bias *worse*, not better.
+1. **Devil's Advocate fails dramatically.** Despite achieving the best susceptibility score (#1), DA produces the worst baseline proximity (63.6%, vs 72.9% no-technique baseline). The technique makes bias _worse_, not better.
 
 2. **SACD and Premortem help, but with massive variance.** SACD achieves 93.7% of baseline on average, but ranges from 47.8% (Haiku) to 127.8% (Opus)—a 2.7× spread across models. What works for one model may fail catastrophically for another.
 
@@ -16,13 +16,14 @@ Human anchoring debiasing techniques don't reliably transfer to LLMs. Our 21,139
 
 ### 6.2 Why Susceptibility Misleads (Supporting Evidence)
 
-The Devil's Advocate paradox—best susceptibility, worst accuracy—reveals why standard metrics can mislead. Susceptibility measures the spread between high and low anchor conditions. DA reduces this spread by compressing responses toward a central value (~14 months). But that central value is far from the unanchored baseline (29 months). The technique produces *consistent* wrong answers.
+The Devil's Advocate paradox—best susceptibility, worst accuracy—reveals why standard metrics can mislead. Susceptibility measures the spread between high and low anchor conditions. DA reduces this spread by compressing responses toward a central value (~14 months). But that central value is far from the unanchored baseline (29 months). The technique produces _consistent_ wrong answers.
 
 This explains why practitioners using susceptibility alone might recommend DA—it "looks good" by the standard metric while actually worsening judgment.
 
 ### 6.3 Why SACD Works (When It Does)
 
 SACD's iterative self-reflection appears to help models escape anchor influence—but only for some architectures. Possible mechanisms:
+
 - Explicit bias acknowledgment forces reconsideration
 - Multiple revision opportunities allow course correction
 - Turn structure provides "thinking time"
@@ -32,6 +33,7 @@ However, SACD can backfire entirely (Haiku's 47.8%) or overshoot (Opus's 127.8%)
 ### 6.4 Model Variance Is the Story
 
 The 2.7× variance in SACD effectiveness (48%-128%) may be the most practically important finding. Recommendations:
+
 - Test per-model before deployment
 - Don't assume techniques transfer across model families
 - Collect unanchored baselines to validate effectiveness
