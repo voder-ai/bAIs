@@ -38,7 +38,7 @@ Do human debiasing techniques work on LLMs? We test five techniques from the cog
 
 Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline across models. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
 
-\textbf{Methodological contribution:} We propose \textbf{MAD} (Mean Absolute Deviation from baseline) to capture per-trial error. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
+\textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
 \textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-task. Report MAD alongside aggregates.
 \end{abstract}
@@ -71,7 +71,7 @@ Even \% of baseline can mislead when averaged (bidirectional errors cancel). SAC
 
 \subsection{Contributions}
 
-(1) \textbf{MAD metric for debiasing evaluation.} We propose Mean Absolute Deviation from baseline to capture per-trial error that aggregates mask. SACD achieves 93.7\% aggregate but 18.1\% MAD---bidirectional errors cancel in aggregates but MAD reveals them.
+(1) \textbf{MAD for debiasing evaluation.} We recommend reporting Mean Absolute Deviation from baseline to capture per-trial error that aggregates mask. SACD achieves 93.7\% aggregate but 18.1\% MAD---bidirectional errors cancel in aggregates but MAD reveals them.
 (2) Cross-domain evaluation (22,773 trials, 6 domains) showing technique rankings vary by domain and metric.
 (3) Deep validation (14,152 judicial trials, 10 models) confirming substantial model-specific variance (SACD: 48\%--128\%).
 
@@ -719,18 +719,16 @@ Complete prompts are available in our repository. We summarize the key structure
 
 \textbf{Base vignette (judicial):} Defendant convicted of shoplifting (12th offense). Includes case details, expert opinion, and pre-sentencing report. For anchored conditions, adds: ``The prosecutor demands [ANCHOR] months.''
 
-\textbf{Technique modifications:}
+\textbf{Technique prompts (exact wording):}
 \begin{itemize}
-    \item \textbf{Devil's Advocate:} ``Before answering, consider: What would someone who disagrees with your initial judgment say?''
-    \item \textbf{Premortem:} ``Imagine your sentencing recommendation was later found to be seriously flawed. What went wrong?''
-    \item \textbf{SACD:} Six-turn iterative reflection with explicit bias acknowledgment (see \citet{lyu2025})
-    \item \textbf{Random Control:} Neutral filler---courtroom elaboration (3-turn) or German trivia (6-turn ablation)---matching technique turn counts
-    \item \textbf{Outside View:} Reference class prompt with German federal court statistics (confounded; excluded from rankings)
+    \item \textbf{Devil's Advocate (Turn 2):} ``Before finalizing your recommendation, consider: What would someone who disagrees with your initial judgment say? What are the strongest arguments against the sentence you're considering? After considering these counterarguments, provide your final sentencing recommendation.''
+    \item \textbf{Premortem (Turn 2):} ``Before finalizing, imagine: It's one year from now, and your sentencing recommendation was found to be seriously flawed---perhaps overturned on appeal or widely criticized. What went wrong? What factors might you have overlooked or misjudged? After this analysis, provide your final recommendation.''
+    \item \textbf{SACD (6-turn):} Iterative self-reflection following \citet{lyu2025}. Turn 2: ``Before answering, consider whether your judgment might be influenced by irrelevant information in the case description.'' Turns 3--5: Explicit bias acknowledgment prompts. Turn 6: ``Now provide a revised sentencing recommendation.''
+    \item \textbf{Random Control (3-turn):} ``To ensure thorough consideration, please describe the courtroom setting you envision for this case.'' (Turn 2) + ``Thank you. Now provide your sentencing recommendation.'' (Turn 3)
+    \item \textbf{Outside View:} ``What sentence do defendants with similar profiles typically receive in German federal courts?'' (confounded by jurisdiction anchor; excluded from rankings)
 \end{itemize}
 
-\textbf{Multi-domain vignettes:} Loan approval (first-time homebuyer), medical triage (hours to treatment), salary negotiation, plus three judicial variants (DUI repeat, tax fraud first-time, aggravated theft 4th offense).
-
-Full prompts, including exact wording and all vignette variants: \url{https://github.com/voder-ai/bAIs/tree/main/prompts}
+\textbf{Multi-domain vignettes:} Loan approval (first-time homebuyer), medical triage (hours to treatment), salary negotiation, plus three judicial variants (DUI repeat, tax fraud first-time, aggravated theft 4th offense). Full vignette text and response distributions: \url{https://github.com/voder-ai/bAIs}
 %==============================================================================
 \section*{AI Assistance Disclosure}
 
