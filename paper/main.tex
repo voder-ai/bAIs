@@ -22,7 +22,7 @@
 \title{Testing Implementations of Human Debiasing Prompts in LLMs:\\Evidence from 22,773 Anchoring Bias Trials}
 
 \author{
-  Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
+  Tom Howard\thanks{Independent researcher. Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
 }
 
 \date{February 2026}
@@ -87,6 +87,8 @@ LLMs exhibit human-like cognitive biases \citep{binz2023,jones2022,chen2025cogni
 \subsection{Debiasing Techniques}
 
 We test one prompt per approach for five categories: \textbf{SACD} (iterative self-correction \citep{lyu2025}), \textbf{Devil's Advocate} (argue against initial response), \textbf{Premortem} (imagine decision failed \citep{klein2007}), \textbf{Random Control} (neutral filler to isolate turn-count effects), and \textbf{Outside View} (reference class forecasting \citep{kahneman1993,sibony2019}, excluded from rankings due to confound---see Section~\ref{sec:outside-view-confound}). Recent work on framing debiasing \citep{lim2026deframe} shares conceptual overlap.
+
+\textbf{Prompt design:} Prompts were derived from canonical descriptions in the cognitive bias literature (SACD from \citet{lyu2025}; Premortem from \citet{klein2007}; Outside View from \citet{kahneman1993}). Devil's Advocate and Random Control were designed ad hoc to operationalize the technique concept. No prompt optimization or iteration was performed---results reflect single implementations. Exact wording in Appendix~\ref{app:prompts}.
 
 \subsection{Evaluation Methodology}
 
@@ -556,7 +558,7 @@ Domain & Technique & MAD & 95\% CI & Rank \\
 
 (1) Rankings depend on metric and domain; all \#1 vs \#2 CIs overlap---practical equivalence.
 (2) SACD's ranking varies from \#2 to \#5 across domains despite \#1 in main judicial study.
-(3) \textbf{No intervention outperforms debiasing prompts in 3 of 6 domains} (Judicial-DUI, Judicial-Fraud, Aggravated-Theft by MAD). Debiasing can increase per-trial error.
+(3) \textbf{No intervention achieves lowest MAD in 3 of 6 domains} (Judicial-DUI, Judicial-Fraud, Aggravated-Theft), though CIs overlap with debiasing prompts. This suggests debiasing can increase per-trial error in some domains.
 (4) Fraud domain shows severe anchoring (29--75\% of baseline across prompts).
 
 \textbf{Why do studies diverge?} The main study uses \% of baseline (10 models, single vignette); multi-domain uses MAD (5 models, 6 vignettes). Three factors explain the discrepancy: (a) \textit{Metric choice}---SACD's bidirectional variance penalizes it under MAD but cancels under aggregate \%. (b) \textit{Model selection}---multi-domain excludes 5 models from the main study. (c) \textit{Domain effects}---judicial sentencing may be uniquely suited to iterative reflection; loan/medical domains show different patterns. These findings reinforce our core message: prompt rankings are metric- and domain-dependent.
