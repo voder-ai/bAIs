@@ -42,7 +42,7 @@ Do prompts implementing human debiasing techniques work on LLMs? We test one pro
 
 Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from $\sim$48\% to $\sim$128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
 
-\textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
+\textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline; not to be confused with the Median Absolute Deviation also abbreviated MAD in some contexts) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
 \textbf{For practitioners:} Don't assume a single prompt implementation transfers. Test per-model, per-task. Report MAD alongside aggregates.
 \end{abstract}
@@ -689,7 +689,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 
 Our implementations of human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from $\sim$48\% to $\sim$128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms.
 
-\textbf{For practitioners:} Don't assume human techniques transfer to LLM prompts. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MAD (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
+\textbf{For practitioners:} Don't assume human techniques transfer to LLM prompts. Test per-model, per-domain---in 3 of 6 multi-domain tests, no intervention outperformed debiasing prompts on MAD. Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MAD (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
 
 \textbf{For researchers:} Collect unanchored baselines. Report MAD alongside aggregates. Susceptibility alone missed our DA implementation's failure; aggregate \% of baseline alone missed SACD's high variance.
 
