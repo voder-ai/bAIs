@@ -36,7 +36,7 @@ Do human debiasing techniques work on LLMs? We test one prompt implementation pe
 
 \textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from baseline than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
-Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from 48\% to 128\% of baseline (driven by Haiku's severe undershoot and Kimi's overshoot; see Table 5). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
+Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from 48\% to 128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot; see Table 5). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
 
 \textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
@@ -283,7 +283,7 @@ Our core empirical finding: susceptibility and \% of baseline give \textbf{diver
 \toprule
 Technique & Spread (susceptibility) & $\Delta$ & Rank & \% of Baseline & Rank \\
 \midrule
-\textit{No Technique} & \textit{26.0pp} & \textit{ref} & \textit{---} & \textit{72.9\%} & \textit{ref} \\
+\textit{No Technique} & \textit{26.1pp} & \textit{ref} & \textit{---} & \textit{72.9\%} & \textit{ref} \\
 \midrule
 Devil's Advocate & 23.7pp & $-$8.8\% & \#1 & 63.6\% [62, 65] & \#4 \\
 Random Control & 30.1pp & +15.8\% & \#2 & 78.3\% [77, 80] & \#3 \\
