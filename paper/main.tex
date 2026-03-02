@@ -42,7 +42,7 @@ Do prompts implementing human debiasing techniques work on LLMs? We test one pro
 
 Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from $\sim$48\% to $\sim$128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models. In the multi-domain extension, no intervention achieves lowest MAD in 3 of 6 domains---debiasing prompts can increase per-trial error.
 
-\textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline; not to be confused with the Median Absolute Deviation also abbreviated MAD in some contexts) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
+\textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
 \textbf{For practitioners:} Don't assume a single prompt implementation transfers. Test per-model, per-task. Report MAD alongside aggregates.
 \end{abstract}
@@ -105,7 +105,7 @@ Standard anchoring evaluation uses \textbf{susceptibility} (high--low spread). W
 
 We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-metrics}). Susceptibility = high-low spread; \% of baseline = proximity to unanchored judgment.
 
-\textbf{Mean Absolute Deviation (MAD):} We define MAD as the average per-trial deviation from the model's unanchored baseline:
+\textbf{Mean Absolute Deviation (MAD):} We define MAD as the average per-trial deviation from the model's unanchored baseline (not to be confused with the Median Absolute Deviation, also abbreviated MAD in some contexts):
 \begin{equation}
 \text{MAD} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{r_i}{b_m} - 1 \right| \times 100\%
 \end{equation}
@@ -165,7 +165,7 @@ SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$); temperature effects $<$3pp (percentage points), $d < 0.15$ (negligible relative to technique effects of $d = 0.5$--$1.0$). (This F-test does not account for model clustering; denominator df are likely inflated. Treat as descriptive.) Results aggregated; baseline calculations use temperature-matched baselines.
+Tested at t=0, 0.7, 1.0. Descriptive analysis suggests no meaningful temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$; denominator df likely inflated by model clustering); temperature effects $<$3pp (percentage points), $d < 0.15$ (negligible relative to technique effects of $d = 0.5$--$1.0$). Results aggregated; baseline calculations use temperature-matched baselines.
 
 \subsubsection{Trial Counts and Procedure}
 
@@ -689,7 +689,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 
 Our implementations of human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from $\sim$48\% to $\sim$128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms.
 
-\textbf{For practitioners:} Don't assume human techniques transfer to LLM prompts. Test per-model, per-domain---in 3 of 6 multi-domain tests, no intervention outperformed debiasing prompts on MAD. Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MAD (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
+\textbf{For practitioners:} Don't assume human techniques transfer to LLM prompts. Test per-model, per-domain---in 3 of 6 multi-domain tests, no intervention achieved lowest point-estimate MAD (CIs overlap). Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MAD (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
 
 \textbf{For researchers:} Collect unanchored baselines. Report MAD alongside aggregates. Susceptibility alone missed our DA implementation's failure; aggregate \% of baseline alone missed SACD's high variance.
 
