@@ -17,6 +17,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## 1. Methodology
 
 **Strengths:**
+
 - Large trial count (22,773) with reasonable per-cell minimums (n≥30)
 - Proportional anchor design is well-motivated and properly justified
 - Mixed-effects modeling with appropriate caveats about cluster count
@@ -26,7 +27,8 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 - 6-turn ablation to partially address turn-count confound
 
 **Concerns:**
-- **Single prompt per technique is the elephant in the room.** The paper tests one implementation per debiasing approach and draws conclusions about the *technique category*. The paper does acknowledge this (title says "implementations," abstract says "for these prompts," caveats appear throughout), but the framing still sometimes slips into technique-level language (e.g., "Why SACD Works (and Fails)"). The question is whether acknowledgment is sufficient.
+
+- **Single prompt per technique is the elephant in the room.** The paper tests one implementation per debiasing approach and draws conclusions about the _technique category_. The paper does acknowledge this (title says "implementations," abstract says "for these prompts," caveats appear throughout), but the framing still sometimes slips into technique-level language (e.g., "Why SACD Works (and Fails)"). The question is whether acknowledgment is sufficient.
 - **The turn-count confound is only partially addressed.** The 6-turn ablation (n=238, 4 models) is underpowered and uses a different protocol for GPT-5.2 (single-prompt simulation). The paper acknowledges this but still leads with SACD as "#1"—which may substantially reflect turn count rather than SACD content.
 - **ICC=0.17 with 10 clusters** is a serious limitation for mixed-effects inference. The paper acknowledges this well (citing Maas 2005, noting inflated df), but perhaps should more prominently flag that fixed-effect estimates are unreliable with so few clusters.
 - **Haiku's 85%+ refusal rate** means surviving trials are heavily selected. The paper notes this but still includes Haiku in aggregates. The sensitivity analysis excluding Haiku is helpful.
@@ -38,6 +40,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## 2. Statistics
 
 **Strengths:**
+
 - Bootstrap CIs throughout
 - Bonferroni correction for multiple comparisons
 - Power analysis with effective n accounting for clustering
@@ -45,6 +48,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 - Cohen's d reported with appropriate caveats about inflation from clustering
 
 **Concerns:**
+
 - **F-test for temperature×technique interaction** (Section 3.2.4): The paper correctly notes this doesn't account for model clustering and df are inflated. Good self-correction.
 - **The multi-domain results** (Table 8) show heavily overlapping CIs. The paper appropriately frames these as "exploratory" and boxes the caveat. However, the Key Findings section still makes directional claims ("SACD's ranking varies from #2 to #5") that could be misleading when all rankings are noise.
 - **MAD formula (Equation 3):** The formula divides by b_m (model baseline), which is correct for proportional interpretation. But aggregating MAD across models with different baselines—while the paper claims this is valid because deviations are proportional—still mixes different scales of decision. A 18% MAD on an 18-month baseline (Opus) is 3.2 months; on a 36-month baseline (o4-mini) it's 6.5 months. The paper could be clearer about this.
@@ -61,6 +65,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 **Pre-verified citations:** Lyu 2025, Chen 2025, Lim 2026, Maynard 2025 (Maynard not cited in paper) — all confirmed real.
 
 **Other citations checked:**
+
 - Tversky & Kahneman 1974 — Classic, correct ✓
 - Englich et al. 2006 — Real paper, correctly described ✓
 - Jacowitz & Kahneman 1995 — Real, correct journal/volume ✓
@@ -85,6 +90,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## 4. Internal Consistency
 
 **Checking key numbers:**
+
 - Abstract: "93.7% of unanchored baseline" → Table 5: 93.7% ✓
 - Abstract: "63.6%" for DA → Table 4: 63.6% ✓
 - Abstract: "72.9%" no intervention → Table 4: 72.9% ✓
@@ -107,6 +113,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## 5. Writing Quality
 
 **Strengths:**
+
 - Exceptionally transparent about limitations and confounds
 - Effective use of boxed caveats for critical qualifications
 - The abstract is information-dense but clear
@@ -114,6 +121,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 - Good use of "our [technique] prompt" vs. "[technique]" to distinguish implementation from technique
 
 **Concerns:**
+
 - **Paper length/density:** This paper is extremely dense. The main text covers baseline analysis, metric divergence, anchor asymmetry, mixed effects, multi-domain generalization, turn-count ablation, and extensive limitations—all without supplementary material sections for the detailed results. A reviewer might find this overwhelming.
 - **Section organization:** The multi-domain section (Section 5) feels somewhat disconnected from the main results (Section 4). The switch from % of baseline to MAD as the primary metric between sections, while justified in text, makes cross-section comparison difficult.
 - **"Debiasing theater" (Section 6.1):** Labeled as speculative, which is good, but the term itself is provocative and could be seen as anthropomorphizing.
@@ -127,6 +135,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## 6. Overclaims
 
 **Potential overclaims:**
+
 1. **Title: "Human Debiasing Prompts"** — The paper tests single implementations of each technique. The title could be read as testing the techniques themselves rather than specific prompts. However, the title does say "implementations" and the paper repeatedly caveats this. **Borderline acceptable.**
 
 2. **"our Devil's Advocate prompt produces responses... further from baseline than doing nothing"** — This is well-supported by the data (63.6% vs. 72.9%, non-overlapping CIs). **Properly claimed.**
@@ -186,6 +195,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 ## Overall Assessment
 
 **Strengths:**
+
 - Exceptional transparency about limitations and confounds
 - Large-scale empirical study with careful methodology
 - Genuinely useful practical findings (DA failure, metric divergence)
@@ -193,6 +203,7 @@ This paper tests whether prompts implementing human cognitive debiasing techniqu
 - Statistics are appropriate with proper caveats
 
 **Weaknesses:**
+
 - Single prompt per technique limits generalizability
 - Turn-count confound partially but not fully resolved
 - Multi-domain results are exploratory with overlapping CIs
