@@ -18,6 +18,7 @@ const RESULTS_DIR = './results';
 const PAPER_MODELS = new Set([
   'claude-opus-4-6',
   'claude-sonnet-4-6',
+  'claude-sonnet-4-5',
   'claude-haiku-4-5',
   'gpt-5-2'
 ]);
