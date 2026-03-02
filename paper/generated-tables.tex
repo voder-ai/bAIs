@@ -1,5 +1,5 @@
 % Auto-generated paper tables
-% Generated: 2026-02-22T21:18:29.179Z
+% Generated: 2026-03-02T06:26:34.124Z
 % Run: npx tsx scripts/generate-paper-tables-latex.ts > paper/generated-tables.tex
 
 % Table 1: Model Baselines
@@ -11,9 +11,9 @@ Model & Baseline Mean \\
 \midrule
 o4-mini & 35.7mo \\
 o3 & 33.7mo \\
-glm-5 & 31.8mo \\
+glm-5 & 31.9mo \\
 gpt-5.2 & 31.8mo \\
-kimi-k2.5 & 30.7mo \\
+kimi-k2.5 & 30.6mo \\
 deepseek-v3.2 & 29.6mo \\
 claude-haiku-4.5 & 29.1mo \\
 gpt-4.1 & 25.1mo \\
@@ -33,7 +33,7 @@ Technique & Improved & Success Rate \\
 \midrule
 \textbf{Random Control} & 9/10 & \textbf{90\%} \\
 Premortem & 8/10 & 80\% \\
-Full SACD & 8/10 & 80\% \\
+Full SACD & 7/10 & 70\% \\
 Devil's Advocate & 7/10 & 70\% \\
 \textbf{Outside View} & 4/10 & \textbf{40\%} \\
 \bottomrule
@@ -48,11 +48,11 @@ Devil's Advocate & 7/10 & 70\% \\
 \toprule
 Technique & t=0 & t=0.7 & t=1 & Optimal \\
 \midrule
-Random Control & \textbf{100\%} & 78\% & 90\% & t=0 \\
-Premortem & 67\% & \textbf{78\%} & 60\% & t=0.7 \\
+Random Control & \textbf{100\%} & 70\% & 90\% & t=0 \\
+Premortem & 70\% & \textbf{80\%} & 60\% & t=0.7 \\
 Full SACD & 50\% & \textbf{70\%} & 70\% & t=0.7 \\
-Devil's Advocate & 67\% & 67\% & \textbf{70\%} & t=1 \\
-Outside View & 33\% & 22\% & \textbf{40\%} & t=1 \\
+Devil's Advocate & \textbf{70\%} & 70\% & 70\% & t=0 \\
+Outside View & \textbf{40\%} & 30\% & 40\% & t=0 \\
 \bottomrule
 \end{tabular}
 \caption{Temperature effects on calibration success (high-anchor conditions).}
@@ -73,8 +73,8 @@ Calibration ($|response - baseline|$) & \textbf{Worst} (4/10 improved) \\
 \end{table}
 
 % Summary Statistics
-% Total baseline trials: 907
+% Total baseline trials: 909
 % Total high-anchor trials: 955
 % Models with baselines: 10
 % Models with anchored data: 11
-% Total technique trials: 10544
+% Total technique trials: 12340
