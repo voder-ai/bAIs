@@ -36,7 +36,7 @@ Do prompts implementing human debiasing techniques work on LLMs? We test one pro
 
 \textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from baseline than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
-Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from 48\% to 128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot; see Table 5). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
+Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from $\sim$48\% to $\sim$128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot; see Table 5). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
 
 \textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
@@ -47,7 +47,7 @@ Effectiveness varies dramatically: our SACD prompt shows the highest model varia
 \section{Introduction}
 %==============================================================================
 
-Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do specific prompts implementing these techniques actually work? We test one prompt per technique across 22,773 trials and find transfer is not straightforward: our SACD prompt's effectiveness ranges from 48\% to 128\% of baseline across models. Different prompt formulations may yield different results. Most concerning, standard evaluation metrics can recommend the wrong prompt.
+Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do specific prompts implementing these techniques actually work? We test one prompt per technique across 22,773 trials and find transfer is not straightforward: our SACD prompt's effectiveness ranges from $\sim$48\% to $\sim$128\% of baseline across models. Different prompt formulations may yield different results. Most concerning, standard evaluation metrics can recommend the wrong prompt.
 
 \subsection{Two Metrics, Two Rankings}
 \label{sec:two-metrics}
@@ -69,7 +69,7 @@ Lower gap = less susceptible. But susceptibility measures \textit{consistency}, 
 \textit{Turn-count caveat:} SACD uses $\sim$6 turns vs.\ 3 for others; this confounds comparisons.
 
 (1) \textbf{Aggregate metrics mask bidirectional error.} We show that aggregate \% of baseline can mislead: SACD achieves 93.7\% but 18.1\% MAD, because over/undershoots cancel. We recommend reporting MAD (a standard metric) alongside aggregates to reveal this hidden variance.
-(2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) showing substantial model-specific variance (SACD: 48\%--128\%).
+(2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) showing substantial model-specific variance (SACD: $\sim$48\%--128\%).
 (3) \textbf{Multi-domain extension:} Cross-domain evaluation (8,621 trials, 6 domains, 5 models) showing prompt rankings vary by domain and metric. Combined total: 22,773 trials.
 
 %==============================================================================
@@ -636,7 +636,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 
 \subsection{Ethical Considerations}
 
-Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend prompts that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' prompts transfer safely. The large model variance we observe (SACD: 48\%--128\%) means a prompt validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
+Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend prompts that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' prompts transfer safely. The large model variance we observe (SACD: $\sim$48\%--128\%) means a prompt validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
 
 \subsection{Limitations}
 
@@ -668,7 +668,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 
 \begin{enumerate}
     \item \textbf{Add conversation turns.} Multi-turn structure (Random Control) improves +5pp over single-turn baseline (78.3\% vs 72.9\%) and outperforms our DA implementation by +15pp.
-    \item \textbf{Test per-model.} SACD ranges 48\%--128\% of baseline across models.
+    \item \textbf{Test per-model.} SACD ranges $\sim$48\%--128\% of baseline across models.
     \item \textbf{Collect baselines.} Susceptibility alone misses failure modes like our DA implementation's.
     \item \textbf{Avoid reference class prompts} without careful design (Section~\ref{sec:outside-view-confound}).
     \item \textbf{Consider cost.} Premortem matches SACD in three turns vs.\ six.
@@ -678,7 +678,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 \section{Conclusion}
 %==============================================================================
 
-Our implementations of human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from 48\% to 128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms.
+Our implementations of human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from $\sim$48\% to $\sim$128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms.
 
 \textbf{For practitioners:} Don't assume human techniques transfer to LLM prompts. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse.
 
