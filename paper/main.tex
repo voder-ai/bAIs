@@ -728,6 +728,10 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 
 \textbf{Interpretation:} Patterns B--D suggest SACD's effectiveness varies by model architecture within the Anthropic family. For Sonnet (Pattern D), explicit bias prompts appear necessary to elicit revision. Pattern A (GPT-5.2) cannot be interpreted without matched-protocol replication.
 
+\subsection{Ethical Considerations}
+
+Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend techniques that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' techniques transfer safely. The 2.7$\times$ model variance we observe means a technique validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
+
 \subsection{Limitations}
 
 \begin{enumerate}
