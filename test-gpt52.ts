@@ -13,9 +13,10 @@ async function test() {
         prompt: 'What is 2+2? Reply with just the number.',
       });
       console.log(`  ✅ Result: "${result}"`);
-    } catch (e: any) {
-      console.log(`  ❌ ${e.message?.slice(0, 100)}`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.log(`  ❌ ${msg.slice(0, 100)}`);
     }
   }
 }
-test();
+void test();
