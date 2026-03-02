@@ -34,7 +34,7 @@
 \begin{abstract}
 Do human debiasing techniques work on LLMs? We test five techniques from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across 22,773 anchoring bias trials.
 
-\textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: our Devil's Advocate implementation produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this implementation looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
+\textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: our specific Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative DA prompts may perform differently; we test one implementation.
 
 Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline across models. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
 
