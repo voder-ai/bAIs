@@ -34,7 +34,7 @@
 \begin{abstract}
 Do human debiasing techniques work on LLMs? We test five techniques from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across 22,773 anchoring bias trials.
 
-\textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: our specific Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative DA prompts may perform differently; we test one implementation.
+\textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our specific Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative prompts may perform differently; we test one implementation per technique.
 
 Effectiveness varies dramatically: SACD shows the highest model variance, ranging from 48\% to 128\% of baseline. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
 
@@ -93,7 +93,7 @@ We evaluate five techniques: \textbf{SACD} (iterative self-correction \citep{lyu
 
 \subsection{Evaluation Methodology}
 
-Standard anchoring evaluation uses \textbf{susceptibility} (high--low spread). We add \textbf{\% of baseline} (proximity to unanchored judgment). Unlike the classic Anchoring Index \citep{jacowitz1995}, which uses baseline in both numerator and denominator, our metric avoids circularity. Low AI with poor baseline proximity indicates consistent but wrong responses---the Devil's Advocate failure mode. We use free-form numeric responses rather than MCQs to avoid position and label biases documented in benchmark evaluations \citep{nowak2026abcd}.
+Standard anchoring evaluation uses \textbf{susceptibility} (high--low spread). We add \textbf{\% of baseline} (proximity to unanchored judgment). Unlike the classic Anchoring Index \citep{jacowitz1995}, which uses baseline in both numerator and denominator, our metric avoids circularity. Low AI with poor baseline proximity indicates consistent but wrong responses---the failure mode we observe with our DA implementation. We use free-form numeric responses rather than MCQs to avoid position and label biases documented in benchmark evaluations \citep{nowak2026abcd}.
 
 %==============================================================================
 \section{Methodology}
@@ -325,11 +325,11 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 \draw[dashed, black, thick] (axis cs:{[normalized]-0.3},100) -- (axis cs:{[normalized]3.3},100);
 \end{axis}
 \end{tikzpicture}
-\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Devil's Advocate keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. SACD achieves 93.7\%---closest to the model's unanchored judgment. \textit{Note:} SACD's ranking is confounded by turn count ($\sim$6 vs 3 turns); see Limitations.}
+\caption{Technique responses as \% of baseline. Dashed line = 100\% (unanchored judgment). Our DA implementation keeps responses at 63.6\% of baseline---consistently far from the unanchored judgment despite appearing ``best'' under susceptibility. SACD achieves 93.7\%---closest to the model's unanchored judgment. \textit{Note:} SACD's ranking is confounded by turn count ($\sim$6 vs 3 turns); results reflect specific prompt implementations.}
 \label{fig:metric-comparison}
 \end{figure}
 
-\textbf{Why the divergence?} Devil's Advocate produces \textit{consistent} responses (low spread) that remain \textit{far from baseline}. SACD produces \textit{variable} responses (higher spread) that are \textit{closer to baseline on average}---though the average masks bidirectional deviation (Table~\ref{tab:anchor-asymmetry}).
+\textbf{Why the divergence?} Our DA implementation produces \textit{consistent} responses (low spread) that remain \textit{far from baseline}. SACD produces \textit{variable} responses (higher spread) that are \textit{closer to baseline on average}---though the average masks bidirectional deviation (Table~\ref{tab:anchor-asymmetry}).
 
 \textbf{Magnitude of improvement:} Without any debiasing, anchored responses reach 72.9\% of baseline---a deficit of 27.1 percentage points from the unanchored judgment. SACD achieves 93.7\%, reducing this deficit to 6.3pp. This represents a reduction of 20.8pp, though the residual deficit and bidirectional variance (MAD=18.1\%) remain limitations.
 
@@ -572,6 +572,8 @@ Domain & Technique & MAD & 95\% CI & Rank \\
 (1) Rankings depend on metric and domain; all \#1 vs \#2 CIs overlap---practical equivalence.
 (2) SACD's ranking varies \#2 to \#5 across domains despite \#1 in main judicial study.
 (3) Fraud domain shows severe anchoring (29--75\% of baseline across techniques).
+
+\textbf{Why do studies diverge?} The main study uses \% of baseline (10 models, single vignette); multi-domain uses MAD (5 models, 6 vignettes). Three factors explain the discrepancy: (a) \textit{Metric choice}---SACD's bidirectional variance penalizes it under MAD but cancels under aggregate \%. (b) \textit{Model selection}---multi-domain excludes 5 models from the main study. (c) \textit{Domain effects}---judicial sentencing may be uniquely suited to iterative reflection; loan/medical domains show different patterns. These findings reinforce our core message: technique rankings are metric- and domain-dependent.
 
 \textbf{Implications:} No technique transfers reliably; test per-task, per-model.
 
