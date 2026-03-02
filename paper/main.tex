@@ -206,7 +206,7 @@ Welch's t-test with Bonferroni correction (6 comparisons, $\alpha = 0.0083$) for
 
 \subsection{Confounds and Limitations}
 
-\textbf{Edge models:} Opus 4.6 shows zero baseline variance (always 18mo); Haiku 4.5 has 85\%+ refusal rates. Rankings robust to Opus exclusion ($<$3pp shift).
+\textbf{Edge models:} Opus 4.6 shows zero baseline variance (always 18mo); Haiku 4.5 has 85\%+ refusal rates (surviving trials may exhibit selection bias). \textbf{Sensitivity analysis:} Excluding Opus shifts means $<$3pp; excluding Haiku shifts means $<$2pp. Rankings preserved in both cases: SACD remains \#1 (91.2\% excl.\ Haiku), Premortem \#2, DA \#4.
 
 \textbf{Outside View:} Required jurisdiction specification, introducing potential secondary anchor. Excluded from rankings (Section~\ref{sec:outside-view-confound}).
 
@@ -333,23 +333,7 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 
 \textbf{Magnitude of improvement:} Without any debiasing, anchored responses reach 72.9\% of baseline---a deficit of 27.1 percentage points from the unanchored judgment. SACD achieves 93.7\%, reducing this deficit to 6.3pp. This represents a reduction of 20.8pp, though the residual deficit and bidirectional variance (MAD=18.1\%) remain limitations.
 
-\textbf{Effect sizes (Cohen's d):}
-
-\begin{center}
-\begin{tabular}{lcc}
-\toprule
-Comparison & $d$ & Interpretation \\
-\midrule
-SACD vs.\ Devil's Advocate & 1.06 & Large \\
-Premortem vs.\ Devil's Advocate & 0.71 & Medium-large \\
-SACD vs.\ Random Control & 0.51 & Medium \\
-Random Control vs.\ Devil's Advocate & 0.39 & Small-medium \\
-SACD vs.\ Premortem & 0.08 & Negligible \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-Cohen's $d$ computed on trial-level data using pooled standard deviation. \textbf{Caveat:} With ICC=0.17 and $\sim$200 trials per model, the design effect is approximately $1 + (200-1) \times 0.17 \approx 35$, yielding effective $n \approx 60$--70 per technique rather than $\sim$2,200. These $d$ values may therefore be inflated; use mixed-effects estimates (Section~\ref{sec:mixed-effects}) for formal inference. We report trial-level $d$ for practical interpretation: the SACD--DA gap ($d=1.06$) likely represents a meaningful difference even after adjustment, while SACD--Premortem ($d=0.08$) clearly does not.
+\textbf{Effect sizes:} With model clustering (ICC=0.17, design effect $\approx$35), trial-level Cohen's $d$ would be inflated. We therefore report effect sizes via mixed-effects modeling (Section~\ref{sec:mixed-effects}), which properly accounts for the nested structure. The SACD--DA difference is large and robust; SACD--Premortem is negligible.
 
 \subsection{High-Anchor Responses (No Technique)}
 
@@ -499,7 +483,7 @@ y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + u_j + \ep
 
 where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, confirming the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
-ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$); denominator df are approximate (not Satterthwaite-adjusted) due to computational constraints with 10 clusters. Fixed effects confirm ranking: SACD $+11.9$ pp, Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
+ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$). \textbf{Cluster caveat:} With only 10 model clusters, random-effects variance estimates may be unreliable \citep{maas2005}; these results are best treated as descriptive rather than confirmatory. Fixed effects confirm ranking: SACD $+11.9$ pp, Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
 
 \textbf{Random slopes:} SACD shows highest slope variance (SD = 25.6 pp), confirming effectiveness varies dramatically across models (+33\% to $-$56\% from fixed effect). This justifies per-model testing (Table~\ref{tab:sacd-by-model}).
 
@@ -518,6 +502,8 @@ SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) are statistically
 To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 8,621 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Sonnet 4.6, Sonnet 4.5, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Haiku 4.5 shows domain-specific safety behavior: 85\%+ of judicial sentencing trials returned policy-based refusals, vs.\ $<$1\% for other models; valid responses are included in analysis. Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
 
 \noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory (5 models):} All \#1 vs \#2 CIs overlap; rankings are point estimates only.}}
+
+\textbf{Metric choice:} We report MAD (rather than aggregate \% of baseline) for multi-domain results because per-trial error is more informative for comparing heterogeneous domains with different baseline scales. MAD also directly addresses our methodological contribution: revealing variance that aggregates mask.
 
 \subsection{Domain Comparison}
 
