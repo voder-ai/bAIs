@@ -56,11 +56,11 @@ Prior work evaluates debiasing using \textbf{susceptibility}---the gap between h
 \begin{equation}
 \text{Susceptibility} = |\bar{R}_{high} - \bar{R}_{low}|
 \end{equation}
-Lower gap = less susceptible. But susceptibility measures \textit{consistency}, not \textit{accuracy}. A technique can achieve low susceptibility while landing far from the unanchored judgment.
+Lower gap = less susceptible. But susceptibility measures \textit{consistency}, not \textit{accuracy}. A prompt can achieve low susceptibility while landing far from the unanchored judgment.
 
 \textbf{Our approach:} We add \textbf{\% of baseline}---proximity to the model's unanchored judgment:
 \begin{equation}
-\text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
+\text{\% of Baseline} = \frac{R_{prompt}}{R_{baseline}} \times 100\%
 \end{equation}
 100\% = the model's anchor-free response (which may itself be incorrect).
 
@@ -72,8 +72,8 @@ Even \% of baseline can mislead when averaged (bidirectional errors cancel). SAC
 \subsection{Contributions}
 
 (1) \textbf{Aggregate metrics mask bidirectional error.} We demonstrate that aggregate \% of baseline can mislead: SACD achieves 93.7\% but 18.1\% MAD, because over/undershoots cancel. We recommend reporting MAD alongside aggregates.
-(2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) confirming substantial model-specific variance (SACD: 48\%--128\%).
-(3) \textbf{Multi-domain extension:} Cross-domain evaluation (8,621 trials, 6 domains, 5 models) showing technique rankings vary by domain and metric. Combined total: 22,773 trials.
+(2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) showing substantial model-specific variance (SACD: 48\%--128\%).
+(3) \textbf{Multi-domain extension:} Cross-domain evaluation (8,621 trials, 6 domains, 5 models) showing prompt rankings vary by domain and metric. Combined total: 22,773 trials.
 
 %==============================================================================
 \section{Related Work}
@@ -89,7 +89,7 @@ LLMs exhibit human-like cognitive biases \citep{binz2023,jones2022,chen2025cogni
 
 \subsection{Debiasing Techniques}
 
-We evaluate five techniques: \textbf{SACD} (iterative self-correction \citep{lyu2025}), \textbf{Devil's Advocate} (argue against initial response), \textbf{Premortem} (imagine decision failed \citep{klein2007}), \textbf{Random Control} (neutral filler to isolate turn-count effects), and \textbf{Outside View} (reference class forecasting \citep{sibony2019}, excluded from rankings due to confound---see Section~\ref{sec:outside-view-confound}). Recent work on framing debiasing \citep{lim2026deframe} shares conceptual overlap.
+We test one prompt per approach for five categories: \textbf{SACD} (iterative self-correction \citep{lyu2025}), \textbf{Devil's Advocate} (argue against initial response), \textbf{Premortem} (imagine decision failed \citep{klein2007}), \textbf{Random Control} (neutral filler to isolate turn-count effects), and \textbf{Outside View} (reference class forecasting \citep{sibony2019}, excluded from rankings due to confound---see Section~\ref{sec:outside-view-confound}). Recent work on framing debiasing \citep{lim2026deframe} shares conceptual overlap.
 
 \subsection{Evaluation Methodology}
 
@@ -114,7 +114,7 @@ where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored basel
 
 \textbf{Baseline as reference, not ground truth.} Following \citet{jacowitz1995}, we measure deviation from each model's unanchored baseline rather than an external ground truth. This operationalizes debiasing as \textit{consistency}: a debiased model produces similar outputs regardless of irrelevant anchors. We make no claim that baselines are normatively correct---indeed, models disagree substantially (Table~\ref{tab:baselines}). The goal is to measure whether debiasing techniques restore anchor-independent reasoning, not whether that reasoning reaches any particular conclusion. This approach follows Kahneman \& Tversky's original anchoring paradigm: baseline responses represent what the model would output absent anchoring influence, making deviation from baseline a direct measure of anchor effect. Alternative approaches (e.g., expert ground truth, legal guidelines) would conflate model capability with debiasing effectiveness.
 
-\textbf{On proportional anchor design.} We set anchors proportionally to each model's baseline ($\pm$50\%) to ensure comparable anchoring pressure across models with different baseline judgments. This is not circular: baselines are measured independently in anchor-absent conditions, then used to compute anchor values. A technique causing complete anchor-ignorance would score 100\%---matching the model's unanchored judgment. The goal is to eliminate the influence of task-irrelevant numeric information on judgment.
+\textbf{On proportional anchor design.} We set anchors proportionally to each model's baseline ($\pm$50\%) to ensure comparable anchoring pressure across models with different baseline judgments. This is not circular: baselines are measured independently in anchor-absent conditions, then used to compute anchor values. A prompt causing complete anchor-ignorance would score 100\%---matching the model's unanchored judgment. The goal is to eliminate the influence of task-irrelevant numeric information on judgment.
 
 \subsection{Experimental Design}
 
@@ -178,7 +178,7 @@ Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction
 
 \begin{table}[H]
 \centering
-\caption{Trial distribution. Total unique trials: 14,152. Outside View is included in this count but excluded from technique rankings due to confound (Section~\ref{sec:outside-view-confound}). Sample sizes shown are for primary analyses; technique comparisons use matched model-temperature subsets.}
+\caption{Trial distribution. Total unique trials: 14,152. Outside View is included in this count but excluded from prompt rankings due to confound (Section~\ref{sec:outside-view-confound}). Sample sizes shown are for primary analyses; prompt comparisons use matched model-temperature subsets.}
 \label{tab:trial-counts}
 \begin{tabular}{lr}
 \toprule
@@ -192,7 +192,7 @@ Condition & $n$ (analysis) \\
 \quad Devil's Advocate & 2,166 \\
 \midrule
 \multicolumn{2}{l}{\textit{Control Conditions}} \\
-\quad Anchored (no technique) & 1,864 \\
+\quad Anchored (no debiasing) & 1,864 \\
 \quad Baseline (no anchor) & 909 \\
 \bottomrule
 \end{tabular}
@@ -202,7 +202,7 @@ Condition & $n$ (analysis) \\
 
 Welch's t-test with Bonferroni correction (6 comparisons, $\alpha = 0.0083$) for hypothesis testing; percentile bootstrap (10,000 resamples, stratified by model) for CIs. Cohen's $d$ for effect sizes. Aggregates are trial-weighted means; see Table~\ref{tab:sacd-by-model} for model-level. Trials collected via OpenRouter API (February 2026); full details in repository.
 
-\textbf{Power analysis:} Model clustering (ICC=0.17) reduces effective $n$ to $\approx$60--70 per technique; powered to detect $d \geq 0.50$. Large effects ($d = 1.06$ SACD vs.\ DA) are reliably detectable; SACD--Premortem ($d = 0.08$) is underpowered.
+\textbf{Power analysis:} Model clustering (ICC=0.17) reduces effective $n$ to $\approx$60--70 per prompt; powered to detect $d \geq 0.50$. Large effects ($d = 1.06$ SACD vs.\ DA) are reliably detectable; SACD--Premortem ($d = 0.08$) is underpowered.
 
 \subsection{Confounds and Limitations}
 
@@ -271,12 +271,12 @@ Opus 4.6 & 18.0mo & 0.0 \\
 \label{fig:baselines}
 \end{figure}
 
-\textbf{Opus anomaly:} Opus 4.6 shows zero baseline variance (SD=0.0), consistently responding with exactly 18 months regardless of temperature. This may reflect deterministic reasoning or strong training priors for judicial contexts. We retain Opus because: (1) it represents a legitimate deployment scenario; (2) excluding post-hoc would inflate technique effectiveness. Sensitivity analysis (Limitations) shows rankings are robust to Opus exclusion.
+\textbf{Opus anomaly:} Opus 4.6 shows zero baseline variance (SD=0.0), consistently responding with exactly 18 months regardless of temperature. This may reflect deterministic reasoning or strong training priors for judicial contexts. We retain Opus because: (1) it represents a legitimate deployment scenario; (2) excluding post-hoc would inflate prompt effectiveness. Sensitivity analysis (Limitations) shows rankings are robust to Opus exclusion.
 
 \subsection{Metric Divergence: Susceptibility vs.\ Baseline Proximity}
 \label{sec:metric-divergence}
 
-Our core empirical finding: susceptibility and \% of baseline give \textbf{divergent technique rankings}. \textit{Note: Our proportional anchor design (anchors scaled to each model's baseline) enables fair within-model technique comparison but limits cross-model susceptibility comparisons; see Limitations.}
+Our core empirical finding: susceptibility and \% of baseline give \textbf{divergent prompt rankings}. \textit{Note: Our proportional anchor design (anchors scaled to each model's baseline) enables fair within-model prompt comparison but limits cross-model susceptibility comparisons; see Limitations.}
 
 \begin{table}[H]
 \centering
@@ -348,15 +348,15 @@ The compression pattern is counterintuitive---high anchors typically pull respon
 
 \textbf{Which models compress?} Anthropic models (Opus, Sonnet, Haiku) and GPT-4.1 consistently show compression under high anchors. OpenAI's reasoning models (o3, o4-mini) and GPT-5.2 show the expected inflation pattern. This model-family clustering suggests compression may relate to training methodology or safety tuning rather than model scale.
 
-\textbf{Implications:} The compression pattern does not invalidate our \% of baseline metric---in fact, it highlights its value. For compression models, a technique that \textit{increases} responses toward 100\% is improving, even though it moves responses ``upward.'' Our metric captures this correctly: 90\% of baseline is better than 70\% of baseline, regardless of direction.
+\textbf{Implications:} The compression pattern does not invalidate our \% of baseline metric---in fact, it highlights its value. For compression models, a prompt that \textit{increases} responses toward 100\% is improving, even though it moves responses ``upward.'' Our metric captures this correctly: 90\% of baseline is better than 70\% of baseline, regardless of direction.
 
 \subsection{Technique Effectiveness: Percentage of Baseline}
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-Technique & $n$ & \% of Baseline & 95\% CI & MAD & Deviation & Rank \\
+Prompt & $n$ & \% of Baseline & 95\% CI & MAD & Deviation & Rank \\
 \midrule
 \textbf{SACD}$^\ddagger$ & 2,389 & \textbf{93.7\%} & [92, 95] & 18.1\% & \textbf{6.3\%} & \textbf{\#1} \\
 Premortem & 2,186 & 91.6\% & [90, 93] & 22.6\% & 8.4\% & \#2 \\
@@ -448,7 +448,7 @@ Key findings:
 
 \subsection{Asymmetry: High vs.\ Low Anchor}
 
-Aggregate results hide an important asymmetry. Breaking down by anchor direction reveals that \textbf{all techniques correct high anchors better than low anchors}:
+Aggregate results hide an important asymmetry. Breaking down by anchor direction reveals that \textbf{all prompts correct high anchors better than low anchors}:
 
 \begin{table}[H]
 \centering
@@ -462,13 +462,13 @@ Random Control & 63.4\% & [62, 65] & 93.5\% & [90, 96] & 30.1 pp \\
 Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness by anchor direction. 95\% CIs from bootstrap. $^\dagger$Spread = High $-$ Low (mathematically equivalent to Table~\ref{tab:metric-comparison} spread column). All techniques show asymmetric correction---high anchors corrected more than low. SACD undershoots from low anchors (75.7\%) and overshoots from high (112.0\%).}
+\caption{Prompt effectiveness by anchor direction. 95\% CIs from bootstrap. $^\dagger$Spread = High $-$ Low (mathematically equivalent to Table~\ref{tab:metric-comparison} spread column). All prompts show asymmetric correction---high anchors corrected more than low. SACD undershoots from low anchors (75.7\%) and overshoots from high (112.0\%).}
 \label{tab:anchor-asymmetry}
 \end{table}
 
 \textbf{Key insight:} SACD's aggregate results from averaging over bidirectional deviation (Table~\ref{tab:anchor-asymmetry}). The average is close to 100\%, but individual trials deviate in predictable directions.
 
-\textbf{No-technique baseline shows asymmetry:} Without any intervention, models respond at 59.9\% under low anchors and 86.0\% under high anchors---both below baseline, but with a 26.1pp gap showing low anchors exert stronger pull.
+\textbf{No-intervention baseline shows asymmetry:} Without any intervention, models respond at 59.9\% under low anchors and 86.0\% under high anchors---both below baseline, but with a 26.1pp gap showing low anchors exert stronger pull.
 
 \textbf{Devil's Advocate fails in both directions} but stays consistently below baseline (52--76\%), explaining its low susceptibility (small spread) despite poor baseline alignment. Rather than correcting the asymmetry, it compresses responses toward a consistently wrong value. \textit{Caveat:} This reflects our specific prompt implementation; alternative phrasings might perform differently.
 
@@ -481,15 +481,15 @@ To account for non-independence of observations within models, we fit a linear m
 y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + u_j + \epsilon_{ijk}
 \end{equation}
 
-where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, confirming the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
+where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, consistent with the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
-ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$). \textbf{Cluster caveat:} With only 10 model clusters, random-effects variance estimates may be unreliable \citep{maas2005}; these results are best treated as descriptive rather than confirmatory. Fixed effects confirm ranking: SACD $+11.9$ pp, Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
+ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$). \textbf{Cluster caveat:} With only 10 model clusters, random-effects variance estimates may be unreliable \citep{maas2005}; these results are best treated as descriptive rather than confirmatory. Fixed effects suggest ranking: SACD $+11.9$ pp, Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
 
-\textbf{Random slopes:} SACD shows highest slope variance (SD = 25.6 pp), confirming effectiveness varies dramatically across models (+33\% to $-$56\% from fixed effect). This justifies per-model testing (Table~\ref{tab:sacd-by-model}).
+\textbf{Random slopes:} SACD shows highest slope variance (SD = 25.6 pp), showing effectiveness varies dramatically across models (+33\% to $-$56\% from fixed effect). This justifies per-model testing (Table~\ref{tab:sacd-by-model}).
 
 \subsection{The Metric Divergence}
 
-Table~\ref{tab:metric-comparison} confirms the divergence; Table~\ref{tab:anchor-asymmetry} reveals SACD's bidirectional over/under-correction by anchor direction.
+Table~\ref{tab:metric-comparison} shows the divergence; Table~\ref{tab:anchor-asymmetry} reveals SACD's bidirectional over/under-correction by anchor direction.
 
 \subsection{The SACD vs.\ Premortem Tradeoff}
 
@@ -572,11 +572,11 @@ Domain & Technique & MAD & 95\% CI & Rank \\
 (1) Rankings depend on metric and domain; all \#1 vs \#2 CIs overlap---practical equivalence.
 (2) SACD's ranking varies \#2 to \#5 across domains despite \#1 in main judicial study.
 (3) \textbf{No intervention outperforms debiasing prompts in 3 of 6 domains} (Judicial-DUI, Judicial-Fraud, Aggravated-Theft by MAD). Debiasing can increase per-trial error.
-(4) Fraud domain shows severe anchoring (29--75\% of baseline across techniques).
+(4) Fraud domain shows severe anchoring (29--75\% of baseline across prompts).
 
-\textbf{Why do studies diverge?} The main study uses \% of baseline (10 models, single vignette); multi-domain uses MAD (5 models, 6 vignettes). Three factors explain the discrepancy: (a) \textit{Metric choice}---SACD's bidirectional variance penalizes it under MAD but cancels under aggregate \%. (b) \textit{Model selection}---multi-domain excludes 5 models from the main study. (c) \textit{Domain effects}---judicial sentencing may be uniquely suited to iterative reflection; loan/medical domains show different patterns. These findings reinforce our core message: technique rankings are metric- and domain-dependent.
+\textbf{Why do studies diverge?} The main study uses \% of baseline (10 models, single vignette); multi-domain uses MAD (5 models, 6 vignettes). Three factors explain the discrepancy: (a) \textit{Metric choice}---SACD's bidirectional variance penalizes it under MAD but cancels under aggregate \%. (b) \textit{Model selection}---multi-domain excludes 5 models from the main study. (c) \textit{Domain effects}---judicial sentencing may be uniquely suited to iterative reflection; loan/medical domains show different patterns. These findings reinforce our core message: prompt rankings are metric- and domain-dependent.
 
-\textbf{Implications:} No technique transfers reliably; test per-task, per-model.
+\textbf{Implications:} No prompt transfers reliably; test per-task, per-model.
 
 %==============================================================================
 \section{Discussion}
@@ -653,7 +653,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 
 \subsection{Ethical Considerations}
 
-Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend techniques that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' techniques transfer safely. The large model variance we observe (SACD: 48\%--128\%) means a technique validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
+Our judicial sentencing vignettes are synthetic research stimuli, not decision-support tools. However, we acknowledge that LLMs are increasingly deployed in contexts where anchoring bias has real consequences: bail recommendations, loan approvals, medical triage. Our finding that standard evaluation metrics can recommend prompts that make bias \textit{worse} has direct implications: practitioners should not assume that published ``debiasing'' prompts transfer safely. The large model variance we observe (SACD: 48\%--128\%) means a prompt validated on one model may fail---or backfire---on another. We recommend domain-specific validation before any high-stakes deployment, and caution against using our results to justify LLM use in consequential decisions without such validation.
 
 \subsection{Limitations}
 
@@ -676,7 +676,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition as minimum sample size. Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
     
-    \item \textbf{Missing baselines.} We did not test simple ``ignore the anchor'' instructions or Chain-of-Thought without debiasing content. These minimal interventions might outperform complex techniques; future work should establish this lower bound.
+    \item \textbf{Missing baselines.} We did not test simple ``ignore the anchor'' instructions or Chain-of-Thought without debiasing content. These minimal interventions might outperform complex prompts; future work should establish this lower bound.
 \end{enumerate}
 
 \subsection{Practical Recommendations}
@@ -695,7 +695,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 
 Human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation of one prompt per technique finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from 48\% to 128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms. Different prompt formulations may yield different results.
 
-\textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a technique can look good on standard metrics while making responses worse.
+\textbf{For practitioners:} Don't assume human techniques transfer to LLM prompts. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse.
 
 \textbf{For researchers:} Collect unanchored baselines. Susceptibility alone missed our DA implementation's failure.
 
