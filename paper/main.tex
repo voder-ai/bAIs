@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Human Debiasing Techniques Don't Reliably Transfer to LLMs:\\Evidence from 22,773 Anchoring Bias Trials}
+\title{Do Human Debiasing Techniques Transfer to LLMs?\\Evidence from 22,773 Anchoring Bias Trials}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -498,7 +498,7 @@ Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
 
 \textbf{No-technique baseline shows asymmetry:} Without any intervention, models respond at 59.9\% of baseline under low anchors and 86.0\% under high anchors (26.1pp gap). This natural pull toward high anchors is what techniques attempt to correct.
 
-\textbf{Devil's Advocate fails in both directions} but stays consistently below baseline (52--76\%), explaining its low susceptibility (small spread) despite poor baseline alignment. Rather than correcting the asymmetry, it compresses responses toward a consistently wrong value.
+\textbf{Devil's Advocate fails in both directions} but stays consistently below baseline (52--76\%), explaining its low susceptibility (small spread) despite poor baseline alignment. Rather than correcting the asymmetry, it compresses responses toward a consistently wrong value. \textit{Caveat:} This reflects our specific prompt implementation; alternative phrasings might perform differently.
 
 \subsection{Mixed Effects Analysis}
 \label{sec:mixed-effects}
@@ -637,7 +637,7 @@ These results reinforce our core argument:
 \section{Discussion}
 %==============================================================================
 
-Our primary finding is that human debiasing techniques don't reliably transfer to LLMs. Devil's Advocate---the technique most effective for human anchoring bias---produces the worst baseline proximity (63.6\%). SACD and Premortem improve accuracy on average but with 2.7$\times$ model variance. We explore possible mechanisms below.
+Our primary finding is that human debiasing techniques show mixed transfer to LLMs. Our Devil's Advocate implementation produces the worst baseline proximity (63.6\%). SACD and Premortem improve accuracy on average but with 2.7$\times$ model variance. We explore possible mechanisms below.
 
 \subsection{Why SACD Works (and Fails)}
 
@@ -763,7 +763,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \section{Conclusion}
 %==============================================================================
 
-Human debiasing techniques don't reliably transfer to LLMs. Our 22,773-trial evaluation finds: Devil's Advocate---effective for humans---makes LLM bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but effectiveness varies 2.7$\times$ across models (48--128\%). Point-estimate rankings vary across domains (CIs overlap); no technique consistently outperforms.
+Human debiasing techniques show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate implementation makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but effectiveness varies 2.7$\times$ across models (48--128\%). Point-estimate rankings vary across domains (CIs overlap); no technique consistently outperforms.
 
 \textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a technique can look good on standard metrics while making responses worse.
 
