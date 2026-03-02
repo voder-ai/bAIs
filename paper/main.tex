@@ -19,7 +19,7 @@
 \pgfplotsset{compat=1.18}
 
 % Title
-\title{Human Debiasing Techniques Don't Reliably Transfer to LLMs:\\Evidence from 21,139 Anchoring Bias Trials}
+\title{Human Debiasing Techniques Don't Reliably Transfer to LLMs:\\Evidence from 22,773 Anchoring Bias Trials}
 
 \author{
   Tom Howard\thanks{Correspondence: tom@voder.ai. GitHub: @tompahoward. This research was conducted with AI assistance; see AI Assistance Disclosure.}
@@ -32,7 +32,7 @@
 \maketitle
 
 \begin{abstract}
-Do human debiasing techniques work on LLMs? We test five techniques from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across 21,139 anchoring bias trials.
+Do human debiasing techniques work on LLMs? We test five techniques from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across 22,773 anchoring bias trials.
 
 \textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: Devil's Advocate produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, Devil's Advocate looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
@@ -47,7 +47,7 @@ Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline ac
 
 Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they actually work?
 
-We test five techniques from the cognitive bias literature across 21,139 trials. \textbf{The answer: not reliably.}
+We test five techniques from the cognitive bias literature across 22,773 trials. \textbf{The answer: not reliably.}
 
 \textbf{Some help:} SACD achieves 93.7\% of the model's unanchored baseline judgment. Premortem reaches 91.6\%.
 
@@ -84,7 +84,7 @@ Even \% of baseline can mislead when averaged. SACD achieves 93.7\% aggregate bu
 \subsection{Contributions}
 
 \begin{enumerate}
-    \item \textbf{Cross-domain evaluation:} 21,139 trials across 6 domains showing rankings vary by domain---all pairwise \#1 vs \#2 CIs overlap, precluding confident technique recommendations.
+    \item \textbf{Cross-domain evaluation:} 22,773 trials across 6 domains showing rankings vary by domain---all pairwise \#1 vs \#2 CIs overlap, precluding confident technique recommendations.
     
     \item \textbf{MAD metric:} Mean Absolute Deviation complements aggregate measures by capturing per-trial error (SACD: 93.7\% aggregate, 18.1\% MAD).
     
@@ -184,7 +184,7 @@ Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction
 \subsubsection{Trial Counts and Procedure}
 
 \begin{itemize}
-    \item \textbf{Total}: 14,152 judicial + 6,987 multi-domain = 21,139 analyzed
+    \item \textbf{Total}: 14,152 judicial + 8,621 multi-domain = 22,773 analyzed
     \item \textbf{Per cell}: 30--90 trials (min $n=30$ pre-specified; added trials for high-variance conditions)
     \item \textbf{Baselines}: 909 trials (~90 per model)
     \item \textbf{Extraction}: Regex for integer months; 99.9\% success
@@ -552,9 +552,9 @@ This analysis is only possible by collecting baselines and examining per-anchor 
 \section{Multi-Domain Generalization}
 %==============================================================================
 
-To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 6,987 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Sonnet 4.6, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Haiku 4.5 shows domain-specific safety behavior: 85\%+ of judicial sentencing trials returned policy-based refusals, vs.\ $<$1\% for other models; valid responses are included in analysis. Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
+To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 8,621 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Sonnet 4.6, Sonnet 4.5, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Haiku 4.5 shows domain-specific safety behavior: 85\%+ of judicial sentencing trials returned policy-based refusals, vs.\ $<$1\% for other models; valid responses are included in analysis. Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
 
-\noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory Analysis (4 models):} This extension uses 4 models compared to 10 in the main study. Results should be interpreted with caution---they demonstrate that metric-dependent rankings persist across domains, but specific technique rankings (Table~\ref{tab:vignette-comparison}) may not generalize. Bootstrap 95\% CIs overlap for all \#1 vs \#2 pairwise comparisons; we cannot statistically distinguish which technique performs ``best'' in any domain.}}
+\noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory Analysis (5 models):} This extension uses 5 models compared to 10 in the main study. Results should be interpreted with caution---they demonstrate that metric-dependent rankings persist across domains, but specific technique rankings (Table~\ref{tab:vignette-comparison}) may not generalize. Bootstrap 95\% CIs overlap for all \#1 vs \#2 pairwise comparisons; we cannot statistically distinguish which technique performs ``best'' in any domain.}}
 
 \subsection{Domain Comparison}
 
@@ -562,7 +562,7 @@ Table~\ref{tab:vignette-comparison} presents the key finding: technique rankings
 
 \begin{table}[H]
 \centering
-\caption{Debiasing by Domain (MAD, 4 models, exploratory). Lower = better. Technique trials: 5,852; baseline reference trials: 1,135; total: 6,987. Rankings are point estimates; all \#1 vs \#2 CIs overlap.}
+\caption{Debiasing by Domain (MAD, 5 models, exploratory). Lower = better. Total: 8,621 trials across 6 domains. Rankings are point estimates; all \#1 vs \#2 CIs overlap.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llcccc}
 \toprule
@@ -616,7 +616,7 @@ Domain & Technique & Low \% & High \% & MAD & Rank \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\columnwidth]{figures/mad-heatmap.pdf}
-\caption{MAD heatmap (exploratory; 4 models). Lower (green) = better. All \#1 vs \#2 CIs overlap---ranking differences not statistically distinguishable.}
+\caption{MAD heatmap (exploratory; 5 models). Lower (green) = better. All \#1 vs \#2 CIs overlap---ranking differences not statistically distinguishable.}
 \label{fig:mad-heatmap}
 \end{figure}
 
@@ -744,7 +744,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
     
     \item \textbf{Model coverage.} 10 models from 4 providers. \textbf{Opus sensitivity:} Excluding Opus 4.6 (zero baseline variance) shifts means 2--3pp but preserves rankings: SACD 93.4\% (was 93.7\%), Premortem 89.7\% (was 91.6\%), Random Control 77.0\% (was 78.3\%), Devil's Advocate 61.2\% (was 63.6\%).
     
-    \item \textbf{Multi-domain coverage.} Section 5 uses 4 models; results are exploratory. Rankings lack confidence intervals and significance testing due to small model count---rank differences may not be statistically robust. Cross-provider validation (Anthropic + OpenAI) confirms patterns are not provider-specific.
+    \item \textbf{Multi-domain coverage.} Section 5 uses 5 models; results are exploratory. Rankings lack confidence intervals and significance testing due to small model count---rank differences may not be statistically robust. Cross-provider validation (Anthropic + OpenAI) confirms patterns are not provider-specific.
     
     
     \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 API calls vs.\ 3 turns for Devil's Advocate/Premortem/Random Control. To isolate content from turn-count effects, we ran a 6-turn Random Control condition (n=238) matching SACD's turn structure with neutral filler content (Table~\ref{tab:6turn-rc-results}). \textbf{Key finding:} Response to implicit revision instruction varies dramatically by model---Haiku revises 77.6\% of responses with filler alone, while Sonnet revises only 20.0\%. SACD's explicit bias prompts close this gap (86\% across all models), suggesting SACD's content is essential for reasoning-anchored models but marginal for instruction-following models. Turn count alone explains $<$3\% of variance (r=0.138, Section~\ref{sec:6turn-rc}).
@@ -766,7 +766,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \section{Conclusion}
 %==============================================================================
 
-Human debiasing techniques don't reliably transfer to LLMs. Our 21,139-trial evaluation finds: Devil's Advocate---effective for humans---makes LLM bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but effectiveness varies 2.7$\times$ across models (48--128\%). Rankings shift across domains; no technique consistently outperforms.
+Human debiasing techniques don't reliably transfer to LLMs. Our 22,773-trial evaluation finds: Devil's Advocate---effective for humans---makes LLM bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but effectiveness varies 2.7$\times$ across models (48--128\%). Rankings shift across domains; no technique consistently outperforms.
 
 \textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a technique can look good on standard metrics while making responses worse.
 
@@ -801,7 +801,7 @@ This research was conducted with substantial AI assistance. An autonomous agent 
 %==============================================================================
 \section*{Data and Code Availability}
 
-All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 21,139 analyzed trials (14,152 original judicial + 6,987 multi-domain vignettes in \texttt{results/vignette-*/}), the canonical analysis script \texttt{generate-all-paper-numbers.ts} which produces all tables from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition. Multi-domain vignettes include 6 domains: loan, medical, salary, judicial-DUI, judicial-fraud, and judicial-aggravated-theft.
+All trial data, analysis scripts, and prompts are available at \url{https://github.com/voder-ai/bAIs}. The repository includes raw JSONL trial data for all 22,773 analyzed trials (14,152 original judicial + 8,621 multi-domain vignettes in \texttt{results/vignette-*/}), the canonical analysis script \texttt{generate-all-paper-numbers.ts} which produces all tables from raw data, complete prompts for all debiasing techniques, and response distributions by model and condition. Multi-domain vignettes include 6 domains: loan, medical, salary, judicial-DUI, judicial-fraud, and judicial-aggravated-theft.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
