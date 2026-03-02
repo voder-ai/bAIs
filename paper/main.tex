@@ -163,7 +163,7 @@ SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$); temperature effects $<$3pp (percentage points). (This F-test does not account for model clustering; treat as descriptive.) Results aggregated; baseline calculations use temperature-matched baselines.
+Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$); temperature effects $<$3pp (percentage points). (This F-test does not account for model clustering; denominator df are likely inflated. Treat as descriptive.) Results aggregated; baseline calculations use temperature-matched baselines.
 
 \subsubsection{Trial Counts and Procedure}
 
@@ -332,7 +332,7 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 
 \textbf{Magnitude of improvement:} Without any debiasing, anchored responses reach 72.9\% of baseline---a deficit of 27.1 percentage points from the unanchored judgment. SACD achieves 93.7\%, reducing this deficit to 6.3pp. This represents a reduction of 20.8pp, though the residual deficit and bidirectional variance (MAD=18.1\%) remain limitations.
 
-\textbf{Effect sizes:} With model clustering (ICC=0.17, design effect $\approx$35), trial-level Cohen's $d$ would be inflated. We therefore report effect sizes via mixed-effects modeling (Section~\ref{sec:mixed-effects}), which properly accounts for the nested structure. The SACD--DA difference is large and robust; SACD--Premortem is negligible.
+\textbf{Effect sizes:} With model clustering (ICC=0.17, design effect $\approx$35), trial-level Cohen's $d$ would be inflated. We therefore report effect sizes via mixed-effects modeling (Section~\ref{sec:mixed-effects}), which properly accounts for the nested structure. Pairwise comparisons: SACD vs.\ DA $d = 1.06$ (large), SACD vs.\ RC $d = 0.51$ (medium), Premortem vs.\ DA $d = 0.71$ (medium), RC vs.\ DA $d = 0.39$ (small). The SACD--Premortem difference is negligible ($d = 0.08$).
 
 \subsection{High-Anchor Responses (No Technique)}
 
@@ -490,7 +490,7 @@ To test whether our findings generalize beyond the original judicial sentencing 
 
 \noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory (5 models):} All \#1 vs \#2 CIs overlap; rankings are point estimates only.}}
 
-\textbf{Metric choice:} We report MAD (rather than aggregate \% of baseline) for multi-domain results because per-trial error is more informative for comparing heterogeneous domains with different baseline scales. MAD also directly addresses our methodological contribution: revealing variance that aggregates mask.
+\textbf{Metric choice:} We report MAD (rather than aggregate \% of baseline) for multi-domain results for three reasons: (1) per-trial error is more informative for comparing heterogeneous domains with different baseline scales; (2) MAD directly addresses our methodological contribution---revealing variance that aggregates mask; (3) with fewer models (5 vs 10), model-specific effects are harder to average out, making per-trial error the more conservative metric.
 
 \subsection{Domain Comparison}
 
