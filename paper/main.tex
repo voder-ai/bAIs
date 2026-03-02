@@ -32,7 +32,7 @@
 \maketitle
 
 \begin{abstract}
-Do prompts implementing human debiasing techniques work on LLMs? We test one prompt implementation per technique for four approaches from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View---plus a Random Control---across two studies totaling 22,773 anchoring bias trials (14,152 main study + 8,621 multi-domain extension).
+Do prompts implementing human debiasing techniques work on LLMs? We test one prompt implementation per technique for four approaches from the cognitive bias literature---Devil's Advocate, SACD (Self-Administered Cognitive Debiasing), Premortem, Outside View---plus a Random Control---across two studies totaling 22,773 anchoring bias trials (14,152 main study + 8,621 multi-domain extension).
 
 \textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from baseline than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
@@ -161,7 +161,7 @@ SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$); temperature effects $<$3pp. (This F-test does not account for model clustering; treat as descriptive.) Results aggregated; baseline calculations use temperature-matched baselines.
+Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$); temperature effects $<$3pp (percentage points). (This F-test does not account for model clustering; treat as descriptive.) Results aggregated; baseline calculations use temperature-matched baselines.
 
 \subsubsection{Trial Counts and Procedure}
 
