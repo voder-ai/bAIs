@@ -36,7 +36,7 @@ Do human debiasing techniques work on LLMs? We test five techniques from the cog
 
 \textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline), but one makes things worse: Devil's Advocate produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, Devil's Advocate looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
 
-Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline across models. Rankings shift across domains. No technique consistently outperforms.
+Effectiveness varies dramatically: SACD ranges from 48\% to 128\% of baseline across models. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
 
 \textbf{For practitioners:} Don't assume human debiasing techniques transfer. Test per-model, per-task. Report baseline proximity alongside susceptibility---a technique can reduce anchor sensitivity while moving responses away from the correct answer.
 \end{abstract}
@@ -53,7 +53,7 @@ We test five techniques from the cognitive bias literature across 22,773 trials.
 
 \textbf{One hurts:} Devil's Advocate produces responses at only 63.6\% of baseline---worse than doing nothing (72.9\%). It makes responses \textit{consistently wrong}.
 
-\textbf{Variance is large:} SACD ranges from 48\% to 128\% of baseline across models. Rankings shift across domains. No technique consistently outperforms.
+\textbf{Variance is large:} SACD ranges from 48\% to 128\% of baseline across models. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
 
 \subsection{Two Metrics, Two Rankings}
 \label{sec:two-metrics}
@@ -70,6 +70,7 @@ Lower gap = less susceptible. But susceptibility measures \textit{consistency}, 
 \begin{equation}
 \text{\% of Baseline} = \frac{R_{technique}}{R_{baseline}} \times 100\%
 \end{equation}
+\textit{Note:} This metric also measures consistency (against unanchored judgment), not ground-truth accuracy. 100\% = the model's anchor-free response, which may itself be incorrect.
 This directly answers: ``Is the debiased response close to what the model would say without any anchor?''
 
 \subsection{Aggregate Metrics Hide Per-Trial Error}
@@ -503,7 +504,9 @@ Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
 
 \textbf{Key insight:} SACD's aggregate results from averaging over bidirectional deviation (Table~\ref{tab:anchor-asymmetry}). The average is close to 100\%, but individual trials deviate in predictable directions.
 
-\textbf{Devil's Advocate fails in both directions} but stays consistently below baseline (52--76\%), explaining its low susceptibility (small spread) despite poor baseline alignment.
+\textbf{No-technique baseline shows asymmetry:} Without any intervention, models respond at 59.9\% of baseline under low anchors and 86.0\% under high anchors (26.1pp gap). This natural pull toward high anchors is what techniques attempt to correct.
+
+\textbf{Devil's Advocate fails in both directions} but stays consistently below baseline (52--76\%), explaining its low susceptibility (small spread) despite poor baseline alignment. Rather than correcting the asymmetry, it compresses responses toward a consistently wrong value.
 
 \subsection{Mixed Effects Analysis}
 \label{sec:mixed-effects}
@@ -768,7 +771,7 @@ Sonnet 4.6 & 11.7\% & 8.3\% & 80.0\% \\
 \section{Conclusion}
 %==============================================================================
 
-Human debiasing techniques don't reliably transfer to LLMs. Our 22,773-trial evaluation finds: Devil's Advocate---effective for humans---makes LLM bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but effectiveness varies 2.7$\times$ across models (48--128\%). Rankings shift across domains; no technique consistently outperforms.
+Human debiasing techniques don't reliably transfer to LLMs. Our 22,773-trial evaluation finds: Devil's Advocate---effective for humans---makes LLM bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but effectiveness varies 2.7$\times$ across models (48--128\%). Point-estimate rankings vary across domains (CIs overlap); no technique consistently outperforms.
 
 \textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a technique can look good on standard metrics while making responses worse.
 
