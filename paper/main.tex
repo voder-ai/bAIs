@@ -167,7 +167,7 @@ SACD & Iterative self-administered cognitive debiasing \\
 
 \subsubsection{Temperature Conditions}
 
-Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$); temperature effects $<$3pp (percentage points). (This F-test does not account for model clustering; denominator df are likely inflated. Treat as descriptive.) Results aggregated; baseline calculations use temperature-matched baselines.
+Tested at t=0, 0.7, 1.0. No significant temperature$\times$technique interaction ($F(6, 8944) = 1.42$, $p = 0.203$); temperature effects $<$3pp (percentage points), $d < 0.15$ (negligible relative to technique effects of $d = 0.5$--$1.0$). (This F-test does not account for model clustering; denominator df are likely inflated. Treat as descriptive.) Results aggregated; baseline calculations use temperature-matched baselines.
 
 \subsubsection{Trial Counts and Procedure}
 
@@ -478,7 +478,7 @@ y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + \beta_{\t
 
 where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, $v_{j,\text{technique}} \sim N(0, \sigma^2_v)$ is the random slope allowing technique effects to vary by model, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,956 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, consistent with the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
-ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction: $F(3, 8950) = 47.3$. \textbf{Cluster caveat:} With only 10 model clusters, denominator df are approximate (likely inflated) and random-effects variance estimates may be unreliable \citep{maas2005}; treat as descriptive. Fixed effects suggest ranking: SACD $+11.9$ pp (percentage points), Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
+ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction: $F(3, 8950) = 47.3$. \textbf{Cluster caveat:} With only 10 model clusters, denominator df are approximate (likely inflated) and random-effects variance estimates may be unreliable \citep{maas2005}; treat as descriptive. Fixed-effect estimates (CIs omitted given cluster caveats): SACD $+11.9$ pp (percentage points), Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
 
 \textbf{Random slopes:} SACD shows highest slope variance (SD = 25.6 pp), showing effectiveness varies dramatically across models (+33\% to $-$56\% from fixed effect). This justifies per-model testing (Table~\ref{tab:sacd-by-model}). \textit{Caution:} Estimating random slopes with only 10 clusters risks overparameterization; slope variance estimates should be interpreted qualitatively.
 
@@ -620,7 +620,7 @@ Sonnet 4.6 & Low (12mo) & 30 & 9 & 30.0\% & 56.0pp \\
 \end{tabular}
 \end{table}
 
-\textbf{Key findings:} (1) Model response to implicit revision varies dramatically ($\chi^2 = 89.97$, $p < 0.0001$): GPT-5.2 revises 100\%, Sonnet only 20\%. (2) Revision rate $\neq$ quality: Haiku revises 77.6\% but 62.1\% move \textit{away} from baseline (Table~\ref{tab:6turn-revision-quality}).
+\textbf{Key findings:} (1) Model response to implicit revision varies dramatically ($\chi^2 = 89.97$, $p < 0.0001$): GPT-5.2 revises 100\%, Sonnet only 20\%. (2) Revision rate $\neq$ quality: Haiku revises 77.6\% but 62.1\% move \textit{away} from baseline (Table~\ref{tab:6turn-revision-quality}). \textit{Note:} Small $n$ per cell (28--60); point estimates shown without CIs given exploratory nature.
 
 \begin{table}[htbp]
 \centering
