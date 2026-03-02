@@ -493,13 +493,13 @@ Table~\ref{tab:metric-comparison} confirms the divergence; Table~\ref{tab:anchor
 
 \subsection{The SACD vs.\ Premortem Tradeoff}
 
-SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) are statistically equivalent (TOST $p < 0.01$, equivalence bound $\pm$5pp). However, SACD's aggregate masks 18.1\% MAD vs.\ Premortem's 22.6\%. Model-specific variation dominates; per-model testing is essential.
+SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) are statistically equivalent (TOST $p < 0.01$, equivalence bound $\pm$5pp---chosen as the smallest difference likely to affect deployment decisions). However, SACD's aggregate masks 18.1\% MAD vs.\ Premortem's 22.6\%. Model-specific variation dominates; per-model testing is essential.
 
 %==============================================================================
 \section{Multi-Domain Generalization}
 %==============================================================================
 
-To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 8,621 trials across these vignettes using models from Anthropic (Claude Opus 4.6, Sonnet 4.6, Sonnet 4.5, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI), providing cross-provider validation.\footnote{Haiku 4.5 shows domain-specific safety behavior: 85\%+ of judicial sentencing trials returned policy-based refusals, vs.\ $<$1\% for other models; valid responses are included in analysis. Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
+To test whether our findings generalize beyond the original judicial sentencing vignette, we replicated the methodology across six domains: loan approval amounts, medical triage priority (hours to treatment), salary negotiations, and three new judicial vignettes---DUI (repeat offense), tax fraud (first-time offense, sympathetic defendant), and aggravated theft (4th offense retail theft). We analyzed 8,621 trials using Anthropic models (Claude Opus 4.6, Sonnet 4.6, Sonnet 4.5---added for model diversity, Haiku 4.5) and OpenAI (GPT-5.2 via Codex CLI).\footnote{Haiku 4.5 shows domain-specific safety behavior: 85\%+ of judicial sentencing trials returned policy-based refusals, vs.\ $<$1\% for other models; valid responses are included in analysis. Sonnet 4.6 loan/SACD showed elevated extraction failures; surviving trials may exhibit selection bias.}
 
 \noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory (5 models):} All \#1 vs \#2 CIs overlap; rankings are point estimates only.}}
 
