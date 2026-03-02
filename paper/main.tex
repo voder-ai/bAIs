@@ -34,20 +34,20 @@
 \begin{abstract}
 Do human debiasing techniques work on LLMs? We test one prompt implementation per technique for five approaches from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across two studies totaling 22,773 anchoring bias trials (14,152 main study + 8,621 multi-domain extension).
 
-\textbf{For these prompts: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our specific Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative prompts may perform differently; we test one implementation per technique.
+\textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative prompt formulations may perform differently.
 
-Effectiveness varies dramatically: SACD shows the highest model variance, ranging from 48\% to 128\% of baseline. Point-estimate rankings vary across domains (CIs overlap). No technique consistently outperforms.
+Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from 48\% to 128\% of baseline. Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models.
 
 \textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
 
-\textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-task. Report MAD alongside aggregates.
+\textbf{For practitioners:} Don't assume a single prompt implementation transfers. Test per-model, per-task. Report MAD alongside aggregates.
 \end{abstract}
 
 %==============================================================================
 \section{Introduction}
 %==============================================================================
 
-Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do they actually work? We test one prompt per technique across 22,773 trials and find transfer is not straightforward: SACD effectiveness ranges from 48\% to 128\% of baseline across models. Different prompt formulations may yield different results. Most concerning, standard evaluation metrics can recommend the wrong technique.
+Human debiasing techniques---Devil's Advocate, Premortem, deliberative reasoning---are increasingly applied to LLMs. But do specific prompts implementing these techniques actually work? We test one prompt per technique across 22,773 trials and find transfer is not straightforward: our SACD prompt's effectiveness ranges from 48\% to 128\% of baseline across models. Different prompt formulations may yield different results. Most concerning, standard evaluation metrics can recommend the wrong prompt.
 
 \subsection{Two Metrics, Two Rankings}
 \label{sec:two-metrics}
@@ -581,7 +581,7 @@ Domain & Technique & MAD & 95\% CI & Rank \\
 \section{Discussion}
 %==============================================================================
 
-Human debiasing techniques show mixed transfer to LLMs. Our DA implementation produces worst baseline proximity (63.6\%); SACD and Premortem help on average but effectiveness ranges 48\%--128\% across models.
+The debiasing prompts we tested show mixed transfer to LLMs. Our DA prompt produces worst baseline proximity (63.6\%); our SACD and Premortem prompts help on average but effectiveness ranges 48\%--128\% across models. Other prompt formulations implementing these techniques may perform differently.
 
 \subsection{Why SACD Works (and Fails)}
 
@@ -692,7 +692,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 \section{Conclusion}
 %==============================================================================
 
-Human debiasing techniques show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate implementation makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). SACD and Premortem help on average (91--94\%), but SACD ranges from 48\% to 128\% across models. Point-estimate rankings vary across domains (CIs overlap); no technique consistently outperforms.
+Human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation of one prompt per technique finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from 48\% to 128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms. Different prompt formulations may yield different results.
 
 \textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a technique can look good on standard metrics while making responses worse.
 
