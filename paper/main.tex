@@ -32,7 +32,7 @@
 \maketitle
 
 \begin{abstract}
-Do human debiasing techniques work on LLMs? We test five techniques from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across 22,773 anchoring bias trials.
+Do human debiasing techniques work on LLMs? We test five techniques from the cognitive bias literature---Devil's Advocate, SACD, Premortem, Outside View, and a Random Control---across two studies totaling 22,773 anchoring bias trials (14,152 main study + 8,621 multi-domain extension).
 
 \textbf{The answer: not reliably.} Some techniques help (SACD achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our specific Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from correct than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy. Alternative prompts may perform differently; we test one implementation per technique.
 
@@ -72,8 +72,8 @@ Even \% of baseline can mislead when averaged (bidirectional errors cancel). SAC
 \subsection{Contributions}
 
 (1) \textbf{Aggregate metrics mask bidirectional error.} We demonstrate that aggregate \% of baseline can mislead: SACD achieves 93.7\% but 18.1\% MAD, because over/undershoots cancel. We recommend reporting MAD alongside aggregates.
-(2) Cross-domain evaluation (22,773 trials, 6 domains) showing technique rankings vary by domain and metric.
-(3) Deep validation (14,152 judicial trials, 10 models) confirming substantial model-specific variance (SACD: 48\%--128\%).
+(2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) confirming substantial model-specific variance (SACD: 48\%--128\%).
+(3) \textbf{Multi-domain extension:} Cross-domain evaluation (8,621 trials, 6 domains, 4 models) showing technique rankings vary by domain and metric. Combined total: 22,773 trials.
 
 %==============================================================================
 \section{Related Work}
@@ -589,7 +589,7 @@ SACD achieves highest \% of baseline but also highest variance (Table~\ref{tab:s
 
 \subsection{Why Random Control Works}
 
-Random Control outperforms Devil's Advocate (+15pp) despite no debiasing content. One hypothesis: explicit bias prompts may prime models to attend to anchors they would otherwise ignore (iatrogenic effect). Random Control's neutral filler avoids this priming while providing multi-turn structure.
+Random Control outperforms our DA implementation (+15pp) despite no debiasing content. One hypothesis: explicit bias prompts may prime models to attend to anchors they would otherwise ignore (iatrogenic effect). Random Control's neutral filler avoids this priming while providing multi-turn structure.
 
 \subsection{Design Confounds}
 \label{sec:outside-view-confound}
@@ -681,9 +681,9 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 \subsection{Practical Recommendations}
 
 \begin{enumerate}
-    \item \textbf{Add conversation turns.} Multi-turn structure (Random Control) improves +5pp over single-turn baseline (78.3\% vs 72.9\%) and outperforms Devil's Advocate by +15pp.
+    \item \textbf{Add conversation turns.} Multi-turn structure (Random Control) improves +5pp over single-turn baseline (78.3\% vs 72.9\%) and outperforms our DA implementation by +15pp.
     \item \textbf{Test per-model.} SACD ranges 48\%--128\% of baseline across models.
-    \item \textbf{Collect baselines.} Susceptibility alone misses Devil's Advocate failure mode.
+    \item \textbf{Collect baselines.} Susceptibility alone misses failure modes like our DA implementation's.
     \item \textbf{Avoid reference class prompts} without careful design (Section~\ref{sec:outside-view-confound}).
     \item \textbf{Consider cost.} Premortem matches SACD in one turn vs.\ six.
 \end{enumerate}
@@ -696,7 +696,7 @@ Human debiasing techniques show mixed transfer to LLMs. Our 22,773-trial evaluat
 
 \textbf{For practitioners:} Don't assume human techniques transfer. Test per-model, per-domain. Report baseline proximity alongside susceptibility---a technique can look good on standard metrics while making responses worse.
 
-\textbf{For researchers:} Collect unanchored baselines. Susceptibility alone missed Devil's Advocate's failure.
+\textbf{For researchers:} Collect unanchored baselines. Susceptibility alone missed our DA implementation's failure.
 
 %==============================================================================
 \appendix
