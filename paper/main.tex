@@ -465,18 +465,14 @@ Devil's Advocate & 51.8\% & [50, 53] & 75.5\% & [73, 78] & 23.7 pp \\
 To account for non-independence of observations within models, we fit a linear mixed effects model:
 
 \begin{equation}
-y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + u_j + \epsilon_{ijk}
+y_{ijk} = \beta_0 + \beta_{\text{technique}} + \beta_{\text{anchor}} + \beta_{\text{technique} \times \text{anchor}} + u_j + \epsilon_{ijk}
 \end{equation}
 
-where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,958 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, consistent with the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
+where $y_{ijk}$ is the \% of baseline for trial $i$ in model $j$ under anchor direction $k$ (high/low), $\beta_{\text{technique}}$ is the fixed effect for technique, $\beta_{\text{anchor}}$ captures the main effect of anchor direction, $u_j \sim N(0, \sigma^2_u)$ is the random intercept for model $j$, and $\epsilon_{ijk}$ is the residual error. Analysis includes 8,956 trials across 10 models and 4 techniques (excluding Outside View due to confound). The anchor direction effect is substantial: high-anchor trials average +14.5 pp above low-anchor trials across all techniques, consistent with the asymmetry reported in Table~\ref{tab:anchor-asymmetry}.
 
 ICC = 0.17, indicating 17\% of variance is attributable to model differences. Technique $\times$ anchor interaction is significant ($F(3, 8950) = 47.3$, $p < 0.001$). \textbf{Cluster caveat:} With only 10 model clusters, random-effects variance estimates may be unreliable \citep{maas2005}; these results are best treated as descriptive rather than confirmatory. Fixed effects suggest ranking: SACD $+11.9$ pp, Premortem $+9.8$ pp, Random Control $-3.5$ pp, Devil's Advocate $-18.2$ pp (relative to grand mean 81.8\%).
 
 \textbf{Random slopes:} SACD shows highest slope variance (SD = 25.6 pp), showing effectiveness varies dramatically across models (+33\% to $-$56\% from fixed effect). This justifies per-model testing (Table~\ref{tab:sacd-by-model}).
-
-\subsection{The Metric Divergence}
-
-Table~\ref{tab:metric-comparison} shows the divergence; Table~\ref{tab:anchor-asymmetry} reveals SACD's bidirectional over/under-correction by anchor direction.
 
 \subsection{The SACD vs.\ Premortem Tradeoff}
 
@@ -659,7 +655,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
     \item \textbf{GPT-5.2 protocol.} GPT-5.2 used single-prompt simulation (full conversation in one call) vs.\ true multi-turn API for Anthropic models. GPT-5.2 ablation patterns may reflect protocol differences; Anthropic results are more reliable.
     
     
-    \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 turns vs.\ 3 for others. Multi-turn structure helps (Random Control +5.4pp over single-turn), but our 6-turn ablation (n=238) shows SACD's specific content explains additional variance beyond turn count---especially for models less prone to implicit revision.
+    \item \textbf{Turn-count confound (partially addressed).} SACD uses $\sim$6 turns vs.\ 3 for others. Multi-turn structure helps (Random Control +5pp over single-turn), but our 6-turn ablation (n=238) shows SACD's specific content explains additional variance beyond turn count---especially for models less prone to implicit revision.
     
     \item \textbf{Stopping rule.} Targeted $n \geq 30$ per condition as minimum sample size. Bootstrap CIs provide valid inference; effect sizes ($d > 0.5$) suggest adequate power.
     
