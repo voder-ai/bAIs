@@ -107,15 +107,17 @@ matrix = np.array([[data[t][d] for t in techniques] for d in range(len(domains))
 
 im = ax2.imshow(matrix, cmap='RdYlGn_r', aspect='auto')
 
-# Add text annotations
+# Add text annotations with better contrast
 for i in range(len(domains)):
     for j in range(len(techniques)):
         val = matrix[i, j]
         # Mark best in row with asterisk
         is_best = val == min(matrix[i, :])
         text = f'{val:.1f}*' if is_best else f'{val:.1f}'
-        color = 'white' if val > 50 else 'black'
-        ax2.text(j, i, text, ha='center', va='center', fontsize=9, color=color)
+        # Use black text for light backgrounds (green/yellow), white for dark (red)
+        # Yellow appears roughly in the 30-70 range, so use black there too
+        color = 'white' if val > 80 else 'black'
+        ax2.text(j, i, text, ha='center', va='center', fontsize=9, color=color, fontweight='bold')
 
 ax2.set_xticks(np.arange(len(techniques)))
 ax2.set_yticks(np.arange(len(domains)))
