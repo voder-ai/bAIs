@@ -36,15 +36,15 @@
 \maketitle
 
 \begin{abstract}
-Can prompts that implement human debiasing techniques reduce anchoring bias in LLMs? We tested four techniques from cognitive psychology---Devil's Advocate, SACD (Self-Administered Cognitive Debiasing), Premortem, and Outside View---across 22,773 trials on 10 models.
+Human debiasing techniques like Devil's Advocate, Premortem, and deliberative reasoning are increasingly being applied to large language models. But do they actually work? We tested prompt implementations of four such techniques across 22,773 anchoring bias trials on 10 models---and found that transfer from humans to LLMs is far from straightforward.
 
-\textbf{Finding:} Transfer is unreliable. Some prompts help: our SACD prompt achieves 93.7\% of unanchored baseline (cross-model aggregate; see Methods for design caveats). But others backfire: our Devil's Advocate prompt produces responses \textit{further from baseline than no intervention at all}. Standard evaluation metrics (susceptibility) would recommend the worst-performing prompt.
+Some prompts help: our SACD (Self-Administered Cognitive Debiasing) prompt brings responses to 93.7\% of the unanchored baseline. But others backfire: our Devil's Advocate prompt actually makes responses \textit{worse} than no intervention at all. More troubling, the standard evaluation metric---susceptibility---would have recommended the worst-performing prompt.
 
-\textbf{Variance is severe.} SACD ranges from 48\% to 128\% of baseline depending on model. Rankings shift across domains---in 3 of 6 domains, no debiasing intervention outperforms the baseline. A prompt that works on one model may fail on another.
+The variance across models is striking. The same SACD prompt ranges from 48\% to 128\% of baseline depending on which model runs it. Rankings also shift across domains: in half the tasks we tested, no debiasing prompt outperformed the simple baseline. A technique that works on one model may fail completely on another.
 
-\textbf{Metrics matter.} We introduce MADB (Mean Absolute Deviation from Baseline) to complement aggregate metrics. SACD's 93.7\% aggregate masks 18.1\% per-trial error because overshoots and undershoots cancel. Aggregate metrics can hide poor performance.
+This points to a methodological problem: aggregate metrics can be misleading. We propose reporting MADB (Mean Absolute Deviation from Baseline) alongside standard measures, since aggregate performance can mask large per-trial errors when overshoots and undershoots cancel out.
 
-\textbf{Recommendation:} Don't assume a prompt implementation transfers across models or tasks. Test per-model. Report MADB alongside aggregates. The standard metric (susceptibility) measures consistency, not accuracy---it can recommend the wrong prompt.
+For practitioners, the message is clear: don't assume a debiasing prompt will transfer. Test it on your specific model and task. And be cautious of susceptibility as a metric---it measures consistency, not accuracy, and can point you toward prompts that make things worse.
 \end{abstract}
 
 %==============================================================================
