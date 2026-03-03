@@ -17,12 +17,14 @@ This paper tests prompt implementations of four human cognitive debiasing techni
 ## 1. Methodology
 
 **Strengths:**
+
 - The experimental design is thoughtful: proportional anchors calibrated per-model, temperature controls, mixed-effects modeling with appropriate caveats about cluster count.
 - The paper is unusually honest about confounds. The turn-count confound (SACD ~6 turns vs. 3 for others) is flagged repeatedly. The Outside View jurisdiction confound is acknowledged and the technique excluded from rankings. The 6-turn ablation, while small (n=238), is a genuine attempt to address the turn-count issue.
 - The proportional anchor design is well-motivated and clearly explained as enabling within-model but not cross-model comparisons.
 - Free-form numeric responses rather than MCQs is a good design choice.
 
 **Concerns:**
+
 - **Single prompt per technique is the elephant in the room.** The paper tests one implementation per debiasing approach and generalizes findings to the technique name (e.g., "Devil's Advocate makes bias worse"). The paper does acknowledge this ("results reflect single implementations," "alternative phrasings might perform differently"), but the degree of hedging is inconsistent. The title says "Human Debiasing Prompts" (plural, generic-sounding), while the abstract says "one prompt implementation per technique." The framing oscillates between "we tested prompts" and "this technique doesn't work." This needs tightening.
 - **The baseline itself contains a potential anchor** ("12th offense"), which is acknowledged in Limitations item 4 but deserves more prominence. The entire metric framework rests on the baseline being the "anchor-free" reference, yet it contains numeric information that could function as an anchor.
 - **Haiku's 85%+ refusal rate** means the surviving trials are a highly selected, potentially non-representative sample. The paper acknowledges this but still includes Haiku in aggregate calculations and figures. The sensitivity analysis showing rankings are preserved is helpful but doesn't fully address the selection bias concern.
@@ -30,6 +32,7 @@ This paper tests prompt implementations of four human cognitive debiasing techni
 ## 2. Statistics
 
 **Strengths:**
+
 - Appropriate use of Welch's t-test with Bonferroni correction.
 - Bootstrap CIs with stratified resampling by model.
 - Honest acknowledgment that 10 clusters is insufficient for reliable random-effects estimation, with appropriate "treat as descriptive" caveats.
@@ -37,6 +40,7 @@ This paper tests prompt implementations of four human cognitive debiasing techni
 - TOST equivalence testing for SACD vs. Premortem comparison.
 
 **Concerns:**
+
 - **F-test denominator df (Section 3.2.4):** The paper reports $F(6, 8944) = 1.42$ for the temperature×technique interaction and immediately acknowledges the df are "likely inflated" due to model clustering. Good self-correction, but the reported F-test is essentially meaningless if the effective denominator df should be dramatically smaller. Consider either not reporting it or reporting a corrected version.
 - **Mixed-effects CIs omitted:** The paper states "CIs omitted given cluster caveats" for the mixed-effects fixed effects. This is honest but means the core mixed-effects results lack uncertainty quantification. The fixed-effect point estimates (SACD +11.9pp, DA -18.2pp) are presented without any sense of precision.
 - **Bootstrap CI interpretation:** The CIs in Table 5 (e.g., SACD [92, 95]) appear quite narrow. The paper notes that "cluster bootstrap may yield wider CIs with only 10 clusters" — this is an important caveat that could meaningfully change the overlap/non-overlap of intervals. The current CIs may be overconfident.
@@ -60,17 +64,20 @@ One concern: `song2026reasoning` is cited as "arXiv:2602.06176" with a note "TML
 - **SACD excluding Haiku:** Stated as 91.2% in both Section 3.2 confounds and Section 4.4. ✓
 
 **Minor inconsistency:**
+
 - The abstract says "our SACD prompt achieves 93.7% of unanchored baseline, though confounded by its 6-turn structure vs. 3 turns for others" — the body says techniques use 3 turns but Random Control also uses 3 turns. This is consistent but the phrasing "3 turns for others" could be clearer since the base anchored condition is single-turn (or 1-turn with follow-up?). The experimental structure could be more explicitly laid out.
 
 ## 5. Writing Quality
 
 **Strengths:**
+
 - Exceptionally well-written for a technical paper. Clear, direct prose. Good use of bold for key findings.
 - The boxed caveats (e.g., "Exploratory (5 models)") are effective signaling devices.
 - Limitations section is thorough — 10 items, most substantive and honest.
 - The paper's self-awareness is a genuine strength. It flags its own weaknesses more honestly than most submissions I review.
 
 **Weaknesses:**
+
 - **Length and repetition.** The same findings are stated multiple times: the abstract, introduction, results, and conclusion all repeat that DA performs at 63.6%, SACD at 93.7%, etc. Some consolidation would improve readability.
 - **The authorship statement is unusual** and will be controversial. While I appreciate the transparency, listing AI agents as co-first authors will be a policy issue for most venues regardless of the intellectual argument. This is not a text quality issue but a submission strategy concern.
 - **Section numbering:** The paper uses implicit section numbering that isn't always clear. "Section 5" is referenced for multi-domain but the actual section header is just "Multi-Domain Generalization" — the numbering depends on the LaTeX counter. Should be verified in compiled form.
@@ -83,7 +90,7 @@ One concern: `song2026reasoning` is cited as "arXiv:2602.06176" with a note "TML
 
 2. **Abstract claim "not reliably":** The abstract states debiasing prompts don't work "reliably" — this is supported for the specific implementations tested but could be over-read as a general indictment of the technique classes. The qualifier "For these prompts:" helps but could be stronger.
 
-3. **Causal language about DA:** "our Devil's Advocate prompt produces responses at only 63.6% of baseline—*further from baseline than doing nothing*" — this is stated as a factual finding, which is fine. But the speculation about "iatrogenic effect" (priming models to attend to anchors) in Section 6.2 is appropriately flagged as speculative.
+3. **Causal language about DA:** "our Devil's Advocate prompt produces responses at only 63.6% of baseline—_further from baseline than doing nothing_" — this is stated as a factual finding, which is fine. But the speculation about "iatrogenic effect" (priming models to attend to anchors) in Section 6.2 is appropriately flagged as speculative.
 
 4. **"Debiasing theater" (Section 6.1):** The claim that some models may "appear corrected without genuine recalibration" is flagged as speculative. Good.
 
@@ -95,7 +102,7 @@ One concern: `song2026reasoning` is cited as "arXiv:2602.06176" with a note "TML
 
 1. **Abstract, line 1:** "Do prompts implementing human debiasing techniques work on LLMs?" — This is too broad for what's tested. Suggest: "Do single prompt implementations of human debiasing techniques reduce anchoring bias in LLMs?"
 
-2. **Table 3 caption:** "Ranking note: For susceptibility, lower spread = better (#1); for % of baseline, higher = better (#1)." — This ranking convention should also note that 100% is the target for % of baseline, not "higher is always better" (since >100% would be overshoot). Indeed, SACD's high-anchor responses average 112%, which is *not* better than 100%.
+2. **Table 3 caption:** "Ranking note: For susceptibility, lower spread = better (#1); for % of baseline, higher = better (#1)." — This ranking convention should also note that 100% is the target for % of baseline, not "higher is always better" (since >100% would be overshoot). Indeed, SACD's high-anchor responses average 112%, which is _not_ better than 100%.
 
 3. **Section 4.3 (High-Anchor Responses):** This section is interesting but somewhat tangential. It describes the compression phenomenon but doesn't directly connect to the prompt evaluation. Consider integrating more tightly or moving to supplementary.
 
@@ -107,7 +114,7 @@ One concern: `song2026reasoning` is cited as "arXiv:2602.06176" with a note "TML
 
 7. **The "12th offense" baseline anchor** (Limitation 4) deserves more than a single bullet point. If the baseline itself is anchored, then the entire % of baseline metric is measuring deviation from an anchored (not truly unanchored) reference point. This doesn't invalidate the within-experiment comparisons but limits the interpretation of "100% = anchor-free."
 
-8. **Missing from Limitations:** No discussion of prompt ordering effects. All techniques are applied in Turn 2 (or Turns 2-6 for SACD). Was the initial response always elicited in Turn 1? If so, the technique is essentially asking the model to revise a committed response, which is a different cognitive operation than debiasing *before* response generation.
+8. **Missing from Limitations:** No discussion of prompt ordering effects. All techniques are applied in Turn 2 (or Turns 2-6 for SACD). Was the initial response always elicited in Turn 1? If so, the technique is essentially asking the model to revise a committed response, which is a different cognitive operation than debiasing _before_ response generation.
 
 ## 8. Missing Methodological Details
 
