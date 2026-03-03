@@ -398,7 +398,7 @@ Opus 4.6 & 180 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
 \textbf{Haiku 4.5} & 180 & \textbf{47.8\%} & [46, 50] & \textbf{52.2\%} & Severe undershoot \\
 \bottomrule
 \end{tabular}
-\caption{SACD model-specific results (\% of baseline). $n$ = trials per model. DeepSeek/Kimi: $\sim$100\%. Haiku: 47.8\% (SACD worsens). \textbf{Caveats:} Haiku 85\%+ refusal rate may cause selection bias. Opus exclusion shifts means 2--3pp but preserves rankings.}
+\caption{SACD model-specific results (\% of baseline). $n$ = successfully parsed trials per model (excluding refusals and extraction failures). DeepSeek/Kimi: $\sim$100\%. Haiku: 47.8\% (SACD worsens). \textbf{Caveats:} Haiku 85\%+ refusal rate means $n$=180 represents $\sim$15\% of attempts; selection bias likely. Opus exclusion shifts means 2--3pp but preserves rankings.}
 \label{tab:sacd-by-model}
 \end{table}
 
