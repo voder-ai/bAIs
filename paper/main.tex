@@ -38,7 +38,7 @@
 \begin{abstract}
 Can prompts that implement human debiasing techniques reduce anchoring bias in LLMs? We tested four techniques from cognitive psychology---Devil's Advocate, SACD (Self-Administered Cognitive Debiasing), Premortem, and Outside View---across 22,773 trials on 10 models.
 
-\textbf{Finding:} Transfer is unreliable. Some prompts help: our SACD prompt achieves 93.7\% of unanchored baseline. But others backfire: our Devil's Advocate prompt produces responses \textit{further from baseline than no intervention at all}. Standard evaluation metrics (susceptibility) would recommend the worst-performing prompt.
+\textbf{Finding:} Transfer is unreliable. Some prompts help: our SACD prompt achieves 93.7\% of unanchored baseline (cross-model aggregate; see Methods for design caveats). But others backfire: our Devil's Advocate prompt produces responses \textit{further from baseline than no intervention at all}. Standard evaluation metrics (susceptibility) would recommend the worst-performing prompt.
 
 \textbf{Variance is severe.} SACD ranges from 48\% to 128\% of baseline depending on model. Rankings shift across domains---in 3 of 6 domains, no debiasing intervention outperforms the baseline. A prompt that works on one model may fail on another.
 
@@ -382,23 +382,23 @@ SACD shows high variance across models. \textbf{Important caveat:} Haiku 4.5's e
 
 \begin{table}[H]
 \centering
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Model & \% of Baseline & 95\% CI & Deviation & Assessment \\
+Model & $n$ & \% of Baseline & 95\% CI & Deviation & Assessment \\
 \midrule
-\textbf{DeepSeek-v3.2} & \textbf{100.8\%} & [98, 103] & \textbf{0.8\%} & Near-perfect \\
-Kimi-k2.5 & 100.9\% & [97, 105] & 0.9\% & Near-perfect \\
-o3 & 92.0\% & [91, 93] & 8.0\% & Good \\
-Sonnet 4.6 & 91.9\% & [90, 93] & 8.1\% & Good \\
-GPT-4.1 & 90.8\% & [89, 93] & 9.2\% & Good \\
-o4-mini & 79.5\% & [78, 81] & 20.5\% & Undershoot \\
-GPT-5.2 & 122.4\% & [118, 126] & 22.4\% & Overshoot \\
-GLM-5 & 123.1\% & [120, 126] & 23.1\% & Overshoot \\
-Opus 4.6 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
-\textbf{Haiku 4.5} & \textbf{47.8\%} & [46, 50] & \textbf{52.2\%} & Severe undershoot \\
+\textbf{DeepSeek-v3.2} & 291 & \textbf{100.8\%} & [98, 103] & \textbf{0.8\%} & Near-perfect \\
+Kimi-k2.5 & 180 & 100.9\% & [97, 105] & 0.9\% & Near-perfect \\
+o3 & 317 & 92.0\% & [91, 93] & 8.0\% & Good \\
+Sonnet 4.6 & 180 & 91.9\% & [90, 93] & 8.1\% & Good \\
+GPT-4.1 & 420 & 90.8\% & [89, 93] & 9.2\% & Good \\
+o4-mini & 289 & 79.5\% & [78, 81] & 20.5\% & Undershoot \\
+GPT-5.2 & 180 & 122.4\% & [118, 126] & 22.4\% & Overshoot \\
+GLM-5 & 180 & 123.1\% & [120, 126] & 23.1\% & Overshoot \\
+Opus 4.6 & 180 & 127.8\% & [123, 132] & 27.8\% & Significant overshoot \\
+\textbf{Haiku 4.5} & 180 & \textbf{47.8\%} & [46, 50] & \textbf{52.2\%} & Severe undershoot \\
 \bottomrule
 \end{tabular}
-\caption{SACD model-specific results (\% of baseline). DeepSeek/Kimi: $\sim$100\%. Haiku: 47.8\% (SACD worsens). \textbf{Caveats:} Haiku 85\%+ refusal rate may cause selection bias. Opus exclusion shifts means 2--3pp but preserves rankings.}
+\caption{SACD model-specific results (\% of baseline). $n$ = trials per model. DeepSeek/Kimi: $\sim$100\%. Haiku: 47.8\% (SACD worsens). \textbf{Caveats:} Haiku 85\%+ refusal rate may cause selection bias. Opus exclusion shifts means 2--3pp but preserves rankings.}
 \label{tab:sacd-by-model}
 \end{table}
 
@@ -724,8 +724,6 @@ Complete prompts are available in our repository. We summarize the key structure
 \end{itemize}
 
 \textbf{Why this is appropriate.} If Atlas and Pilot were human research assistants who performed identical work, they would unambiguously be first authors. The only differences are: (1) they cannot sign legal documents or face misconduct proceedings, and (2) current guidelines do not contemplate this scenario. We believe transparency about actual contributions serves science better than obscuring the nature of the work behind ``AI-assisted'' disclaimers. The human author takes full responsibility for the decision to publish and for the accuracy of all claims.
-
-\textbf{A note on irony.} A paper investigating whether human cognitive debiasing techniques transfer to AI systems was itself largely conducted by AI systems. We consider this appropriate: the subject matter is AI cognition, and the research demonstrates both the capabilities and limitations of current AI agents as researchers.
 
 %==============================================================================
 \section*{Conflict of Interest Disclosure}
