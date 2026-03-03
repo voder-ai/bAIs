@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate MAD comparison bar chart with bootstrap CIs for multi-domain study.
+Generate MADB comparison bar chart with bootstrap CIs for multi-domain study.
 """
 
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ import numpy as np
 # Data from bootstrap analysis (bootstrap-table-v-cis.ts output)
 domains = ['Salary', 'Loan', 'Medical', 'DUI', 'Fraud', 'Theft']
 
-# MAD values by technique (from bootstrap output)
+# MADB values by technique (from bootstrap output)
 data = {
     'baseline': [25.3, 105.4, 4.4, 22.0, 44.1, 24.1],
     'devils-advocate': [14.7, 54.3, 12.0, 19.0, 58.1, 29.9],
@@ -79,7 +79,7 @@ for idx, (domain, ax) in enumerate(zip(domains, axes)):
     bars[best_idx].set_linewidth(2)
     
     ax.set_title(domain, fontsize=12, fontweight='bold')
-    ax.set_ylabel('MAD (%)', fontsize=10)
+    ax.set_ylabel('MADB (%)', fontsize=10)
     ax.set_xticks(x)
     ax.set_xticklabels([technique_labels[t] for t in techniques], rotation=45, ha='right', fontsize=8)
     
@@ -122,10 +122,10 @@ ax2.set_yticks(np.arange(len(domains)))
 ax2.set_xticklabels([technique_labels[t] for t in techniques], rotation=45, ha='right')
 ax2.set_yticklabels(domains)
 
-ax2.set_title('MAD (%) by Domain × Technique\n(* = best in domain; lower = better)', fontsize=12)
+ax2.set_title('MADB (%) by Domain × Technique\n(* = best in domain; lower = better)', fontsize=12)
 
 cbar = plt.colorbar(im, ax=ax2, shrink=0.8)
-cbar.set_label('MAD (%)', fontsize=10)
+cbar.set_label('MADB (%)', fontsize=10)
 
 plt.tight_layout()
 plt.savefig('paper/figures/mad-heatmap.png', dpi=150, bbox_inches='tight', facecolor='white')
