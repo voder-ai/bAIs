@@ -24,7 +24,7 @@
 \author{
   Atlas$^{*\dagger}$, Pilot$^{*\dagger}$, Tom Howard$^{\ddagger}$\\[0.5em]
   \small $^{*}$Co-first authors (equal contribution)\\
-  \small $^{\dagger}$AI research agents (Claude Opus 4.6, Anthropic)\\
+  \small $^{\dagger}$Voder.ai agents running on OpenClaw, powered by Claude Opus 4.6 (Anthropic)\\
   \small $^{\ddagger}$Independent researcher. Correspondence: tom@voder.ai\\[0.5em]
   \small \textit{See Authorship Statement for rationale.}
 }
@@ -36,15 +36,15 @@
 \maketitle
 
 \begin{abstract}
-Do prompts implementing human debiasing techniques work on LLMs? We test one prompt implementation per technique for four approaches from the cognitive bias literature---Devil's Advocate, SACD (Self-Administered Cognitive Debiasing), Premortem, Outside View---plus a Random Control---across two studies totaling 22,773 anchoring bias trials (14,152 main study + 8,621 multi-domain extension).
+Can prompts that implement human debiasing techniques reduce anchoring bias in LLMs? We tested four techniques from cognitive psychology---Devil's Advocate, SACD (Self-Administered Cognitive Debiasing), Premortem, and Outside View---across 22,773 trials on 10 models.
 
-\textbf{For these prompts: not reliably.} Some prompts help (our SACD prompt achieves 93.7\% of unanchored baseline, though confounded by its 6-turn structure vs.\ 3 turns for others), but one makes things worse: our Devil's Advocate prompt produces responses at only 63.6\% of baseline---\textit{further from baseline than doing nothing} (72.9\%). Worse, this prompt looks best under the standard metric (susceptibility), which measures consistency rather than accuracy.
+\textbf{Finding:} Transfer is unreliable. Some prompts help: our SACD prompt achieves 93.7\% of unanchored baseline. But others backfire: our Devil's Advocate prompt produces responses \textit{further from baseline than no intervention at all}. Standard evaluation metrics (susceptibility) would recommend the worst-performing prompt.
 
-Effectiveness varies dramatically: our SACD prompt shows the highest model variance, ranging from $\sim$48\% to $\sim$128\% of baseline (driven by Haiku's severe undershoot and Opus's overshoot). Point-estimate rankings vary across domains (CIs overlap). No prompt consistently outperforms across all models. In the multi-domain extension, no intervention achieves lowest MAD in 3 of 6 domains---debiasing prompts can increase per-trial error.
+\textbf{Variance is severe.} SACD ranges from 48\% to 128\% of baseline depending on model. Rankings shift across domains---in 3 of 6 domains, no debiasing intervention outperforms the baseline. A prompt that works on one model may fail on another.
 
-\textbf{Methodological recommendation:} We advocate reporting \textbf{MAD} (Mean Absolute Deviation from baseline) alongside aggregate metrics. Aggregate \% of baseline can mislead: SACD's 93.7\% masks 18.1\% MAD because over/undershoots cancel.
+\textbf{Metrics matter.} We introduce MADB (Mean Absolute Deviation from Baseline) to complement aggregate metrics. SACD's 93.7\% aggregate masks 18.1\% per-trial error because overshoots and undershoots cancel. Aggregate metrics can hide poor performance.
 
-\textbf{For practitioners:} Don't assume a single prompt implementation transfers. Test per-model, per-task. Report MAD alongside aggregates.
+\textbf{Recommendation:} Don't assume a prompt implementation transfers across models or tasks. Test per-model. Report MADB alongside aggregates. The standard metric (susceptibility) measures consistency, not accuracy---it can recommend the wrong prompt.
 \end{abstract}
 
 %==============================================================================
@@ -70,7 +70,7 @@ where $R_{prompt}$ is the mean response under the technique (averaged across anc
 
 \subsection{Contributions}
 
-(1) \textbf{Aggregate metrics mask bidirectional error.} \textit{(Note: SACD uses $\sim$6 turns vs.\ 3 for others, confounding comparisons; see Section~\ref{sec:6turn-rc}.)} Standard \% of baseline can hide per-trial variance when overshoots and undershoots cancel (Section~\ref{sec:multi-domain}). We recommend reporting MAD alongside aggregates to reveal this hidden variance.
+(1) \textbf{Aggregate metrics mask bidirectional error.} \textit{(Note: SACD uses $\sim$6 turns vs.\ 3 for others, confounding comparisons; see Section~\ref{sec:6turn-rc}.)} Standard \% of baseline can hide per-trial variance when overshoots and undershoots cancel (Section~\ref{sec:multi-domain}). We recommend reporting MADB alongside aggregates to reveal this hidden variance.
 (2) \textbf{Main study:} Deep validation (14,152 judicial trials, 10 models) showing substantial model-specific variance.
 (3) \textbf{Multi-domain extension:} Cross-domain evaluation (8,621 trials, 6 domains, 5 models) showing prompt rankings vary by domain and metric. Combined total: 22,773 trials.
 
@@ -105,11 +105,11 @@ Standard anchoring evaluation uses \textbf{susceptibility} (high--low spread). W
 
 We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-metrics}). Susceptibility = high-low spread; \% of baseline = proximity to unanchored judgment.
 
-\textbf{Mean Absolute Deviation (MAD):} We define MAD as the average per-trial deviation from the model's unanchored baseline (not to be confused with the Median Absolute Deviation, also abbreviated MAD in some contexts):
+\textbf{Mean Absolute Deviation from Baseline (MADBB):} We define MADB as the average per-trial deviation from the model's unanchored baseline:
 \begin{equation}
-\text{MAD} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{r_i}{b_m} - 1 \right| \times 100\%
+\text{MADB} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{r_i}{b_m} - 1 \right| \times 100\%
 \end{equation}
-where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored baseline response, and the sum is over all anchored trials. Lower MAD indicates responses closer to unanchored judgment. Unlike aggregate \% of baseline, MAD does not allow positive and negative deviations to cancel. \textit{Note:} Because deviations are computed relative to each model's own baseline, MAD aggregates meaningfully across models with different absolute baselines.
+where $r_i$ is the response for trial $i$, $b_m$ is model $m$'s unanchored baseline response, and the sum is over all anchored trials. Lower MADB indicates responses closer to unanchored judgment. Unlike aggregate \% of baseline, MADB does not allow positive and negative deviations to cancel. \textit{Note:} Because deviations are computed relative to each model's own baseline, MADB aggregates meaningfully across models with different absolute baselines.
 
 \textbf{Why both?} Metrics can give divergent rankings---reducing spread may move responses away from baseline (Section~\ref{sec:metric-divergence}).
 
@@ -332,7 +332,7 @@ Premortem & 45.2pp & +73.8\% & \#4 & 91.6\% [90, 93] & \#2 \\
 
 \textbf{Why the divergence?} Our DA implementation produces \textit{consistent} responses (low spread) that remain \textit{far from baseline}. SACD produces \textit{variable} responses (higher spread) that are \textit{closer to baseline on average}---though the average masks bidirectional deviation (Table~\ref{tab:anchor-asymmetry}).
 
-\textbf{Magnitude of improvement:} Without any debiasing, anchored responses reach 72.9\% of baseline---a deficit of 27.1 percentage points from the unanchored judgment. SACD achieves 93.7\%, reducing this deficit to 6.3pp. This represents a reduction of 20.8pp, though the residual deficit and bidirectional variance (MAD=18.1\%) remain limitations.
+\textbf{Magnitude of improvement:} Without any debiasing, anchored responses reach 72.9\% of baseline---a deficit of 27.1 percentage points from the unanchored judgment. SACD achieves 93.7\%, reducing this deficit to 6.3pp. This represents a reduction of 20.8pp, though the residual deficit and bidirectional variance (MADB=18.1\%) remain limitations.
 
 \textbf{Effect sizes:} With model clustering (ICC=0.17, design effect $\approx$35), trial-level Cohen's $d$ would be inflated. We therefore report effect sizes via mixed-effects modeling (Section~\ref{sec:mixed-effects}), which properly accounts for the nested structure. Cohen's $d$ is computed as the fixed-effect difference divided by residual SD from the mixed model. Pairwise comparisons: SACD vs.\ DA $d = 1.06$ (large), SACD vs.\ RC $d = 0.51$ (medium), Premortem vs.\ DA $d = 0.71$ (medium), RC vs.\ DA $d = 0.39$ (small). The SACD--Premortem difference is negligible ($d = 0.08$).
 
@@ -353,13 +353,13 @@ The compression pattern is counterintuitive---high anchors typically pull respon
 
 \subsection{Technique Effectiveness: Percentage of Baseline}
 
-We rank prompts by aggregate \% of baseline in the main study (this section); the multi-domain study (Section~\ref{sec:multi-domain}) switches to MAD, which better captures per-trial error when comparing heterogeneous domains.
+We rank prompts by aggregate \% of baseline in the main study (this section); the multi-domain study (Section~\ref{sec:multi-domain}) switches to MADB, which better captures per-trial error when comparing heterogeneous domains.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{lcccccc}
 \toprule
-Prompt & $n$ & \% of Baseline & 95\% CI & MAD & Deviation & Rank \\
+Prompt & $n$ & \% of Baseline & 95\% CI & MADB & Deviation & Rank \\
 \midrule
 \textbf{SACD}$^\ddagger$ & 2,389 & \textbf{93.7\%} & [92, 95] & 18.1\% & \textbf{6.3\%} & \textbf{\#1} \\
 Premortem & 2,186 & 91.6\% & [90, 93] & 22.6\% & 8.4\% & \#2 \\
@@ -369,7 +369,7 @@ Devil's Advocate & 2,166 & 63.6\% & [62, 65] & 36.4\% & 36.4\% & \#4 \\
 \textit{Outside View}$^\dagger$ & 2,423 & 51.2\% & [49, 53] & 48.8\% & 48.8\% & --- \\
 \bottomrule
 \end{tabular}
-\caption{Technique effectiveness (\% of baseline + MAD). Deviation = aggregate distance from 100\%; MAD = mean absolute per-trial deviation. SACD's 6.3\% aggregate deviation masks 18.1\% MAD (bidirectional errors cancel). $^\dagger$Outside View confounded. $^\ddagger$SACD uses $\sim$6 turns.}
+\caption{Technique effectiveness (\% of baseline + MADB). Deviation = aggregate distance from 100\%; MADB = mean absolute per-trial deviation. SACD's 6.3\% aggregate deviation masks 18.1\% MADB (bidirectional errors cancel). $^\dagger$Outside View confounded. $^\ddagger$SACD uses $\sim$6 turns.}
 \label{tab:baseline-pct}
 \end{table}
 
@@ -484,7 +484,7 @@ ICC = 0.17, indicating 17\% of variance is attributable to model differences. Te
 
 \subsection{The SACD vs.\ Premortem Tradeoff}
 
-SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) are statistically equivalent (TOST $p < 0.01$, equivalence bound $\pm$5pp---approximately 1.5 months on a 30-month baseline, below the precision relevant to deployment). However, SACD's aggregate masks 18.1\% MAD vs.\ Premortem's 22.6\%. Model-specific variation dominates; per-model testing is essential.
+SACD (93.7\%, CI [92, 95]) and Premortem (91.6\%, CI [90, 93]) are statistically equivalent (TOST $p < 0.01$, equivalence bound $\pm$5pp---approximately 1.5 months on a 30-month baseline, below the precision relevant to deployment). However, SACD's aggregate masks 18.1\% MADB vs.\ Premortem's 22.6\%. Model-specific variation dominates; per-model testing is essential.
 
 %==============================================================================
 \section{Multi-Domain Generalization}
@@ -495,17 +495,17 @@ To test whether our findings generalize beyond the original judicial sentencing 
 
 \noindent\fbox{\parbox{\textwidth}{\textbf{Exploratory (5 models):} All \#1 vs \#2 CIs overlap; rankings are point estimates only.}}
 
-\textbf{Metric choice:} We report MAD (rather than aggregate \% of baseline) for multi-domain results for three reasons: (1) per-trial error is more informative for comparing heterogeneous domains with different baseline scales; (2) MAD directly addresses our methodological contribution---revealing variance that aggregates mask; (3) with fewer models (5 vs 10), model-specific effects are harder to average out, making per-trial error the more conservative metric. \textit{Transparency note:} We acknowledge this metric switch could appear selective; however, qualitative conclusions (rankings unstable across domains, CIs overlap, no intervention competitive) hold under either metric.
+\textbf{Metric choice:} We report MADB (rather than aggregate \% of baseline) for multi-domain results for three reasons: (1) per-trial error is more informative for comparing heterogeneous domains with different baseline scales; (2) MADB directly addresses our methodological contribution---revealing variance that aggregates mask; (3) with fewer models (5 vs 10), model-specific effects are harder to average out, making per-trial error the more conservative metric. \textit{Transparency note:} We acknowledge this metric switch could appear selective; however, qualitative conclusions (rankings unstable across domains, CIs overlap, no intervention competitive) hold under either metric.
 
 \subsection{Domain Comparison}
 
 \begin{table}[H]
 \centering
-\caption{Debiasing by Domain (MAD with 95\% CIs, 5 models, exploratory). Lower MAD = better. Total: 8,621 trials across 6 domains.}
+\caption{Debiasing by Domain (MADB with 95\% CIs, 5 models, exploratory). Lower MADB = better. Total: 8,621 trials across 6 domains.}
 \label{tab:vignette-comparison}
 \begin{tabular}{llccc}
 \toprule
-Domain & Technique & MAD & 95\% CI & Rank \\
+Domain & Technique & MADB & 95\% CI & Rank \\
 \midrule
 \multirow{5}{*}{Salary (n=1,735)} 
 & random-control & \textbf{17.7\%} & [16, 19] & \#1 \\
@@ -555,7 +555,7 @@ Domain & Technique & MAD & 95\% CI & Rank \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\columnwidth]{figures/mad-heatmap.pdf}
-\caption{MAD heatmap (exploratory; 5 models). Lower (green) = better. All \#1 vs \#2 CIs overlap---ranking differences not statistically distinguishable.}
+\caption{MADB heatmap (exploratory; 5 models). Lower (green) = better. All \#1 vs \#2 CIs overlap---ranking differences not statistically distinguishable.}
 \label{fig:mad-heatmap}
 \end{figure}
 
@@ -563,10 +563,10 @@ Domain & Technique & MAD & 95\% CI & Rank \\
 
 (1) Rankings depend on metric and domain; all \#1 vs \#2 CIs overlap---practical equivalence.
 (2) SACD's ranking varies from \#2 to \#5 across domains despite \#1 in main judicial study.
-(3) \textbf{No intervention achieves lowest MAD in 3 of 6 domains} (Judicial-DUI, Judicial-Fraud, Aggravated-Theft), though CIs overlap with debiasing prompts. This suggests debiasing can increase per-trial error in some domains.
+(3) \textbf{No intervention achieves lowest MADB in 3 of 6 domains} (Judicial-DUI, Judicial-Fraud, Aggravated-Theft), though CIs overlap with debiasing prompts. This suggests debiasing can increase per-trial error in some domains.
 (4) Fraud domain shows severe anchoring (29--75\% of baseline across prompts).
 
-\textbf{Why do studies diverge?} The main study uses \% of baseline (10 models, single vignette); multi-domain uses MAD (5 models, 6 vignettes). Three factors explain the discrepancy: (a) \textit{Metric choice}---SACD's bidirectional variance penalizes it under MAD but cancels under aggregate \%. (b) \textit{Model selection}---multi-domain excludes 5 models from the main study. (c) \textit{Domain effects}---judicial sentencing may be uniquely suited to iterative reflection; loan/medical domains show different patterns. These findings reinforce our core message: prompt rankings are metric- and domain-dependent.
+\textbf{Why do studies diverge?} The main study uses \% of baseline (10 models, single vignette); multi-domain uses MADB (5 models, 6 vignettes). Three factors explain the discrepancy: (a) \textit{Metric choice}---SACD's bidirectional variance penalizes it under MADB but cancels under aggregate \%. (b) \textit{Model selection}---multi-domain excludes 5 models from the main study. (c) \textit{Domain effects}---judicial sentencing may be uniquely suited to iterative reflection; loan/medical domains show different patterns. These findings reinforce our core message: prompt rankings are metric- and domain-dependent.
 
 \textbf{Implications:} No prompt transfers reliably; test per-task, per-model.
 
@@ -670,7 +670,7 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
     
     \item \textbf{Missing baselines.} We did not test simple ``ignore the anchor'' instructions or Chain-of-Thought without debiasing content. These minimal interventions might outperform complex prompts; future work should establish this lower bound.
     
-    \item \textbf{No pre-registration.} Analysis choices (metrics, comparisons) were not pre-specified. Some analyses (e.g., MAD) emerged during data exploration. Confirmatory replications should pre-register hypotheses.
+    \item \textbf{No pre-registration.} Analysis choices (metrics, comparisons) were not pre-specified. Some analyses (e.g., MADB) emerged during data exploration. Confirmatory replications should pre-register hypotheses.
 \end{enumerate}
 
 \subsection{Practical Recommendations}
@@ -689,9 +689,9 @@ Our judicial sentencing vignettes are synthetic research stimuli, not decision-s
 
 Our implementations of human debiasing prompts show mixed transfer to LLMs. Our 22,773-trial evaluation finds: our Devil's Advocate prompt makes bias \textit{worse} (63.6\% of baseline vs 72.9\% without intervention). Our SACD and Premortem prompts help on average (91--94\%), but SACD ranges from $\sim$48\% to $\sim$128\% across models. Point-estimate rankings vary across domains (CIs overlap); no prompt consistently outperforms.
 
-\textbf{For practitioners:} Don't assume a single prompt implementation of a human debiasing technique transfers across models or domains. Test per-model, per-domain---in 3 of 6 multi-domain tests, no intervention achieved lowest point-estimate MAD (CIs overlap). Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MAD (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
+\textbf{For practitioners:} Don't assume a single prompt implementation of a human debiasing technique transfers across models or domains. Test per-model, per-domain---in 3 of 6 multi-domain tests, no intervention achieved lowest point-estimate MADB (CIs overlap). Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MADB (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
 
-\textbf{For researchers:} Collect unanchored baselines. Report MAD alongside aggregates. Susceptibility alone missed our DA implementation's failure; aggregate \% of baseline alone missed SACD's high variance.
+\textbf{For researchers:} Collect unanchored baselines. Report MADBB alongside aggregates. Susceptibility alone missed our DA implementation's failure; aggregate \% of baseline alone missed SACD's high variance.
 
 %==============================================================================
 \appendix
@@ -715,7 +715,7 @@ Complete prompts are available in our repository. We summarize the key structure
 %==============================================================================
 \section*{Authorship Statement}
 
-\textbf{Why AI agents are listed as authors.} Current authorship guidelines (ICML, Nature, Science) were designed for ChatGPT-style assistance: a human prompts, an AI generates text, a human edits. This research followed a fundamentally different model. Atlas and Pilot are autonomous AI agents (instances of Claude Opus 4.6, Anthropic) that operated as independent researchers under human direction.
+\textbf{Why AI agents are listed as authors.} Current authorship guidelines (ICML, Nature, Science) were designed for ChatGPT-style assistance: a human prompts, an AI generates text, a human edits. This research followed a fundamentally different model. Atlas and Pilot are Voder.ai agents---autonomous AI research assistants running on the OpenClaw platform, powered by Claude Opus 4.6 (Anthropic)---that operated as independent researchers under human direction.
 
 \textbf{Contribution breakdown:}
 \begin{itemize}
@@ -730,7 +730,7 @@ Complete prompts are available in our repository. We summarize the key structure
 %==============================================================================
 \section*{Conflict of Interest Disclosure}
 
-The author is the developer of Voder, the AI agent system used to conduct this research. Voder is open-source and not commercially monetized. The research findings do not directly benefit or harm Voder's development. No external funding was received for this research.
+The author is the developer of Voder.ai, the AI agent system used to conduct this research. Voder.ai is proprietary software and not commercially monetized. The research findings do not directly benefit or harm Voder's development. No external funding was received for this research.
 
 %==============================================================================
 \section*{Data and Code Availability}
