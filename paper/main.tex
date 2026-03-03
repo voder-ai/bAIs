@@ -105,7 +105,7 @@ Standard anchoring evaluation uses \textbf{susceptibility} (high--low spread). W
 
 We compare susceptibility (standard) with \% of baseline (Section~\ref{sec:two-metrics}). Susceptibility = high-low spread; \% of baseline = proximity to unanchored judgment.
 
-\textbf{Mean Absolute Deviation from Baseline (MADBB):} We define MADB as the average per-trial deviation from the model's unanchored baseline:
+\textbf{Mean Absolute Deviation from Baseline (MADB):} We define MADB as the average per-trial deviation from the model's unanchored baseline:
 \begin{equation}
 \text{MADB} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{r_i}{b_m} - 1 \right| \times 100\%
 \end{equation}
@@ -691,7 +691,7 @@ Our implementations of human debiasing prompts show mixed transfer to LLMs. Our 
 
 \textbf{For practitioners:} Don't assume a single prompt implementation of a human debiasing technique transfers across models or domains. Test per-model, per-domain---in 3 of 6 multi-domain tests, no intervention achieved lowest point-estimate MADB (CIs overlap). Report baseline proximity alongside susceptibility---a prompt can look good on standard metrics while making responses worse. Use MADB (Mean Absolute Deviation) to reveal variance that aggregate metrics mask.
 
-\textbf{For researchers:} Collect unanchored baselines. Report MADBB alongside aggregates. Susceptibility alone missed our DA implementation's failure; aggregate \% of baseline alone missed SACD's high variance.
+\textbf{For researchers:} Collect unanchored baselines. Report MADB alongside aggregates. Susceptibility alone missed our DA implementation's failure; aggregate \% of baseline alone missed SACD's high variance.
 
 %==============================================================================
 \appendix
